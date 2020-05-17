@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: google/dart:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: pub get
+      - name: Run Formatter
+        run: dartfmt -n --set-exit-if-changed .
+      - name: Run Analyser
+        run: dartanalyzer . --fatal-warnings
+      - name: Run tests
+        run: pub run test
