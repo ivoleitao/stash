@@ -77,7 +77,8 @@ Start, importing the appropriate implementation, for example the in-memory one:
 
 ```dart
 import 'package:stash/stash_memory.dart';
-// In a more general sense 'package:stash/stash_xxx.dart' where xxx is the name of the storage provider, memory, disk, moor, hive and so on
+// In a more general sense 'package:stash/stash_xxx.dart' where xxx is the name of the storage provider, 
+// memory, disk, moor, hive and so on
 ```
 
 Then create a new cache with the `newMemoryCache` function specifying the cache name (if not provided a uuid is automatically assigned as the name):
@@ -85,7 +86,8 @@ Then create a new cache with the `newMemoryCache` function specifying the cache 
 ```dart
   // Creates a memory cache with unlimited capacity
   final cache = newMemoryCache();
-// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, Memory, Disk, Moor, Hive and so on
+// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
+// memory, disk, moor, hive and so on
 ```
 
 or alternatively specify a max capacity, 10 for example. Note that the eviction policy is only applied if `maxEntries` is specified
@@ -93,7 +95,8 @@ or alternatively specify a max capacity, 10 for example. Note that the eviction 
 ```dart
   // Creates a memory cache with a max capacity of 10
   final cache = newMemoryCache(maxEntries: 10);
-// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, Memory, Disk, Moor, Hive and so on
+// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
+// memory, disk, moor, hive and so on
 ```
 
 Then add a element to the cache:
@@ -267,13 +270,15 @@ import 'package:stash_disk/stash_custom.dart';
 import 'package:test/test.dart';
 
 void main() async {
-  // Optionally provide a implementation of the function that creates a store, you can use the exported function `newMemoryStore` instead
+  // Optionally provide a implementation of the function that creates a store, 
+  // you can use the exported function `newMemoryStore` instead
   Future<CustomStore> newStore(
       {dynamic Function(Map<String, dynamic>) fromEncodable}) {
     ...
   }
 
-  // Optionally provide a implementation of the function that creates a custom cache, you can use the exported function `newDefaultCache` instead
+  // Optionally provide a implementation of the function that creates a custom cache, 
+  // you can use the exported function `newDefaultCache` instead
   CustomCache newCache<T extends CacheStore>(T store,
       {String name,
       ExpiryPolicy expiryPolicy,
@@ -285,13 +290,15 @@ void main() async {
     ...
   }
 
-  // Optionally provide a implementation of the function that deletes a store. If you used the `newMemoryStore` function to create the store
+  // Optionally provide a implementation of the function that deletes a store. 
+  // If you used the `newMemoryStore` function to create the store
   // you can use the exported function `deleteMemoryStore` instead
   Future<void> deleteStore(CustomStore store) {
     ...
   }
 
-  // Test a custom store and/or the custom cache with one of the datatype generators provided in this case a BoolGenerator
+  // Test a custom store and/or the custom cache with one of the datatype generators
+  // provided in this case a BoolGenerator
   test('Boolean', () async {
     // Run all the tests for a store
     await testStoreWith<CustomStore>(newStore, BoolGenerator(), deleteStore);
