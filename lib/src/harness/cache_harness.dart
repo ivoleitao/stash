@@ -50,18 +50,15 @@ DefaultCache newDefaultCache<T extends CacheStore>(T store,
 
 /// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePut<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePut<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value = generator.nextValue(1);
+  var value = ctx.generator.nextValue(1);
   await cache.put(key, value);
 
   return store;
@@ -70,17 +67,14 @@ Future<T> _cachePut<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
 /// and removes the value through [Cache.remove]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePutRemove<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePutRemove<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var size = await cache.size;
   expect(size, 1);
 
@@ -93,25 +87,22 @@ Future<T> _cachePutRemove<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.size] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheSize<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheSize<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var size = await cache.size;
   expect(size, 1);
 
-  await cache.put('key_2', generator.nextValue(2));
+  await cache.put('key_2', ctx.generator.nextValue(2));
   size = await cache.size;
   expect(size, 2);
 
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   size = await cache.size;
   expect(size, 3);
 
@@ -132,18 +123,15 @@ Future<T> _cacheSize<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.containsKey] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheContainsKey<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheContainsKey<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value = generator.nextValue(1);
+  var value = ctx.generator.nextValue(1);
   await cache.put(key, value);
   var hasKey = await cache.containsKey(key);
 
@@ -154,24 +142,21 @@ Future<T> _cacheContainsKey<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.keys] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheKeys<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheKeys<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key1 = 'key_1';
-  await cache.put(key1, generator.nextValue(1));
+  await cache.put(key1, ctx.generator.nextValue(1));
 
   var key2 = 'key_2';
-  await cache.put(key2, generator.nextValue(2));
+  await cache.put(key2, ctx.generator.nextValue(2));
 
   var key3 = 'key_3';
-  await cache.put(key3, generator.nextValue(3));
+  await cache.put(key3, ctx.generator.nextValue(3));
 
   var keys = await cache.keys;
 
@@ -183,18 +168,15 @@ Future<T> _cacheKeys<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Calls [Cache.put] followed by a [Cache.get] on a [Cache] backed by
 /// the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePutGet<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePutGet<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   var value2 = await cache.get(key);
 
@@ -206,18 +188,15 @@ Future<T> _cachePutGet<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Calls [Cache.put] followed by a operator call on
 /// a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePutGetOperator<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePutGetOperator<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   var value2 = await cache[key];
 
@@ -229,25 +208,22 @@ Future<T> _cachePutGetOperator<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Calls [Cache.put] followed by a second [Cache.put] on a [Cache] backed by
 /// the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePutPut<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePutPut<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   var size = await cache.size;
   expect(size, 1);
   var value2 = await cache.get(key);
   expect(value2, value1);
 
-  value1 = generator.nextValue(1);
+  value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   size = await cache.size;
   expect(size, 1);
@@ -259,18 +235,15 @@ Future<T> _cachePutPut<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.putIfAbsent] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cachePutIfAbsent<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cachePutIfAbsent<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   var added = await cache.putIfAbsent(key, value1);
   expect(added, isTrue);
   var size = await cache.size;
@@ -278,7 +251,7 @@ Future<T> _cachePutIfAbsent<T extends CacheStore>(StoreBuilder<T> newStore,
   var value2 = await cache.get(key);
   expect(value2, value1);
 
-  added = await cache.putIfAbsent(key, generator.nextValue(2));
+  added = await cache.putIfAbsent(key, ctx.generator.nextValue(2));
   expect(added, isFalse);
   size = await cache.size;
   expect(size, 1);
@@ -290,23 +263,20 @@ Future<T> _cachePutIfAbsent<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.getAndPut] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheGetAndPut<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheGetAndPut<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   var value2 = await cache.get(key);
   expect(value2, value1);
 
-  var value3 = generator.nextValue(3);
+  var value3 = ctx.generator.nextValue(3);
   var value4 = await cache.getAndPut(key, value3);
   expect(value4, value1);
 
@@ -318,18 +288,15 @@ Future<T> _cacheGetAndPut<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.getAndRemove] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheGetAndRemove<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheGetAndRemove<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
   var key = 'key_1';
-  var value1 = generator.nextValue(1);
+  var value1 = ctx.generator.nextValue(1);
   await cache.put(key, value1);
   var value2 = await cache.get(key);
   expect(value2, value1);
@@ -345,19 +312,16 @@ Future<T> _cacheGetAndRemove<T extends CacheStore>(StoreBuilder<T> newStore,
 
 /// Calls [Cache.clear] on a [Cache] backed by the provided [CacheStore] builder
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheClear<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store);
+Future<T> _cacheClear<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store);
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   var size = await cache.size;
   expect(size, 3);
 
@@ -371,18 +335,15 @@ Future<T> _cacheClear<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [CreatedExpiryPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheCreatedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store,
+Future<T> _cacheCreatedExpiry<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
       expiryPolicy: const CreatedExpiryPolicy(Duration(microseconds: 0)));
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var present = await cache.containsKey('key_1');
   expect(present, isFalse);
 
@@ -392,28 +353,25 @@ Future<T> _cacheCreatedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [AccessedExpiryPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheAccessedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
+Future<T> _cacheAccessedExpiry<T extends CacheStore>(TestContext<T> ctx) async {
   var now = Clock().fromNow(microseconds: 1);
-  var store = await newStore();
+  var store = await ctx.newStore();
 
-  var cache = newCache(store,
+  var cache = ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(microseconds: 0)));
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var present = await cache.containsKey('key_1');
   expect(present, isFalse);
 
-  var cache2 = newCache(store,
+  var cache2 = ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
-  await cache2.put('key_1', generator.nextValue(1));
+  await cache2.put('key_1', ctx.generator.nextValue(1));
   present = await cache2.containsKey('key_1');
   expect(present, isTrue);
 
@@ -428,28 +386,25 @@ Future<T> _cacheAccessedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [ModifiedExpiryPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
-///
+/// * [ctx]: The test context
+//
 /// Returns the created store
-Future<T> _cacheModifiedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
+Future<T> _cacheModifiedExpiry<T extends CacheStore>(TestContext<T> ctx) async {
   var now = Clock().fromNow(microseconds: 1);
-  var store = await newStore();
+  var store = await ctx.newStore();
 
-  var cache1 = newCache(store,
+  var cache1 = ctx.newCache(store,
       expiryPolicy: const ModifiedExpiryPolicy(Duration(microseconds: 0)));
 
-  await cache1.put('key_1', generator.nextValue(1));
+  await cache1.put('key_1', ctx.generator.nextValue(1));
   var present = await cache1.containsKey('key_1');
   expect(present, isFalse);
 
-  var cache2 = newCache(store,
+  var cache2 = ctx.newCache(store,
       expiryPolicy: const ModifiedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
-  await cache2.put('key_1', generator.nextValue(1));
+  await cache2.put('key_1', ctx.generator.nextValue(1));
   present = await cache2.containsKey('key_1');
   expect(present, isTrue);
 
@@ -458,15 +413,15 @@ Future<T> _cacheModifiedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
   present = await cache2.containsKey('key_1');
   expect(present, isFalse);
 
-  var cache3 = newCache(store,
+  var cache3 = ctx.newCache(store,
       expiryPolicy: const ModifiedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
-  await cache3.put('key_1', generator.nextValue(1));
+  await cache3.put('key_1', ctx.generator.nextValue(1));
   present = await cache3.containsKey('key_1');
   expect(present, isTrue);
 
-  await cache3.put('key_1', generator.nextValue(2));
+  await cache3.put('key_1', ctx.generator.nextValue(2));
   now = Clock().fromNow(minutes: 2);
 
   present = await cache3.containsKey('key_1');
@@ -482,30 +437,27 @@ Future<T> _cacheModifiedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [TouchedExpiryPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheTouchedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
+Future<T> _cacheTouchedExpiry<T extends CacheStore>(TestContext<T> ctx) async {
   var now = Clock().fromNow(microseconds: 1);
-  var store = await newStore();
+  var store = await ctx.newStore();
 
   // The expiry policy works on creation of the cache
-  var cache = newCache(store,
+  var cache = ctx.newCache(store,
       expiryPolicy: const TouchedExpiryPolicy(Duration(microseconds: 0)));
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var present = await cache.containsKey('key_1');
   expect(present, isFalse);
 
   // The cache expires
-  var cache2 = newCache(store,
+  var cache2 = ctx.newCache(store,
       expiryPolicy: const TouchedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
-  await cache2.put('key_1', generator.nextValue(1));
+  await cache2.put('key_1', ctx.generator.nextValue(1));
   present = await cache2.containsKey('key_1');
   expect(present, isTrue);
 
@@ -514,18 +466,18 @@ Future<T> _cacheTouchedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
   expect(present, isFalse);
 
   // Check if the updated of the cache increases the expiry time
-  var cache3 = newCache(store,
+  var cache3 = ctx.newCache(store,
       expiryPolicy: const TouchedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
   // First add a cache entry during the 1 minute time, it should be there
-  await cache3.put('key_1', generator.nextValue(1));
+  await cache3.put('key_1', ctx.generator.nextValue(1));
   present = await cache3.containsKey('key_1');
   expect(present, isTrue);
 
   // Then add another and move the clock to the next slot. It should be there as
   // well because the put added 1 minute
-  await cache3.put('key_1', generator.nextValue(2));
+  await cache3.put('key_1', ctx.generator.nextValue(2));
   now = Clock().fromNow(minutes: 2);
   present = await cache3.containsKey('key_1');
   expect(present, isTrue);
@@ -542,19 +494,16 @@ Future<T> _cacheTouchedExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [EternalExpiryPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheEternalExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
+Future<T> _cacheEternalExpiry<T extends CacheStore>(TestContext<T> ctx) async {
   var now = Clock().fromNow(microseconds: 1);
-  var store = await newStore();
-  var cache = newCache(store,
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
       expiryPolicy: const EternalExpiryPolicy(), clock: Clock(() => now));
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var present = await cache.containsKey('key_1');
   expect(present, isTrue);
 
@@ -569,21 +518,18 @@ Future<T> _cacheEternalExpiry<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [CacheLoader]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheLoader<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _cacheLoader<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var value2 = generator.nextValue(2);
-  var cache = newCache(store,
+  var value2 = ctx.generator.nextValue(2);
+  var cache = ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(microseconds: 0)),
       cacheLoader: (key) => Future.value(value2));
 
-  await cache.put('key_1', generator.nextValue(1));
+  await cache.put('key_1', ctx.generator.nextValue(1));
   var value = await cache.get('key_1');
   expect(value, equals(value2));
 
@@ -593,23 +539,20 @@ Future<T> _cacheLoader<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [FifoEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheFifoEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store,
+Future<T> _cacheFifoEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FifoEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
   var size = await cache.size;
   expect(size, 2);
 
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   size = await cache.size;
   expect(size, 2);
 
@@ -622,23 +565,20 @@ Future<T> _cacheFifoEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [FiloEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheFiloEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache = newCache(store,
+Future<T> _cacheFiloEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FiloEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
   var size = await cache.size;
   expect(size, 2);
 
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   size = await cache.size;
   expect(size, 2);
 
@@ -651,27 +591,24 @@ Future<T> _cacheFiloEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [LruEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheLruEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache =
-      newCache(store, maxEntries: 3, evictionPolicy: const LruEvictionPolicy());
+Future<T> _cacheLruEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
+      maxEntries: 3, evictionPolicy: const LruEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   var size = await cache.size;
   expect(size, 3);
 
   await cache.get('key_1');
   await cache.get('key_3');
 
-  await cache.put('key_4', generator.nextValue(4));
+  await cache.put('key_4', ctx.generator.nextValue(4));
   size = await cache.size;
   expect(size, 3);
 
@@ -684,27 +621,24 @@ Future<T> _cacheLruEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [MruEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheMruEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache =
-      newCache(store, maxEntries: 3, evictionPolicy: const MruEvictionPolicy());
+Future<T> _cacheMruEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
+      maxEntries: 3, evictionPolicy: const MruEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   var size = await cache.size;
   expect(size, 3);
 
   await cache.get('key_1');
   await cache.get('key_3');
 
-  await cache.put('key_4', generator.nextValue(4));
+  await cache.put('key_4', ctx.generator.nextValue(4));
   size = await cache.size;
   expect(size, 3);
 
@@ -717,20 +651,17 @@ Future<T> _cacheMruEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [LfuEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheLfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache =
-      newCache(store, maxEntries: 3, evictionPolicy: const LfuEvictionPolicy());
+Future<T> _cacheLfuEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
+      maxEntries: 3, evictionPolicy: const LfuEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   var size = await cache.size;
   expect(size, 3);
 
@@ -741,7 +672,7 @@ Future<T> _cacheLfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
   await cache.get('key_3');
   await cache.get('key_3');
 
-  await cache.put('key_4', generator.nextValue(4));
+  await cache.put('key_4', ctx.generator.nextValue(4));
   size = await cache.size;
   expect(size, 3);
 
@@ -754,20 +685,17 @@ Future<T> _cacheLfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 /// Builds a [Cache] backed by the provided [CacheStore] builder
 /// configured with a [MfuEvictionPolicy]
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _cacheMfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
-    CacheBuilder newCache, ValueGenerator generator) async {
-  var store = await newStore();
-  var cache =
-      newCache(store, maxEntries: 3, evictionPolicy: const MfuEvictionPolicy());
+Future<T> _cacheMfuEviction<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
+  var cache = ctx.newCache(store,
+      maxEntries: 3, evictionPolicy: const MfuEvictionPolicy());
 
-  await cache.put('key_1', generator.nextValue(1));
-  await cache.put('key_2', generator.nextValue(2));
-  await cache.put('key_3', generator.nextValue(3));
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
   var size = await cache.size;
   expect(size, 3);
 
@@ -778,7 +706,7 @@ Future<T> _cacheMfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
   await cache.get('key_3');
   await cache.get('key_3');
 
-  await cache.put('key_4', generator.nextValue(4));
+  await cache.put('key_4', ctx.generator.nextValue(4));
   size = await cache.size;
   expect(size, 3);
 
@@ -789,7 +717,7 @@ Future<T> _cacheMfuEviction<T extends CacheStore>(StoreBuilder<T> newStore,
 }
 
 /// returns the list of tests to execute
-List<Future<T> Function(StoreBuilder<T>, CacheBuilder, ValueGenerator)>
+List<Future<T> Function(TestContext<T>)>
     _getCacheTests<T extends CacheStore>() {
   return [
     _cachePut,
@@ -822,18 +750,11 @@ List<Future<T> Function(StoreBuilder<T>, CacheBuilder, ValueGenerator)>
 /// Entry point for the cache testing harness. It delegates most of the
 /// construction to user provided functions that are responsible for the [CacheStore] creation,
 /// the [Cache] creation and by the generation of testing values
-/// (with a provided [ValueGenerator] instance).
+/// (with a provided [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [newCache]: A delegate for the construction of a [Cache]
-/// * [generator]: A value generator
-/// * [tearDown]: A optional function to release any resources held by the [CacheStore]
-void testCacheWith<T extends CacheStore>(
-    StoreBuilder<T> newStore, CacheBuilder newCache, ValueGenerator generator,
-    [Future<void> Function(T store) tearDown]) async {
-  tearDown = tearDown ?? ((T store) => Future.value());
-
+/// * [ctx]: the test context
+void testCacheWith<T extends CacheStore>(TestContext<T> ctx) async {
   for (var test in _getCacheTests<T>()) {
-    await test(newStore, newCache, generator).then(tearDown);
+    await test(ctx).then(ctx.deleteStore);
   }
 }

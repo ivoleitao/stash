@@ -6,7 +6,7 @@ import 'package:stash/src/memory/memory_store.dart';
 import 'package:test/test.dart';
 import 'package:time/time.dart';
 
-import 'value_generator.dart';
+import 'harness.dart';
 
 /// The default cache name
 const _DefaultCache = 'test';
@@ -176,17 +176,13 @@ Future<void> _delete(CacheStore store, {String name = _DefaultCache}) {
 
 /// Test that adds a new entry on the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeAddEntry<T extends CacheStore>(
-  StoreBuilder<T> newStore,
-  ValueGenerator generator,
-) async {
-  var store = await newStore();
+Future<T> _storeAddEntry<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry = await _putGetEntry(store, generator, 1);
+  var entry = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry.key);
   expect(hasEntry, isTrue);
 
@@ -195,15 +191,13 @@ Future<T> _storeAddEntry<T extends CacheStore>(
 
 /// Test that adds and fetches a entry from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeAddGetEntry<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeAddGetEntry<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
   var entry2 = await _getEntry(store, entry1.key);
 
   expect(entry2, entry1);
@@ -213,15 +207,13 @@ Future<T> _storeAddGetEntry<T extends CacheStore>(
 
 /// Test that removes a entry from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeRemoveEntry<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeRemoveEntry<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry1.key);
   expect(hasEntry, isTrue);
 
@@ -234,22 +226,20 @@ Future<T> _storeRemoveEntry<T extends CacheStore>(
 
 /// Test that gets the size of the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeSize<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeSize<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
   var size = await _size(store);
   expect(size, 0);
 
-  var entry1 = await _putGetEntry(store, generator, 1);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
   size = await _size(store);
   expect(size, 1);
 
-  var entry2 = await _putGetEntry(store, generator, 2);
+  var entry2 = await _putGetEntry(store, ctx.generator, 2);
   size = await _size(store);
   expect(size, 2);
 
@@ -266,21 +256,19 @@ Future<T> _storeSize<T extends CacheStore>(
 
 /// Test that clears the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeClear<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeClear<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  await _putGetEntry(store, generator, 1, name: 'cache1');
-  await _putGetEntry(store, generator, 2, name: 'cache1');
+  await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
+  await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
   expect(size, 2);
 
-  await _putGetEntry(store, generator, 1, name: 'cache2');
-  await _putGetEntry(store, generator, 2, name: 'cache2');
+  await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
+  await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
   expect(size, 2);
 
@@ -296,21 +284,19 @@ Future<T> _storeClear<T extends CacheStore>(
 
 /// Test that deletes a store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeDelete<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeDelete<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  await _putGetEntry(store, generator, 1, name: 'cache1');
-  await _putGetEntry(store, generator, 2, name: 'cache1');
+  await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
+  await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
   expect(size, 2);
 
-  await _putGetEntry(store, generator, 1, name: 'cache2');
-  await _putGetEntry(store, generator, 2, name: 'cache2');
+  await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
+  await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
   expect(size, 2);
 
@@ -326,15 +312,13 @@ Future<T> _storeDelete<T extends CacheStore>(
 
 /// Test that gets the [CacheStat] from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeGetStat<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeGetStat<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry = await _putGetEntry(store, generator, 1);
+  var entry = await _putGetEntry(store, ctx.generator, 1);
   var stat = await _getStat(store, entry.key);
 
   expect(stat.key, entry.key);
@@ -348,15 +332,13 @@ Future<T> _storeGetStat<T extends CacheStore>(
 
 /// Test that changes a store entry
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeChangeEntry<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeChangeEntry<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
 
   var oldAccessTime = entry1.accessTime;
   var oldHitCount = entry1.hitCount;
@@ -378,16 +360,14 @@ Future<T> _storeChangeEntry<T extends CacheStore>(
 
 /// Test that retrieves the keys from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeKeys<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeKeys<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
-  var entry2 = await _putGetEntry(store, generator, 2);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var keys = await _keys(store);
 
   expect(keys, containsAll([entry1.key, entry2.key]));
@@ -397,16 +377,14 @@ Future<T> _storeKeys<T extends CacheStore>(
 
 /// Test that retrieves the values from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeValues<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeValues<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
-  var entry2 = await _putGetEntry(store, generator, 2);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var values = await _values(store);
 
   expect(values, containsAll([entry1, entry2]));
@@ -416,16 +394,14 @@ Future<T> _storeValues<T extends CacheStore>(
 
 /// Test that retrieves the stats from the store
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
+/// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeStats<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator) async {
-  var store = await newStore();
+Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
+  var store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, generator, 1);
-  var entry2 = await _putGetEntry(store, generator, 2);
+  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var stats = await _stats(store);
 
   expect(stats, containsAll([entry1.stat, entry2.stat]));
@@ -434,8 +410,7 @@ Future<T> _storeStats<T extends CacheStore>(
 }
 
 /// returns the list of tests to execute
-List<Future<T> Function(StoreBuilder<T>, ValueGenerator)>
-    _getTests<T extends CacheStore>() {
+List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>() {
   return [
     _storeAddEntry,
     _storeAddGetEntry,
@@ -452,18 +427,13 @@ List<Future<T> Function(StoreBuilder<T>, ValueGenerator)>
 }
 
 /// Entry point for the store testing harness. It delegates most of the
-/// construction to user provided functions that are responsible for the [CacheStore] creation,
-/// the generation of testing values (with a provided [ValueGenerator] instance).
+/// construction to user provided functions that are responsible for the
+/// [CacheStore] creation, and the generation of testing values (with a provided
+/// [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
 ///
-/// * [newStore]: A delegate for the construction of a [CacheStore]
-/// * [generator]: A value generator
-/// * [tearDown]: A optional function to release any resources held by the [CacheStore]
-void testStoreWith<T extends CacheStore>(
-    StoreBuilder<T> newStore, ValueGenerator generator,
-    [Future<void> Function(T store) tearDown]) async {
-  tearDown = tearDown ?? ((store) => Future.value());
-
+/// * [ctx]: the test context
+void testStoreWith<T extends CacheStore>(TestContext<T> ctx) async {
   for (var test in _getTests<T>()) {
-    await test(newStore, generator).then(tearDown);
+    await test(ctx).then(ctx.deleteStore);
   }
 }
