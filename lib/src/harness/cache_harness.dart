@@ -18,7 +18,7 @@ import 'package:stash/src/api/expiry/touched_policy.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
 import 'package:test/test.dart';
 
-import 'value_generator.dart';
+import 'harness.dart';
 
 /// Creates a new [DefaultCache] bound to an implementation of the [CacheStore] interface
 ///
