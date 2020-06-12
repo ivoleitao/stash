@@ -239,7 +239,7 @@ abstract class TestContext<T extends CacheStore> {
   ///
   /// * [store]: The [CacheStore]
   Future<void> deleteStore(T store) {
-    return Future.value();
+    return store.deleteAll();
   }
 
   /// Assert that [actual] matches [matcher].

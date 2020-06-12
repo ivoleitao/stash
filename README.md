@@ -9,7 +9,7 @@ A caching library build with extensibility in mind
 
 ## Introduction
 
-`Stash` caching library was designed from ground up with extensibility in mind. On it's core provides a simple in-memory cache but supports a vast array of other storage mechanisms as opt-in libraries. It can be used as an extension to other libraries as well to bring a cache layer where none was supported. From a feature perspective it supports the most traditional capabilities found on caching libraries since it was heavily based on the JCache spec from the Java world, however it draws inspiration from other libraries as well. It supports expiration, eviction and binary serialization via a number of algorithms provided out-of-the box which can be extended with a custom provided implementation through well defined contracts. 
+`Stash` caching library was designed from ground up with extensibility in mind. On it's core provides a simple in-memory cache but supports a vast array of other storage mechanisms as opt-in libraries. From a feature perspective it supports the most traditional capabilities found on well know caching libraries. It supports expiration, eviction, pluggable storage mechanisms and binary serialization via a number of algorithms provided out-of-the box which can be extended with a custom provided implementation through well defined contracts. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well.
 
 3rd party library developers support is well defined as well. The library provides a harness with a number of tests that allow the implementers of novel storage and cache frontend to test their implementations against the same baseline tests that were used to validate the in-memory reference implementation
 
@@ -20,7 +20,7 @@ A caching library build with extensibility in mind
 * The eviction of the cache uses a sampling approach to collect the candidate items. It currently samples the whole set using the [`Full`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/full_sampler.dart) sampler but also supports a [`Random`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/random_sampler.dart) sampling strategy
 * Definition of a cache loader to be used upon expiration of the cache
 * If permitted by the storage implementation it supports the update of only the cache entry header when recording the statistic fields (hit count, access time, expiry time and so on) without replacing the whole value. 
-* Out-of-box highly performing binary serialization using [msgpack](https://msgpack.org) that was inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library 
+* Out-of-box highly performing binary serialization using [msgpack](https://msgpack.org) which was inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library 
 * Pluggable implementation of custom encoding/decoding, storage, expiry, eviction and sampling strategies.
 * Storage and cache harness for 3d party support of novel storage and cache frontend strategies
 * Tiered cache support allowing the configuration of a primary highly performing cache (in-memory for example) and a secondary second-level cache
@@ -77,8 +77,8 @@ Start, importing the appropriate implementation, for example the in-memory one:
 
 ```dart
 import 'package:stash/stash_memory.dart';
-// In a more general sense 'package:stash/stash_xxx.dart' where xxx is the name of the storage provider, 
-// memory, disk, moor, hive and so on
+// In a more general sense 'package:stash/stash_xxx.dart' where xxx is the name of the
+// storage provider, memory, disk, moor, hive and so on
 ```
 
 Then create a new cache with the `newMemoryCache` function specifying the cache name (if not provided a uuid is automatically assigned as the name):
@@ -86,8 +86,8 @@ Then create a new cache with the `newMemoryCache` function specifying the cache 
 ```dart
   // Creates a memory cache with unlimited capacity
   final cache = newMemoryCache();
-// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
-// memory, disk, moor, hive and so on
+  // In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
+  // memory, disk, moor, hive and so on
 ```
 
 or alternatively specify a max capacity, 10 for example. Note that the eviction policy is only applied if `maxEntries` is specified
@@ -95,8 +95,8 @@ or alternatively specify a max capacity, 10 for example. Note that the eviction 
 ```dart
   // Creates a memory cache with a max capacity of 10
   final cache = newMemoryCache(maxEntries: 10);
-// In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
-// memory, disk, moor, hive and so on
+  // In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
+  // memory, disk, moor, hive and so on
 ```
 
 Then add a element to the cache:
@@ -113,28 +113,28 @@ Finally, retrieve that element:
   final value = await cache.get('key1');
 ```
 
-The in-memory example is the simplest one. In this case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. All the other implementations of storage mechanisms need that additional configuration. The exception in this case is the in-memory storage.
+The in-memory example is the simplest one. In this case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. All the other implementations of storage mechanisms need that additional configuration. The exception in the in-memory storage.
 
-Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stash_disk) as the storage implementation of the cache. In this case an object is stored and therefore to output the correct object the user needs to provide an additional parameter: `fromEncodable: (json) => User.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. The serialization happens by convention calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but should be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the classes.  
+Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stash_disk) as the storage implementation of the cache. In this case an object is stored and therefore to output the correct object the user needs to provide an additional parameter: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. The serialization happens by convention calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but should be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the classes.  
 
 ```dart
   import 'dart:io';
   import 'package:stash_disk/stash_disk.dart';
 
-  class User {
+  class Task {
     final int id;
     final String title;
     final bool completed;
 
-    User({this.id, this.title, this.completed = false});
+    Task({this.id, this.title, this.completed = false});
 
-    /// Creates a [User] from json map
-    factory User.fromJson(Map<String, dynamic> json) => User(
+    /// Creates a [Task] from json map
+    factory Task.fromJson(Map<String, dynamic> json) => Task(
         id: json['id'] as int,
         title: json['title'] as String,
         completed: json['completed'] as bool);
 
-    /// Creates a json map from a [User]
+    /// Creates a json map from a [Task]
     Map<String, dynamic> toJson() =>
         <String, dynamic>{'id': id, 'title': title, 'completed': completed};
 
@@ -150,13 +150,13 @@ Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stas
 
     // Creates a disk based cache with a capacity of 10
     final cache = newDiskCache(path,
-        maxEntries: 10, fromEncodable: (json) => User.fromJson(json));
+        maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
-    // Adds a user with key 'user1' to the cache
+    // Adds a task with key 'task1' to the cache
     await cache.put(
-        'user1', User(id: 1, title: 'Run stash example', completed: true));
-    // Retrieves the user from the cache
-    final value = await cache.get('user1');
+        'task1', Task(id: 1, title: 'Run stash example', completed: true));
+    // Retrieves the task from the cache
+    final value = await cache.get('task1');
 
     print(value);
   }
@@ -165,17 +165,18 @@ Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stas
 
 ### Cache Types
 
-To create a [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) we can use the function exported by this library, `newMemoryCache` (`newXXXCache` where `xxx` is the name of the storage provider for the more general case) to create a standard cache. There is another type of cache provided, the so called tiered cache that can be created with a call to `newTieredCache`. It allows the creation of cache that uses primary and secondary cache surrogates. The idea is to have a fast in-memory cache as the primary and a persistent cache as the secondary. In this cases it's normal to have a bigger capacity for the secondary and a lower capacity for the primary. In the example bellow a new tiered cache is created using two in-memory caches the first with a maximum capacity of 10 and the second with unlimited capacity. 
+To create a [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) we can use the function exported by this library, `newMemoryCache` (generically `newXXXCache` where `xxx` is the name of the storage provider) which creates a cache backed by a in-memory storage. As mentioned other storage providers are available. This is not the only type of cache, there is another, the tiered cache that can be created with a call to `newTieredCache`. It allows the creation of cache that uses primary and secondary cache surrogates. The idea is to have a fast in-memory cache as the primary and a persistent cache as the secondary. In this cases it's normal to have a bigger capacity for the secondary and a lower capacity for the primary. In the example bellow a new tiered cache is created using two in-memory caches the first with a maximum capacity of 10 and the second with unlimited capacity. 
 
 ```dart
-  /// Creates a tiered cache with both the primary and the secondary caches using a memory based storage
-  /// The first cache with a maximum capacity of 10 and the second with unlimited capacity
+  /// Creates a tiered cache with both the primary and the secondary caches using 
+  /// a memory based storage. The first cache with a maximum capacity of 10 and 
+  /// the second with unlimited capacity
   final cache = newTieredCache(
       newMemoryCache(maxEntries: 10),
       newMemoryCache());
 ```
 
-A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_disk](https://github.com/ivoleitao/stash_disk) or [stash_moor](https://github.com/ivoleitao/stash_moor). The example bellow illustrates one of those use cases using the `stash_disk` package as the provider of the storage backend of the secondary cache.
+A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_disk](https://github.com/ivoleitao/stash_disk) or [stash_moor](https://github.com/ivoleitao/stash_moor). The example bellow illustrates one of those use cases with the `stash_disk` package as the provider of the storage backend of the secondary cache.
 
 ```dart
   final cache = newTieredCache(
@@ -185,7 +186,7 @@ A more common use case is to have the primary cache using a memory storage and t
 
 ## Cache Operations
 
-The [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) frontend provides, as expected, a number of other operations besides the ones mentioned in the previous sections. The table bellow gives a general overview of those operations.
+The [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) frontend provides a number of other operations besides the ones mentioned in the previous sections. The table bellow gives a general overview of those operations.
 
 | Operation                                                 | Description                                                          |
 | --------------------------------------------------------- | -------------------------------------------------------------------- |
@@ -202,7 +203,7 @@ The [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.da
 
 ### Expiry policies
 
-It's possible to define how the expiration of cache entries works based on creation, access and modification operations. A number of pre-defined expiry polices are provided out-of-box that define multiple combinations of those interactions ultimately defining which user interactions with the cache affect the expiration of entries. Most of the expiry policies can be configured with a specific duration that is used to increase the expiry time when some type of operation is executed on the cache. This mechanism was heavily inspired on the JCache expiry semantics. By default the configuration does not enforce any kind of expiration through the use of [`Eternal`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/expiry/eternal_policy.dart) expiry policy, but it's possible to configure an alternative one through the use of the `expiryPolicy` parameter e.g. `newMemoryCache(expiryPolicy: const AccessedExpiryPolicy(Duration(days: 1)))`. Another alternative is to configure a custom expiry policy through the implementation of [ExpiryPolicy](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/expiry/expiry_policy.dart).
+It's possible to define how the expiration of cache entries works based on creation, access and modification operations. A number of pre-defined expiry polices are provided out-of-box that define multiple combinations of those interactions. Note that, most of the expiry policies can be configured with a specific duration which is used to increase the expiry time when some type of operation is executed on the cache. This mechanism was heavily inspired on the JCache expiry semantics. By default the configuration does not enforce any kind of expiration through the use of [`Eternal`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/expiry/eternal_policy.dart) expiry policy, but it's possible to configure an alternative if we set the `expiryPolicy` parameter e.g. `newMemoryCache(expiryPolicy: const AccessedExpiryPolicy(Duration(days: 1)))`. Another alternative is to configure a custom expiry policy through the implementation of [ExpiryPolicy](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/expiry/expiry_policy.dart).
 
 
 | Policy                                                    | Description                                                  |
@@ -229,7 +230,7 @@ As already discussed `Stash` supports eviction as well and provides a number of 
 | [MfuEvictionPolicy](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/eviction/mfu_policy.dart) | MFU (most-frequently used) policy is the exact opposite of LFU. It counts how often a item is need but it discards those that a most used first. |
 
 
-When the maximum capacity of a cache is exceeded eviction of one or more entries is inevitable. At that point the eviction algorithm works with a set of entries that are defined by the sampling strategy used. In the default configuration the whole set of entries is used which means that the cache statistic will be retrieved from each and every one of the entries. This works fine for modest sized caches but can became a performance burden for bigger caches. On that cases a more efficient sampling strategy should be selected to avoid sampling the whole set of entities from storage. On those cases it's possible to configure the cache with a sampling strategy through the use of the `sampler` parameter e.g. `newMemoryCache(sampler: RandomSampler(0.5))` uses a [`Random`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/random_sampler.dart) sampler to select only half of the entries as candidates for eviction. The configuration of a custom sampler is also possible through the implementation of [Sampler](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/sampler.dart).
+When the maximum capacity of a cache is exceeded eviction of one or more entries is inevitable. At that point the eviction algorithm works with a set of entries that are defined by the sampling strategy used. In the default configuration the whole set of entries is used which means that the cache statistics will be retrieved from each and every one of the entries. This works fine for modest sized caches but can became a performance burden for bigger caches. On that cases a more efficient sampling strategy should be selected to avoid sampling the whole set of entities from storage. On those cases it's possible to configure the sampling strategy with the `sampler` parameter e.g. `newMemoryCache(sampler: RandomSampler(0.5))` uses a [`Random`](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/random_sampler.dart) sampler to select only half of the entries as candidates for eviction. The configuration of a custom sampler is also possible through the implementation of [Sampler](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/sampler/sampler.dart).
 
 
 | Sampler                                                   | Description                                                  |
@@ -249,7 +250,7 @@ If you would like to contribute with other parts of the API, feel free to make a
 
 ### Using the Storage and Cache Harnesses
 
-The `Stash` library provides a way to easily import the set of standard tests that are used for the reference implementations of [CacheStore](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache_store.dart) and the reference implementation of the [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) and to run them over custom implementations provided by external parties. It also provides as number of classes that allow the generation of values which can be used in each one of the tests:
+The `Stash` library provides a way to easily import the set of standard tests that are used for the reference implementations of [CacheStore](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache_store.dart) and the reference implementation of [Cache](https://github.com/ivoleitao/stash/blob/develop/lib/src/api/cache.dart) allowing to reuse them to test custom implementations provided by external parties. It also provides as number of classes that allow the generation of values which can be used in each one of the tests:
 * `BoolGenerator`
 * `IntGenerator`
 * `DoubleGenerator`
@@ -259,7 +260,7 @@ The `Stash` library provides a way to easily import the set of standard tests th
 * `SampleClassGenerator`
 
 
-Find bellow an example implementation to test a `CustomStore` and/or a `CustomCache`
+Find bellow an example implementation to test a `CustomStore`
 
 ```dart
 // Import the stash harness
@@ -269,17 +270,21 @@ import 'package:stash_disk/stash_custom.dart';
 // Import the test package
 import 'package:test/test.dart';
 
-void main() async {
-  // Optionally provide a implementation of the function that creates a store, 
-  // you can use the exported function `newMemoryStore` instead
-  Future<CustomStore> newStore(
-      {dynamic Function(Map<String, dynamic>) fromEncodable}) {
+// Primitive test context, to be used for the primitive tests
+class DefaultContext extends TestContext<CustomStore> {
+  DefaultContext(ValueGenerator generator,
+      {dynamic Function(Map<String, dynamic>) fromEncodable})
+      : super(generator, fromEncodable: fromEncodable);
+
+
+  // Provide a implementation of the function that creates a store, 
+  @override
+  Future<DiskStore> newStore() {
     ...
   }
 
-  // Optionally provide a implementation of the function that creates a custom cache, 
-  // you can use the exported function `newDefaultCache` instead
-  CustomCache newCache<T extends CacheStore>(T store,
+  // Optionally provide a implementation of the function that creates a custom cache 
+  DefaultCache newCache(T store,
       {String name,
       ExpiryPolicy expiryPolicy,
       KeySampler sampler,
@@ -287,27 +292,52 @@ void main() async {
       int maxEntries,
       CacheLoader cacheLoader,
       Clock clock}) {
-    ...
+      ...
+  }
+
+  // Plug test `expect` method with the `check`used in the tests
+  // This is needed to avoid having `test` package dependencies 
+  // on the base `stash` library
+  @override
+  void check(actual, matcher, {String reason, skip}) {
+    expect(actual, matcher, reason: reason, skip: skip);
   }
 
   // Optionally provide a implementation of the function that deletes a store. 
-  // If you used the `newMemoryStore` function to create the store
-  // you can use the exported function `deleteMemoryStore` instead
   Future<void> deleteStore(CustomStore store) {
     ...
   }
+}
 
-  // Test a custom store and/or the custom cache with one of the datatype generators
-  // provided in this case a BoolGenerator
-  test('Boolean', () async {
+// Object test context, to be used for the class tests
+// This example uses the provided SampleClass
+class ObjectContext extends DefaultContext {
+  ObjectContext(ValueGenerator generator)
+      : super(generator,
+            fromEncodable: (Map<String, dynamic> json) =>
+                SampleClass.fromJson(json));
+}
+
+void main() async {
+  ...
+  // Test the `int` primitive with the provided `DefaultContext`
+  test('Int', () async {
     // Run all the tests for a store
-    await testStoreWith<CustomStore>(newStore, BoolGenerator(), deleteStore);
+    await testStoreWith<CustomStore>(DefaultContext(IntGenerator()));
     // Run all the test for a cache
-    await testCacheWith<CustomStore>(
-        newStore, newCache, BoolGenerator(), deleteStore);
+    await testCacheWith<CustomStore>(DefaultContext(IntGenerator()));
   });
   ...
-
+  // Test the `SampleClass` with a ìnt` field
+  test('Class<int>', () async {
+    // Run all the tests for a store
+    await testStoreWith<DiskStore>(
+        ObjectContext(SampleClassGenerator(IntGenerator())));
+    // Run all the test for a cache
+    await testCacheWith<DiskStore>(
+        ObjectContext(SampleClassGenerator(IntGenerator())));
+  });
+  ...
 ```
 
 Please take a look at the examples provided on one of the storage implementations, for example [stash_disk](https://github.com/ivoleitao/stash_disk) or [stash_moor](https://github.com/ivoleitao/stash_moor).
