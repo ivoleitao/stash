@@ -195,10 +195,14 @@ abstract class TestContext<T extends CacheStore> {
   /// A value generator
   final ValueGenerator generator;
 
+  /// Function called on encodable object to obtain the underlining type
+  final dynamic Function(Map<String, dynamic>) fromEncodable;
+
   /// Builds a new [TestContext]
   ///
-  /// [generator]: A value generator
-  TestContext(this.generator);
+  /// * [generator]: A value generator
+  /// * [fromEncodable]: An optional function to convert a json map into a object
+  TestContext(this.generator, {this.fromEncodable});
 
   /// Creates a new store
   Future<T> newStore();
