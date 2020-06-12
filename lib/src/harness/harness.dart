@@ -163,30 +163,17 @@ class SampleClassGenerator extends ValueGenerator {
 }
 
 /// Base class for all the test contexts.
-///
-///
 abstract class TestContext<T extends CacheStore> {
-  /// A delegate for the construction of a [CacheStore]
-  final StoreBuilder<T> _storeBuilder;
-
-  /// A delegate for the construction of a [Cache]
-  final CacheBuilder<T> _cacheBuilder;
-
   /// A value generator
   final ValueGenerator generator;
 
   /// Builds a new [TestContext]
   ///
   /// [generator]: A value generator
-  /// [storeBuilder]: A delegate for the construction of a [CacheStore]
-  /// [cacheBuilder]: A delegate for the construction of a [Cache]
-  TestContext(this.generator,
-      {StoreBuilder<T> storeBuilder, CacheBuilder<T> cacheBuilder})
-      : _storeBuilder = storeBuilder,
-        _cacheBuilder = cacheBuilder;
+  TestContext(this.generator);
 
   /// Creates a new store
-  Future<T> newStore() => _storeBuilder();
+  Future<T> newStore();
 
   /// Creates a new cache
   ///
@@ -199,21 +186,13 @@ abstract class TestContext<T extends CacheStore> {
   /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
   /// * [clock]: The source of time to be used on this
   DefaultCache newCache(T store,
-          {String name,
-          ExpiryPolicy expiryPolicy,
-          KeySampler sampler,
-          EvictionPolicy evictionPolicy,
-          int maxEntries,
-          CacheLoader cacheLoader,
-          Clock clock}) =>
-      _cacheBuilder(store,
-          name: name,
-          expiryPolicy: expiryPolicy,
-          sampler: sampler,
-          evictionPolicy: evictionPolicy,
-          maxEntries: maxEntries,
-          cacheLoader: cacheLoader,
-          clock: clock);
+      {String name,
+      ExpiryPolicy expiryPolicy,
+      KeySampler sampler,
+      EvictionPolicy evictionPolicy,
+      int maxEntries,
+      CacheLoader cacheLoader,
+      Clock clock});
 
   /// Deletes a store
   ///
