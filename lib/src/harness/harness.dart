@@ -22,6 +22,34 @@ typedef CacheBuilder<T extends CacheStore> = DefaultCache Function(T store,
     CacheLoader cacheLoader,
     Clock clock});
 
+/// Creates a new [DefaultCache] bound to an implementation of the [CacheStore] interface
+///
+/// * [store]: The store implementation
+/// * [name]: The name of the cache
+/// * [expiryPolicy]: The expiry policy to use
+/// * [sampler]: The sampler to use upon eviction of a cache element
+/// * [evictionPolicy]: The eviction policy to use
+/// * [maxEntries]: The max number of entries this cache can hold if provided.
+/// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
+/// * [clock]: The source of time to be used
+DefaultCache newDefaultCache<T extends CacheStore>(T store,
+    {String name,
+    ExpiryPolicy expiryPolicy,
+    KeySampler sampler,
+    EvictionPolicy evictionPolicy,
+    int maxEntries,
+    CacheLoader cacheLoader,
+    Clock clock}) {
+  return Cache.newCache(store,
+      name: name,
+      expiryPolicy: expiryPolicy,
+      sampler: sampler,
+      evictionPolicy: evictionPolicy,
+      maxEntries: maxEntries,
+      cacheLoader: cacheLoader,
+      clock: clock);
+}
+
 /// Generic definition of a value generator
 abstract class ValueGenerator {
   /// Returns a new value out of a provided [seed]
@@ -192,7 +220,16 @@ abstract class TestContext<T extends CacheStore> {
       EvictionPolicy evictionPolicy,
       int maxEntries,
       CacheLoader cacheLoader,
-      Clock clock});
+      Clock clock}) {
+    return newDefaultCache(store,
+        name: name,
+        expiryPolicy: expiryPolicy,
+        sampler: sampler,
+        evictionPolicy: evictionPolicy,
+        maxEntries: maxEntries,
+        cacheLoader: cacheLoader,
+        clock: clock);
+  }
 
   /// Deletes a store
   ///

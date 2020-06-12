@@ -1,8 +1,6 @@
 import 'package:quiver/time.dart';
 import 'package:stash/src/api/cache.dart';
-import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache_store.dart';
-import 'package:stash/src/api/eviction/eviction_policy.dart';
 import 'package:stash/src/api/eviction/fifo_policy.dart';
 import 'package:stash/src/api/eviction/filo_policy.dart';
 import 'package:stash/src/api/eviction/lfu_policy.dart';
@@ -12,41 +10,11 @@ import 'package:stash/src/api/eviction/mru_policy.dart';
 import 'package:stash/src/api/expiry/accessed_policy.dart';
 import 'package:stash/src/api/expiry/created_policy.dart';
 import 'package:stash/src/api/expiry/eternal_policy.dart';
-import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/expiry/modified_policy.dart';
 import 'package:stash/src/api/expiry/touched_policy.dart';
-import 'package:stash/src/api/sampler/sampler.dart';
 import 'package:test/test.dart';
 
 import 'harness.dart';
-
-/// Creates a new [DefaultCache] bound to an implementation of the [CacheStore] interface
-///
-/// * [store]: The store implementation
-/// * [name]: The name of the cache
-/// * [expiryPolicy]: The expiry policy to use
-/// * [sampler]: The sampler to use upon eviction of a cache element
-/// * [evictionPolicy]: The eviction policy to use
-/// * [maxEntries]: The max number of entries this cache can hold if provided.
-/// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
-/// * [clock]: The source of time to be used
-DefaultCache newDefaultCache<T extends CacheStore>(T store,
-    {String name,
-    ExpiryPolicy expiryPolicy,
-    KeySampler sampler,
-    EvictionPolicy evictionPolicy,
-    int maxEntries,
-    CacheLoader cacheLoader,
-    Clock clock}) {
-  return Cache.newCache(store,
-      name: name,
-      expiryPolicy: expiryPolicy,
-      sampler: sampler,
-      evictionPolicy: evictionPolicy,
-      maxEntries: maxEntries,
-      cacheLoader: cacheLoader,
-      clock: clock);
-}
 
 /// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
 ///

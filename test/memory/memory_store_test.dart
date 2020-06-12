@@ -1,8 +1,3 @@
-import 'package:quiver/time.dart';
-import 'package:stash/src/api/cache/default_cache.dart';
-import 'package:stash/src/api/eviction/eviction_policy.dart';
-import 'package:stash/src/api/expiry/expiry_policy.dart';
-import 'package:stash/src/api/sampler/sampler.dart';
 import 'package:stash/stash_harness.dart';
 import 'package:stash/stash_memory.dart';
 import 'package:test/test.dart';
@@ -13,25 +8,6 @@ class MemoryContext extends TestContext<MemoryStore> {
   @override
   Future<MemoryStore> newStore() {
     return newMemoryStore();
-  }
-
-  @override
-  DefaultCache newCache(MemoryStore store,
-      {String name,
-      ExpiryPolicy expiryPolicy,
-      KeySampler sampler,
-      EvictionPolicy evictionPolicy,
-      int maxEntries,
-      cacheLoader,
-      Clock clock}) {
-    return newDefaultCache(store,
-        name: name,
-        expiryPolicy: expiryPolicy,
-        sampler: sampler,
-        evictionPolicy: evictionPolicy,
-        maxEntries: maxEntries,
-        cacheLoader: cacheLoader,
-        clock: clock);
   }
 
   @override
