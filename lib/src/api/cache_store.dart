@@ -23,6 +23,7 @@ abstract class CacheStore {
   /// a optimized retrieval strategy that avoids reading the [CacheEntry] implementation into memory
   ///
   /// * [name]: The cache name
+  /// * [keys]: The list of keys
   Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys);
 
   /// Returns a [Iterable] over all the [CacheStore] [CacheEntry]s of a named cache.
