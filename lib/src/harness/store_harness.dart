@@ -3,7 +3,6 @@ import 'package:stash/src/api/cache_entry.dart';
 import 'package:stash/src/api/cache_stat.dart';
 import 'package:stash/src/api/cache_store.dart';
 import 'package:stash/src/memory/memory_store.dart';
-import 'package:test/test.dart';
 import 'package:time/time.dart';
 
 import 'harness.dart';
@@ -184,7 +183,7 @@ Future<T> _storeAddEntry<T extends CacheStore>(TestContext<T> ctx) async {
 
   var entry = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry.key);
-  expect(hasEntry, isTrue);
+  ctx.check(hasEntry, isTrue);
 
   return store;
 }
@@ -200,7 +199,7 @@ Future<T> _storeAddGetEntry<T extends CacheStore>(TestContext<T> ctx) async {
   var entry1 = await _putGetEntry(store, ctx.generator, 1);
   var entry2 = await _getEntry(store, entry1.key);
 
-  expect(entry2, entry1);
+  ctx.check(entry2, entry1);
 
   return store;
 }
@@ -215,11 +214,11 @@ Future<T> _storeRemoveEntry<T extends CacheStore>(TestContext<T> ctx) async {
 
   var entry1 = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry1.key);
-  expect(hasEntry, isTrue);
+  ctx.check(hasEntry, isTrue);
 
   await _remove(store, entry1.key);
   hasEntry = await _containsKey(store, entry1.key);
-  expect(hasEntry, isFalse);
+  ctx.check(hasEntry, isFalse);
 
   return store;
 }
@@ -233,23 +232,23 @@ Future<T> _storeSize<T extends CacheStore>(TestContext<T> ctx) async {
   var store = await ctx.newStore();
 
   var size = await _size(store);
-  expect(size, 0);
+  ctx.check(size, 0);
 
   var entry1 = await _putGetEntry(store, ctx.generator, 1);
   size = await _size(store);
-  expect(size, 1);
+  ctx.check(size, 1);
 
   var entry2 = await _putGetEntry(store, ctx.generator, 2);
   size = await _size(store);
-  expect(size, 2);
+  ctx.check(size, 2);
 
   await _remove(store, entry1.key);
   size = await _size(store);
-  expect(size, 1);
+  ctx.check(size, 1);
 
   await _remove(store, entry2.key);
   size = await _size(store);
-  expect(size, 0);
+  ctx.check(size, 0);
 
   return store;
 }
@@ -265,19 +264,19 @@ Future<T> _storeClear<T extends CacheStore>(TestContext<T> ctx) async {
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   await _clear(store, name: 'cache1');
   size = await _size(store, name: 'cache1');
-  expect(size, 0);
+  ctx.check(size, 0);
 
   size = await _size(store, name: 'cache2');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   return store;
 }
@@ -293,19 +292,19 @@ Future<T> _storeDelete<T extends CacheStore>(TestContext<T> ctx) async {
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   await _delete(store, name: 'cache1');
   size = await _size(store, name: 'cache1');
-  expect(size, 0);
+  ctx.check(size, 0);
 
   size = await _size(store, name: 'cache2');
-  expect(size, 2);
+  ctx.check(size, 2);
 
   return store;
 }
@@ -321,11 +320,11 @@ Future<T> _storeGetStat<T extends CacheStore>(TestContext<T> ctx) async {
   var entry = await _putGetEntry(store, ctx.generator, 1);
   var stat = await _getStat(store, entry.key);
 
-  expect(stat.key, entry.key);
-  expect(stat.expiryTime, entry.expiryTime);
-  expect(stat.creationTime, entry.creationTime);
-  expect(stat.accessTime, entry.accessTime);
-  expect(stat.updateTime, entry.updateTime);
+  ctx.check(stat.key, entry.key);
+  ctx.check(stat.expiryTime, entry.expiryTime);
+  ctx.check(stat.creationTime, entry.creationTime);
+  ctx.check(stat.accessTime, entry.accessTime);
+  ctx.check(stat.updateTime, entry.updateTime);
 
   return store;
 }
@@ -347,13 +346,13 @@ Future<T> _storeChangeEntry<T extends CacheStore>(TestContext<T> ctx) async {
   await _putEntry(store, entry1.key, entry1);
 
   var entry2 = await _getEntry(store, entry1.key);
-  expect(entry2.expiryTime, equals(entry1.expiryTime));
-  expect(entry2.creationTime, equals(entry1.creationTime));
-  expect(entry2.accessTime, isNot(equals(oldAccessTime)));
-  expect(entry2.accessTime, equals(entry1.accessTime));
-  expect(entry2.updateTime, equals(entry1.updateTime));
-  expect(entry2.hitCount, isNot(equals(oldHitCount)));
-  expect(entry2.hitCount, equals(entry1.hitCount));
+  ctx.check(entry2.expiryTime, equals(entry1.expiryTime));
+  ctx.check(entry2.creationTime, equals(entry1.creationTime));
+  ctx.check(entry2.accessTime, isNot(equals(oldAccessTime)));
+  ctx.check(entry2.accessTime, equals(entry1.accessTime));
+  ctx.check(entry2.updateTime, equals(entry1.updateTime));
+  ctx.check(entry2.hitCount, isNot(equals(oldHitCount)));
+  ctx.check(entry2.hitCount, equals(entry1.hitCount));
 
   return store;
 }
@@ -370,7 +369,7 @@ Future<T> _storeKeys<T extends CacheStore>(TestContext<T> ctx) async {
   var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var keys = await _keys(store);
 
-  expect(keys, containsAll([entry1.key, entry2.key]));
+  ctx.check(keys, containsAll([entry1.key, entry2.key]));
 
   return store;
 }
@@ -387,7 +386,7 @@ Future<T> _storeValues<T extends CacheStore>(TestContext<T> ctx) async {
   var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var values = await _values(store);
 
-  expect(values, containsAll([entry1, entry2]));
+  ctx.check(values, containsAll([entry1, entry2]));
 
   return store;
 }
@@ -404,7 +403,7 @@ Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
   var entry2 = await _putGetEntry(store, ctx.generator, 2);
   var stats = await _stats(store);
 
-  expect(stats, containsAll([entry1.stat, entry2.stat]));
+  ctx.check(stats, containsAll([entry1.stat, entry2.stat]));
 
   return store;
 }
