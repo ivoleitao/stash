@@ -350,7 +350,7 @@ class MsgPackWriter extends BytesWriter {
     if (!_writeObject(d)) {
       try {
         _writeEncodable(_toEncodable(d));
-      } catch (NoSuchMethodError) {
+      } on NoSuchMethodError {
         throw MsgPackUnsupportedObjectError(d);
       }
     }
