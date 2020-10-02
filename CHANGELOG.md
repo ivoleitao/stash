@@ -1,6 +1,8 @@
-## 1.0.0-dev.4
+## 1.0.0
 
-- TODO
+- First official release of this package
+- Updated to 2.10.0 sdk version
+- Updated dependencies
 
 ## 1.0.0-dev.3
 
