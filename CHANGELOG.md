@@ -1,10 +1,6 @@
-## 1.0.4
-
-- Reverted once again to 2.10.0 pub problems fixed
-
 ## 1.0.3
 
-- Reverted to sdk 2.9.0
+- TODO
 
 ## 1.0.2
 
