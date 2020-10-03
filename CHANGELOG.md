@@ -1,6 +1,6 @@
 ## 1.0.1
 
-- TODO
+- Corrected typo on the README file for the 1.0.0 version of the last published package
 
 ## 1.0.0
 
