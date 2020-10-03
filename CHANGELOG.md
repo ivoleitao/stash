@@ -1,6 +1,10 @@
+## 1.0.3
+
+- Reverted to sdk 2.9.0
+
 ## 1.0.2
 
-- TODO
+- Republish to tackle problem with pub reverting to sdk 2.9.3
 
 ## 1.0.1
 

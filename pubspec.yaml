@@ -1,5 +1,5 @@
 name: stash
-version: 1.0.2
+version: 1.0.3
 description: >-
   Standard caching API for Dart. Defines a common mechanism to create, 
   access, update, and remove information from caches. Provides a in memory
@@ -7,7 +7,7 @@ description: >-
 homepage: https://github.com/ivoleitao/stash
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.9.0 <3.0.0"
 
 dependencies:
   equatable: ^1.2.5
