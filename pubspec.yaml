@@ -7,7 +7,7 @@ description: >-
 homepage: https://github.com/ivoleitao/stash
 
 environment:
-  sdk: ">=2.9.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   equatable: ^1.2.5

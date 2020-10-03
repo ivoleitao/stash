@@ -1,6 +1,6 @@
 ## 1.0.4
 
-- TODO
+- Reverted once again to 2.10.0 pub problems fixed
 
 ## 1.0.3
 
