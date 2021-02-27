@@ -11,7 +11,7 @@ class DefaultContext extends TestContext<MemoryStore> {
   }
 
   @override
-  void check(actual, matcher, {String reason, skip}) {
+  void check(actual, matcher, {String? reason, skip}) {
     expect(actual, matcher, reason: reason, skip: skip);
   }
 }

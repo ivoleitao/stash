@@ -10,8 +10,7 @@ class AccessedExpiryPolicy extends ExpiryPolicy {
   /// Builds a [AccessedExpiryPolicy] [ExpiryPolicy]
   ///
   /// * [_expiryDuration]: the [Duration] a cache entry should exist before it expires after being accessed
-  const AccessedExpiryPolicy(this._expiryDuration)
-      : assert(_expiryDuration != null);
+  const AccessedExpiryPolicy(this._expiryDuration);
 
   @override
   Duration getExpiryForCreation() {
@@ -27,7 +26,7 @@ class AccessedExpiryPolicy extends ExpiryPolicy {
   }
 
   @override
-  Duration getExpiryForUpdate() {
+  Duration? getExpiryForUpdate() {
     // Modifying a cache entry has no affect on the current expiry duration
     return null;
   }

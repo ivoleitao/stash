@@ -12,7 +12,7 @@ class MsgPackUnsupportedTypeError extends Error {
   final int unsupportedType;
 
   /// The exception thrown when trying to deserialize the type.
-  final Object cause;
+  final Object? cause;
 
   /// Builds a [MsgPackUnsupportedTypeError] object
   ///
@@ -57,8 +57,8 @@ class MsgPackReader extends BytesReader {
   /// * [fromEncodable]: A custom function the converts the deserialized `Map<String, dynamic>` representation of the object into the object
   /// * [extensions]: A optional list of extensions to use
   MsgPackReader(Uint8List list,
-      {dynamic Function(Map<String, dynamic>) fromEncodable,
-      List<MsgPackExtension> extensions})
+      {dynamic Function(Map<String, dynamic>)? fromEncodable,
+      List<MsgPackExtension>? extensions})
       : _fromEncodable = fromEncodable ?? _defaultFromEncodable,
         _extensions = [const DateTimeExtension(), ...?extensions],
         super(list);
@@ -227,8 +227,8 @@ class MsgPackReader extends BytesReader {
 ///
 /// Returns the underlying object after successful deserialization
 dynamic msgPackRead(Uint8List bytes,
-    {dynamic Function(dynamic) fromEncodable,
-    List<MsgPackExtension> extensions}) {
+    {dynamic Function(dynamic)? fromEncodable,
+    List<MsgPackExtension>? extensions}) {
   final reader = MsgPackReader(bytes,
       fromEncodable: fromEncodable, extensions: extensions);
   return reader.read();

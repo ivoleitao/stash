@@ -8,10 +8,11 @@ class LruEvictionPolicy extends EvictionPolicy {
   const LruEvictionPolicy();
 
   @override
-  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded) {
+  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded) {
     var selectedEntry;
     for (var entry in entries) {
-      if ((selectedEntry == null ||
+      if (entry != null &&
+          (selectedEntry == null ||
               entry.accessTime.isBefore(selectedEntry.accessTime)) &&
           justAdded.key != entry.key) {
         selectedEntry = entry;

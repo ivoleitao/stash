@@ -32,14 +32,14 @@ typedef CacheBuilder<T extends CacheStore> = DefaultCache Function(T store,
 /// * [maxEntries]: The max number of entries this cache can hold if provided.
 /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
 /// * [clock]: The source of time to be used
-DefaultCache newDefaultCache<T extends CacheStore>(T store,
-    {String name,
-    ExpiryPolicy expiryPolicy,
-    KeySampler sampler,
-    EvictionPolicy evictionPolicy,
-    int maxEntries,
-    CacheLoader cacheLoader,
-    Clock clock}) {
+Cache newDefaultCache<T extends CacheStore>(T store,
+    {String? name,
+    ExpiryPolicy? expiryPolicy,
+    KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    CacheLoader? cacheLoader,
+    Clock? clock}) {
   return Cache.newCache(store,
       name: name,
       expiryPolicy: expiryPolicy,
@@ -93,7 +93,7 @@ class StringGenerator extends ValueGenerator {
   /// Builds a [StringGenerator] with a optional [prefix]
   ///
   /// * [prefix]: The prefix of the generated strings, default to 'String'
-  StringGenerator({String prefix}) : _prefix = prefix ?? 'String';
+  StringGenerator({String? prefix}) : _prefix = prefix ?? 'String';
 
   @override
   dynamic nextValue(int seed) {
@@ -110,7 +110,7 @@ class IteratorGenerator extends ValueGenerator {
   /// Builds a [IteratorGenerator] with a provided element generator, [_ithGenerator]
   ///
   /// * [_ithGenerator]: The [Iterator] element generator
-  IteratorGenerator(this._ithGenerator) : assert(_ithGenerator != null);
+  IteratorGenerator(this._ithGenerator);
 
   @override
   dynamic nextValue(int seed) {
@@ -136,9 +136,7 @@ class MapGenerator extends ValueGenerator {
   ///
   /// * [_keyIthGenerator]: The key generator
   /// * [_valueIthGenerator]: The value generator
-  MapGenerator(this._keyIthGenerator, this._valueIthGenerator)
-      : assert(_keyIthGenerator != null),
-        assert(_valueIthGenerator != null);
+  MapGenerator(this._keyIthGenerator, this._valueIthGenerator);
 
   @override
   dynamic nextValue(int seed) {
@@ -182,7 +180,7 @@ class SampleClassGenerator extends ValueGenerator {
   /// Builds a [SampleClassGenerator] with a provided [SampleClass.value] element generator, [_ithGenerator]
   ///
   /// * [_ithGenerator]: The [SampleClass.value] generator
-  SampleClassGenerator(this._ithGenerator) : assert(_ithGenerator != null);
+  SampleClassGenerator(this._ithGenerator);
 
   @override
   dynamic nextValue(int idx) {
@@ -196,7 +194,7 @@ abstract class TestContext<T extends CacheStore> {
   final ValueGenerator generator;
 
   /// Function called on encodable object to obtain the underlining type
-  final dynamic Function(Map<String, dynamic>) fromEncodable;
+  final dynamic Function(Map<String, dynamic>)? fromEncodable;
 
   /// Builds a new [TestContext]
   ///
@@ -217,14 +215,14 @@ abstract class TestContext<T extends CacheStore> {
   /// * [maxEntries]: The max number of entries this cache can hold if provided.
   /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
   /// * [clock]: The source of time to be used on this
-  DefaultCache newCache(T store,
-      {String name,
-      ExpiryPolicy expiryPolicy,
-      KeySampler sampler,
-      EvictionPolicy evictionPolicy,
-      int maxEntries,
-      CacheLoader cacheLoader,
-      Clock clock}) {
+  Cache newCache(T store,
+      {String? name,
+      ExpiryPolicy? expiryPolicy,
+      KeySampler? sampler,
+      EvictionPolicy? evictionPolicy,
+      int? maxEntries,
+      CacheLoader? cacheLoader,
+      Clock? clock}) {
     return newDefaultCache(store,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -264,16 +262,13 @@ abstract class TestContext<T extends CacheStore> {
 ///
 /// Returns a fully initialized [CacheEntry]
 CacheEntry newEntry(ValueGenerator generator, int seed,
-    {String key,
-    DateTime expiryTime,
-    DateTime creationTime,
-    DateTime accessTime,
-    DateTime updateTime,
-    int hitCount}) {
+    {String? key,
+    DateTime? expiryTime,
+    DateTime? creationTime,
+    DateTime? accessTime,
+    DateTime? updateTime,
+    int? hitCount}) {
   return CacheEntry(key ?? 'cache_key_${seed}', generator.nextValue(seed),
-      expiryTime ?? seed.minutes.fromNow,
-      creationTime: creationTime,
-      accessTime: accessTime,
-      updateTime: updateTime,
-      hitCount: hitCount);
+      expiryTime ?? seed.minutes.fromNow, creationTime ?? DateTime.now(),
+      accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
 }

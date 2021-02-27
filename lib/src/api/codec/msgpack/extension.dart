@@ -11,7 +11,7 @@ abstract class MsgPackExtension {
   final int type;
 
   /// Builds [MsgPackExtension] with the specified [type] code
-  const MsgPackExtension(this.type) : assert(type != null && type > 0);
+  const MsgPackExtension(this.type) : assert(type > 0);
 
   /// Writes the [object] to the provided [MsgPackWriter] [writer]
   ///

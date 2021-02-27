@@ -19,8 +19,8 @@ class MemoryStore extends CacheStore {
       Future.value(_cacheStore(name).keys);
 
   @override
-  Future<Iterable<CacheStat>> stats(String name) => Future.value(
-      _cacheStore(name).keys.map<CacheStat>((key) => _store[name][key].stat));
+  Future<Iterable<CacheStat>> stats(String name) =>
+      Future.value(_cacheStore(name).values.map((value) => value.stat));
 
   @override
   Future<Iterable<CacheEntry>> values(String name) =>
@@ -32,23 +32,23 @@ class MemoryStore extends CacheStore {
   }
 
   @override
-  Future<CacheStat> getStat(String name, String key) {
-    return Future.value(_store[name][key]);
+  Future<CacheStat?> getStat(String name, String key) {
+    return Future.value(_cacheStore(name)[key]);
   }
 
   @override
-  Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys) {
-    return Future.value(keys.map((key) => _store[name][key]));
+  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
+    return Future.value(keys.map((key) => _cacheStore(name)[key]));
   }
 
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
-    _store[name][key]?.stat = stat;
+    _store[name]![key]!.stat = stat;
     return Future.value();
   }
 
   @override
-  Future<CacheEntry> getEntry(String name, String key) {
+  Future<CacheEntry?> getEntry(String name, String key) {
     return Future.value(_cacheStore(name)[key]);
   }
 
@@ -58,20 +58,20 @@ class MemoryStore extends CacheStore {
       _store[name] = {};
     }
 
-    _store[name][key] = entry;
+    _cacheStore(name)[key] = entry;
 
     return Future.value();
   }
 
   @override
   Future<void> remove(String name, String key) {
-    _store[name].remove(key);
+    _cacheStore(name).remove(key);
     return Future.value();
   }
 
   @override
   Future<void> clear(String name) {
-    _store[name].clear();
+    _cacheStore(name).clear();
     return Future.value();
   }
 

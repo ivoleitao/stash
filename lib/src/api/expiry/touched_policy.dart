@@ -10,8 +10,7 @@ class TouchedExpiryPolicy extends ExpiryPolicy {
   /// Builds an [TouchedExpiryPolicy] [ExpiryPolicy]
   ///
   /// * [_expiryDuration]: the [Duration] a Cache Entry should exist be before it expires after being modified
-  const TouchedExpiryPolicy(this._expiryDuration)
-      : assert(_expiryDuration != null);
+  const TouchedExpiryPolicy(this._expiryDuration);
 
   @override
   Duration getExpiryForCreation() {

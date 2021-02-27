@@ -14,10 +14,10 @@ import 'package:stash/src/api/codec/msgpack/types.dart' as types;
 /// serializable, the [cause] is null.
 class MsgPackUnsupportedObjectError extends Error {
   /// The object that could not be serialized.
-  final Object unsupportedObject;
+  final Object? unsupportedObject;
 
   /// The exception thrown when trying to convert the object.
-  final Object cause;
+  final Object? cause;
 
   /// Builds a [MsgPackUnsupportedObjectError]
   ///
@@ -87,8 +87,8 @@ class MsgPackWriter extends BytesWriter {
   /// * [toEncodable]: A custom function the converts the object to a `Map<String, dynamic>` representation
   /// * [extensions]: A optional list of extensions to use
   MsgPackWriter(
-      {Map<String, dynamic> Function(dynamic) toEncodable,
-      List<MsgPackExtension> extensions})
+      {Map<String, dynamic> Function(dynamic)? toEncodable,
+      List<MsgPackExtension>? extensions})
       : _toEncodable = toEncodable ?? _defaultToEncodable,
         _extensions = [const DateTimeExtension(), ...?extensions];
 
@@ -364,8 +364,8 @@ class MsgPackWriter extends BytesWriter {
 ///
 /// Returns a [Uint8List] buffer with the object representation in bytes after successful serialization
 Uint8List msgPackWrite(dynamic value,
-    {Map<String, dynamic> Function(dynamic) toEncodable,
-    List<MsgPackExtension> extensions}) {
+    {Map<String, dynamic> Function(dynamic)? toEncodable,
+    List<MsgPackExtension>? extensions}) {
   final writer =
       MsgPackWriter(toEncodable: toEncodable, extensions: extensions);
   writer.write(value);

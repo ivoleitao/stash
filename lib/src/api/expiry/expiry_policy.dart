@@ -31,7 +31,7 @@ abstract class ExpiryPolicy {
   /// [Duration]
   ///
   /// Returns the new [Duration] before an accessed entry expires
-  Duration getExpiryForAccess();
+  Duration? getExpiryForAccess();
 
   /// Gets the [Duration] before an updated [CacheEntry] is considered expired.
   ///
@@ -42,5 +42,5 @@ abstract class ExpiryPolicy {
   /// understood expiry [Duration].
   ///
   /// Returns the new [Duration] before an updated entry expires
-  Duration getExpiryForUpdate();
+  Duration? getExpiryForUpdate();
 }

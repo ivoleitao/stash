@@ -9,10 +9,11 @@ class FiloEvictionPolicy extends EvictionPolicy {
   const FiloEvictionPolicy();
 
   @override
-  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded) {
+  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded) {
     var selectedEntry;
     for (var entry in entries) {
-      if ((selectedEntry == null ||
+      if (entry != null &&
+          (selectedEntry == null ||
               entry.creationTime.isAfter(selectedEntry.creationTime)) &&
           justAdded.key != entry.key) {
         selectedEntry = entry;

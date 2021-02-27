@@ -19,12 +19,13 @@ abstract class CacheStore {
   /// * [name]: The cache name
   Future<Iterable<CacheStat>> stats(String name);
 
-  /// Returns a [Iterable] over all the [CacheStore] [CacheStat]s keys requested of a named cache. It provides
-  /// a optimized retrieval strategy that avoids reading the [CacheEntry] implementation into memory
+  /// Returns a [Iterable] over all the non nullable [CacheStore] [CacheStat]s
+  /// keys requested of a named cache. It provides a optimized retrieval strategy
+  /// that avoids reading the [CacheEntry] implementation into memory
   ///
   /// * [name]: The cache name
   /// * [keys]: The list of keys
-  Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys);
+  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys);
 
   /// Returns a [Iterable] over all the [CacheStore] [CacheEntry]s of a named cache.
   ///
@@ -42,7 +43,7 @@ abstract class CacheStore {
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key
-  Future<CacheStat> getStat(String name, String key);
+  Future<CacheStat?> getStat(String name, String key);
 
   /// Sets the named cache [CacheStat] [key].
   ///
@@ -55,7 +56,7 @@ abstract class CacheStore {
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key
-  Future<CacheEntry> getEntry(String name, String key);
+  Future<CacheEntry?> getEntry(String name, String key);
 
   /// Puts a cache entry identified by [key] on the named cache [CacheStore]. The value is overriden if already exists or
   /// added if it does not exists.

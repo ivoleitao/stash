@@ -19,9 +19,7 @@ class TieredCache extends Cache {
   /// * [secondary]: The secondary [Cache]
   ///
   /// Returns a [TieredCache]
-  TieredCache(this._primary, this._secondary)
-      : assert(_primary != null),
-        assert(_secondary != null);
+  TieredCache(this._primary, this._secondary);
 
   /// Returns the set of discting keys across the [_primary] and [_secondary] caches configured
   Future<Iterable<String>> _distinctKeys() => _primary.keys.then((primaryKeys) {
@@ -47,7 +45,7 @@ class TieredCache extends Cache {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<dynamic> get(String key, {Duration expiryDuration}) {
+  Future<dynamic?> get(String key, {Duration? expiryDuration}) {
     return _primary.get(key, expiryDuration: expiryDuration).then((value) =>
         value != null
             ? Future.value(value)
@@ -55,20 +53,20 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<void> put(String key, dynamic value, {Duration expiryDuration}) {
+  Future<void> put(String key, dynamic value, {Duration? expiryDuration}) {
     _secondary.put(key, value, expiryDuration: expiryDuration);
     return _primary.put(key, value, expiryDuration: expiryDuration);
   }
 
   @override
-  Future<dynamic> operator [](String key) {
+  Future<dynamic /*?*/ > operator [](String key) {
     return _primary[key]
         .then((value) => value != null ? Future.value(value) : _secondary[key]);
   }
 
   @override
   Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration expiryDuration}) {
+      {Duration? expiryDuration}) {
     _secondary.putIfAbsent(key, value, expiryDuration: expiryDuration);
     return _primary.putIfAbsent(key, value, expiryDuration: expiryDuration);
   }
@@ -84,8 +82,8 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration expiryDuration}) {
+  Future<dynamic?> getAndPut(String key, dynamic value,
+      {Duration? expiryDuration}) {
     return _primary.getAndPut(key, value).then((value) {
       if (value == null) {
         return _secondary.getAndPut(key, value);
@@ -98,7 +96,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndRemove(String key) {
+  Future<dynamic?> getAndRemove(String key) {
     return _primary.getAndRemove(key).then((value) {
       if (value == null) {
         return _secondary.getAndRemove(key);

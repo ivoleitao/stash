@@ -11,9 +11,10 @@ abstract class EvictionPolicy {
   /// for making policy decisions, while generic data structures do not. It is
   /// expected that implementations will take advantage of that metadata.
   ///
-  /// * [entries]: The sampled entries to consider
+  /// * [entries]: A list of non nullable sample entries to consider
   /// * [justAdded]: The entry added, provided so that it can be ignored if selected.
   ///
-  /// Returns the [CacheStat] of the entry that should be evicted or null is entry list is empty
-  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded);
+  /// Returns the [CacheStat] of the entry that should be evicted or null if the
+  /// entry list is empty
+  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded);
 }
