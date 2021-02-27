@@ -127,7 +127,7 @@ abstract class BytesReader {
   ///
   /// * [length]: The number of bytes
   List readArray(int length) {
-    final res = List(length);
+    final res = []..length = length;
     for (var i = 0; i < length; ++i) {
       res[i] = read();
     }
