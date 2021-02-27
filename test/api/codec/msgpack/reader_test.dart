@@ -171,7 +171,7 @@ void main() {
       101,
       101
     ]);
-    var value = msgPackRead(data);
+    final value = msgPackRead(data);
     expect(value, isList);
     expect(value, orderedEquals(['one', 'two', 'three']));
   }

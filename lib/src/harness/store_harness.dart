@@ -104,7 +104,7 @@ Future<CacheEntry> _putGetEntry(
     DateTime accessTime,
     DateTime updateTime,
     int hitCount}) async {
-  var entry = newEntry(generator, seed,
+  final entry = newEntry(generator, seed,
       key: key,
       expiryTime: expiryTime,
       creationTime: creationTime,
@@ -179,10 +179,10 @@ Future<void> _delete(CacheStore store, {String name = _DefaultCache}) {
 ///
 /// Return the created store
 Future<T> _storeAddEntry<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry = await _putGetEntry(store, ctx.generator, 1);
-  var hasEntry = await _containsKey(store, entry.key);
+  final entry = await _putGetEntry(store, ctx.generator, 1);
+  final hasEntry = await _containsKey(store, entry.key);
   ctx.check(hasEntry, isTrue);
 
   return store;
@@ -194,10 +194,10 @@ Future<T> _storeAddEntry<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeAddGetEntry<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
-  var entry2 = await _getEntry(store, entry1.key);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry2 = await _getEntry(store, entry1.key);
 
   ctx.check(entry2, entry1);
 
@@ -210,9 +210,9 @@ Future<T> _storeAddGetEntry<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeRemoveEntry<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry1.key);
   ctx.check(hasEntry, isTrue);
 
@@ -229,16 +229,16 @@ Future<T> _storeRemoveEntry<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeSize<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
   var size = await _size(store);
   ctx.check(size, 0);
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
   size = await _size(store);
   ctx.check(size, 1);
 
-  var entry2 = await _putGetEntry(store, ctx.generator, 2);
+  final entry2 = await _putGetEntry(store, ctx.generator, 2);
   size = await _size(store);
   ctx.check(size, 2);
 
@@ -259,7 +259,7 @@ Future<T> _storeSize<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeClear<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
@@ -287,7 +287,7 @@ Future<T> _storeClear<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeDelete<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
@@ -315,11 +315,12 @@ Future<T> _storeDelete<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeGetStat<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry = await _putGetEntry(store, ctx.generator, 1);
-  var stat = await _getStat(store, entry.key);
+  final entry = await _putGetEntry(store, ctx.generator, 1);
+  final stat = await _getStat(store, entry.key);
 
+  ctx.check(stat, isNotNull);
   ctx.check(stat.key, entry.key);
   ctx.check(stat.expiryTime, entry.expiryTime);
   ctx.check(stat.creationTime, entry.creationTime);
@@ -335,17 +336,17 @@ Future<T> _storeGetStat<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeChangeEntry<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
 
-  var oldAccessTime = entry1.accessTime;
-  var oldHitCount = entry1.hitCount;
+  final oldAccessTime = entry1.accessTime;
+  final oldHitCount = entry1.hitCount;
   entry1.accessTime = 1.minutes.fromNow;
   entry1.hitCount++;
   await _putEntry(store, entry1.key, entry1);
 
-  var entry2 = await _getEntry(store, entry1.key);
+  final entry2 = await _getEntry(store, entry1.key);
   ctx.check(entry2.expiryTime, equals(entry1.expiryTime));
   ctx.check(entry2.creationTime, equals(entry1.creationTime));
   ctx.check(entry2.accessTime, isNot(equals(oldAccessTime)));
@@ -363,11 +364,11 @@ Future<T> _storeChangeEntry<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeKeys<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
-  var entry2 = await _putGetEntry(store, ctx.generator, 2);
-  var keys = await _keys(store);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry2 = await _putGetEntry(store, ctx.generator, 2);
+  final keys = await _keys(store);
 
   ctx.check(keys, containsAll([entry1.key, entry2.key]));
 
@@ -380,11 +381,11 @@ Future<T> _storeKeys<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeValues<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
-  var entry2 = await _putGetEntry(store, ctx.generator, 2);
-  var values = await _values(store);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry2 = await _putGetEntry(store, ctx.generator, 2);
+  final values = await _values(store);
 
   ctx.check(values, containsAll([entry1, entry2]));
 
@@ -397,11 +398,11 @@ Future<T> _storeValues<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// Return the created store
 Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
-  var store = await ctx.newStore();
+  final store = await ctx.newStore();
 
-  var entry1 = await _putGetEntry(store, ctx.generator, 1);
-  var entry2 = await _putGetEntry(store, ctx.generator, 2);
-  var stats = await _stats(store);
+  final entry1 = await _putGetEntry(store, ctx.generator, 1);
+  final entry2 = await _putGetEntry(store, ctx.generator, 2);
+  final stats = await _stats(store);
 
   ctx.check(stats, containsAll([entry1.stat, entry2.stat]));
 
@@ -431,7 +432,7 @@ List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>() {
 /// [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
 ///
 /// * [ctx]: the test context
-void testStoreWith<T extends CacheStore>(TestContext<T> ctx) async {
+Future<void> testStoreWith<T extends CacheStore>(TestContext<T> ctx) async {
   for (var test in _getTests<T>()) {
     await test(ctx).then(ctx.deleteStore);
   }
