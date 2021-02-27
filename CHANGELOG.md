@@ -1,6 +1,8 @@
 ## 1.0.3
 
-- TODO
+- Updated to 2.10.0 sdk version
+- Fixed documentation problem
+- Updated dependencies
 
 ## 1.0.2
 
