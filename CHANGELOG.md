@@ -1,6 +1,6 @@
 ## 1.0.4
 
-- TODO
+- Fixed CHANGELOG
 ## 1.0.3
 
 - Updated dependencies
