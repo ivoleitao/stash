@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: google/dart:latest
+      image: google/dart:2.12-beta
 
     steps:
       - name: Checkout code
