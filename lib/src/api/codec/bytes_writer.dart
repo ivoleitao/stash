@@ -19,10 +19,10 @@ abstract class BytesWriter {
   final Encoding _stringEncoder;
 
   /// The scratch buffer
-  Uint8List? _scratchBuffer;
+  Uint8List _scratchBuffer;
 
   /// A view of the buffer
-  ByteData? _scratchData;
+  ByteData _scratchData;
 
   /// The buffer offset
   int _scratchOffset = 0;
@@ -30,7 +30,7 @@ abstract class BytesWriter {
   /// Builds a new [BytesWriter]
   ///
   /// * [stringEncoder]: A optional string encoder, defaults to [Utf8Codec]
-  BytesWriter({Encoding? stringEncoder})
+  BytesWriter({Encoding stringEncoder})
       : _stringEncoder = stringEncoder ?? Utf8Codec();
 
   /// Increases the scratch buffer
@@ -40,19 +40,19 @@ abstract class BytesWriter {
         // We're still on small scratch buffer, move it to _builder
         // and create regular one
         _builder.add(Uint8List.view(
-          _scratchBuffer!.buffer,
-          _scratchBuffer!.offsetInBytes,
+          _scratchBuffer.buffer,
+          _scratchBuffer.offsetInBytes,
           _scratchOffset,
         ));
         _scratchBuffer = Uint8List(_kScratchSizeRegular);
-        _scratchData = ByteData.view(
-            _scratchBuffer!.buffer, _scratchBuffer!.offsetInBytes);
+        _scratchData =
+            ByteData.view(_scratchBuffer.buffer, _scratchBuffer.offsetInBytes);
       } else {
         _builder.add(
           Uint8List.fromList(
             Uint8List.view(
-              _scratchBuffer!.buffer,
-              _scratchBuffer!.offsetInBytes,
+              _scratchBuffer.buffer,
+              _scratchBuffer.offsetInBytes,
               _scratchOffset,
             ),
           ),
@@ -70,9 +70,9 @@ abstract class BytesWriter {
       // start with small scratch buffer, expand to regular later if needed
       _scratchBuffer = Uint8List(_kScratchSizeInitial);
       _scratchData =
-          ByteData.view(_scratchBuffer!.buffer, _scratchBuffer!.offsetInBytes);
+          ByteData.view(_scratchBuffer.buffer, _scratchBuffer.offsetInBytes);
     }
-    final remaining = _scratchBuffer!.length - _scratchOffset;
+    final remaining = _scratchBuffer.length - _scratchOffset;
     if (remaining < size) {
       _appendScratchBuffer();
     }
@@ -83,7 +83,7 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   void writeUint8(int i) {
     _ensureSize(uint8_size);
-    _scratchData!.setUint8(_scratchOffset, i);
+    _scratchData.setUint8(_scratchOffset, i);
     _scratchOffset += uint8_size;
   }
 
@@ -92,7 +92,7 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   void writeInt8(int i) {
     _ensureSize(int8_size);
-    _scratchData!.setInt8(_scratchOffset, i);
+    _scratchData.setInt8(_scratchOffset, i);
     _scratchOffset += int8_size;
   }
 
@@ -102,7 +102,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint16(int i, [Endian endian = Endian.big]) {
     _ensureSize(uint16_size);
-    _scratchData!.setUint16(_scratchOffset, i, endian);
+    _scratchData.setUint16(_scratchOffset, i, endian);
     _scratchOffset += uint16_size;
   }
 
@@ -112,7 +112,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt16(int i, [Endian endian = Endian.big]) {
     _ensureSize(int16_size);
-    _scratchData!.setInt16(_scratchOffset, i, endian);
+    _scratchData.setInt16(_scratchOffset, i, endian);
     _scratchOffset += int16_size;
   }
 
@@ -122,7 +122,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint32(int i, [Endian endian = Endian.big]) {
     _ensureSize(uint32_size);
-    _scratchData!.setUint32(_scratchOffset, i, endian);
+    _scratchData.setUint32(_scratchOffset, i, endian);
     _scratchOffset += uint32_size;
   }
 
@@ -132,7 +132,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt32(int i, [Endian endian = Endian.big]) {
     _ensureSize(int32_size);
-    _scratchData!.setInt32(_scratchOffset, i, endian);
+    _scratchData.setInt32(_scratchOffset, i, endian);
     _scratchOffset += int32_size;
   }
 
@@ -142,7 +142,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint64(int i, [Endian endian = Endian.big]) {
     _ensureSize(uint64_size);
-    _scratchData!.setUint64(_scratchOffset, i, endian);
+    _scratchData.setUint64(_scratchOffset, i, endian);
     _scratchOffset += uint64_size;
   }
 
@@ -152,7 +152,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt64(int i, [Endian endian = Endian.big]) {
     _ensureSize(int64_size);
-    _scratchData!.setInt64(_scratchOffset, i, endian);
+    _scratchData.setInt64(_scratchOffset, i, endian);
     _scratchOffset += int64_size;
   }
 
@@ -162,7 +162,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeFloat32(double f, [Endian endian = Endian.big]) {
     _ensureSize(float32_size);
-    _scratchData!.setFloat32(_scratchOffset, f, endian);
+    _scratchData.setFloat32(_scratchOffset, f, endian);
     _scratchOffset += float32_size;
   }
 
@@ -172,7 +172,7 @@ abstract class BytesWriter {
   /// * [endian]: The endianess, [Endian.big] by default
   void writeFloat64(double d, [Endian endian = Endian.big]) {
     _ensureSize(float64_size);
-    _scratchData!.setFloat64(_scratchOffset, d, endian);
+    _scratchData.setFloat64(_scratchOffset, d, endian);
     _scratchOffset += float64_size;
   }
 
@@ -195,11 +195,10 @@ abstract class BytesWriter {
       // would have added _scratchBuffer to _builder and _scratchOffset would
       // be 0
       if (bytes is Uint8List) {
-        _scratchBuffer!
-            .setRange(_scratchOffset, _scratchOffset + length, bytes);
+        _scratchBuffer.setRange(_scratchOffset, _scratchOffset + length, bytes);
       } else {
         for (var i = 0; i < length; i++) {
-          _scratchBuffer![_scratchOffset + i] = bytes[i];
+          _scratchBuffer[_scratchOffset + i] = bytes[i];
         }
       }
       _scratchOffset += length;
@@ -273,8 +272,8 @@ abstract class BytesWriter {
     if (_builder.isEmpty) {
       // Just take scratch data
       final res = Uint8List.view(
-        _scratchBuffer!.buffer,
-        _scratchBuffer!.offsetInBytes,
+        _scratchBuffer.buffer,
+        _scratchBuffer.offsetInBytes,
         _scratchOffset,
       );
       _scratchOffset = 0;

@@ -6,7 +6,7 @@ abstract class KeySampler {
   /// Builds a [KeySampler] with a optional [factor]
   ///
   /// * [factor]: The sampling factor
-  const KeySampler({double? factor})
+  const KeySampler({double factor})
       : assert(factor == null || (factor > 0.0 && factor <= 1.0)),
         _factor = factor ?? 1.0;
 

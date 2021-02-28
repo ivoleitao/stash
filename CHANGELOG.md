@@ -1,9 +1,7 @@
-## 2.0.0-nullsafety.2
+## 1.0.3
 
 - TODO
-## 2.0.0-nullsafety.1
 
-- Null safety support
 ## 1.0.2
 
 - Republish to tackle problem with pub reverting to sdk 2.9.3

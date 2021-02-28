@@ -33,13 +33,13 @@ typedef CacheBuilder<T extends CacheStore> = DefaultCache Function(T store,
 /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
 /// * [clock]: The source of time to be used
 Cache newDefaultCache<T extends CacheStore>(T store,
-    {String? name,
-    ExpiryPolicy? expiryPolicy,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    CacheLoader? cacheLoader,
-    Clock? clock}) {
+    {String name,
+    ExpiryPolicy expiryPolicy,
+    KeySampler sampler,
+    EvictionPolicy evictionPolicy,
+    int maxEntries,
+    CacheLoader cacheLoader,
+    Clock clock}) {
   return Cache.newCache(store,
       name: name,
       expiryPolicy: expiryPolicy,
@@ -93,7 +93,7 @@ class StringGenerator extends ValueGenerator {
   /// Builds a [StringGenerator] with a optional [prefix]
   ///
   /// * [prefix]: The prefix of the generated strings, default to 'String'
-  StringGenerator({String? prefix}) : _prefix = prefix ?? 'String';
+  StringGenerator({String prefix}) : _prefix = prefix ?? 'String';
 
   @override
   dynamic nextValue(int seed) {
@@ -194,7 +194,7 @@ abstract class TestContext<T extends CacheStore> {
   final ValueGenerator generator;
 
   /// Function called on encodable object to obtain the underlining type
-  final dynamic Function(Map<String, dynamic>)? fromEncodable;
+  final dynamic Function(Map<String, dynamic>) fromEncodable;
 
   /// Builds a new [TestContext]
   ///
@@ -216,13 +216,13 @@ abstract class TestContext<T extends CacheStore> {
   /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
   /// * [clock]: The source of time to be used on this
   Cache newCache(T store,
-      {String? name,
-      ExpiryPolicy? expiryPolicy,
-      KeySampler? sampler,
-      EvictionPolicy? evictionPolicy,
-      int? maxEntries,
-      CacheLoader? cacheLoader,
-      Clock? clock}) {
+      {String name,
+      ExpiryPolicy expiryPolicy,
+      KeySampler sampler,
+      EvictionPolicy evictionPolicy,
+      int maxEntries,
+      CacheLoader cacheLoader,
+      Clock clock}) {
     return newDefaultCache(store,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -262,12 +262,12 @@ abstract class TestContext<T extends CacheStore> {
 ///
 /// Returns a fully initialized [CacheEntry]
 CacheEntry newEntry(ValueGenerator generator, int seed,
-    {String? key,
-    DateTime? expiryTime,
-    DateTime? creationTime,
-    DateTime? accessTime,
-    DateTime? updateTime,
-    int? hitCount}) {
+    {String key,
+    DateTime expiryTime,
+    DateTime creationTime,
+    DateTime accessTime,
+    DateTime updateTime,
+    int hitCount}) {
   return CacheEntry(key ?? 'cache_key_${seed}', generator.nextValue(seed),
       expiryTime ?? seed.minutes.fromNow, creationTime ?? DateTime.now(),
       accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);

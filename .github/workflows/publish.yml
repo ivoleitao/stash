@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: google/dart:2.12-beta
+      image: google/dart:latest
 
     steps:
       - name: Checkout code
@@ -23,13 +23,13 @@ jobs:
         run: dartanalyzer . --fatal-warnings
       - name: Run tests
         run: pub run test
-      #- name: Run Code Coverage
-      #  run: pub run test_coverage
-      #- name: Upload coverage to Codecov
-      #  uses: codecov/codecov-action@v1
-      #  with:
-      #    token: ${{ secrets.CODECOV_TOKEN }}
-      #    file: coverage/lcov.info
+      - name: Run Code Coverage
+        run: pub run test_coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/lcov.info
       - name: Add Pub Credentials
         run: echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
       - name: Publish to Pub

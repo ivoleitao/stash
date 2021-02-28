@@ -17,12 +17,12 @@ export 'src/memory/memory_store.dart';
 ///
 /// Returns a [Cache] backed by a [MemoryStore]
 Cache newMemoryCache(
-    {String? cacheName,
-    ExpiryPolicy? expiryPolicy,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    CacheLoader? cacheLoader}) {
+    {String cacheName,
+    ExpiryPolicy expiryPolicy,
+    KeySampler sampler,
+    EvictionPolicy evictionPolicy,
+    int maxEntries,
+    CacheLoader cacheLoader}) {
   return Cache.newCache(MemoryStore(),
       name: cacheName,
       expiryPolicy: expiryPolicy,

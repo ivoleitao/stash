@@ -11,12 +11,12 @@ abstract class CacheCodec {
   /// Returns a [BytesWriter] implementation that will handle the serialization
   ///
   /// * [toEncodable]: An optional function to convert an object into a json map
-  BytesWriter encoder({Map<String, dynamic> Function(dynamic)? toEncodable});
+  BytesWriter encoder({Map<String, dynamic> Function(dynamic) toEncodable});
 
   /// Returns a [BytesReader] implementation that will handle the deserialization
   ///
   /// * [bytes]: The bytes to deserialize
   /// * [fromEncodable]: An optional function to convert a json map into a object
   BytesReader decoder(Uint8List bytes,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable});
+      {dynamic Function(Map<String, dynamic>) fromEncodable});
 }

@@ -21,7 +21,7 @@ abstract class BytesReader {
   ///
   /// * [list]: The byte list
   /// * [stringEncoder]: The optional String encoder
-  BytesReader(Uint8List list, {Encoding? stringEncoder})
+  BytesReader(Uint8List list, {Encoding stringEncoder})
       : _list = list,
         _data = ByteData.view(list.buffer, list.offsetInBytes),
         _stringEncoder = stringEncoder ?? Utf8Codec();

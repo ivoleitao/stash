@@ -53,7 +53,7 @@ Future<bool> _containsKey(CacheStore store, String key,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling getStat on the provided [CacheStore]
-Future<CacheStat?> _getStat(CacheStore store, String key,
+Future<CacheStat> _getStat(CacheStore store, String key,
     {String name = _DefaultCache}) {
   return store.getStat(name, key);
 }
@@ -65,7 +65,7 @@ Future<CacheStat?> _getStat(CacheStore store, String key,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling getEntry on the provided [CacheStore]
-Future<CacheEntry?> _getEntry(CacheStore store, String key,
+Future<CacheEntry> _getEntry(CacheStore store, String key,
     {String name = _DefaultCache}) {
   return store.getEntry(name, key);
 }
@@ -98,12 +98,12 @@ Future<void> _putEntry(CacheStore store, String key, CacheEntry entry,
 Future<CacheEntry> _putGetEntry(
     CacheStore store, ValueGenerator generator, int seed,
     {String name = _DefaultCache,
-    String? key,
-    DateTime? expiryTime,
-    DateTime? creationTime,
-    DateTime? accessTime,
-    DateTime? updateTime,
-    int? hitCount}) async {
+    String key,
+    DateTime expiryTime,
+    DateTime creationTime,
+    DateTime accessTime,
+    DateTime updateTime,
+    int hitCount}) async {
   final entry = newEntry(generator, seed,
       key: key,
       expiryTime: expiryTime,
@@ -141,7 +141,7 @@ Future<Iterable<String>> _keys(CacheStore store,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling stats on the provided [CacheStore]
-Future<Iterable<CacheStat?>> _stats(CacheStore store,
+Future<Iterable<CacheStat>> _stats(CacheStore store,
     {String name = _DefaultCache}) {
   return store.stats(name);
 }
@@ -152,7 +152,7 @@ Future<Iterable<CacheStat?>> _stats(CacheStore store,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling values on the provided [CacheStore]
-Future<Iterable<CacheEntry?>> _values(CacheStore store,
+Future<Iterable<CacheEntry>> _values(CacheStore store,
     {String name = _DefaultCache}) {
   return store.values(name);
 }

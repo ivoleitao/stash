@@ -16,5 +16,5 @@ abstract class EvictionPolicy {
   ///
   /// Returns the [CacheStat] of the entry that should be evicted or null if the
   /// entry list is empty
-  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded);
+  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded);
 }

@@ -19,13 +19,13 @@ class CreatedExpiryPolicy extends ExpiryPolicy {
   }
 
   @override
-  Duration? getExpiryForAccess() {
+  Duration getExpiryForAccess() {
     // Accessing a cache entry has no affect on the current expiry duration
     return null;
   }
 
   @override
-  Duration? getExpiryForUpdate() {
+  Duration getExpiryForUpdate() {
     // Updating a cache entry has no affect on the current expiry duration
     return null;
   }

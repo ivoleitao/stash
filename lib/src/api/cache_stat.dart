@@ -29,7 +29,7 @@ class CacheStat with EquatableMixin {
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
   CacheStat(this.key, this.expiryTime, DateTime creationTime,
-      {DateTime? accessTime, DateTime? updateTime, int? hitCount})
+      {DateTime accessTime, DateTime updateTime, int hitCount})
       : assert(key.isNotEmpty),
         creationTime = creationTime,
         assert(hitCount == null || hitCount >= 0),
@@ -42,11 +42,11 @@ class CacheStat with EquatableMixin {
   /// * [now]: An optional value for the current time
   ///
   /// Return true if expired, false if not
-  bool isExpired([DateTime? now]) {
+  bool isExpired([DateTime now]) {
     return expiryTime.isBefore(now ?? DateTime.now());
   }
 
   @override
-  List<Object?> get props =>
+  List<Object> get props =>
       [key, expiryTime, creationTime, accessTime, updateTime, hitCount];
 }

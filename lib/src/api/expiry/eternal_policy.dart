@@ -14,12 +14,12 @@ class EternalExpiryPolicy extends ExpiryPolicy {
   }
 
   @override
-  Duration? getExpiryForAccess() {
+  Duration getExpiryForAccess() {
     return null;
   }
 
   @override
-  Duration? getExpiryForUpdate() {
+  Duration getExpiryForUpdate() {
     return null;
   }
 }

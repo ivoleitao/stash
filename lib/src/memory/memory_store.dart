@@ -32,23 +32,23 @@ class MemoryStore extends CacheStore {
   }
 
   @override
-  Future<CacheStat?> getStat(String name, String key) {
+  Future<CacheStat> getStat(String name, String key) {
     return Future.value(_cacheStore(name)[key]);
   }
 
   @override
-  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
+  Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys) {
     return Future.value(keys.map((key) => _cacheStore(name)[key]));
   }
 
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
-    _store[name]![key]!.stat = stat;
+    _store[name][key].stat = stat;
     return Future.value();
   }
 
   @override
-  Future<CacheEntry?> getEntry(String name, String key) {
+  Future<CacheEntry> getEntry(String name, String key) {
     return Future.value(_cacheStore(name)[key]);
   }
 

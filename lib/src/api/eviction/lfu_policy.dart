@@ -12,7 +12,7 @@ class LfuEvictionPolicy extends EvictionPolicy {
   const LfuEvictionPolicy();
 
   @override
-  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded) {
+  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded) {
     var selectedEntry;
     for (var entry in entries) {
       if (entry != null &&

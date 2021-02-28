@@ -18,13 +18,13 @@ class MsgpackCodec extends CacheCodec {
   const MsgpackCodec([this._extensions = const []]);
 
   @override
-  BytesWriter encoder({Map<String, dynamic> Function(dynamic)? toEncodable}) {
+  BytesWriter encoder({Map<String, dynamic> Function(dynamic) toEncodable}) {
     return MsgPackWriter(toEncodable: toEncodable, extensions: _extensions);
   }
 
   @override
   BytesReader decoder(Uint8List bytes,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+      {dynamic Function(Map<String, dynamic>) fromEncodable}) {
     return MsgPackReader(bytes,
         fromEncodable: fromEncodable, extensions: _extensions);
   }

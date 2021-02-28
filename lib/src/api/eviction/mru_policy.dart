@@ -8,7 +8,7 @@ class MruEvictionPolicy extends EvictionPolicy {
   const MruEvictionPolicy();
 
   @override
-  CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded) {
+  CacheStat select(Iterable<CacheStat> entries, CacheStat justAdded) {
     var selectedEntry;
     for (var entry in entries) {
       if (entry != null &&
