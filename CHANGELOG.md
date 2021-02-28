@@ -1,10 +1,11 @@
 ## 2.0.0-nullsafety.1
 
 - Null safety support
+## 1.0.4
+
+- Fixed CHANGELOG
 ## 1.0.3
 
-- Updated to 2.10.0 sdk version
-- Fixed documentation problem
 - Updated dependencies
 
 ## 1.0.2
