@@ -4,6 +4,12 @@
 ## 2.0.0-nullsafety.1
 
 - Null safety support
+## 1.0.4
+
+- Fixed CHANGELOG
+## 1.0.3
+
+- Updated dependencies
 ## 1.0.2
 
 - Republish to tackle problem with pub reverting to sdk 2.9.3
