@@ -1,3 +1,6 @@
+## 2.0.0-nullsafety.2
+
+- TODO
 ## 2.0.0-nullsafety.1
 
 - Null safety support
