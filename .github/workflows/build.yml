@@ -1,25 +1,25 @@
 name: build
-
 on:
   push:
     branches:
       - develop
-
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    container:
-      image: google/dart:latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        sdk: [stable]    
 
     steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ matrix.sdk }}
       - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Install dependencies
-        run: pub get
-      - name: Run Formatter
-        run: dartfmt -n --set-exit-if-changed .
-      - name: Run Analyser
-        run: dartanalyzer . --fatal-warnings
-      - name: Run tests
-        run: pub run test
+        uses: actions/checkout@v2
+      - name: Install derry
+        run: pub global activate derry
+      - name: Build
+        run: derry build
+      - name: Verify
+        run: derry verify

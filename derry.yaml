@@ -1,0 +1,22 @@
+clean: pub run build_runner clean
+generate: pub run build_runner build --delete-conflicting-outputs
+format: dart format .
+analyze: dart analyze .
+coverage: dart test --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+prebuild:
+    - pub get
+build:
+    - pub run build_runner build --delete-conflicting-outputs
+preverify:
+    - pub global activate remove_from_coverage
+verify:
+  (execution): once
+  (scripts):
+    - dart format --set-exit-if-changed .
+    - dart analyze . --fatal-warnings
+    - dart test --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+    - remove_from_coverage -f coverage/lcov.info -r '.g.dart$'
+prepublish:
+    - \cp publish.gitignore .gitignore
+publish:
+    - pub publish -f

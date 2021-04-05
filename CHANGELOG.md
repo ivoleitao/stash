@@ -2,6 +2,8 @@
 
 - Some smaller fixes
 - Updated dependencies
+- Updated github actions with setup dart action
+- derry support
 
 ## 2.0.0-nullsafety.2
 

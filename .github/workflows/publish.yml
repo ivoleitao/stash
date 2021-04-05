@@ -1,36 +1,30 @@
 name: publish
-
 on:
   push:
     branches:
       - master
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: google/dart:latest
-
     steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
       - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Install dependencies
-        run: pub get
-      - name: Run Formatter
-        run: dartfmt -n --set-exit-if-changed .
-      - name: Run Analyser
-        run: dartanalyzer . --fatal-warnings
-      - name: Run tests
-        run: pub run test
-      - name: Run Code Coverage
-        run: pub run test_coverage
+        uses: actions/checkout@v2
+      - name: Install derry
+        run: pub global activate derry
+      - name: Build
+        run: derry build
+      - name: Verify
+        run: derry verify
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage/lcov.info
-      - name: Add Pub Credentials
+      - name: Add pub Credentials
         run: echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
-      - name: Publish to Pub
-        run: pub publish -f
+      - name: Publish
+        run: derry publish
