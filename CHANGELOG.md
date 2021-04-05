@@ -1,3 +1,8 @@
+## 2.0.0-nullsafety.3
+
+- Some smaller fixes
+- Updated dependencies
+
 ## 2.0.0-nullsafety.2
 
 - Added prerelease github action
