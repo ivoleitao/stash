@@ -31,7 +31,7 @@ Add this to your `pubspec.yaml` (or create it):
 
 ```dart
 dependencies:
-    stash: ^1.0.5
+    stash: ^1.0.6
 ```
 
 Run the following command to install dependencies:

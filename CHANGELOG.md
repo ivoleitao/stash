@@ -1,3 +1,7 @@
+## 1.0.6
+
+- TODO
+
 ## 1.0.5
 
 - Not using UUID anymore on the generation of a cache name sticking to a static 'stash' string if not provided
