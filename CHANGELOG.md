@@ -1,3 +1,8 @@
+## 2.0.0-nullsafety.4
+
+- Changed the concurrency to 1 of the coverage generation as it was hanging in some ocasions.
+- Removed dependency on quiver since it was being used only for the mockable clock and replaced with the clock package
+
 ## 2.0.0-nullsafety.3
 
 - Some smaller fixes

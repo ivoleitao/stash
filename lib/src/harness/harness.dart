@@ -1,5 +1,5 @@
+import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
-import 'package:quiver/time.dart';
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache_entry.dart';

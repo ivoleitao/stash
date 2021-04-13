@@ -1,5 +1,5 @@
+import 'package:clock/clock.dart';
 import 'package:matcher/matcher.dart';
-import 'package:quiver/time.dart';
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache_store.dart';
 import 'package:stash/src/api/eviction/fifo_policy.dart';

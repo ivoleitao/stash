@@ -1,4 +1,4 @@
-import 'package:quiver/time.dart';
+import 'package:clock/clock.dart';
 import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache/tiered_cache.dart';
 import 'package:stash/src/api/cache_store.dart';

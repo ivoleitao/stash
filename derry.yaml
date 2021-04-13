@@ -1,6 +1,7 @@
 format: dart format .
 analyze: dart analyze .
-coverage: dart test --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+test: dart test
+coverage: dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
 build:
     - pub get
 verify:
@@ -8,6 +9,6 @@ verify:
   (scripts):
     - dart format --set-exit-if-changed .
     - dart analyze . --fatal-warnings
-    - dart test --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+    - dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
 publish:
     - pub publish -f

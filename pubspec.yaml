@@ -1,5 +1,5 @@
 name: stash
-version: 2.0.0-nullsafety.3
+version: 2.0.0-nullsafety.4
 description: >-
   Standard caching API for Dart. Defines a common mechanism to create, 
   access, update, and remove information from caches. Provides a in memory
@@ -11,9 +11,9 @@ environment:
 
 dependencies:
   equatable: ^2.0.0
+  clock: ^1.1.0
   time: ^2.0.0
   uuid: ^3.0.3
-  quiver: ^3.0.0
   matcher: ^0.12.10
 dev_dependencies:
   pedantic: ^1.11.0
