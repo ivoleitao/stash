@@ -8,7 +8,6 @@ import 'package:stash/src/api/expiry/eternal_policy.dart';
 import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/full_sampler.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
-import 'package:uuid/uuid.dart';
 
 /// Default implementation of the [Cache] interface
 class DefaultCache extends Cache {
@@ -57,7 +56,7 @@ class DefaultCache extends Cache {
       int maxEntries,
       CacheLoader cacheLoader,
       Clock clock})
-      : name = name ?? Uuid().v1(),
+      : name = name ?? 'stash',
         expiryPolicy = expiryPolicy ?? const EternalExpiryPolicy(),
         sampler = sampler ?? const FullSampler(),
         evictionPolicy = evictionPolicy ?? const LfuEvictionPolicy(),
