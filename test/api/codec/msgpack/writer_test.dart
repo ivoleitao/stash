@@ -45,11 +45,6 @@ void main() {
     expect(bytes, orderedEquals([206, 128, 0, 0, 0]));
   }
 
-  void packUint64() {
-    var bytes = msgPackWrite(9223372036854775807);
-    expect(bytes, orderedEquals([207, 127, 255, 255, 255, 255, 255, 255, 255]));
-  }
-
   void packInt8() {
     var bytes = msgPackWrite(-128);
     expect(bytes, orderedEquals([208, 128]));
@@ -63,11 +58,6 @@ void main() {
   void packInt32() {
     var bytes = msgPackWrite(-2147483648);
     expect(bytes, orderedEquals([210, 128, 0, 0, 0]));
-  }
-
-  void packInt64() {
-    var bytes = msgPackWrite(-9223372036854775808);
-    expect(bytes, orderedEquals([211, 128, 0, 0, 0, 0, 0, 0, 0]));
   }
 
   void packDouble() {
@@ -197,11 +187,9 @@ void main() {
     test('packUint8', packUint8);
     test('packUint16', packUint16);
     test('packUint32', packUint32);
-    test('packUint64', packUint64);
     test('packInt8', packInt8);
     test('packInt16', packInt16);
     test('packInt32', packInt32);
-    test('packInt64', packInt64);
   });
 
   group('double', () {

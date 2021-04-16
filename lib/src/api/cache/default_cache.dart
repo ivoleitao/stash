@@ -227,12 +227,10 @@ class DefaultCache extends Cache {
       // Does this entry exists or is expired ?
       if (entry == null || expired) {
         // If expired we need to remove the value from the storage
-        if (expired) {
-          _removeStorageEntry(key);
-        }
+        final pre = expired ? _removeStorageEntry(key) : Future.value();
 
         // Invoke the cache loader
-        return cacheLoader(key).then((value) {
+        return pre.then((_) => cacheLoader(key)).then((value) {
           // If the value obtained is `null` just return it
           if (value == null) {
             return null;
@@ -255,13 +253,11 @@ class DefaultCache extends Cache {
 
       // If the entry does not exist or is expired
       if (entry == null || expired) {
-        // If expired we remove it first
-        if (expired) {
-          _removeStorageEntry(key);
-        }
+        // If expired we remove it
+        final pre = expired ? _removeStorageEntry(key) : Future.value();
 
         // And finally we add it to the cache
-        return _putEntry(key, value, now, expiryDuration);
+        return pre.then((_) => _putEntry(key, value, now, expiryDuration));
       } else {
         // Already present let's update the cache instead
         return _updateEntry(entry, value, now, expiryDuration);
@@ -270,7 +266,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic /*?*/ > operator [](String key) {
+  Future<dynamic> operator [](String key) {
     return get(key);
   }
 
@@ -283,13 +279,11 @@ class DefaultCache extends Cache {
       var expired = entry != null && entry.isExpired(now);
 
       // If the entry exists on cache but is already expired we remove it first
-      if (expired) {
-        _removeStorageEntry(key);
-      }
+      final pre = expired ? _removeStorageEntry(key) : Future.value();
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return _putEntry(key, value, now, expiryDuration);
+        return pre.then((_) => _putEntry(key, value, now, expiryDuration));
       }
 
       return Future.value(false);
@@ -315,26 +309,25 @@ class DefaultCache extends Cache {
       var expired = entry != null && entry.isExpired(now);
 
       // If the entry exists on cache but is already expired we remove it first
-      if (expired) {
-        _removeStorageEntry(key);
-      }
+      final pre = expired ? _removeStorageEntry(key) : Future.value();
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return _putEntry(key, value, now, expiryDuration).then((v) => null);
+        return pre.then((_) =>
+            _putEntry(key, value, now, expiryDuration).then((v) => null));
       } else {
-        return _updateEntry(entry, value, now, expiryDuration);
+        return pre.then((_) => _updateEntry(entry, value, now, expiryDuration));
       }
     });
   }
 
   @override
-  Future<dynamic /*?*/ > getAndRemove(String key) {
+  Future<dynamic> getAndRemove(String key) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {
         return _removeStorageEntry(key)
-            .then((any) => entry.isExpired() ? null : entry.value);
+            .then((_) => entry.isExpired() ? null : entry.value);
       }
 
       return null;

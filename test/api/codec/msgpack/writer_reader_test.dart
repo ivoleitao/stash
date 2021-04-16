@@ -149,12 +149,6 @@ void main() {
     expect(value, 2147483648);
   }
 
-  void packUnpackUint64() {
-    var bytes = msgPackWrite(9223372036854775807);
-    var value = msgPackRead(bytes);
-    expect(value, 9223372036854775807);
-  }
-
   void packUnpackInt8() {
     var bytes = msgPackWrite(-128);
     var value = msgPackRead(bytes);
@@ -171,12 +165,6 @@ void main() {
     var bytes = msgPackWrite(-2147483648);
     var value = msgPackRead(bytes);
     expect(value, -2147483648);
-  }
-
-  void packUnpackInt64() {
-    var bytes = msgPackWrite(-9223372036854775808);
-    var value = msgPackRead(bytes);
-    expect(value, -9223372036854775808);
   }
 
   void packUnpackDouble() {
@@ -332,11 +320,9 @@ void main() {
     test('packUnpackUint8', packUnpackUint8);
     test('packUnpackUint16', packUnpackUint16);
     test('packUnpackUint32', packUnpackUint32);
-    test('packUnpackUint64', packUnpackUint64);
     test('packUnpackInt8', packUnpackInt8);
     test('packUnpackInt16', packUnpackInt16);
     test('packUnpackInt32', packUnpackInt32);
-    test('packUnpackInt64', packUnpackInt64);
   });
 
   group('double', () {

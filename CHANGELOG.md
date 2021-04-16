@@ -2,6 +2,11 @@
 
 - Changed the concurrency to 1 of the coverage generation as it was hanging in some ocasions.
 - Removed dependency on quiver since it was being used only for the mockable clock and replaced with the clock package
+- It now compiles and runs in dartjs, fixes [issue 5](https://github.com/ivoleitao/stash/issues/5)
+- Changed the way the DateTime is serialized in MsgPack. It now uses a toIso8601String
+- Fixed a number of race conditions in the tests that were dependent on wall clock
+- Improved feedback of the test that failed in the test run
+- Isolated MsgPack tests that use 64 bit integers as they do not work on dartjs
 
 ## 2.0.0-nullsafety.3
 

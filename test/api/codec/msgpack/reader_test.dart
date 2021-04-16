@@ -60,14 +60,6 @@ void main() {
     expect(value, equals(2147483648));
   }
 
-  void unpackUint64() {
-    var data =
-        Uint8List.fromList([207, 127, 255, 255, 255, 255, 255, 255, 255]);
-    var value = msgPackRead(data);
-    expect(value, isInt);
-    expect(value, equals(9223372036854775807));
-  }
-
   void unpackInt8() {
     var data = Uint8List.fromList([208, 128]);
     var value = msgPackRead(data);
@@ -87,13 +79,6 @@ void main() {
     var value = msgPackRead(data);
     expect(value, isInt);
     expect(value, equals(-2147483648));
-  }
-
-  void unpackInt64() {
-    var data = Uint8List.fromList([211, 128, 0, 0, 0, 0, 0, 0, 0]);
-    var value = msgPackRead(data);
-    expect(value, isInt);
-    expect(value, equals(-9223372036854775808));
   }
 
   void unpackDouble() {
@@ -200,11 +185,9 @@ void main() {
     test('unpackUint8', unpackUint8);
     test('unpackUint16', unpackUint16);
     test('unpackUint32', unpackUint32);
-    test('unpackUint64', unpackUint64);
     test('unpackInt8', unpackInt8);
     test('unpackInt16', unpackInt16);
     test('unpackInt32', unpackInt32);
-    test('unpackInt64', unpackInt64);
   });
 
   group('double', () {

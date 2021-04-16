@@ -4,8 +4,8 @@
 /// Each of the functions return a new [Duration] that specifies the
 /// amount of time that must pass before a cache entry is considered expired.
 abstract class ExpiryPolicy {
-  /// The value used to represent a eternal duration
-  static const Duration eternal = Duration(days: 8999999999999999991);
+  /// The value used to represent a eternal duration (not eternal but close enough)
+  static const Duration eternal = Duration(days: 9999999);
 
   /// Builds a [ExpiryPolicy]
   const ExpiryPolicy();

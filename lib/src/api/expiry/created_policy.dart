@@ -9,7 +9,7 @@ class CreatedExpiryPolicy extends ExpiryPolicy {
 
   /// Builds a [CreatedExpiryPolicy] [ExpiryPolicy]
   ///
-  /// * [_expiryDuration]: the [Duration] a Cache Entry should exist be before it expires after being modified
+  /// * [_expiryDuration]: the [Duration] a Cache Entry should exist before it expires after being modified
   const CreatedExpiryPolicy(this._expiryDuration);
 
   @override
