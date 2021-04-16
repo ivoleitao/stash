@@ -1,4 +1,4 @@
-import 'package:quiver/time.dart';
+import 'package:clock/clock.dart';
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache_entry.dart';
 import 'package:stash/src/api/cache_store.dart';
@@ -8,6 +8,7 @@ import 'package:stash/src/api/expiry/eternal_policy.dart';
 import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/full_sampler.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
+import 'package:uuid/uuid.dart';
 
 /// Default implementation of the [Cache] interface
 class DefaultCache extends Cache {
@@ -49,14 +50,14 @@ class DefaultCache extends Cache {
   ///
   /// Returns a [DefaultCache]
   DefaultCache(this.storage,
-      {String name,
-      ExpiryPolicy expiryPolicy,
-      KeySampler sampler,
-      EvictionPolicy evictionPolicy,
-      int maxEntries,
-      CacheLoader cacheLoader,
-      Clock clock})
-      : name = name ?? 'stash',
+      {String? name,
+      ExpiryPolicy? expiryPolicy,
+      KeySampler? sampler,
+      EvictionPolicy? evictionPolicy,
+      int? maxEntries,
+      CacheLoader? cacheLoader,
+      Clock? clock})
+      : name = name ?? Uuid().v1(),
         expiryPolicy = expiryPolicy ?? const EternalExpiryPolicy(),
         sampler = sampler ?? const FullSampler(),
         evictionPolicy = evictionPolicy ?? const LfuEvictionPolicy(),
@@ -77,7 +78,7 @@ class DefaultCache extends Cache {
   /// * [key]: the cache key to retrieve from the underlining storage
   ///
   /// Returns the cache entry
-  Future<CacheEntry> _getStorageEntry(String key) {
+  Future<CacheEntry?> _getStorageEntry(String key) {
     return storage.getEntry(name, key);
   }
 
@@ -152,7 +153,7 @@ class DefaultCache extends Cache {
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache to expire.
   Future<bool> _putEntry(
-      String key, dynamic value, DateTime now, Duration expiryDuration) {
+      String key, dynamic value, DateTime now, Duration? expiryDuration) {
     // How much time till the expiration of this cache entry
     final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
     // We want to create a new entry, let's update it according with the semantics
@@ -176,8 +177,8 @@ class DefaultCache extends Cache {
   ///
   /// * [entry]: the [CacheEntry] holding the value
   /// * [now]: the current date/time
-  Future<dynamic> _getEntryValue(
-      CacheEntry entry, DateTime now, Duration expiryDuration) {
+  Future<dynamic?> _getEntryValue(
+      CacheEntry entry, DateTime now, Duration? expiryDuration) {
     entry.accessTime = now;
     entry.hitCount++;
     final duration = expiryPolicy.getExpiryForAccess();
@@ -200,8 +201,8 @@ class DefaultCache extends Cache {
   /// * [value]: the new value
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache entry to expire.
-  Future<dynamic> _updateEntry(
-      CacheEntry entry, dynamic value, DateTime now, Duration expiryDuration) {
+  Future<dynamic?> _updateEntry(
+      CacheEntry entry, dynamic value, DateTime now, Duration? expiryDuration) {
     final oldValue = entry.value;
     final duration = expiryPolicy.getExpiryForUpdate();
     if (duration != null) {
@@ -218,7 +219,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> get(String key, {Duration expiryDuration}) {
+  Future<dynamic?> get(String key, {Duration? expiryDuration}) {
     // Gets the entry from the storage
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -226,12 +227,10 @@ class DefaultCache extends Cache {
       // Does this entry exists or is expired ?
       if (entry == null || expired) {
         // If expired we need to remove the value from the storage
-        if (expired) {
-          _removeStorageEntry(key);
-        }
+        final pre = expired ? _removeStorageEntry(key) : Future.value();
 
         // Invoke the cache loader
-        return cacheLoader(key).then((value) {
+        return pre.then((_) => cacheLoader(key)).then((value) {
           // If the value obtained is `null` just return it
           if (value == null) {
             return null;
@@ -246,7 +245,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<void> put(String key, dynamic value, {Duration expiryDuration}) {
+  Future<void> put(String key, dynamic value, {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -254,13 +253,11 @@ class DefaultCache extends Cache {
 
       // If the entry does not exist or is expired
       if (entry == null || expired) {
-        // If expired we remove it first
-        if (expired) {
-          _removeStorageEntry(key);
-        }
+        // If expired we remove it
+        final pre = expired ? _removeStorageEntry(key) : Future.value();
 
         // And finally we add it to the cache
-        return _putEntry(key, value, now, expiryDuration);
+        return pre.then((_) => _putEntry(key, value, now, expiryDuration));
       } else {
         // Already present let's update the cache instead
         return _updateEntry(entry, value, now, expiryDuration);
@@ -269,26 +266,24 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic /*?*/ > operator [](String key) {
+  Future<dynamic> operator [](String key) {
     return get(key);
   }
 
   @override
   Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration expiryDuration}) {
+      {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
       var expired = entry != null && entry.isExpired(now);
 
       // If the entry exists on cache but is already expired we remove it first
-      if (expired) {
-        _removeStorageEntry(key);
-      }
+      final pre = expired ? _removeStorageEntry(key) : Future.value();
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return _putEntry(key, value, now, expiryDuration);
+        return pre.then((_) => _putEntry(key, value, now, expiryDuration));
       }
 
       return Future.value(false);
@@ -306,34 +301,33 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration expiryDuration}) {
+  Future<dynamic?> getAndPut(String key, dynamic value,
+      {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
       var expired = entry != null && entry.isExpired(now);
 
       // If the entry exists on cache but is already expired we remove it first
-      if (expired) {
-        _removeStorageEntry(key);
-      }
+      final pre = expired ? _removeStorageEntry(key) : Future.value();
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return _putEntry(key, value, now, expiryDuration).then((v) => null);
+        return pre.then((_) =>
+            _putEntry(key, value, now, expiryDuration).then((v) => null));
       } else {
-        return _updateEntry(entry, value, now, expiryDuration);
+        return pre.then((_) => _updateEntry(entry, value, now, expiryDuration));
       }
     });
   }
 
   @override
-  Future<dynamic /*?*/ > getAndRemove(String key) {
+  Future<dynamic> getAndRemove(String key) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {
         return _removeStorageEntry(key)
-            .then((any) => entry.isExpired() ? null : entry.value);
+            .then((_) => entry.isExpired() ? null : entry.value);
       }
 
       return null;

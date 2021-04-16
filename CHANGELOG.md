@@ -1,10 +1,31 @@
-## 1.0.6
+## 2.0.0
 
 - TODO
 
-## 1.0.5
+## 2.0.0-nullsafety.4
 
-- Not using UUID anymore on the generation of a cache name sticking to a static 'stash' string if not provided
+- Changed the concurrency to 1 of the coverage generation as it was hanging in some ocasions.
+- Removed dependency on quiver since it was being used only for the mockable clock and replaced with the clock package
+- It now compiles and runs in dartjs, fixes [issue 5](https://github.com/ivoleitao/stash/issues/5)
+- Changed the way the DateTime is serialized in MsgPack. It now uses a toIso8601String
+- Fixed a number of race conditions in the tests that were dependent on wall clock
+- Improved feedback of the test that failed in the test run
+- Isolated MsgPack tests that use 64 bit integers as they do not work on dartjs
+
+## 2.0.0-nullsafety.3
+
+- Some smaller fixes
+- Updated dependencies
+- Updated github actions with setup dart action
+- derry support
+
+## 2.0.0-nullsafety.2
+
+- Added prerelease github action
+
+## 2.0.0-nullsafety.1
+
+- Null safety support
 
 ## 1.0.4
 

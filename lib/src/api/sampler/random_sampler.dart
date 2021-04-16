@@ -11,7 +11,7 @@ class RandomSampler extends KeySampler {
   ///
   /// * [factor]: The sampling factor
   /// * [random]: The random generator
-  RandomSampler(double factor, {Random random})
+  RandomSampler(double factor, {Random? random})
       : _random = random ?? Random(),
         super(factor: factor);
 

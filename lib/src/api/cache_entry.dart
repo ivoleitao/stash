@@ -3,14 +3,14 @@ import 'package:stash/src/api/cache_stat.dart';
 /// The wrapper around the object that is added to the cache
 class CacheEntry extends CacheStat {
   /// The value stored in the cache
-  dynamic _value;
+  dynamic? _value;
 
   /// Tracks any changes to the [CacheEntry] after obtaining it from the store
-  bool _valueChanged;
+  bool? _valueChanged;
 
   CacheEntry(
       String key, dynamic value, DateTime expiryTime, DateTime creationTime,
-      {DateTime accessTime, DateTime updateTime, int hitCount})
+      {DateTime? accessTime, DateTime? updateTime, int? hitCount})
       : _value = value,
         super(key, expiryTime, creationTime,
             accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
@@ -21,7 +21,7 @@ class CacheEntry extends CacheStat {
   /// Sets the stored value tracking the change
   ///
   /// * [value]: The new value
-  set value(dynamic value) {
+  set value(dynamic? value) {
     _value = value;
     _valueChanged = true;
   }
@@ -46,5 +46,5 @@ class CacheEntry extends CacheStat {
   }
 
   @override
-  List<Object> get props => [...super.props, value];
+  List<Object?> get props => [...super.props, value];
 }

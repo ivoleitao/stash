@@ -53,7 +53,7 @@ Future<bool> _containsKey(CacheStore store, String key,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling getStat on the provided [CacheStore]
-Future<CacheStat> _getStat(CacheStore store, String key,
+Future<CacheStat?> _getStat(CacheStore store, String key,
     {String name = _DefaultCache}) {
   return store.getStat(name, key);
 }
@@ -65,7 +65,7 @@ Future<CacheStat> _getStat(CacheStore store, String key,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling getEntry on the provided [CacheStore]
-Future<CacheEntry> _getEntry(CacheStore store, String key,
+Future<CacheEntry?> _getEntry(CacheStore store, String key,
     {String name = _DefaultCache}) {
   return store.getEntry(name, key);
 }
@@ -98,12 +98,12 @@ Future<void> _putEntry(CacheStore store, String key, CacheEntry entry,
 Future<CacheEntry> _putGetEntry(
     CacheStore store, ValueGenerator generator, int seed,
     {String name = _DefaultCache,
-    String key,
-    DateTime expiryTime,
-    DateTime creationTime,
-    DateTime accessTime,
-    DateTime updateTime,
-    int hitCount}) async {
+    String? key,
+    DateTime? expiryTime,
+    DateTime? creationTime,
+    DateTime? accessTime,
+    DateTime? updateTime,
+    int? hitCount}) async {
   final entry = newEntry(generator, seed,
       key: key,
       expiryTime: expiryTime,
@@ -141,7 +141,7 @@ Future<Iterable<String>> _keys(CacheStore store,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling stats on the provided [CacheStore]
-Future<Iterable<CacheStat>> _stats(CacheStore store,
+Future<Iterable<CacheStat?>> _stats(CacheStore store,
     {String name = _DefaultCache}) {
   return store.stats(name);
 }
@@ -152,7 +152,7 @@ Future<Iterable<CacheStat>> _stats(CacheStore store,
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling values on the provided [CacheStore]
-Future<Iterable<CacheEntry>> _values(CacheStore store,
+Future<Iterable<CacheEntry?>> _values(CacheStore store,
     {String name = _DefaultCache}) {
   return store.values(name);
 }
@@ -183,7 +183,7 @@ Future<T> _storeAddEntry<T extends CacheStore>(TestContext<T> ctx) async {
 
   final entry = await _putGetEntry(store, ctx.generator, 1);
   final hasEntry = await _containsKey(store, entry.key);
-  ctx.check(hasEntry, isTrue);
+  check(ctx, hasEntry, isTrue, '_storeAddEntry_1');
 
   return store;
 }
@@ -199,7 +199,7 @@ Future<T> _storeAddGetEntry<T extends CacheStore>(TestContext<T> ctx) async {
   final entry1 = await _putGetEntry(store, ctx.generator, 1);
   final entry2 = await _getEntry(store, entry1.key);
 
-  ctx.check(entry2, entry1);
+  check(ctx, entry2, entry1, '_storeAddGetEntry_1');
 
   return store;
 }
@@ -214,11 +214,11 @@ Future<T> _storeRemoveEntry<T extends CacheStore>(TestContext<T> ctx) async {
 
   final entry1 = await _putGetEntry(store, ctx.generator, 1);
   var hasEntry = await _containsKey(store, entry1.key);
-  ctx.check(hasEntry, isTrue);
+  check(ctx, hasEntry, isTrue, '_storeRemoveEntry_1');
 
   await _remove(store, entry1.key);
   hasEntry = await _containsKey(store, entry1.key);
-  ctx.check(hasEntry, isFalse);
+  check(ctx, hasEntry, isFalse, '_storeRemoveEntry_2');
 
   return store;
 }
@@ -232,23 +232,23 @@ Future<T> _storeSize<T extends CacheStore>(TestContext<T> ctx) async {
   final store = await ctx.newStore();
 
   var size = await _size(store);
-  ctx.check(size, 0);
+  check(ctx, size, 0, '_storeSize_1');
 
   final entry1 = await _putGetEntry(store, ctx.generator, 1);
   size = await _size(store);
-  ctx.check(size, 1);
+  check(ctx, size, 1, '_storeSize_2');
 
   final entry2 = await _putGetEntry(store, ctx.generator, 2);
   size = await _size(store);
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeSize_3');
 
   await _remove(store, entry1.key);
   size = await _size(store);
-  ctx.check(size, 1);
+  check(ctx, size, 1, '_storeSize_4');
 
   await _remove(store, entry2.key);
   size = await _size(store);
-  ctx.check(size, 0);
+  check(ctx, size, 0, '_storeSize_5');
 
   return store;
 }
@@ -264,19 +264,19 @@ Future<T> _storeClear<T extends CacheStore>(TestContext<T> ctx) async {
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeClear_1');
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeClear_2');
 
   await _clear(store, name: 'cache1');
   size = await _size(store, name: 'cache1');
-  ctx.check(size, 0);
+  check(ctx, size, 0, '_storeClear_3');
 
   size = await _size(store, name: 'cache2');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeClear_4');
 
   return store;
 }
@@ -292,19 +292,19 @@ Future<T> _storeDelete<T extends CacheStore>(TestContext<T> ctx) async {
   await _putGetEntry(store, ctx.generator, 1, name: 'cache1');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache1');
   var size = await _size(store, name: 'cache1');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeDelete_1');
 
   await _putGetEntry(store, ctx.generator, 1, name: 'cache2');
   await _putGetEntry(store, ctx.generator, 2, name: 'cache2');
   size = await _size(store, name: 'cache2');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeDelete_2');
 
   await _delete(store, name: 'cache1');
   size = await _size(store, name: 'cache1');
-  ctx.check(size, 0);
+  check(ctx, size, 0, '_storeDelete_3');
 
   size = await _size(store, name: 'cache2');
-  ctx.check(size, 2);
+  check(ctx, size, 2, '_storeDelete_4');
 
   return store;
 }
@@ -320,12 +320,12 @@ Future<T> _storeGetStat<T extends CacheStore>(TestContext<T> ctx) async {
   final entry = await _putGetEntry(store, ctx.generator, 1);
   final stat = await _getStat(store, entry.key);
 
-  ctx.check(stat, isNotNull);
-  ctx.check(stat?.key, entry.key);
-  ctx.check(stat?.expiryTime, entry.expiryTime);
-  ctx.check(stat?.creationTime, entry.creationTime);
-  ctx.check(stat?.accessTime, entry.accessTime);
-  ctx.check(stat?.updateTime, entry.updateTime);
+  check(ctx, stat, isNotNull, '_storeGetStat_1');
+  check(ctx, stat?.key, entry.key, '_storeGetStat_2');
+  check(ctx, stat?.expiryTime, entry.expiryTime, '_storeGetStat_3');
+  check(ctx, stat?.creationTime, entry.creationTime, '_storeGetStat_4');
+  check(ctx, stat?.accessTime, entry.accessTime, '_storeGetStat_5');
+  check(ctx, stat?.updateTime, entry.updateTime, '_storeGetStat_6');
 
   return store;
 }
@@ -347,13 +347,19 @@ Future<T> _storeChangeEntry<T extends CacheStore>(TestContext<T> ctx) async {
   await _putEntry(store, entry1.key, entry1);
 
   final entry2 = await _getEntry(store, entry1.key);
-  ctx.check(entry2?.expiryTime, equals(entry1.expiryTime));
-  ctx.check(entry2?.creationTime, equals(entry1.creationTime));
-  ctx.check(entry2?.accessTime, isNot(equals(oldAccessTime)));
-  ctx.check(entry2?.accessTime, equals(entry1.accessTime));
-  ctx.check(entry2?.updateTime, equals(entry1.updateTime));
-  ctx.check(entry2?.hitCount, isNot(equals(oldHitCount)));
-  ctx.check(entry2?.hitCount, equals(entry1.hitCount));
+  check(ctx, entry2?.expiryTime, equals(entry1.expiryTime),
+      '_storeChangeEntry_1');
+  check(ctx, entry2?.creationTime, equals(entry1.creationTime),
+      '_storeChangeEntry_2');
+  check(ctx, entry2?.accessTime, isNot(equals(oldAccessTime)),
+      '_storeChangeEntry_3');
+  check(ctx, entry2?.accessTime, equals(entry1.accessTime),
+      '_storeChangeEntry_4');
+  check(ctx, entry2?.updateTime, equals(entry1.updateTime),
+      '_storeChangeEntry_5');
+  check(
+      ctx, entry2?.hitCount, isNot(equals(oldHitCount)), '_storeChangeEntry_6');
+  check(ctx, entry2?.hitCount, equals(entry1.hitCount), '_storeChangeEntry_7');
 
   return store;
 }
@@ -370,7 +376,7 @@ Future<T> _storeKeys<T extends CacheStore>(TestContext<T> ctx) async {
   final entry2 = await _putGetEntry(store, ctx.generator, 2);
   final keys = await _keys(store);
 
-  ctx.check(keys, containsAll([entry1.key, entry2.key]));
+  check(ctx, keys, containsAll([entry1.key, entry2.key]), '_storeKeys_1');
 
   return store;
 }
@@ -387,7 +393,7 @@ Future<T> _storeValues<T extends CacheStore>(TestContext<T> ctx) async {
   final entry2 = await _putGetEntry(store, ctx.generator, 2);
   final values = await _values(store);
 
-  ctx.check(values, containsAll([entry1, entry2]));
+  check(ctx, values, containsAll([entry1, entry2]), '_storeValues_1');
 
   return store;
 }
@@ -404,7 +410,7 @@ Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
   final entry2 = await _putGetEntry(store, ctx.generator, 2);
   final stats = await _stats(store);
 
-  ctx.check(stats, containsAll([entry1.stat, entry2.stat]));
+  check(ctx, stats, containsAll([entry1.stat, entry2.stat]), '_storeStats_1');
 
   return store;
 }

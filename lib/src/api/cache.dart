@@ -1,4 +1,4 @@
-import 'package:quiver/time.dart';
+import 'package:clock/clock.dart';
 import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache/tiered_cache.dart';
 import 'package:stash/src/api/cache_store.dart';
@@ -7,7 +7,7 @@ import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
 
 /// Cache loader function
-typedef CacheLoader = Future<dynamic> Function(String key);
+typedef CacheLoader = Future<dynamic?> Function(String key);
 
 /// The Stash cache definition and the hub for the creation of the [Cache] caches
 abstract class Cache {
@@ -27,13 +27,13 @@ abstract class Cache {
   ///
   /// Returns a new DefaultCache
   factory Cache.newCache(CacheStore storage,
-      {String name,
-      ExpiryPolicy expiryPolicy,
-      KeySampler sampler,
-      EvictionPolicy evictionPolicy,
-      int maxEntries,
-      CacheLoader cacheLoader,
-      Clock clock}) {
+      {String? name,
+      ExpiryPolicy? expiryPolicy,
+      KeySampler? sampler,
+      EvictionPolicy? evictionPolicy,
+      int? maxEntries,
+      CacheLoader? cacheLoader,
+      Clock? clock}) {
     return DefaultCache(storage,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -73,7 +73,7 @@ abstract class Cache {
   ///
   /// * [key]: the key
   /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
-  Future<dynamic> get(String key, {Duration expiryDuration});
+  Future<dynamic?> get(String key, {Duration? expiryDuration});
 
   /// Add / Replace the cache [value] for the specified [key]. If specified [expiryDuration] is used
   /// instead of the configured expiry policy duration
@@ -81,12 +81,12 @@ abstract class Cache {
   /// * [key]: the key
   /// * [value]: the value
   /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
-  Future<void> put(String key, dynamic value, {Duration expiryDuration});
+  Future<void> put(String key, dynamic value, {Duration? expiryDuration});
 
   /// Get the cache value for the specified [key].
   ///
   /// * [key]: the key
-  Future<dynamic> operator [](String key);
+  Future<dynamic?> operator [](String key);
 
   /// Associates the specified [key] with the given [value]
   /// if not already associated with a value.
@@ -96,7 +96,7 @@ abstract class Cache {
   ///
   /// Returns `true` if a value was set.
   Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration expiryDuration});
+      {Duration? expiryDuration});
 
   /// Clears the contents of the cache
   Future<void> clear();
@@ -119,13 +119,13 @@ abstract class Cache {
   ///
   /// The previous value is returned, or `null` if there was no value
   /// associated with the [key] previously.
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration expiryDuration});
+  Future<dynamic?> getAndPut(String key, dynamic value,
+      {Duration? expiryDuration});
 
   /// Removes the entry for a [key] only if currently mapped to some value.
   ///
   /// * [key]: key with which the specified value is associated
   ///
   /// Returns the value if one existed or `null` if no mapping existed for this [key]
-  Future<dynamic> getAndRemove(String key);
+  Future<dynamic?> getAndRemove(String key);
 }

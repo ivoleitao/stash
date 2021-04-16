@@ -72,7 +72,7 @@ class DateTimeExtension extends MsgPackExtension {
   @override
   bool doWrite(MsgPackWriter writer, dynamic object) {
     if (object is DateTime) {
-      writer.writeUint64(object.microsecondsSinceEpoch);
+      writer.writeString(object.toIso8601String());
 
       return true;
     }
@@ -82,6 +82,6 @@ class DateTimeExtension extends MsgPackExtension {
 
   @override
   dynamic doRead(MsgPackReader reader) {
-    return DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    return DateTime.parse(reader.read());
   }
 }

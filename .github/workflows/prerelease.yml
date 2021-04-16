@@ -1,8 +1,8 @@
-name: publish
+name: prerelease
 on:
   push:
     branches:
-      - master
+      - prerelease
 jobs:
   build:
     runs-on: ubuntu-latest
