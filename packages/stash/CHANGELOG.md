@@ -2,6 +2,9 @@
 
 - Removed prerelease github action
 - Updated dependencies
+- Moved to a mono repo
+- Restructured github actions
+- Added a new CI action that run periodically
 
 ## 2.0.0-nullsafety.4
 

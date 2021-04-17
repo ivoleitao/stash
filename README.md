@@ -41,9 +41,9 @@ There's a vast array of storage implementations available which you can use.
 
 There's also some integrations with well know dart libraries
 
-| Plugins                                                    | Status                                                       | Description                                                  |
-| ---------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [stash_dio](https://github.com/ivoleitao/stash/packages/stash_dio) | [![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio) | Integrates with the Dio HTTP client                             |
+|Package|Pub|Description|
+|-------|---|-----------|
+|[stash_dio](https://github.com/ivoleitao/stash/packages/stash_dio)|[![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)|Integrates with the Dio HTTP client|
 
 
 ## Getting Started

@@ -1,6 +1,6 @@
 # stash
 
-The base library of `stash`. Provides common API's default implementations.
+The base `stash` library.
 
 [![Pub Package](https://img.shields.io/pub/v/stash.svg?style=flat-square)](https://pub.dartlang.org/packages/stash)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg)](https://codecov.io/gh/ivoleitao/stash)
