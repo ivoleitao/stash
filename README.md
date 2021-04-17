@@ -4,7 +4,7 @@
 
 ---
 
->A caching library build with extensibility in mind
+A caching library build with extensibility in mind
 
 ## Overview
 

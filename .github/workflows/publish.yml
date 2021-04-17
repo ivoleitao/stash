@@ -5,17 +5,17 @@ on:
     branches:
       - master
     paths:
-      - "packages/**"
-      - ".github/workflows/publish.yml"
+      - 'packages/**'
+      - '.github/workflows/publish.yml'
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["ubuntu-latest"]
-        sdk: ["stable"]
-        package: ["stash"] 
+        os: ['ubuntu-latest']
+        sdk: ['stable']
+        package: ['stash']
 
     steps:
       - uses: dart-lang/setup-dart@v1
