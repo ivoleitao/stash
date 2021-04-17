@@ -1,6 +1,7 @@
 ## 2.0.0
 
 - Removed prerelease github action
+- Updated dependencies
 
 ## 2.0.0-nullsafety.4
 
