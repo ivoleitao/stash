@@ -1,1 +1,0 @@
-./packages/stash/README.md
