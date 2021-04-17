@@ -1,29 +1,48 @@
-name: publish
+name: Publish
+
 on:
   push:
     branches:
       - master
+    paths:
+      - "packages/**"
+      - ".github/workflows/publish.yaml"
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        sdk: ["stable"]
+        package: ["packages/stash"] 
 
     steps:
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: ${{ matrix.sdk }}
+
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Install derry
         run: pub global activate derry
+
       - name: Build
+        working-directory: ${{ matrix.package }}
         run: derry build
+
       - name: Verify
+        working-directory: ${{ matrix.package }}
         run: derry verify
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage/lcov.info
+          flags: ${{ matrix.package }}
+          file:  ${{ matrix.package }}/coverage/lcov.info
+
       - name: Add pub Credentials
         run: echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
       - name: Publish

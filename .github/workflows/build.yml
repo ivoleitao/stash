@@ -1,25 +1,68 @@
-name: build
+name: Build
+
 on:
   push:
     branches:
       - develop
+    paths:
+      - "packages/**"
+      - ".github/workflows/build.yaml"
+
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "packages/**"
+      - ".github/workflows/build.yaml"
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        sdk: [stable]    
+        os: ["ubuntu-latest"]
+        sdk: ["stable"]
+        package: ["packages/stash"] 
 
     steps:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
+
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Install derry
         run: pub global activate derry
+
       - name: Build
+        working-directory: ${{ matrix.package }}
         run: derry build
+
       - name: Verify
+        working-directory: ${{ matrix.package }}
         run: derry verify
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.package }}
+          file:  ${{ matrix.package }}/coverage/lcov.info
+
+      - name: Publish if new
+        id: publish
+        uses: k-paxian/dart-package-publisher@master
+        with:
+          relativePath: ${{ matrix.package }}
+          accessToken: ${{ secrets.GOOGLE_ACCOUNT_ACCESS_TOKEN }}
+          refreshToken: ${{ secrets.GOOGLE_ACCOUNT_REFRESH_TOKEN }}
+          suppressBuildRunner: true
+          skipTests: true
+
+     - name: Tag commit
+        if: steps.publish.outputs.success
+        uses: hole19/git-tag-action@master
+        env:
+          TAG: ${{steps.publish.outputs.package}}-${{steps.publish.outputs.localVersion}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
