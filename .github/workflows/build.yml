@@ -49,20 +49,3 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.package }}
           file:  ${{ matrix.package }}/coverage/lcov.info
-
-      - name: Publish if new
-        id: publish
-        uses: k-paxian/dart-package-publisher@master
-        with:
-          relativePath: ${{ matrix.package }}
-          accessToken: ${{ secrets.GOOGLE_ACCOUNT_ACCESS_TOKEN }}
-          refreshToken: ${{ secrets.GOOGLE_ACCOUNT_REFRESH_TOKEN }}
-          suppressBuildRunner: true
-          skipTests: true
-
-     - name: Tag commit
-        if: steps.publish.outputs.success
-        uses: hole19/git-tag-action@master
-        env:
-          TAG: ${{steps.publish.outputs.package}}-${{steps.publish.outputs.localVersion}}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
