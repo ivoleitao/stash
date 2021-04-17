@@ -13,7 +13,7 @@ dependencies:
   equatable: ^2.0.0
   clock: ^1.1.0
   time: ^2.0.0
-  uuid: ^3.0.3
+  uuid: ^3.0.4
   matcher: ^0.12.10
 dev_dependencies:
   pedantic: ^1.11.0

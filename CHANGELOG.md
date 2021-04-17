@@ -1,6 +1,6 @@
 ## 2.0.0
 
-- TODO
+- Removed prerelease github action
 
 ## 2.0.0-nullsafety.4
 
