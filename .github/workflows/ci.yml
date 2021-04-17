@@ -9,10 +9,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: ['ubuntu-latest']
+        package: ['stash']
         include:
-          - os: 'ubuntu-latest' 
           - package: 'stash'
-            min-score: 100 
+            min-score: 100
 
     steps:
       - uses: axel-op/dart-package-analyzer@v3
