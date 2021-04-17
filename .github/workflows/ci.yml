@@ -31,6 +31,6 @@ jobs:
           TOTAL_MAX: ${{ steps.analysis.outputs.total_max }}
         run: |
           SCORE=$(( $TOTAL * 100 / $TOTAL_MAX ))
-          if (( $SCORE < ${{ matrix.min-score }} )) then
+          if (( $SCORE < ${{ matrix.min-score }} )); then
             exit 1
           fi          
