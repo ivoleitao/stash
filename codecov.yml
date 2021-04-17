@@ -1,0 +1,19 @@
+coverage:
+  range: 50..100
+  status:
+    project:
+      default: off
+      stash:
+        flags: stash
+      stash_file:
+        flags: stash_file
+
+flags:
+  # filter the folder(s) you wish to measure by that flag
+  stash:
+    # only include files in the mobx folder
+    paths:
+      - packages/stash/lib/
+  stash_file:
+    paths:
+      - packages/stash_file/lib/
