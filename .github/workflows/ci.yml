@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest']
-        package: ['stash']
+        package: ['stash','stash_file']
         include:
           - package: 'stash'
             min-score: 100
