@@ -52,9 +52,3 @@ jobs:
           refreshToken: ${{ secrets.GOOGLE_ACCOUNT_REFRESH_TOKEN }}
           suppressBuildRunner: true
           skipTests: true
-      - name: Tag commit
-        if: steps.publish.outputs.success
-        uses: hole19/git-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{steps.publish.outputs.package}}-${{steps.publish.outputs.localVersion}}
