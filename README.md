@@ -31,10 +31,10 @@ There's a vast array of storage implementations available which you can use.
 |Package|Pub|Description|
 |-------|---|-----------|
 |[stash](https://github.com/ivoleitao/stash)|[![Pub](https://img.shields.io/pub/v/stash.svg?style=flat-square)](https://pub.dartlang.org/packages/stash)|The base library provides a in-memory storage|
-|[stash_disk](https://github.com/ivoleitao/stash/packages/stash_disk)|[![Pub](https://img.shields.io/pub/v/stash_disk.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_disk)|A disk storage implementation|
-|[stash_sqlite](https://github.com/ivoleitao/stash/packages/stash_moor)|[![Pub](https://img.shields.io/pub/v/stash_moor.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_moor)|A SQLite storage implementation using the [moor](https://pub.dev/packages/moor) package|
-|[stash_hive](https://github.com/ivoleitao/stash/packages/stash_hive)|[![Pub](https://img.shields.io/pub/v/stash_hive.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_hive)|A Hive storage implementation using the [hive](https://pub.dev/packages/hive) package|
-|[stash_sembast](https://github.com/ivoleitao/stash/packages/stash_sembast)|[![Pub](https://img.shields.io/pub/v/stash_sembast.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast) | A Sembast storage implementation using the [sembast](https://pub.dev/packages/sembast) package|
+|[stash_file](https://github.com/ivoleitao/stash/packages/stash_file)|[![Pub](https://img.shields.io/pub/v/stash_file.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_file)|A file storage implementation|
+|[stash_sqlite](https://github.com/ivoleitao/stash/packages/stash_moor)|[![Pub](https://img.shields.io/pub/v/stash_moor.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_moor)|A sqlite storage implementation using the [moor](https://pub.dev/packages/moor) package|
+|[stash_hive](https://github.com/ivoleitao/stash/packages/stash_hive)|[![Pub](https://img.shields.io/pub/v/stash_hive.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_hive)|A hive storage implementation using the [hive](https://pub.dev/packages/hive) package|
+|[stash_sembast](https://github.com/ivoleitao/stash/packages/stash_sembast)|[![Pub](https://img.shields.io/pub/v/stash_sembast.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast) | A sembast storage implementation using the [sembast](https://pub.dev/packages/sembast) package|
 |[stash_dio](https://github.com/ivoleitao/stash/packages/stash_dio)|[![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)|An integration with the Dio HTTP client
 
 ## Library Integrations
@@ -85,7 +85,7 @@ Create a `Cache` using the appropriate storage mechanism. For example on the in-
   // Creates a memory cache with unlimited capacity
   final cache = newMemoryCache();
   // In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
-  // memory, disk, moor, hive and so on
+  // memory, file, moor, hive and so on
 ```
 
 or alternatively specify a max capacity, 10 for example. Note that the eviction policy is only applied if `maxEntries` is specified
@@ -94,7 +94,7 @@ or alternatively specify a max capacity, 10 for example. Note that the eviction 
   // Creates a memory cache with a max capacity of 10
   final cache = newMemoryCache(maxEntries: 10);
   // In a more general sense 'newXXXCache' where xxx is the name of the storage provider, 
-  // memory, disk, moor, hive and so on
+  // memory, file, moor, hive and so on
 ```
 
 Then add a element to the cache:
@@ -113,11 +113,11 @@ Finally, retrieve that element:
 
 The in-memory example is the simplest one. Note that on that case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that all the other implementations of storage mechanisms that `stash` currently supports need that additional configuration.
 
-Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stash/packages/stash_disk) as the storage implementation of the cache. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
+Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) as the storage implementation of the cache. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
 
 ```dart
   import 'dart:io';
-  import 'package:stash_disk/stash_disk.dart';
+  import 'package:stash_file/stash_file.dart';
 
   class Task {
     final int id;
@@ -146,7 +146,7 @@ Find bellow and example that uses [stash_disk](https://github.com/ivoleitao/stas
     // Temporary path
     final path = Directory.systemTemp.path;
 
-    // Creates a disk based cache with a capacity of 10
+    // Creates a file based cache with a capacity of 10
     // Since the name was not provided a uuid based name is assigned to the cache
     final cache = newDiskCache(path,
         maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
@@ -177,7 +177,7 @@ Note that this is not the only type of cache provided, there's another, the tier
       newMemoryCache());
 ```
 
-A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_disk](https://github.com/ivoleitao/stash/packages/stash_disk) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor). The example bellow illustrates one of those use cases with the `stash_disk` package as the provider of the storage backend of the secondary cache.
+A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor). The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
 
 ```dart
   final cache = newTieredCache(
@@ -341,7 +341,7 @@ void main() async {
   ...
 ```
 
-Please take a look at the examples provided on one of the storage implementations, for example [stash_disk](https://github.com/ivoleitao/stash/packages/stash_disk) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor).
+Please take a look at the examples provided on one of the storage implementations, for example [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor).
 
 ## Contributing
 

@@ -2,8 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Stash Example",
+            "name": "Stash Memory",
             "program": "packages/stash/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        },
+        {
+            "name": "Filesystem",
+            "program": "packages/stash_file/example/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
