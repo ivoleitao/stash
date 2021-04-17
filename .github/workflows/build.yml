@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         sdk: ["stable"]
-        package: ["packages/stash"] 
+        package: ["stash"] 
 
     steps:
       - uses: dart-lang/setup-dart@v1
@@ -36,15 +36,15 @@ jobs:
         run: pub global activate derry
 
       - name: Build
-        working-directory: ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
         run: derry build
 
       - name: Verify
-        working-directory: ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
         run: derry verify
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           flags: ${{ matrix.package }}
-          file:  ./${{ matrix.package }}/coverage/lcov.info
+          file:  packages/${{ matrix.package }}/coverage/lcov.info
