@@ -8,7 +8,7 @@ on:
     branches:
       - develop
     paths:
-      - 'melos.yml'
+      - 'melos.yaml'
       - 'packages/**'
       - '.github/workflows/build.yml'
 
@@ -16,7 +16,7 @@ on:
     branches:
       - develop
     paths:
-      - 'melos.yml'
+      - 'melos.yaml'
       - 'packages/**'
       - '.github/workflows/build.yml'
 
@@ -38,8 +38,8 @@ jobs:
 
       - name: Bootstrap
         run: |
-          pub global activate dartdoc
           pub global activate melos
+          pub global activate pana
           melos bootstrap
 
       - name: Verify

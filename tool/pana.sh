@@ -15,6 +15,9 @@ if [[ "$SCORES" =~ ([[:digit:]]*)\/([[:digit:]]*) ]]; then
     else
         echo "score: $SCORE%"
     fi
+else
+    echo "score was not successfully parsed"
+    exit 1
 fi
 
 
