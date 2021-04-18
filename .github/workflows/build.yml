@@ -42,9 +42,19 @@ jobs:
           pub global activate pana
           melos bootstrap
 
-      - name: Verify
+      - name: Linter
         run: |
           melos run format
           melos run analyze
+
+      - name: Test
+        run: |
           melos run test
+
+      - name: Documentation
+        run: |
+          melos run doc
+
+      - name: Pana
+        run: |
           melos run pana
