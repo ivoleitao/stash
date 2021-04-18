@@ -44,7 +44,7 @@ jobs:
 
       - name: Bootstrap
         run: |
-          melos run bootstrap
+          melos bootstrap
           
       - name: Linter
         run: |
