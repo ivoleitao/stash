@@ -38,7 +38,7 @@ scripts:
 
   pana:
     run: |
-      melos exec -c 1 --fail-fast -- \
+      melos exec -v -c 1 --fail-fast -- \
         "../../tool/pana.sh"
     description: |
       Run `pana` in all packages.
