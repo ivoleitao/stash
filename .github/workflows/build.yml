@@ -29,17 +29,18 @@ jobs:
         sdk: ['stable']
 
     steps:
-      - name: Setup Dart
+      - name: Set up dart
         uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
 
-      - name: Install Tools
+      - name: Install tools
         run: |
           pub global activate melos
           pub global activate pana
+          ./tool/get_codecov.sh
 
-      - name: Checkout Sources
+      - name: Checkout sources
         uses: actions/checkout@v2
 
       - name: Bootstrap
@@ -59,6 +60,10 @@ jobs:
         run: |
           melos run doc
 
-      - name: Calculate Scores
+      - name: Calculate scores
         run: |
           melos run pana
+
+      - name: Upload coverage to codecov
+        run: |
+          melos run codecov
