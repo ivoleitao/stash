@@ -1,6 +1,9 @@
 name: Stash Build
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 8 * * *'
   push:
     branches:
       - develop
@@ -33,8 +36,13 @@ jobs:
 
       - name: Bootstrap
         run: |
+          pub global activate dartdoc
           pub global activate melos
           melos bootstrap
 
       - name: Verify
-        run: melos run verify
+        run: |
+          melos run format
+          melos run analyze
+          melos run test
+          melos run pana

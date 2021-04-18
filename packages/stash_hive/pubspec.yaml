@@ -3,7 +3,7 @@ version: 2.0.0
 description: >-
   Hive storage extension for the stash caching API. Provides support to store caches
   in the Hive database
-homepage: https://github.com/ivoleitao/stash_hive
+homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_hive
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -11,8 +11,6 @@ environment:
 dependencies:
   hive: ^2.0.2
   stash: ^2.0.0-nullsafety.4
-  #stash:
-  #  path: ../stash
 
 dev_dependencies:
   pedantic: ^1.11.0

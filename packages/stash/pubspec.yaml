@@ -4,7 +4,7 @@ description: >-
   Standard caching API for Dart. Defines a common mechanism to create, 
   access, update, and remove information from caches. Provides a in memory
   reference implementation
-homepage: https://github.com/ivoleitao/stash/packages/stash
+homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

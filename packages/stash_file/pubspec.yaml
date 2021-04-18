@@ -3,7 +3,7 @@ version: 2.0.0
 description: >-
   File storage extension for the stash caching API. Provides support to store caches
   in the local file system in binary format using the msgpack json format
-homepage: https://github.com/ivoleitao/stash/packages/stash_file
+homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_file
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
