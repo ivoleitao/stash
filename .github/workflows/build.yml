@@ -47,6 +47,4 @@ jobs:
           melos run format
           melos run analyze
           melos run test
-      
-      - name: Pana
-        run: pana packages/stash_file
+          melos run pana

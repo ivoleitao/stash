@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MIN_SCORE=${1:-90} 
+MIN_SCORE=${1:-80} 
 PACKAGE=${PWD##*/} 
 
 SCORES=$(pana --no-warning 2>&1 | tail -1 | grep -o -E '[0-9]+\/[0-9]+')
