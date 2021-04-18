@@ -45,7 +45,7 @@ abstract class CacheStore {
   /// * [key]: The cache key
   Future<CacheStat?> getStat(String name, String key);
 
-  /// Sets the named cache [CacheStat] [key].
+  /// Sets the cache [CacheStat] by [name] and [key].
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key

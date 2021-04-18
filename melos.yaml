@@ -10,14 +10,14 @@ ide:
 scripts:
   analyze:
     run: |
-      melos exec --fail-fast -- \
+      melos exec -- \
         "dart analyze . --fatal-infos"
     description: |
       Run `dart analyze` in all packages.
 
   format:
     run: |
-      melos exec --fail-fast -- \
+      melos exec -- \
         "dart format --set-exit-if-changed ."
     description: |
       Run `dart format` in all packages.
@@ -31,14 +31,14 @@ scripts:
 
   test:
     run: |
-      melos exec -c 1 --fail-fast -- \
+      melos exec -c 1 -- \
         "dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib"
     description: |
       Run `dart test` and collects coverage in all packages.
 
   pana:
     run: |
-      melos exec -c 1 --fail-fast -- \
+      melos exec -c 1 -- \
         "../../tool/pana.sh"
     description: |
       Run `pana` in all packages.
