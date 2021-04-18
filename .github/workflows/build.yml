@@ -29,19 +29,23 @@ jobs:
         sdk: ['stable']
 
     steps:
-      - uses: dart-lang/setup-dart@v1
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
 
-      - name: Checkout
+      - name: Install Tools
+        run: |
+          pub global activate melos
+          pub global activate pana
+
+      - name: Checkout Sources
         uses: actions/checkout@v2
 
       - name: Bootstrap
         run: |
-          pub global activate melos
-          pub global activate pana
-          melos bootstrap
-
+          melos run bootstrap
+          
       - name: Linter
         run: |
           melos run format
@@ -55,6 +59,6 @@ jobs:
         run: |
           melos run doc
 
-      - name: Pana
+      - name: Calculate Scores
         run: |
           melos run pana
