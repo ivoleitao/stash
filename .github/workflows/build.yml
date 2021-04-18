@@ -34,14 +34,14 @@ jobs:
         with:
           sdk: ${{ matrix.sdk }}
 
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
       - name: Install tools
         run: |
           pub global activate melos
           pub global activate pana
           ./tool/get_codecov.sh
-
-      - name: Checkout sources
-        uses: actions/checkout@v2
 
       - name: Bootstrap
         run: |
