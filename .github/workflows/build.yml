@@ -64,6 +64,6 @@ jobs:
         run: |
           melos run pana
 
-      - name: Upload coverage to codecov
+      - name: Upload coverage
         run: |
           melos run codecov
