@@ -36,10 +36,10 @@ jobs:
         run: |
           SCORE=$(( $TOTAL * 100 / $TOTAL_MAX ))
           if (( $SCORE < ${{ matrix.min-score }} )); then
-            echo Package score ($SCORE) is less than the minium configured score (${{ matrix.min-score }})
+            echo "Package score ($SCORE) is less than the minium configured score (${{ matrix.min-score }})"
             exit 1
           else
-            echo Package score ($SCORE) OK!
+            echo "Package score ($SCORE) OK!"
           fi
 
       - name: Coverage
