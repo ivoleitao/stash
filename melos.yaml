@@ -46,6 +46,6 @@ scripts:
   codecov:
     run: |
       melos exec -c 1 -- \
-        "../../tool/codecov -f coverage/lcov.inf -F MELOS_PACKAGE_NAME"
+        "../../tool/codecov -f coverage/lcov.info -F MELOS_PACKAGE_NAME"
     description: |
       Uploads the code coverage to codecov.
