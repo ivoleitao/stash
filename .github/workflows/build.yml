@@ -8,6 +8,7 @@ on:
     branches:
       - develop
     paths:
+      - 'melos.yml'
       - 'packages/**'
       - '.github/workflows/build.yml'
 
@@ -15,6 +16,7 @@ on:
     branches:
       - develop
     paths:
+      - 'melos.yml'
       - 'packages/**'
       - '.github/workflows/build.yml'
 
