@@ -7,13 +7,16 @@ coverage:
         flags: stash
       stash_file:
         flags: stash_file
+      stash_hive:
+        flags: stash_hive
 
 flags:
-  # filter the folder(s) you wish to measure by that flag
   stash:
-    # only include files in the mobx folder
     paths:
       - packages/stash/lib/
   stash_file:
     paths:
       - packages/stash_file/lib/
+  stash_hive:
+    paths:
+      - packages/stash_hive/lib/

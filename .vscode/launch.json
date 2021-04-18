@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Stash Memory",
+            "name": "Memory",
             "program": "packages/stash/example/example.dart",
             "args": [],
             "request": "launch",
@@ -10,8 +10,16 @@
             "console": "debugConsole"
         },
         {
-            "name": "Filesystem",
+            "name": "File",
             "program": "packages/stash_file/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        },
+        {
+            "name": "Hive",
+            "program": "packages/stash_hive/example/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",

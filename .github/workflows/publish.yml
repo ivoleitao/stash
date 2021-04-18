@@ -1,4 +1,4 @@
-name: Publish
+name: Stash Publish
 
 on:
   push:
@@ -9,14 +9,12 @@ on:
       - '.github/workflows/publish.yml'
 
 jobs:
-  build:
+  publish:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 1
       matrix:
         os: ['ubuntu-latest']
         sdk: ['stable']
-        package: ['stash','stash_file']
 
     steps:
       - uses: dart-lang/setup-dart@v1
@@ -26,27 +24,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install derry
-        run: pub global activate derry
+      - name: Install melos
+        run: pub global activate melos
 
-      - name: Build
-        working-directory: packages/${{ matrix.package }}
-        run: derry build
-
-      - name: Verify
-        working-directory: packages/${{ matrix.package }}
-        run: derry verify
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.package }}
-          file:  packages/${{ matrix.package }}/coverage/lcov.inf
+      - name: Bootstrap
+        run: melos bootstrap
 
       - name: Add pub Credentials
         run: echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
 
       - name: Publish
-        working-directory: packages/${{ matrix.package }}
-        run: derry publish
+        run: melos publish

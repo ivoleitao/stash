@@ -28,19 +28,18 @@
 
 ## 1.0.0
 
-- First official release
+- First official release of the package
 - Updated to 2.10.0 sdk version
 - Updated dependencies
-- FileSystem is now optional, defaults to the temporary folder
 
 ## 1.0.0-dev.4
 
-- Abstracted the filesystem through the use of the package file
+- Updated to 2.9.0 sdk version
+- Updated dependencies
 
 ## 1.0.0-dev.3
 
-- Updated to 2.9.0 sdk version
-- Updated dependencies
+- Updated sdk to a supported version on pub
 
 ## 1.0.0-dev.2
 

@@ -1,4 +1,4 @@
-name: CI
+name: Stash CI
 on:
   workflow_dispatch:
   schedule:
@@ -10,9 +10,13 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest']
-        package: ['stash','stash_file']
+        package: ['stash','stash_file','stash_hive']
         include:
           - package: 'stash'
+            min-score: 100
+          - package: 'stash_file'
+            min-score: 50
+          - package: 'stash_hive'
             min-score: 100
 
     steps:
@@ -32,5 +36,15 @@ jobs:
         run: |
           SCORE=$(( $TOTAL * 100 / $TOTAL_MAX ))
           if (( $SCORE < ${{ matrix.min-score }} )); then
+            echo Package score ($SCORE) is less than the minium configured score (${{ matrix.min-score }})
             exit 1
+          else
+            echo Package score ($SCORE) OK!
           fi 
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.package }}
+          file:  packages/${{ matrix.package }}/coverage/lcov.inf

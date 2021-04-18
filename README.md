@@ -4,8 +4,6 @@
 
 ---
 
-A caching library build with extensibility in mind
-
 ## Overview
 
 The `stash` caching library was designed from ground up with extensibility in mind. On it's core provides a simple in-memory cache but supports a vast array of other storage mechanisms as opt-in libraries. From a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction, but also provides pluggable storage and binary serialization mechanisms. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well.
@@ -16,10 +14,9 @@ The `stash` caching library was designed from ground up with extensibility in mi
 
 * Expiry policies definition, with out-of-box support for [`Eternal`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/expiry/eternal_policy.dart) (default), [`Created`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/expiry/created_policy.dart), [`Accessed`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/expiry/accessed_policy.dart), [`Modified`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/expiry/modified_policy.dart) and [`Touched`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/expiry/touched_policy.dart) policies
 * Support for different eviction mechanisms, with out-of-box support for [`FIFO`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/fifo_policy.dart) (first-in, first-out), [`FILO`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/filo_policy.dart) (first-in, last-out), [`LRU`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/lru_policy.dart) (least-recently used), [`MRU`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/mru_policy.dart) (most-recently used), [`LFU`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/lfu_policy.dart) (least-frequently used, the default) and [`MFU`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/eviction/mfu_policy.dart) (most frequently used)
-* Cache eviction relies on a sampling approach to collect the candidate items. Samples the whole set by default using the [`Full`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/sampler/full_sampler.dart) sampler but also supports a [`Random`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/sampler/random_sampler.dart) sampling strategy
-* Definition of a cache loader to be used upon expiration of the cache
+* Eviction uses sampling approach to collect the candidate items. Samples the whole set by default using the [`Full`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/sampler/full_sampler.dart) sampler but also supports a [`Random`](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/sampler/random_sampler.dart) sampling strategy
 * If permitted by the storage implementation it supports the update of only the cache entry header when recording the statistic fields (hit count, access time, expiry time and so on) without replacing the whole value. 
-* Out-of-box highly performing binary serialization using [msgpack](https://msgpack.org) which was inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library 
+* Out-of-box highly performing binary serialization using [msgpack](https://msgpack.org) and inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library 
 * Pluggable implementation of custom encoding/decoding, storage, expiry, eviction and sampling strategies.
 * Storage and cache harness for 3d party support of novel storage and cache frontend strategies
 * Tiered cache support allowing the configuration of a primary highly performing cache (in-memory for example) and a secondary second-level cache

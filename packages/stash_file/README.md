@@ -80,3 +80,22 @@ The example bellow creates a cache with a file storage backend that supports a m
     print(value);
   }
 ```
+
+## Contributing
+
+This library is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
+
+If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
+* Tests
+* Documentation
+* New APIs
+
+## Features and Bugs
+
+Please file feature requests and bugs at the [issue tracker][tracker].
+
+[tracker]: https://github.com/ivoleitao/stash/issues/new
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/packages/stash_file/LICENSE) file for details
