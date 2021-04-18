@@ -20,7 +20,7 @@ jobs:
             min-score: 100
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
       - uses: axel-op/dart-package-analyzer@v3
@@ -40,9 +40,14 @@ jobs:
             exit 1
           else
             echo Package score ($SCORE) OK!
-          fi 
+          fi
 
-      - name: Upload coverage to Codecov
+      - name: Coverage
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+
+      - name: Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

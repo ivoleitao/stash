@@ -44,5 +44,5 @@ scripts:
     description: Run all static analysis checks
 
   verify:
-    run: melos run lint && melos run coverage
-    description: Runs static analysis tests and collects coverage
+    run: melos run lint && melos run test
+    description: Runs static analysis and unit tests

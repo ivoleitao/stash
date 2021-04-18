@@ -28,14 +28,13 @@ jobs:
         with:
           sdk: ${{ matrix.sdk }}
 
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install melos
-        run: pub global activate melos
-
       - name: Bootstrap
-        run: melos bootstrap
+        run: |
+          pub global activate melos
+          melos bootstrap
 
       - name: Verify
         run: melos run verify
