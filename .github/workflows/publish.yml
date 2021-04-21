@@ -30,5 +30,13 @@ jobs:
           melos bootstrap
           echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
 
+      - name: Coverage
+        run: |
+          melos run coverage
+
+      - name: Upload coverage
+        run: |
+          melos run codecov
+
       - name: Publish
         run: melos publish

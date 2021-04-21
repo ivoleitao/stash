@@ -8,6 +8,20 @@ ide:
     false
 
 scripts:
+  upgrade:
+    run: |
+      melos exec -- \
+        "dart pub upgrade"
+    description: |
+      Run `dart pub upgrade` in all packages.
+
+  outdated:
+    run: |
+      melos exec -- \
+        "dart pub outdated"
+    description: |
+      Run `dart pub outdated` in all packages.
+
   analyze:
     run: |
       melos exec -- \
@@ -31,6 +45,13 @@ scripts:
 
   test:
     run: |
+      melos exec -- \
+        "dart test"
+    description: |
+      Run `dart test` in all packages.
+
+  coverage:
+    run: |
       melos exec -c 1 -- \
         "dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib"
     description: |
@@ -46,6 +67,6 @@ scripts:
   codecov:
     run: |
       melos exec -c 1 -- \
-        "../../tool/codecov -f coverage/lcov.info -F MELOS_PACKAGE_NAME"
+        "bash <(curl https://codecov.io/bash) -f coverage/lcov.info -F MELOS_PACKAGE_NAME"
     description: |
       Uploads the code coverage to codecov.

@@ -40,7 +40,6 @@ jobs:
         run: |
           pub global activate melos
           pub global activate pana
-          ./tool/get_codecov.sh
 
       - name: Bootstrap
         run: |
@@ -50,6 +49,9 @@ jobs:
         run: |
           melos run format
           melos run analyze
+
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v1.0.7
 
       - name: Test
         run: |
@@ -62,7 +64,3 @@ jobs:
       - name: Calculate scores
         run: |
           melos run pana
-
-      - name: Upload coverage
-        run: |
-          melos run codecov
