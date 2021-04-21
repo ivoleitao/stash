@@ -50,11 +50,6 @@ jobs:
           melos run format
           melos run analyze
 
-      - name: Link Checker
-        uses: lycheeverse/lychee-action@v1.0.7
-        with:
-          args: --github-token ${{ secrets.GITHUB_TOKEN }} **.md
-
       - name: Test
         run: |
           melos run test
@@ -62,6 +57,11 @@ jobs:
       - name: Documentation
         run: |
           melos run doc
+
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v1.0.7
+        with:
+          args: --github-token ${{ secrets.GITHUB_TOKEN }} README.md packages/**/README.md
 
       - name: Calculate scores
         run: |
