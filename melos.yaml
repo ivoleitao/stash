@@ -44,11 +44,25 @@ scripts:
       Generate documentation for all packages.
 
   test:
+    run: melos run test:vm && melos run test:chrome
+    description: |
+      Run `dart test` with multiple platforms in all packages.
+  
+  test:vm:
     run: |
       melos exec -- \
-        "dart test"
+        "dart test -p vm"
     description: |
-      Run `dart test` in all packages.
+      Run `dart test -p vm` in all packages.
+
+  test:chrome:
+    run: |
+      melos exec -- \
+        "dart test -p chrome"
+    description: |
+      Run `dart test -p chome` in selected packages.
+    select-package:
+      scope: "stash"
 
   coverage:
     run: |

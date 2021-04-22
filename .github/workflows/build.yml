@@ -28,10 +28,8 @@ jobs:
         sdk: ['stable']
 
     steps:
-      - name: Set up dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: ${{ matrix.sdk }}
+      - name: Set up flutter
+        uses: subosito/flutter-action@masteri
 
       - name: Checkout sources
         uses: actions/checkout@v2
