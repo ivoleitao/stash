@@ -29,7 +29,9 @@ jobs:
 
     steps:
       - name: Set up flutter
-        uses: subosito/flutter-action@master
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ matrix.sdk }}
 
       - name: Checkout sources
         uses: actions/checkout@v2
