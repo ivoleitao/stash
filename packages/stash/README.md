@@ -5,6 +5,7 @@ The base `stash` library.
 [![Pub Package](https://img.shields.io/pub/v/stash.svg?style=flat-square)](https://pub.dartlang.org/packages/stash)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash)](https://codecov.io/gh/ivoleitao/stash)
 [![Package Documentation](https://img.shields.io/badge/doc-stash-blue.svg)](https://www.dartdocs.org/documentation/stash/latest)
+[![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 

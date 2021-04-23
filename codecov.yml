@@ -9,6 +9,10 @@ coverage:
         flags: stash_file
       stash_hive:
         flags: stash_hive
+      stash_sembast:
+        flags: stash_sembast
+      stash_dio:
+        flags: stash_dio
 
 flags:
   stash:
@@ -20,3 +24,9 @@ flags:
   stash_hive:
     paths:
       - packages/stash_hive/lib/
+  stash_sembast:
+    paths:
+      - packages/stash_sembast/lib/
+  stash_dio:
+    paths:
+      - packages/stash_dio/lib/

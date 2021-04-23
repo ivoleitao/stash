@@ -4,6 +4,7 @@ A [stash](https://pub.dartlang.org/packages/stash) file storage extension
 [![Pub Package](https://img.shields.io/pub/v/stash_file.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_file)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash_file/graph/badge.svg?flag=stash_file)](https://codecov.io/gh/ivoleitao/stash_file)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_file-blue.svg)](https://www.dartdocs.org/documentation/stash_file/latest)
+[![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Introduction
 
