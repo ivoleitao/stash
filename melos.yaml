@@ -31,12 +31,10 @@ scripts:
 
   build:
     run: |
-      melos exec -- \
+      melos exec --scope "stash_sqlite" -- \
         "dart run build_runner build"
     description: |
       Run `dart run build_runner` in the selected packages.
-    select-package:
-      scope: "stash_sqlite"
 
   clean:
     run: |
@@ -49,12 +47,10 @@ scripts:
 
   generate:
     run: |
-      melos exec -- \
+      melos exec --scope "stash_sqlite" -- \
         "dart run build_runner build --delete-conflicting-outputs"
     description: |
       Run `dart run build_runner build` in the selected packages.
-    select-package:
-      scope: "stash_sqlite"
 
   analyze:
     run: |
@@ -91,12 +87,10 @@ scripts:
 
   test:chrome:
     run: |
-      melos exec -- \
+      melos exec --scope "stash" --scope "stash_dio" -- \
         "dart test -p chrome"
     description: |
-      Run `dart test -p chome` in the selected packages.
-    select-package:
-      scope: "stash"
+      Run `dart test -p chome` in the selected packages. 
 
   coverage:
     run: |
