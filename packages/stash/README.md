@@ -341,7 +341,7 @@ Please take a look at the examples provided on one of the storage implementation
 
 Contributions are always welcome!
 
-If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
+If you would like to contribute with other parts of the API, feel free to make a Github [pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
 * Tests
 * Documentation
 * New APIs
