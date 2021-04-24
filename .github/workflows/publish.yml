@@ -22,7 +22,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
 
-      - uses: dart-lang/setup-dart@v1
+      - name: Set up dart
+        uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
 
