@@ -2,7 +2,7 @@
 A [stash](https://github.com/ivoleitao/stash) storage extension for sqlite using the [moor](https://pub.dev/packages/moor) package
 
 [![Pub Package](https://img.shields.io/pub/v/stash_sqlite.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sqlite)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sqlite)](https://codecov.io/gh/ivoleitao/stash_sqlite)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sqlite)](https://codecov.io/gh/ivoleitao/stash)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_sqlite-blue.svg)](https://www.dartdocs.org/documentation/stash_sqlite/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
