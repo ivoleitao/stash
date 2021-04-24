@@ -1,6 +1,6 @@
 dartdoc:
   errors:
-    - ambiguous-doc-reference
+    #- ambiguous-doc-reference
     - ambiguous-reexport
     - broken-link
     - category-order-gives-missing-package-name
