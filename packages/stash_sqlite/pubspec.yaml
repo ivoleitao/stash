@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 2.0.0-nullsafety.1
+version: 2.0.0
 
 description: >-
    storage extension for the stash caching API. Provides support to store caches
