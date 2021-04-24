@@ -1,5 +1,5 @@
 name: stash_sembast
-version: 2.0.1
+version: 2.0.2
 description: >-
   Sembast storage extension for the stash caching API. Provides support to store caches
   int the local file system in binary format using the msgpack json format

@@ -1,3 +1,7 @@
+## 2.0.2
+
+- Fixed additional problems in the documentation
+
 ## 2.0.1
 
 - Updated documentation
