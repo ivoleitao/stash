@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload coverage
         run: |
-          melos run codecov
+          melos run codecov --verbose
 
       - name: Publish
-        run: melos publish
+        run: melos publish --no-git-tag-version --scope "stash"
