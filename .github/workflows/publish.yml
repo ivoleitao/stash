@@ -45,4 +45,4 @@ jobs:
           melos run codecov
 
       - name: Publish
-        run: melos publish --no-git-tag-version --scope "stash"
+        run: melos publish --scope "stash"
