@@ -4,8 +4,8 @@
 - Updated dependencies
 - Moved to a mono repo
 - Restructured github actions
-- Added a new CI action that run periodically
-- Removed derry support and fully integrated melos
+- Removed derry support and adopted melos
+
 ## 2.0.0-nullsafety.1
 
 - Null safety support
