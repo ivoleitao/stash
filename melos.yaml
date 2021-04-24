@@ -114,7 +114,7 @@ scripts:
 
   codecov:
     run: |
-      melos exec -c 1 -- \
+      melos exec -c 1 --verbose -- \
         "bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -F MELOS_PACKAGE_NAME"
     description: |
       Uploads the code coverage to codecov.
