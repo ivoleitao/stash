@@ -2,11 +2,11 @@
 A [stash](https://github.com/ivoleitao/stash) storage extension for [sembast](https://pub.dev/packages/sembast)
 
 [![Pub Package](https://img.shields.io/pub/v/stash_sembast.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash_sembast/graph/badge.svg?flag=stash_sembast)](https://codecov.io/gh/ivoleitao/stash_sembast)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sembast)](https://codecov.io/gh/ivoleitao/stash_sembast)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_sembast-blue.svg)](https://www.dartdocs.org/documentation/stash_sembast/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Introduction
+## Overview
 
 This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a 
 [sembast](https://pub.dev/packages/sembast) based storage that relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format.
@@ -23,13 +23,7 @@ dependencies:
 Run the following command to install dependencies:
 
 ```dart
-pub get
-```
-
-Optionally use the following command to run the tests:
-
-```dart
-pub run test
+dart pub get
 ```
 
 Finally, to start developing import the library:
@@ -98,4 +92,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_sembast/LICENSE) file for details

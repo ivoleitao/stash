@@ -37,7 +37,7 @@ CacheDatabase diskDatabase(File file) {
 }
 
 void main() async {
-  // Creates cache with a moor based storage backend with the capacity of 10 entries
+  // Creates cache with a sqlite based storage backend with the capacity of 10 entries
   final cache = newSqliteCache(memoryDatabase(),
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 

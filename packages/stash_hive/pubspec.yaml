@@ -1,5 +1,5 @@
 name: stash_hive
-version: 2.0.0
+version: 2.0.1
 description: >-
   Hive storage extension for the stash caching API. Provides support to store caches
   in the Hive database

@@ -2,11 +2,11 @@
 A [stash](https://github.com/ivoleitao/stash) storage extension for [hive](https://pub.dev/packages/hive)
 
 [![Pub Package](https://img.shields.io/pub/v/stash_hive.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_hive)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash_hive/graph/badge.svg?flag=stash_hive)](https://codecov.io/gh/ivoleitao/stash_hive)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_hive)](https://codecov.io/gh/ivoleitao/stash_hive)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_hive-blue.svg)](https://www.dartdocs.org/documentation/stash_hive/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Introduction
+## Overview
 
 This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a 
 [hive](https://pub.dev/packages/hive) based storage that relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format.
@@ -23,13 +23,7 @@ dependencies:
 Run the following command to install dependencies:
 
 ```dart
-pub get
-```
-
-Optionally use the following command to run the tests:
-
-```dart
-pub run test
+dart pub get
 ```
 
 Finally, to start developing import the library:
@@ -96,4 +90,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_hive/LICENSE) file for details

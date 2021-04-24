@@ -2,11 +2,11 @@
 A [stash](https://github.com/ivoleitao/stash) Dio extension
 
 [![Pub Package](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash_dio/graph/badge.svg?flag=stash_dio)](https://codecov.io/gh/ivoleitao/stash_dio)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_dio)](https://codecov.io/gh/ivoleitao/stash_dio)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_dio-blue.svg)](https://www.dartdocs.org/documentation/stash_dio/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Introduction
+## Overview
 
 This integration of [stash](https://pub.dartlang.org/packages/stash) with [dio](https://pub.dev/packages/dio) provides a caching interceptor that is able to return the response from a Cache instead of hitting the backend system.
 
@@ -22,13 +22,7 @@ dependencies:
 Run the following command to install dependencies:
 
 ```dart
-pub get
-```
-
-Optionally use the following command to run the tests:
-
-```dart
-pub run test
+dart pub get
 ```
 
 Finally, to start developing import the library:
@@ -102,4 +96,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_dio/LICENSE) file for details

@@ -1,12 +1,12 @@
 # stash_sqlite
-A [stash](https://github.com/ivoleitao/stash) storage extension for [moor](https://pub.dev/packages/moor)
+A [stash](https://github.com/ivoleitao/stash) storage extension for sqlite using the [moor](https://pub.dev/packages/moor) package
 
 [![Pub Package](https://img.shields.io/pub/v/stash_sqlite.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sqlite)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash_sqlite/graph/badge.svg?flag=stash_sqlite)](https://codecov.io/gh/ivoleitao/stash_sqlite)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sqlite)](https://codecov.io/gh/ivoleitao/stash_sqlite)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_sqlite-blue.svg)](https://www.dartdocs.org/documentation/stash_sqlite/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Introduction
+## Overview
 
 This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a storage layer through the [moor](https://pub.dev/packages/moor) persistent library and relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `stash` features, like expiration and eviction which are highly dependent on the update of control fields on the cache entries upon user operations. On this storage backend the update of those fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast) since they are stored in specific columns on the relational database model.
 
@@ -22,13 +22,7 @@ dependencies:
 Run the following command to install dependencies:
 
 ```dart
-pub get
-```
-
-Optionally use the following command to run the tests:
-
-```dart
-pub run test
+dart pub get
 ```
 
 Finally, to start developing import the library:
@@ -39,7 +33,7 @@ import 'package:stash_sqlite/stash_sqlite.dart';
 
 ## Usage
 
-The example bellow stores a Task object on a moor cache that uses a in-memory implementation of the database. A truly persistent alternative is also possible as presented through the use of an alternate moor QueryExecutor. Both alternatives take advantage of the [moor_ffi](https://pub.dev/packages/moor_ffi) package which provides dart bindings for sqlite. Moor itself provides support relational database support on multiple environments ranging from mobile to desktop.
+The example bellow stores a Task object on a sqlite cache that uses a in-memory implementation of the database. A truly persistent alternative is also possible as presented through the use of an alternate moor QueryExecutor. Both alternatives take advantage of the [moor_ffi](https://pub.dev/packages/moor_ffi) package which provides dart bindings for sqlite. Moor itself provides support relational database support on multiple environments ranging from mobile to desktop.
 
 ```dart
 import 'dart:io';
@@ -81,8 +75,8 @@ CacheDatabase diskDatabase(File file) {
 }
 
 void main() async {
-  // Creates cache with a moor based storage backend with a maximum capacity 10 entries
-  final cache = newMoorCache(memoryDatabase(),
+  // Creates cache with a sqlite based storage backend with a maximum capacity 10 entries
+  final cache = newSqliteCache(memoryDatabase(),
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
@@ -112,4 +106,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_sqlite/LICENSE) file for details

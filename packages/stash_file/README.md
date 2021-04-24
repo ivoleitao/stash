@@ -2,11 +2,11 @@
 A [stash](https://pub.dartlang.org/packages/stash) file storage extension
 
 [![Pub Package](https://img.shields.io/pub/v/stash_file.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_file)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash_file/graph/badge.svg?flag=stash_file)](https://codecov.io/gh/ivoleitao/stash_file)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_file)](https://codecov.io/gh/ivoleitao/stash_file)
 [![Package Documentation](https://img.shields.io/badge/doc-stash_file-blue.svg)](https://www.dartdocs.org/documentation/stash_file/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Introduction
+## Overview
 
 This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a file based storage that relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `stash` features, like expiration and eviction, which are highly dependent on the update of control fields on the cache entries upon user operations. The main advantage is that the update of the control fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast). It relies on a file system abstraction provided by the  [file](https://pub.dartlang.org/packages/file) package
 
@@ -22,13 +22,7 @@ dependencies:
 Run the following command to install dependencies:
 
 ```dart
-pub get
-```
-
-Optionally use the following command to run the tests:
-
-```dart
-pub run test
+dart pub get
 ```
 
 Finally, to start developing import the library:
@@ -89,4 +83,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_file/LICENSE) file for details
