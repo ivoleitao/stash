@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   moor: ^4.2.1
-  stash: ^2.0.0
+  stash: ^2.0.1
 
 dev_dependencies:
   pedantic: ^1.11.0

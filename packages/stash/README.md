@@ -1,6 +1,9 @@
 # stash
 
 [![Build Status](https://github.com/ivoleitao/stash/workflows/build/badge.svg)](https://github.com/ivoleitao/stash/actions)
+[![Pub Package](https://img.shields.io/pub/v/stash.svg?style=flat-square)](https://pub.dartlang.org/packages/stash)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash)](https://codecov.io/gh/ivoleitao/stash)
+[![Package Documentation](https://img.shields.io/badge/doc-stash-blue.svg)](https://www.dartdocs.org/documentation/stash/latest)
 [![Github Stars](https://img.shields.io/github/stars/ivoleitao/stash.svg)](https://github.com/ivoleitao/stash)
 [![GitHub License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

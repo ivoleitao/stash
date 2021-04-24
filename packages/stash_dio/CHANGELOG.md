@@ -1,6 +1,7 @@
 ## 2.0.1
 
 - Updated documentation
+- Updated dependencies
 
 ## 2.0.0
 
