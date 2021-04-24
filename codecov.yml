@@ -7,6 +7,8 @@ coverage:
         flags: stash
       stash_file:
         flags: stash_file
+      stash_sqlite:
+        flags: stash_sqlite
       stash_hive:
         flags: stash_hive
       stash_sembast:
@@ -21,6 +23,9 @@ flags:
   stash_file:
     paths:
       - packages/stash_file/lib/
+  stash_sqlite:
+    paths:
+      - packages/stash_sqlite/lib/
   stash_hive:
     paths:
       - packages/stash_hive/lib/

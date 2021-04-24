@@ -8,6 +8,13 @@ ide:
     false
 
 scripts:
+  get:
+    run: |
+      melos exec -- \
+        "dart pub get"
+    description: |
+      Run `dart pub get` in all packages.
+
   upgrade:
     run: |
       melos exec -- \
@@ -21,6 +28,33 @@ scripts:
         "dart pub outdated"
     description: |
       Run `dart pub outdated` in all packages.
+
+  build:
+    run: |
+      melos exec -- \
+        "dart run build_runner build"
+    description: |
+      Run `dart run build_runner` in the selected packages.
+    select-package:
+      scope: "stash_sqlite"
+
+  clean:
+    run: |
+      melos exec -- \
+        "dart run build_runner clean"
+    description: |
+      Run `dart run build_runner clean` in the selected packages.
+    select-package:
+      scope: "stash_sqlite"
+
+  generate:
+    run: |
+      melos exec -- \
+        "dart run build_runner build --delete-conflicting-outputs"
+    description: |
+      Run `dart run build_runner build` in the selected packages.
+    select-package:
+      scope: "stash_sqlite"
 
   analyze:
     run: |
@@ -60,7 +94,7 @@ scripts:
       melos exec -- \
         "dart test -p chrome"
     description: |
-      Run `dart test -p chome` in selected packages.
+      Run `dart test -p chome` in the selected packages.
     select-package:
       scope: "stash"
 

@@ -17,6 +17,11 @@ jobs:
         sdk: ['stable']
 
     steps:
+      - name: Setup os
+        run: |
+          apt-get update
+          apt-get install libsqlite3-dev -y
+
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
