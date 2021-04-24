@@ -1,5 +1,5 @@
 # stash_dio
-A [Stash](https://github.com/ivoleitao/stash) Dio extension
+A [stash](https://github.com/ivoleitao/stash) Dio extension
 
 [![Pub Package](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash_dio/graph/badge.svg?flag=stash_dio)](https://codecov.io/gh/ivoleitao/stash_dio)
@@ -94,15 +94,6 @@ void main() async {
 
 ```
 
-## Contributing
-
-This library is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
-
-If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
-* Tests
-* Documentation
-* New APIs
-
 ## Features and Bugs
 
 Please file feature requests and bugs at the [issue tracker][tracker].
@@ -111,4 +102,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/packages/stash_dio/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details

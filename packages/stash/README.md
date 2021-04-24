@@ -9,7 +9,7 @@ The base `stash` library.
 
 ## Overview
 
-This package provides the foundations of the `stash` caching library upon which specific implementations of storage mechanisms and 3rd party library integrations rely upon. It sports a in-memory implementation that is perfictly suitable for the majority of the use cases providing a rather efficient way of avoiding repeatable calls to heavyweight resources.
+This package provides the foundations of the `stash` caching library upon which specific implementations of storage mechanisms and 3rd party library integrations rely upon. It sports a in-memory implementation that is perfectly suitable for the majority of the use cases providing a rather efficient way of avoiding repeatable calls to heavyweight resources.
 
 ## Getting Started
 
@@ -40,7 +40,7 @@ import 'package:stash/stash_memory.dart';
 
 ## Usage
 
-The example bellow creates a cache with a in-memory storage backend that supports a maximum of 10 `Task` objects. In this rather simple example there is no need to provide methods to serialize/deserialize the object as the object stays in-memory. Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information about the available APIs and to explore the full range of capabilities of the `stash` library
+The example bellow creates a cache with a in-memory storage backend that supports a maximum of 10 `Task` objects. In this rather simple use case there is no need to provide methods to serialize/deserialize the object as the object stays in-memory. Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information about the available APIs and to explore the full range of capabilities of the `stash` library
 
 ```dart
 import 'package:stash/stash_memory.dart';
@@ -59,7 +59,7 @@ class Task {
 }
 
 void main() async {
-  // Creates a memory based cache with a a capacity of 10
+  // Creates a memory based cache with a maximum of 10 entries
   final cache = newMemoryCache(maxEntries: 10);
 
   // Adds a task with key 'task1' to the cache
@@ -74,12 +74,14 @@ void main() async {
 
 ## Contributing
 
-This library is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
+Contributions are always welcome!
 
-If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
+If you would like to contribute, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as we are always looking for contributions for:
 * Tests
 * Documentation
 * New APIs
+
+See CONTRIBUTING.md for ways to get started.
 
 ## Features and Bugs
 

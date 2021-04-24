@@ -8,7 +8,7 @@ A [stash](https://github.com/ivoleitao/stash) storage extension for [moor](https
 
 ## Introduction
 
-This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a storage layer through the [moor](https://pub.dev/packages/moor) persistent library and relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `Stash` features, like expiration and eviction, highly dependent on the update of control fields on the cache entries upon user operations. On this storage backend the update of those fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast) since they are stored in specific columns on the relational database model.
+This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a storage layer through the [moor](https://pub.dev/packages/moor) persistent library and relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `stash` features, like expiration and eviction which are highly dependent on the update of control fields on the cache entries upon user operations. On this storage backend the update of those fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast) since they are stored in specific columns on the relational database model.
 
 ## Getting Started
 
@@ -81,7 +81,7 @@ CacheDatabase diskDatabase(File file) {
 }
 
 void main() async {
-  // Creates cache with a moor based storage backend with the capacity of 10 entries
+  // Creates cache with a moor based storage backend with a maximum capacity 10 entries
   final cache = newMoorCache(memoryDatabase(),
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
@@ -112,4 +112,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/packages/stash_sqlite/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/LICENSE) file for details
