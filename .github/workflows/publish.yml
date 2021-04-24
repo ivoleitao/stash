@@ -45,4 +45,4 @@ jobs:
           melos run codecov
 
       - name: Publish
-        run: melos publish --scope "stash"
+        run: melos publish --no-dry-run --scope "stash"
