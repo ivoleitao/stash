@@ -344,7 +344,7 @@ If you would like to contribute with other parts of the API, feel free to make a
 * Documentation
 * New APIs
 
-See [CONTRIBUTING.md](https://github.com/ivoleitao/stash/packages/stash/blob/develop/CONTRIBUTING.md) for ways to get started.
+See [CONTRIBUTING.md](https://github.com/ivoleitao/stash/blob/develop/CONTRIBUTING.md) for ways to get started.
 
 ## Features and Bugs
 
