@@ -43,6 +43,3 @@ jobs:
       - name: Upload coverage
         run: |
           melos run codecov
-
-      - name: Publish
-        run: melos publish --no-dry-run --scope "stash"
