@@ -12,11 +12,11 @@ This storage extension for [stash](https://pub.dartlang.org/packages/stash) prov
 
 ## Getting Started
 
-Add this to your `pubspec.yaml` (or create it):
+Add this to your `pubspec.yaml` (or create it) replacing x.x.x with the latest version of stash_sqlite:
 
 ```dart
 dependencies:
-    stash_sqlite: ^2.0.0
+    stash_sqlite: ^x.x.x
 ```
 
 Run the following command to install dependencies:

@@ -13,11 +13,11 @@ This storage extension for [stash](https://pub.dartlang.org/packages/stash) prov
 
 ## Getting Started
 
-Add this to your `pubspec.yaml` (or create it):
+Add this to your `pubspec.yaml` (or create it) replacing x.x.x with the latest version of stash_sembast:
 
 ```dart
 dependencies:
-    stash_sembast: ^2.0.0
+    stash_sembast: ^x.x.x
 ```
 
 Run the following command to install dependencies:
