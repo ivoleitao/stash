@@ -25,5 +25,29 @@
             "type": "dart",
             "console": "debugConsole"
         },
+        {
+            "name": "Sembast",
+            "program": "packages/stash_sembast/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        },
+        {
+            "name": "Sqlite",
+            "program": "packages/stash_sqlite/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        },
+        {
+            "name": "Dio",
+            "program": "packages/stash_dio/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        }
     ]
 }

@@ -335,7 +335,7 @@ void main() async {
   ...
 ```
 
-Please take a look at the examples provided on one of the storage implementations, for example [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor).
+Please take a look at the examples provided on one of the storage implementations, for example [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_sqlite](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite).
 
 ## Contributing
 
