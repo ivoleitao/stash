@@ -4,13 +4,13 @@ import 'package:stash/stash_api.dart';
 class IsarStore extends CacheStore {
   /// The function that converts between the Map representation to the
   /// object stored in the cache
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
+  // final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
   /// Builds a [IsarStore].
   ///
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   IsarStore({dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : _fromEncodable = fromEncodable;
+  /*: _fromEncodable = fromEncodable*/;
 
   @override
   Future<int> size(String name) => throw UnimplementedError();
