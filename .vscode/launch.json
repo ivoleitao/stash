@@ -50,6 +50,14 @@
             "console": "debugConsole"
         },
         {
+            "name": "Objectbox",
+            "program": "packages/stash_objectbox/example/example.dart",
+            "args": [],
+            "request": "launch",
+            "type": "dart",
+            "console": "debugConsole"
+        },
+        {
             "name": "Dio",
             "program": "packages/stash_dio/example/example.dart",
             "args": [],
