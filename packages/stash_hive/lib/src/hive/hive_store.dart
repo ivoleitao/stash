@@ -4,7 +4,7 @@ import 'package:stash_hive/src/hive/hive_extensions.dart';
 
 /// Hive based implemention of a [CacheStore]
 class HiveStore extends CacheStore {
-  /// The base location of the Hive Box
+  /// The base location of the Hive storage
   final String _path;
 
   /// The function that converts between the Map representation to the
@@ -161,8 +161,8 @@ class HiveStore extends CacheStore {
   @override
   Future<void> delete(String name) {
     if (_cacheStoreMap.containsKey(name)) {
-      _cacheStoreMap.remove(name);
-      return Hive.deleteBoxFromDisk(name);
+      return Hive.deleteBoxFromDisk(name)
+          .then((_) => _cacheStoreMap.remove(name));
     }
 
     return Future.value();

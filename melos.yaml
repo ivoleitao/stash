@@ -30,11 +30,23 @@ scripts:
       Run `dart pub outdated` in all packages.
 
   build:
+    run: melos run build:sqlite && melos run build:objectbox
+    description: |
+      Run `dart run build_runner` in supporting packages.
+  
+  build:sqlite:
     run: |
       melos exec --scope "stash_sqlite" -- \
         "dart run build_runner build"
     description: |
-      Run `dart run build_runner` in the selected packages.
+      Run `dart run build_runner` in the sqlite stash package.
+
+  build:objectbox:
+    run: |
+      melos exec --scope "stash_objectbox" -- \
+        "dart run build_runner build"
+    description: |
+      Run `dart run build_runner` in the objectbox stash package.
 
   clean:
     run: |
@@ -46,11 +58,23 @@ scripts:
       scope: "stash_sqlite"
 
   generate:
+    run: melos run generate:sqlite && melos run generate:objectbox
+    description: |
+      Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
+  
+  generate:sqlite:
     run: |
       melos exec --scope "stash_sqlite" -- \
         "dart run build_runner build --delete-conflicting-outputs"
     description: |
-      Run `dart run build_runner build` in the selected packages.
+      Run `dart run build_runner` in the sqlite stash package.
+
+  generate:objectbox:
+    run: |
+      melos exec --scope "stash_objectbox" -- \
+        "dart run build_runner build --delete-conflicting-outputs"
+    description: |
+      Run `dart run build_runner` in the objectbox stash package.
 
   analyze:
     run: |

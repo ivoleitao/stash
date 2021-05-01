@@ -15,18 +15,21 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [ObjectboxStore]
-Cache newObjectboxCache(String path,
+Cache newObjectBoxCache(String path,
     {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable}) {
-  return Cache.newCache(ObjectboxStore(fromEncodable: fromEncodable),
+  return Cache.newCache(
+      ObjectboxStore(path, codec: codec, fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,

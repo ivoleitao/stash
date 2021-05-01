@@ -30,7 +30,7 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates cache with a Objectbox based storage backend with the capacity of 10 entries
-  final cache = newObjectboxCache(path,
+  final cache = newObjectBoxCache(path,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
