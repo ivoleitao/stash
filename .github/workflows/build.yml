@@ -32,6 +32,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
+          bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)
 
       - name: Set up dart
         uses: dart-lang/setup-dart@v1
@@ -62,11 +63,6 @@ jobs:
       - name: Documentation
         run: |
           melos run doc
-
-      - name: Link Checker
-        uses: lycheeverse/lychee-action@v1.0.7
-        with:
-          args: --github-token ${{ secrets.GITHUB_TOKEN }} README.md packages/**/README.md
 
       - name: Calculate scores
         run: |
