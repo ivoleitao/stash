@@ -17,6 +17,8 @@ coverage:
         flags: stash_isar
       stash_objectbox:
         flags: stash_objectbox
+      stash_objectdb:
+        flags: stash_objectdb
       stash_dio:
         flags: stash_dio
 
@@ -42,6 +44,9 @@ flags:
   stash_objectbox:
     paths:
       - packages/stash_objectbox/lib/
+  stash_objectdb:
+    paths:
+      - packages/stash_objectdb/lib/
   stash_dio:
     paths:
       - packages/stash_dio/lib/

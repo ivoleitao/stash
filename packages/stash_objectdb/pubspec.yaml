@@ -1,0 +1,18 @@
+name: stash_objectdb
+version: 2.0.2
+publish_to: none
+description: >-
+  Objectdb storage extension for the stash caching API. Provides support to store caches
+  in the Objectdb database
+homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_objectdb
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  path: ^1.8.0
+  stash: ^2.0.2
+  objectdb: ^1.2.1
+dev_dependencies:
+  pedantic: ^1.11.0
+  test: ^1.16.8
