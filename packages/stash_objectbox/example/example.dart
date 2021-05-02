@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:stash_hive/stash_hive.dart';
+import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
   final int id;
@@ -29,13 +29,13 @@ void main() async {
   // Temporary path
   final path = Directory.systemTemp.path;
 
-  // Creates cache with a Hive based storage backend with the capacity of 10 entries
-  final cache = newHiveCache(path,
+  // Creates a memory based cache with a a capacity of 10
+  final cache = newObjectBoxCache(path,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
-  await cache.put(
-      'task1', Task(id: 1, title: 'Run stash_hive example', completed: true));
+  await cache.put('task1',
+      Task(id: 1, title: 'Run stash_objectbox example', completed: true));
   // Retrieves the value from the cache
   final value = await cache.get('task1');
 

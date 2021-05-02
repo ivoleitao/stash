@@ -24,7 +24,7 @@ class ObjectboxStore extends CacheStore {
 
   /// Builds a [ObjectboxStore].
   ///
-  /// * [path]: The base location of the Objectbox storage
+  /// * [_path]: The base location of the Objectbox storage
   /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   ObjectboxStore(this._path,

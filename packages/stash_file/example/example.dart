@@ -1,17 +1,17 @@
 import 'package:stash_file/stash_file.dart';
 
 class Task {
-  final int? id;
-  final String? title;
-  final bool? completed;
+  final int id;
+  final String title;
+  final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as int?,
-      title: json['title'] as String?,
-      completed: json['completed'] as bool?);
+      id: json['id'] as int,
+      title: json['title'] as String,
+      completed: json['completed'] as bool);
 
   /// Creates a json map from a [Task]
   Map<String, dynamic> toJson() =>
@@ -19,7 +19,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task $id: "$title" is ${completed! ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 

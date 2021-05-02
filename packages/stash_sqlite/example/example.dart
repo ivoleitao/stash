@@ -4,11 +4,11 @@ import 'package:moor/ffi.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 
 class Task {
-  final int? id;
-  final String? title;
-  final bool? completed;
+  final int id;
+  final String title;
+  final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -22,7 +22,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task $id: "$title" is ${completed! ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 
