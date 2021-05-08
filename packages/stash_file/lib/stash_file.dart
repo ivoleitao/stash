@@ -9,7 +9,7 @@ import 'package:stash_file/src/file/file_store.dart';
 
 export 'src/file/file_store.dart';
 
-/// Creates a new [Cache] backed by a in-memory [DiskStore]
+/// Creates a new [Cache] backed by a in-memory [FileStore]
 ///
 /// * [path]: The base storage location for this cache
 /// * [cacheName]: The name of the cache
@@ -21,7 +21,7 @@ export 'src/file/file_store.dart';
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [DiskStore]
+/// Returns a new [Cache] backed by a [FileStore]
 Cache newMemoryDiskCache(
     {String? path,
     String? cacheName,
@@ -34,7 +34,7 @@ Cache newMemoryDiskCache(
     dynamic Function(dynamic)? fromEncodable}) {
   FileSystem fs = MemoryFileSystem();
   return Cache.newCache(
-      DiskStore(fs, path ?? fs.systemTempDirectory.path,
+      FileStore(fs, path ?? fs.systemTempDirectory.path,
           codec: codec, fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
@@ -44,7 +44,7 @@ Cache newMemoryDiskCache(
       cacheLoader: cacheLoader);
 }
 
-/// Creates a new [Cache] backed by a local [DiskStore]
+/// Creates a new [Cache] backed by a local [FileStore]
 ///
 /// * [path]: The base storage location for this cache
 /// * [cacheName]: The name of the cache
@@ -56,7 +56,7 @@ Cache newMemoryDiskCache(
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [DiskStore]
+/// Returns a new [Cache] backed by a [FileStore]
 Cache newLocalDiskCache(
     {String? path,
     String? cacheName,
@@ -69,7 +69,7 @@ Cache newLocalDiskCache(
     dynamic Function(dynamic)? fromEncodable}) {
   FileSystem fs = const LocalFileSystem();
   return Cache.newCache(
-      DiskStore(fs, path ?? fs.systemTempDirectory.path,
+      FileStore(fs, path ?? fs.systemTempDirectory.path,
           codec: codec, fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,

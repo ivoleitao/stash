@@ -13,7 +13,7 @@ class DefaultContext extends TestContext<ObjectDBStore> {
   Future<ObjectDBStore> newStore() {
     return Directory.systemTemp
         .createTemp('stash_objectdb')
-        .then((dir) => ObjectDBStore(dir.path, fromEncodable: fromEncodable));
+        .then((dir) => ObjectDBStore(fromEncodable: fromEncodable));
   }
 
   @override

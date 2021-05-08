@@ -7,7 +7,7 @@ import 'package:stash/stash_api.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 /// File based implemention of a [CacheStore]
-class DiskStore extends CacheStore {
+class FileStore extends CacheStore {
   /// The size in bytes of the cache entry header
   static const int _header_size = uint64_size * 5;
 
@@ -27,12 +27,12 @@ class DiskStore extends CacheStore {
   /// List of cache directories per cache name
   final Map<String, Directory> _cacheDirectoryMap = {};
 
-  /// Builds a [DiskStore].
+  /// Builds a [FileStore].
   /// * [_fs]: The [FileSystem]
   /// * [_path]: The base location of the file storage
   /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  DiskStore(this._fs, this._path,
+  FileStore(this._fs, this._path,
       {CacheCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _codec = codec ?? const MsgpackCodec(),
@@ -307,11 +307,14 @@ class DiskStore extends CacheStore {
   @override
   Future<void> deleteAll() {
     return Future.wait(_cacheDirectoryMap.keys.map((name) {
-      final cacheDirectory = _cacheDirectoryMap[name]!;
+      final cacheDirectory = _cacheDirectoryMap[name];
+      if (cacheDirectory != null) {
+        return cacheDirectory
+            .delete(recursive: true)
+            .then((_) => _cacheDirectoryMap.remove(name));
+      }
 
-      return cacheDirectory
-          .delete(recursive: true)
-          .then((_) => _cacheDirectoryMap.remove(name));
+      return Future.value();
     }));
   }
 }

@@ -19,7 +19,7 @@ class ObjectboxStore extends CacheStore {
   /// object stored in the cache
   final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
-  /// List of boxes per cache name
+  /// List of stored per cache name
   final Map<String, Store> _cacheStoreMap = {};
 
   /// Builds a [ObjectboxStore].

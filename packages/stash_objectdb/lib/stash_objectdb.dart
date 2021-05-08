@@ -26,7 +26,7 @@ Cache newObjectDBCache(String path,
     int? maxEntries,
     CacheLoader? cacheLoader,
     dynamic Function(dynamic)? fromEncodable}) {
-  return Cache.newCache(ObjectDBStore(path, fromEncodable: fromEncodable),
+  return Cache.newCache(ObjectDBStore(fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
