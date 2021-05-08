@@ -109,7 +109,7 @@ Finally, retrieve that element:
 
 The in-memory example is the simplest one. Note that on that case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that all the other implementations of storage mechanisms that `stash` currently supports need that additional configuration.
 
-Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) as the storage implementation of the cache. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
+Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) as the storage implementation of the cache. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
 
 ```dart
   import 'dart:io';
@@ -160,7 +160,7 @@ Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stas
 
 ### Cache Types
 
-To create a [Cache](https://github.com/ivoleitao/stash/packages/stash/blob/develop/lib/src/api/cache.dart) we can use the function exported by the storage library, `newMemoryCache` in case of the base `stash`library (generically `newXXXCache` where `xxx` is the name of the storage provider).
+To create a [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) we can use the function exported by the storage library, `newMemoryCache` in case of the base `stash`library (generically `newXXXCache` where `xxx` is the name of the storage provider).
 
 Note that this is not the only type of cache provided, there's another, the tiered cache which can be created with a call to `newTieredCache`. It allows the creation of cache that uses primary and secondary cache surrogates. The idea is to have a fast in-memory cache as the primary and a persistent cache as the secondary. In this cases it's normal to have a bigger capacity for the secondary and a lower capacity for the primary. In the example bellow a new tiered cache is created using two in-memory caches the first with a maximum capacity of 10 and the second with unlimited capacity. 
 
@@ -173,7 +173,7 @@ Note that this is not the only type of cache provided, there's another, the tier
       newMemoryCache());
 ```
 
-A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/packages/stash_moor). The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
+A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/tree/develop/packages/stash_moor). The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
 
 ```dart
   final cache = newTieredCache(
@@ -185,18 +185,18 @@ A more common use case is to have the primary cache using a memory storage and t
 
 The [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) frontend provides a number of other operations besides the ones mentioned in the previous sections. The table bellow gives a general overview of those operations.
 
-| Operation                                                 | Description                                                          |
-| --------------------------------------------------------- | -------------------------------------------------------------------- |
-| [size](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Returns the number of entries on the cache |
-| [keys](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Returns all the cache keys |
-| [containsKey](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Checks if the cache contains an entry for the specified `key` |
-| [get](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Gets the cache value for the specified `key` |
-| [put](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Adds / Replace the cache value of the specified `key` |
-| [putIfAbsent](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Replaces the specified `key` with the provided `value` if not already set |
-| [clear](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Clears the contents of the cache |
-| [remove](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Removes the specified `key` value |
-| [getAndPut](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Returns the specified `key` cache value and replaces it with `value` |
-| [getAndRemove](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) | Gets the specified `key` cache value and removes it |
+| Operation | Description |
+| --------- | ----------- |
+| `size` | Returns the number of entries on the cache |
+| `keys` | Returns all the cache keys |
+| `containsKey` | Checks if the cache contains an entry for the specified `key` |
+| `get` | Gets the cache value for the specified `key` |
+| `put` | Adds / Replace the cache value of the specified `key` |
+| `putIfAbsent` | Replaces the specified `key` with the provided `value` if not already set |
+| `clear` | Clears the contents of the cache |
+| `remove` | Removes the specified `key` value |
+| `getAndPut` | Returns the specified `key` cache value and replaces it with `value` |
+| `getAndRemove` | Gets the specified `key` cache value and removes it |
 
 ### Expiry policies
 

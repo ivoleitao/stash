@@ -33,12 +33,11 @@ import 'package:stash_sqlite/stash_sqlite.dart';
 
 ## Usage
 
-The example bellow stores a Task object on a sqlite cache that uses a in-memory implementation of the database. A truly persistent alternative is also possible as presented through the use of an alternate moor QueryExecutor. Both alternatives take advantage of the [moor_ffi](https://pub.dev/packages/moor_ffi) package which provides dart bindings for sqlite. Moor itself provides support relational database support on multiple environments ranging from mobile to desktop.
+The example bellow stores a Task object on a sqlite cache that uses a file based SQLite database. A in-memory alternative is also available as well although mostly suited for testing.
 
 ```dart
 import 'dart:io';
 
-import 'package:moor_ffi/moor_ffi.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 
 class Task {
@@ -46,7 +45,7 @@ class Task {
   final String title;
   final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -60,23 +59,17 @@ class Task {
 
   @override
   String toString() {
-    return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 
-CacheDatabase memoryDatabase() {
-  // Create a in-memory database
-  return CacheDatabase(VmDatabase.memory());
-}
-
-CacheDatabase diskDatabase(File file) {
-  // Creates a disk based database
-  return CacheDatabase(VmDatabase(file));
-}
-
 void main() async {
-  // Creates cache with a sqlite based storage backend with a maximum capacity 10 entries
-  final cache = newSqliteCache(memoryDatabase(),
+  // Temporary directory
+  final dir = Directory.systemTemp;
+  final file = File('${dir.path}/stash_sqlite.db');
+
+  // Creates cache with a sqlite file based storage backend with the capacity of 10 entries
+  final cache = newSqliteFileCache(file,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
@@ -89,15 +82,6 @@ void main() async {
 }
 ```
 
-## Contributing
-
-This library is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
-
-If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
-* Tests
-* Documentation
-* New APIs
-
 ## Features and Bugs
 
 Please file feature requests and bugs at the [issue tracker][tracker].
@@ -106,4 +90,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_sqlite/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/packages/stash_hive/LICENSE) file for details
