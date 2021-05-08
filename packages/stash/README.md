@@ -45,7 +45,7 @@ There's also some integrations with well know dart libraries
 
 |Package|Pub|Description|
 |-------|---|-----------|
-|[stash_dio](https://github.com/ivoleitao/stash/packages/stash_dio)|[![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)|Integrates with the Dio HTTP client|
+|[stash_dio](https://github.com/ivoleitao/stash/tree/develop/packages/stash_dio)|[![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)|Integrates with the Dio HTTP client|
 
 
 ## Getting Started
