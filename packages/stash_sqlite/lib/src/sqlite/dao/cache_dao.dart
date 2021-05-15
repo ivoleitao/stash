@@ -125,7 +125,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [key]: The key to check on the named cache
   ///
   /// Returns true if the named cached contains the provided key, false otherwise
-  Future<bool> containsKey(String name, String key) async {
+  Future<bool> containsKey(String name, String key) {
     return (select(cacheTable)
           ..where((entry) => entry.name.equals(name) & entry.key.equals(key)))
         .getSingleOrNull()

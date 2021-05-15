@@ -46,7 +46,7 @@ class Task {
   final String title;
   final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -60,7 +60,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 
@@ -68,9 +68,9 @@ void main() async {
   // Temporary path
   final path = Directory.systemTemp.path;
 
-  // Creates cache with a hive based storage backend with a maximum capacity of 10 entries
-  final cache = newHiveCache(path,
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+  // Creates cache with a Hive based storage backend with the capacity of 10 entries
+  final cache = newHiveCache(
+      path: path, maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(

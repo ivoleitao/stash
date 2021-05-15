@@ -22,7 +22,7 @@ export 'src/file/file_store.dart';
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [FileStore]
-Cache newMemoryDiskCache(
+Cache newMemoryFileCache(
     {String? path,
     String? cacheName,
     ExpiryPolicy? expiryPolicy,
@@ -57,7 +57,7 @@ Cache newMemoryDiskCache(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [FileStore]
-Cache newLocalDiskCache(
+Cache newLocalFileCache(
     {String? path,
     String? cacheName,
     ExpiryPolicy? expiryPolicy,

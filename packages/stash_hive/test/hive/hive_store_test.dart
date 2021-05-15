@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:stash/stash_harness.dart';
+import 'package:stash_hive/src/hive/hive_adapter.dart';
 import 'package:stash_hive/stash_hive.dart';
 import 'package:test/test.dart';
 
@@ -11,9 +12,9 @@ class DefaultContext extends TestContext<HiveStore> {
 
   @override
   Future<HiveStore> newStore() {
-    return Directory.systemTemp
-        .createTemp('stash_hive')
-        .then((d) => HiveStore(d.path, fromEncodable: fromEncodable));
+    return Directory.systemTemp.createTemp('stash_hive').then((d) =>
+        LazyHiveStore(LazyHiveAdapter(path: d.path),
+            fromEncodable: fromEncodable));
   }
 
   @override

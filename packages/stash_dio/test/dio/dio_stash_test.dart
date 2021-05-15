@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:stash/stash_memory.dart';
+import 'package:stash_dio/src/dio/cache_value.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
 import 'package:test/test.dart';
 
@@ -77,6 +78,31 @@ void main() async {
     dio.httpClientAdapter = dioAdapterMock;
 
     registerFallbackValue<RequestOptions>(RequestOptionsFake());
+  });
+
+  test('CacheValue serialization/deserialization with no values', () async {
+    final cacheValue1 = CacheValue();
+    final cacheValueSerialized = cacheValue1.toJson();
+    final cacheValue2 = CacheValue.fromJson(cacheValueSerialized);
+
+    expect(cacheValue1, equals(cacheValue2));
+  });
+
+  test('CacheValue serialization/deserialization with all values', () async {
+    final headers = utf8.encode(jsonEncode({
+      'a': ['1', 's']
+    }));
+    final data = utf8.encode(jsonEncode('test'));
+
+    final cacheValue1 = CacheValue(
+        statusCode: 200,
+        headers: headers,
+        staleDate: DateTime(2000, 1, 1, 1, 1, 1, 1, 1),
+        data: data);
+    final cacheValueSerialized = cacheValue1.toJson();
+    final cacheValue2 = CacheValue.fromJson(cacheValueSerialized);
+
+    expect(cacheValue1, equals(cacheValue2));
   });
 
   test('Without cache', () async {

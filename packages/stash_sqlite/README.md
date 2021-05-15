@@ -33,7 +33,7 @@ import 'package:stash_sqlite/stash_sqlite.dart';
 
 ## Usage
 
-The example bellow stores a Task object on a sqlite cache that uses a file based SQLite database. A in-memory alternative is also available as well although mostly suited for testing.
+The example bellow stores a Task object on a file based sqlite cache. A in-memory alternative is also available as well although mostly suited for testing.
 
 ```dart
 import 'dart:io';
@@ -66,6 +66,7 @@ class Task {
 void main() async {
   // Temporary directory
   final dir = Directory.systemTemp;
+  // Temporary database file
   final file = File('${dir.path}/stash_sqlite.db');
 
   // Creates cache with a sqlite file based storage backend with the capacity of 10 entries
@@ -80,6 +81,7 @@ void main() async {
 
   print(value);
 }
+
 ```
 
 ## Features and Bugs

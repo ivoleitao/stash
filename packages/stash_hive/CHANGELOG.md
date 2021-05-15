@@ -1,6 +1,12 @@
 ## 2.0.2
 
 - Updated dependencies
+- Decouple the storage via a new adapter improving the configurability and extensibility
+- Separated lazy and non lazy cache initialization
+
+## 2.0.2
+
+- Updated dependencies
 
 ## 2.0.1
 

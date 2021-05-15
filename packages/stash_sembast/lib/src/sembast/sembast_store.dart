@@ -1,70 +1,31 @@
-import 'package:path/path.dart' as p;
 import 'package:sembast/sembast.dart';
-import 'package:sembast/sembast_io.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/src/sembast/sembast_extensions.dart';
 
-import 'dao/cache_dao.dart';
+import 'sembast_adapter.dart';
 
 /// Sembast based implemention of a [CacheStore]
 class SembastStore extends CacheStore {
-  /// The base location of the Sembast storage
-  final String _path;
+  /// The adapter
+  final SembastAdapter _adapter;
 
   /// The function that converts between the Map representation to the
   /// object stored in the cache
   final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
-  /// The Sembast database object
-  Database? _db;
-
-  /// List of Sembast stores per cache name
-  final Map<String, StoreRef<String, Map<String, dynamic>>> _cacheStoreMap = {};
-
   /// Builds a [SembastStore].
   ///
-  /// * [_path]: The base location of the Sembast storage
+  /// * [_adapter]: The sembast store adapter
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastStore(this._path,
+  SembastStore(this._adapter,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _fromEncodable = fromEncodable;
 
-  /// Returns the [CacheDao] that provides access to the stored objects.
-  /// If the database is closed it's opened on the first request
-  ///
-  /// * [name]: The name of the cache
-  ///
-  /// Returns the [CacheDao]
-  Future<CacheDao> _cacheStore(String name) {
-    Future<Database> getDB;
-    if (_db == null) {
-      getDB = databaseFactoryIo.openDatabase(p.join(_path, name)).then((d) {
-        _db = d;
-
-        return d;
-      });
-    } else {
-      getDB = Future.value(_db);
-    }
-
-    return getDB.then((db) {
-      if (_cacheStoreMap.containsKey(name)) {
-        return CacheDao(db, _cacheStoreMap[name]!);
-      }
-
-      final cacheStore =
-          _cacheStoreMap[name] = StoreRef<String, Map<String, dynamic>>(name);
-
-      return CacheDao(db, cacheStore);
-    });
-  }
+  @override
+  Future<int> size(String name) => _adapter.count(name);
 
   @override
-  Future<int> size(String name) => _cacheStore(name).then((dao) => dao.count());
-
-  @override
-  Future<Iterable<String>> keys(String name) =>
-      _cacheStore(name).then((dao) => dao.keys());
+  Future<Iterable<String>> keys(String name) => _adapter.keys(name);
 
   /// Retrieves a [CacheEntry] from a json map
   ///
@@ -88,12 +49,12 @@ class SembastStore extends CacheStore {
 
   /// Calls the [CacheDao] and retries a [CacheEntry] by key
   ///
-  /// * [dao]: The [CacheDao]
+  /// * [name]: The cache name
   /// * [key]: The cache key
   ///
   ///  Returns the corresponding [CacheEntry]
-  Future<CacheEntry?> _getEntryFromStore(CacheDao dao, String key) =>
-      dao.getByKey(key).then(_getEntryFromValue);
+  Future<CacheEntry?> _getEntryFromStore(String name, String key) =>
+      _adapter.getByKey(name, key).then(_getEntryFromValue);
 
   /// Returns the [CacheEntry] for the named cache value specified [key].
   ///
@@ -102,7 +63,7 @@ class SembastStore extends CacheStore {
   ///
   /// Returns a [CacheEntry]
   Future<CacheEntry?> _getEntry(String name, String key) {
-    return _cacheStore(name).then((dao) => _getEntryFromStore(dao, key));
+    return _getEntryFromStore(name, key);
   }
 
   /// Gets the list of all the records by cache name
@@ -112,7 +73,7 @@ class SembastStore extends CacheStore {
   ///  Returns the list of [RecordSnapshot]'s by cache name
   Future<List<RecordSnapshot<String, Map<String, dynamic>>>> _getRecords(
       String name) {
-    return _cacheStore(name).then((dao) => dao.find());
+    return _adapter.find(name);
   }
 
   @override
@@ -131,7 +92,7 @@ class SembastStore extends CacheStore {
 
   @override
   Future<bool> containsKey(String name, String key) =>
-      _cacheStore(name).then((dao) => dao.exists(key));
+      _adapter.exists(name, key);
 
   @override
   Future<CacheStat?> getStat(String name, String key) {
@@ -140,17 +101,14 @@ class SembastStore extends CacheStore {
 
   @override
   Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
-    return _cacheStore(name).then((dao) => dao.getByKeys(keys)).then(
-        (records) =>
-            records.map((record) => _getEntryFromValue(record)).toList());
+    return _adapter.getByKeys(name, keys).then((records) =>
+        records.map((record) => _getEntryFromValue(record)).toList());
   }
 
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
-    return _cacheStore(name).then((dao) {
-      return _getEntryFromStore(dao, key)
-          .then((entry) => dao.put(key, (entry!..stat = stat).toSembastJson()));
-    });
+    return _getEntryFromStore(name, key).then((entry) =>
+        _adapter.put(name, key, (entry!..stat = stat).toSembastJson()));
   }
 
   @override
@@ -160,36 +118,26 @@ class SembastStore extends CacheStore {
 
   @override
   Future<void> putEntry(String name, String key, CacheEntry entry) {
-    return _cacheStore(name).then((dao) => dao.put(key, entry.toSembastJson()));
+    return _adapter.put(name, key, entry.toSembastJson());
   }
 
   @override
   Future<void> remove(String name, String key) {
-    return _cacheStore(name).then((ctx) => ctx.remove(key));
+    return _adapter.remove(name, key);
   }
 
   @override
   Future<void> clear(String name) {
-    return _cacheStore(name).then((ctx) => ctx.clear());
+    return _adapter.clear(name);
   }
 
   @override
   Future<void> delete(String name) {
-    if (_cacheStoreMap.containsKey(name)) {
-      return _cacheStore(name).then((ctx) {
-        return ctx.clear().then((_) => _cacheStoreMap.remove(name));
-      });
-    }
-
-    return Future.value();
+    return _adapter.delete(name);
   }
 
   @override
   Future<void> deleteAll() {
-    return Future.wait(_cacheStoreMap.keys.map((name) {
-      return _cacheStore(name).then((ctx) {
-        return ctx.deleteDatabase().then((_) => _cacheStoreMap.remove(name));
-      });
-    }));
+    return _adapter.deleteAll();
   }
 }

@@ -2,8 +2,10 @@
 library stash_objectbox;
 
 import 'package:stash/stash_api.dart';
+import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_store.dart';
 
+export 'src/objectbox/objectbox_adapter.dart';
 export 'src/objectbox/objectbox_store.dart';
 
 /// Creates a new [Cache] backed by a [ObjectboxStore]
@@ -17,6 +19,11 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [path]: The base location of the Objectbox storage
+/// * [maxDBSizeInKB]: The max DB size
+/// * [fileMode]: The file mode
+/// * [maxReaders]: The number of maximum readers
+/// * [queriesCaseSensitiveDefault]: If the queries are case sensitive, the default is true
 ///
 /// Returns a new [Cache] backed by a [ObjectboxStore]
 Cache newObjectBoxCache(String path,
@@ -27,9 +34,20 @@ Cache newObjectBoxCache(String path,
     int? maxEntries,
     CacheLoader? cacheLoader,
     CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable}) {
+    dynamic Function(dynamic)? fromEncodable,
+    int? maxDBSizeInKB,
+    int? fileMode,
+    int? maxReaders,
+    bool? queriesCaseSensitiveDefault}) {
   return Cache.newCache(
-      ObjectboxStore(path, codec: codec, fromEncodable: fromEncodable),
+      ObjectboxStore(
+          ObjectboxAdapter(path,
+              maxDBSizeInKB: maxDBSizeInKB,
+              fileMode: fileMode,
+              maxReaders: maxReaders,
+              queriesCaseSensitiveDefault: queriesCaseSensitiveDefault),
+          codec: codec,
+          fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,

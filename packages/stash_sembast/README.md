@@ -48,7 +48,7 @@ class Task {
   final String title;
   final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -62,16 +62,18 @@ class Task {
 
   @override
   String toString() {
-    return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 
 void main() async {
   // Temporary path
-  final path = Directory.systemTemp.path;
+  final dir = Directory.systemTemp;
+  // Temporary database file
+  final file = File('${dir.path}/stash_sqlite.db');
 
-  // Creates cache with a Sembast based storage backend with a maximum capacity of 10 entries
-  final cache = newSembastCache(path,
+  // Creates cache with a Sembast based storage backend with the capacity of 10 entries
+  final cache = newSembastFileCache(file,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
@@ -82,6 +84,7 @@ void main() async {
 
   print(value);
 }
+
 ```
 
 ## Features and Bugs

@@ -28,6 +28,7 @@ class Task {
 void main() async {
   // Temporary directory
   final dir = Directory.systemTemp;
+  // Temporary database file
   final file = File('${dir.path}/stash_sqlite.db');
 
   // Creates cache with a sqlite file based storage backend with the capacity of 10 entries

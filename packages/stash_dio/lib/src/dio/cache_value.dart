@@ -37,19 +37,22 @@ class CacheValue extends Equatable {
   /// Creates a [CacheValue] from json map
   ///
   /// * [json]: The json map
-  factory CacheValue.fromJson(Map<String, dynamic> json) => CacheValue(
-        statusCode: json['statusCode'] as int?,
-        headers: (json['headers'] as List?)?.map((e) => e as int).toList(),
-        staleDate:
-            DateTime.fromMicrosecondsSinceEpoch(json['staleDate'] as int),
-        data: (json['data'] as List?)?.map((e) => e as int).toList(),
-      );
+  factory CacheValue.fromJson(Map<String, dynamic> json) {
+    final jsonStaleDate = json['staleDate'] as String?;
+
+    return CacheValue(
+      statusCode: json['statusCode'] as int?,
+      headers: (json['headers'] as List?)?.map((e) => e as int).toList(),
+      staleDate: jsonStaleDate != null ? DateTime.parse(jsonStaleDate) : null,
+      data: (json['data'] as List?)?.map((e) => e as int).toList(),
+    );
+  }
 
   /// Creates a json map from a [CacheValue]
   Map<String, dynamic> toJson() => <String, dynamic>{
         'statusCode': statusCode,
         'headers': headers,
-        'staleDate': staleDate!.microsecondsSinceEpoch,
+        'staleDate': staleDate?.toIso8601String(),
         'data': data
       };
 }

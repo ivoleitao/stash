@@ -1,3 +1,9 @@
+## 2.0.3
+
+- Updated dependencies
+- Decouple the storage via a new adapter improving the configurability and extensibility
+- Added new in-memory database support
+
 ## 2.0.2
 
 - Updated dependencies

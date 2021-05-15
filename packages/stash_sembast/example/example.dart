@@ -27,10 +27,12 @@ class Task {
 
 void main() async {
   // Temporary path
-  final path = Directory.systemTemp.path;
+  final dir = Directory.systemTemp;
+  // Temporary database file
+  final file = File('${dir.path}/stash_sqlite.db');
 
   // Creates cache with a Sembast based storage backend with the capacity of 10 entries
-  final cache = newSembastCache(path,
+  final cache = newSembastFileCache(file,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache

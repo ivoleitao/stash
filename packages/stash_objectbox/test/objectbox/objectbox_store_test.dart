@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:stash/stash_harness.dart';
+import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 import 'package:test/test.dart';
 
@@ -11,9 +12,10 @@ class DefaultContext extends TestContext<ObjectboxStore> {
 
   @override
   Future<ObjectboxStore> newStore() {
-    return Directory.systemTemp
-        .createTemp('stash_objectbox')
-        .then((dir) => ObjectboxStore(dir.path, fromEncodable: fromEncodable));
+    return Directory.systemTemp.createTemp('stash_objectbox').then((dir) =>
+        ObjectboxStore(
+            ObjectboxAdapter(dir.path, queriesCaseSensitiveDefault: true),
+            fromEncodable: fromEncodable));
   }
 
   @override

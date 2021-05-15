@@ -1,7 +1,7 @@
-import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:stash/stash_harness.dart';
-import 'package:stash_sqlite/stash_sqlite.dart';
+import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
+import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<SqliteStore> {
@@ -9,14 +9,9 @@ class DefaultContext extends TestContext<SqliteStore> {
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: fromEncodable);
 
-  QueryExecutor memoryExecutor({bool logStatements = false}) {
-    return VmDatabase.memory(logStatements: logStatements);
-  }
-
   @override
   Future<SqliteStore> newStore() {
-    return Future.value(SqliteStore(
-        CacheDatabase(memoryExecutor(logStatements: false)),
+    return Future.value(SqliteStore(SqliteMemoryAdapter(logStatements: false),
         fromEncodable: fromEncodable));
   }
 

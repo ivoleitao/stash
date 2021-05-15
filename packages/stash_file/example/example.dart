@@ -25,7 +25,7 @@ class Task {
 
 void main() async {
   // Creates a cache on the local storage with the capacity of 10 entries
-  final cache = newLocalDiskCache(
+  final cache = newLocalFileCache(
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache

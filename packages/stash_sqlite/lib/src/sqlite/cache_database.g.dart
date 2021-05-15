@@ -243,7 +243,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     required int hitCount,
     this.extra = const Value.absent(),
     required Uint8List value,
-  })   : name = Value(name),
+  })  : name = Value(name),
         key = Value(key),
         expiryTime = Value(expiryTime),
         creationTime = Value(creationTime),

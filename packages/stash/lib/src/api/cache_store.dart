@@ -77,11 +77,13 @@ abstract class CacheStore {
   /// * [name]: The cache name
   Future<void> clear(String name);
 
-  /// Deletes a named cache from a store
+  /// Deletes a named cache from a store or the store itself if a named cache is
+  /// stored individually
   ///
   /// * [name]: The cache name
   Future<void> delete(String name);
 
-  /// Deletes all caches from the store
+  /// Deletes the store a if a store is implemented in a way that puts all the
+  /// named caches in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll();
 }
