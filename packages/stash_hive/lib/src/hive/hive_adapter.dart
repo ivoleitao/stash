@@ -29,7 +29,7 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   /// List of boxes per cache name
   final Map<String, T> _cacheStore = {};
 
-  /// Builds a [HiveStoreAdapter].
+  /// Builds a [HiveAdapter].
   ///
   /// * [path]: The base location of the Hive storage
   HiveAdapter({this.path, this.encryptionCipher, this.crashRecovery});

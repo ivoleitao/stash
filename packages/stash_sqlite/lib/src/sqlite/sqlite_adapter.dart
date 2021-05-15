@@ -35,7 +35,6 @@ abstract class SqliteAdapter extends CacheStoreAdapter {
   /// Builds a [SqliteAdapter].
   ///
   /// * [logStatements]: Generated sql statements will be printed before executing
-  /// * [setup]: Function that can be used to perform a setup just after the database is opened
   SqliteAdapter({this.logStatements}) {
     _cacheStore = CacheDatabase(executor());
   }
