@@ -47,25 +47,24 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   factory CacheData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final stringType = db.typeSystem.forDartType<String>();
-    final intType = db.typeSystem.forDartType<int>();
-    final uint8ListType = db.typeSystem.forDartType<Uint8List>();
     return CacheData(
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key'])!,
-      expiryTime: $CacheTableTable.$converter0.mapToDart(stringType
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      key: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}key'])!,
+      expiryTime: $CacheTableTable.$converter0.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}expiry_time']))!,
-      creationTime: $CacheTableTable.$converter1.mapToDart(stringType
+      creationTime: $CacheTableTable.$converter1.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}creation_time']))!,
-      accessTime: $CacheTableTable.$converter2.mapToDart(stringType
+      accessTime: $CacheTableTable.$converter2.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}access_time']))!,
-      updateTime: $CacheTableTable.$converter3.mapToDart(stringType
+      updateTime: $CacheTableTable.$converter3.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}update_time']))!,
-      hitCount:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}hit_count'])!,
-      extra: uint8ListType
+      hitCount: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}hit_count'])!,
+      extra: const BlobType()
           .mapFromDatabaseResponse(data['${effectivePrefix}extra']),
-      value: uint8ListType
+      value: const BlobType()
           .mapFromDatabaseResponse(data['${effectivePrefix}value'])!,
     );
   }
@@ -198,7 +197,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
                           $mrjc(hitCount.hashCode,
                               $mrjc(extra.hashCode, value.hashCode)))))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CacheData &&
           other.name == this.name &&
