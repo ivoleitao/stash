@@ -173,5 +173,5 @@ void main() async {
     var receivedResponse2 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse2, providedResponse1);
-  });
+  }, testOn: '!js');
 }
