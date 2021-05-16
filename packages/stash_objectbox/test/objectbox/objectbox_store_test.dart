@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:stash/stash_harness.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<ObjectboxStore> {
@@ -16,11 +16,6 @@ class DefaultContext extends TestContext<ObjectboxStore> {
         ObjectboxStore(
             ObjectboxAdapter(dir.path, queriesCaseSensitiveDefault: true),
             fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

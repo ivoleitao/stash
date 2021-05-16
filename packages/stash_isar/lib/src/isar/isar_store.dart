@@ -1,4 +1,4 @@
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 
 /// Isar based implemention of a [CacheStore]
 class IsarStore extends CacheStore {

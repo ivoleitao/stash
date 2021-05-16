@@ -1,5 +1,5 @@
 import 'package:sembast/sembast.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_sembast/src/sembast/sembast_extensions.dart';
 
 import 'sembast_adapter.dart';

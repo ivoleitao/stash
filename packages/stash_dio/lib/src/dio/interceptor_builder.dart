@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 
 import 'cache_interceptor.dart';
 import 'cache_value.dart';

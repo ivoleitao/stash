@@ -1,3 +1,9 @@
+# 3.0.0-dev.1
+
+- First development version of the 3.x.x version
+- BREAKING: This version removes the harness and the stash memory storage extension from stash 
+- BREAKING: Package 'package:stash/stash.dart' should now be used instead of 'package:stash/stash_api.dart'
+
 ## 2.0.2
 
 - Fixed additional problems in the documentation

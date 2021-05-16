@@ -1,6 +1,6 @@
-import 'package:stash/stash_harness.dart';
 import 'package:stash_sembast/src/sembast/sembast_adapter.dart';
 import 'package:stash_sembast/stash_sembast.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<SembastStore> {
@@ -12,11 +12,6 @@ class DefaultContext extends TestContext<SembastStore> {
   Future<SembastStore> newStore() {
     return Future.value(SembastStore(SembastMemoryAdapter('sembast'),
         fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

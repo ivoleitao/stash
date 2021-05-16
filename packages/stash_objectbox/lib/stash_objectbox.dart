@@ -1,7 +1,7 @@
 /// Provides a Objectbox implementation of the Stash caching API for Dart
 library stash_objectbox;
 
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_store.dart';
 

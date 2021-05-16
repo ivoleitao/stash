@@ -1,6 +1,5 @@
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache_store.dart';
-import 'package:stash/src/memory/memory_store.dart';
 
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary

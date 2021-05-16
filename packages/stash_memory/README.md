@@ -12,7 +12,7 @@ This storage extension for [stash](https://pub.dartlang.org/packages/stash) prov
 
 ## Getting Started
 
-Add this to your `pubspec.yaml` (or create it) replacing x.x.x with the latest version of stash_memory:
+Add this to your `pubspec.yaml` (or create it) replacing x.x.x with the latest version of stash_memory: 
 
 ```dart
 dependencies:

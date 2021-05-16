@@ -47,6 +47,13 @@ There's also some integrations with well know dart libraries
 |-------|---|-----------|
 |[stash_dio](https://github.com/ivoleitao/stash/tree/develop/packages/stash_dio)|[![Pub](https://img.shields.io/pub/v/stash_dio.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_dio)|Integrates with the Dio HTTP client|
 
+## Test Support
+
+Finally a testing library is also provided to aid in the development of third party extensions
+
+|Package|Pub|Description|
+|-------|---|-----------|
+|[stash_dio](https://github.com/ivoleitao/stash/tree/develop/packages/stash_test)|[![Pub](https://img.shields.io/pub/v/stash_test.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_test)|Testing support for `stash` extensions|
 
 ## Getting Started
 

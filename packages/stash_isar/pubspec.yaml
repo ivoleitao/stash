@@ -1,5 +1,5 @@
 name: stash_isar
-version: 2.0.2
+version: 3.0.0-dev.1
 publish_to: none
 description: >-
   Isar storage extension for the stash caching API. Provides support to store caches
@@ -10,7 +10,8 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  stash: ^2.0.2
+  stash: ^3.0.0-dev.1
 dev_dependencies:
   pedantic: ^1.11.0
   test: ^1.17.4
+  stash_test: ^3.0.0-dev.2

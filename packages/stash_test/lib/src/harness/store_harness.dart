@@ -1,28 +1,11 @@
 import 'package:matcher/matcher.dart';
-import 'package:stash/src/api/cache_entry.dart';
-import 'package:stash/src/api/cache_stat.dart';
-import 'package:stash/src/api/cache_store.dart';
-import 'package:stash/src/memory/memory_store.dart';
+import 'package:stash/stash.dart';
 import 'package:time/time.dart';
 
 import 'harness.dart';
 
 /// The default cache name
 const _DefaultCache = 'test';
-
-/// Creates a new [MemoryStore]
-///
-/// Returns a new [MemoryStore]
-Future<MemoryStore> newMemoryStore() {
-  return Future.value(MemoryStore());
-}
-
-/// Deletes a [MemoryStore]
-///
-/// * [store]: The [MemoryStore] to delete
-Future<void> deleteMemoryStore(MemoryStore store) {
-  return store.deleteAll();
-}
 
 /// Calls [CacheStore.size] with a optional cache name
 ///

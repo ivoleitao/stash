@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:stash/stash_harness.dart';
 import 'package:stash_hive/src/hive/hive_adapter.dart';
 import 'package:stash_hive/stash_hive.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<HiveStore> {
@@ -15,11 +15,6 @@ class DefaultContext extends TestContext<HiveStore> {
     return Directory.systemTemp.createTemp('stash_hive').then((d) =>
         HiveDefaultStore(HiveDefaultAdapter(d.path),
             fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

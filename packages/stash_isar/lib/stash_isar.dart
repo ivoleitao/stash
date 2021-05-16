@@ -1,7 +1,7 @@
 /// Provides a Isar implementation of the Stash caching API for Dart
 library stash_isar;
 
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_isar/src/isar/isar_store.dart';
 
 export 'src/isar/isar_store.dart';

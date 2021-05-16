@@ -1,5 +1,5 @@
 /// Provides testing support to third party extensions, for example store extensions
-library stash_harness;
+library stash_test;
 
 export 'src/harness/cache_harness.dart';
 export 'src/harness/harness.dart';

@@ -1,18 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:matcher/matcher.dart';
-import 'package:stash/src/api/cache.dart';
-import 'package:stash/src/api/cache_store.dart';
-import 'package:stash/src/api/eviction/fifo_policy.dart';
-import 'package:stash/src/api/eviction/filo_policy.dart';
-import 'package:stash/src/api/eviction/lfu_policy.dart';
-import 'package:stash/src/api/eviction/lru_policy.dart';
-import 'package:stash/src/api/eviction/mfu_policy.dart';
-import 'package:stash/src/api/eviction/mru_policy.dart';
-import 'package:stash/src/api/expiry/accessed_policy.dart';
-import 'package:stash/src/api/expiry/created_policy.dart';
-import 'package:stash/src/api/expiry/eternal_policy.dart';
-import 'package:stash/src/api/expiry/modified_policy.dart';
-import 'package:stash/src/api/expiry/touched_policy.dart';
+import 'package:stash/stash.dart';
 
 import 'harness.dart';
 

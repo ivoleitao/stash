@@ -1,5 +1,5 @@
-import 'package:stash/stash_harness.dart';
-import 'package:stash/stash_memory.dart';
+import 'package:stash_memory/stash_memory.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<MemoryStore> {
@@ -7,12 +7,7 @@ class DefaultContext extends TestContext<MemoryStore> {
 
   @override
   Future<MemoryStore> newStore() {
-    return newMemoryStore();
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
+    return Future.value(MemoryStore());
   }
 }
 

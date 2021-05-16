@@ -5,6 +5,8 @@ coverage:
       default: off
       stash:
         flags: stash
+      stash_test:
+        flags: stash_test
       stash_memory:
         flags: stash_memory
       stash_file:
@@ -26,6 +28,9 @@ flags:
   stash:
     paths:
       - packages/stash/lib/
+  stash_test:
+    paths:
+      - packages/stash_test/lib/
   stash_memory:
     paths:
       - packages/stash_memory/lib/

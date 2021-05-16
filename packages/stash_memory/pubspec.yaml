@@ -1,6 +1,5 @@
 name: stash_memory
-version: 1.0.0
-publish_to: none
+version: 3.0.0-dev.1
 description: >-
   Memory storage extension for the stash caching API. Provides support to store caches
   in-memory
@@ -10,7 +9,8 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  stash: ^2.0.2
+  stash: ^3.0.0-dev.1
 dev_dependencies:
   pedantic: ^1.11.0
   test: ^1.17.4
+  stash_test: ^3.0.0-dev.2

@@ -6,6 +6,8 @@ import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache/tiered_cache.dart';
 
 export 'src/api/cache.dart';
+export 'src/api/cache/default_cache.dart';
+export 'src/api/cache/tiered_cache.dart';
 export 'src/api/cache_codec.dart';
 export 'src/api/cache_entry.dart';
 export 'src/api/cache_stat.dart';

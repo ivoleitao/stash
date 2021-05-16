@@ -4,7 +4,7 @@ library stash_sqlite;
 import 'dart:io';
 
 import 'package:moor/ffi.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 

@@ -4,7 +4,7 @@ library stash_file;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:file/memory.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_file/src/file/file_store.dart';
 
 export 'src/file/file_store.dart';

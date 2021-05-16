@@ -1,8 +1,8 @@
 /// Provides a in-memory implementation of the Stash caching API for Dart
 library stash_memory;
 
-import 'package:stash/src/memory/memory_store.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
+import 'package:stash_memory/src/memory/memory_store.dart';
 
 export 'src/memory/memory_store.dart';
 

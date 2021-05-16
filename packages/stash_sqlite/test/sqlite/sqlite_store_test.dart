@@ -1,7 +1,7 @@
 import 'package:moor/moor.dart';
-import 'package:stash/stash_harness.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<SqliteStore> {
@@ -13,11 +13,6 @@ class DefaultContext extends TestContext<SqliteStore> {
   Future<SqliteStore> newStore() {
     return Future.value(SqliteStore(SqliteMemoryAdapter(logStatements: false),
         fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

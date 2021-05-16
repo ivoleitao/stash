@@ -1,7 +1,7 @@
 import 'package:file/file.dart';
 import 'package:file/memory.dart';
-import 'package:stash/stash_harness.dart';
 import 'package:stash_file/stash_file.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<FileStore> {
@@ -15,11 +15,6 @@ class DefaultContext extends TestContext<FileStore> {
 
     return Future.value(FileStore(fs, fs.systemTempDirectory.path,
         fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

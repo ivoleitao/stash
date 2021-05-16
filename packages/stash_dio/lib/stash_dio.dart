@@ -2,9 +2,9 @@
 library stash_dio;
 
 import 'package:dio/dio.dart';
-import 'package:stash/stash_api.dart';
-import 'package:stash/stash_memory.dart';
+import 'package:stash/stash.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
+import 'package:stash_memory/stash_memory.dart';
 
 export 'src/dio/cache_interceptor.dart';
 

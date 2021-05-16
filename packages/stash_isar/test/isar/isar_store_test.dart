@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:stash/stash_harness.dart';
 import 'package:stash_isar/stash_isar.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 class DefaultContext extends TestContext<IsarStore> {
@@ -14,11 +14,6 @@ class DefaultContext extends TestContext<IsarStore> {
     return Directory.systemTemp
         .createTemp('stash_isar')
         .then((d) => IsarStore(fromEncodable: fromEncodable));
-  }
-
-  @override
-  void check(actual, matcher, {String? reason, skip}) {
-    expect(actual, matcher, reason: reason, skip: skip);
   }
 }
 

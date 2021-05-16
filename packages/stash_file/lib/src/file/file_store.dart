@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:file/file.dart';
 import 'package:path/path.dart' as p;
-import 'package:stash/stash_api.dart';
+import 'package:stash/stash.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 /// File based implemention of a [CacheStore]
