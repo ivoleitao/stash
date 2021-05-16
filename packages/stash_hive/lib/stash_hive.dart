@@ -9,7 +9,7 @@ import 'package:stash_hive/src/hive/hive_store.dart';
 export 'src/hive/hive_adapter.dart';
 export 'src/hive/hive_store.dart';
 
-/// Creates a new [Cache] backed by a [DefaultHiveStore]
+/// Creates a new [Cache] backed by a [HiveDefaultStore]
 ///
 /// * [path]: The base storage location for this cache
 /// * [cacheName]: The name of the cache
@@ -20,10 +20,9 @@ export 'src/hive/hive_store.dart';
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [DefaultHiveStore]
-Cache newHiveCache(
-    {String? path,
-    String? cacheName,
+/// Returns a new [Cache] backed by a [HiveDefaultStore]
+Cache newHiveCache(String path,
+    {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -33,11 +32,9 @@ Cache newHiveCache(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return Cache.newCache(
-      DefaultHiveStore(
-          DefaultHiveAdapter(
-              path: path,
-              encryptionCipher: encryptionCipher,
-              crashRecovery: crashRecovery),
+      HiveDefaultStore(
+          HiveDefaultAdapter(path,
+              encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
           fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
@@ -47,7 +44,7 @@ Cache newHiveCache(
       cacheLoader: cacheLoader);
 }
 
-/// Creates a new [Cache] backed by a [LazyHiveStore]
+/// Creates a new [Cache] backed by a [HiveLazyStore]
 ///
 /// * [path]: The base storage location for this cache
 /// * [cacheName]: The name of the cache
@@ -58,10 +55,9 @@ Cache newHiveCache(
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [LazyHiveStore]
-Cache newLazyHiveCache(
-    {String? path,
-    String? cacheName,
+/// Returns a new [Cache] backed by a [HiveLazyStore]
+Cache newLazyHiveCache(String path,
+    {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -71,11 +67,9 @@ Cache newLazyHiveCache(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return Cache.newCache(
-      LazyHiveStore(
-          LazyHiveAdapter(
-              path: path,
-              encryptionCipher: encryptionCipher,
-              crashRecovery: crashRecovery),
+      HiveLazyStore(
+          HiveLazyAdapter(path,
+              encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
           fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,

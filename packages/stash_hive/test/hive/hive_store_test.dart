@@ -13,7 +13,7 @@ class DefaultContext extends TestContext<HiveStore> {
   @override
   Future<HiveStore> newStore() {
     return Directory.systemTemp.createTemp('stash_hive').then((d) =>
-        LazyHiveStore(LazyHiveAdapter(path: d.path),
+        HiveDefaultStore(HiveDefaultAdapter(d.path),
             fromEncodable: fromEncodable));
   }
 

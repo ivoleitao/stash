@@ -18,7 +18,7 @@ abstract class CacheStoreAdapter {
 /// Hive backend
 abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   /// The path to the box
-  final String? path;
+  final String path;
 
   /// The encryption cypher
   final HiveCipher? encryptionCipher;
@@ -32,7 +32,7 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   /// Builds a [HiveAdapter].
   ///
   /// * [path]: The base location of the Hive storage
-  HiveAdapter({this.path, this.encryptionCipher, this.crashRecovery});
+  HiveAdapter(this.path, {this.encryptionCipher, this.crashRecovery});
 
   /// Opens the box
   ///
@@ -76,13 +76,11 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   }
 }
 
-class DefaultHiveAdapter extends HiveAdapter<Box<Map>> {
-  DefaultHiveAdapter(
-      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(
-            path: path,
-            encryptionCipher: encryptionCipher,
-            crashRecovery: crashRecovery);
+class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
+  HiveDefaultAdapter(String path,
+      {HiveCipher? encryptionCipher, bool? crashRecovery})
+      : super(path,
+            encryptionCipher: encryptionCipher, crashRecovery: crashRecovery);
 
   @override
   Future<Box<Map>> openBox(String name) {
@@ -98,13 +96,11 @@ class DefaultHiveAdapter extends HiveAdapter<Box<Map>> {
   }
 }
 
-class LazyHiveAdapter extends HiveAdapter<LazyBox<Map>> {
-  LazyHiveAdapter(
-      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(
-            path: path,
-            encryptionCipher: encryptionCipher,
-            crashRecovery: crashRecovery);
+class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
+  HiveLazyAdapter(String path,
+      {HiveCipher? encryptionCipher, bool? crashRecovery})
+      : super(path,
+            encryptionCipher: encryptionCipher, crashRecovery: crashRecovery);
 
   @override
   Future<LazyBox<Map>> openBox(String name) {

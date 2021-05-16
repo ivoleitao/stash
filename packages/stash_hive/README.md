@@ -70,7 +70,7 @@ void main() async {
 
   // Creates cache with a Hive based storage backend with the capacity of 10 entries
   final cache = newHiveCache(
-      path: path, maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+      path, maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(

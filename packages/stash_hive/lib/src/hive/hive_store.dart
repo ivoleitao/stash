@@ -153,20 +153,20 @@ abstract class HiveStore<T extends BoxBase<Map>> extends CacheStore {
   }
 }
 
-class DefaultHiveStore extends HiveStore<Box<Map>> {
-  /// Builds a [DefaultHiveStore].
+class HiveDefaultStore extends HiveStore<Box<Map>> {
+  /// Builds a [HiveDefaultStore].
   ///
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  DefaultHiveStore(DefaultHiveAdapter adapter,
+  HiveDefaultStore(HiveDefaultAdapter adapter,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(adapter, fromEncodable: fromEncodable);
 }
 
-class LazyHiveStore extends HiveStore<LazyBox<Map>> {
-  /// Builds a [LazyHiveStore].
+class HiveLazyStore extends HiveStore<LazyBox<Map>> {
+  /// Builds a [HiveLazyStore].
   ///
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  LazyHiveStore(LazyHiveAdapter adapter,
+  HiveLazyStore(HiveLazyAdapter adapter,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(adapter, fromEncodable: fromEncodable);
 }
