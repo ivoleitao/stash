@@ -1,6 +1,7 @@
 ## 2.0.4
 
 - Fixed issue [stash_dio crash when reading from hive cache](https://github.com/ivoleitao/stash/issues/9)
+- Merged pull request [Fix cache control value separator](https://github.com/ivoleitao/stash/pull/10)
 
 ## 2.0.3
 
