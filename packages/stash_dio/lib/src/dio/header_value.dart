@@ -222,6 +222,20 @@ abstract class HeaderValue {
     return _HeaderValue(value, parameters);
   }
 
+  /// Creates a new cache-control header value object from parsing a header
+  /// value string with both value and optional parameters.
+  ///
+  /// * [value]: The cache-control header directive
+  ///
+  /// Returns a [HeaderValue]
+  static HeaderValue parseCacheControl(String value) {
+    return HeaderValue.parse(
+      'cache-control: $value',
+      parameterSeparator: ',',
+      valueSeparator: '=',
+    );
+  }
+
   /// Creates a new header value object from parsing a header value
   /// string with both value and optional parameters.
   ///
