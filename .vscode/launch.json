@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Memory",
-            "program": "packages/stash/example/example.dart",
+            "program": "packages/stash_memory/example/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",

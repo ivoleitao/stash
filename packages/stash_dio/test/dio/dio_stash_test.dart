@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:stash/stash_memory.dart';
 import 'package:stash_dio/src/dio/cache_value.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
+import 'package:stash_file/stash_file.dart';
 import 'package:test/test.dart';
 
 const baseUrl = 'https://jsonplaceholder.typicode.com';
@@ -158,5 +159,19 @@ void main() async {
     _withAnswer(dioAdapterMock, Post._1(), statusCode: 404);
     expect(
         _getResponse(dio, '/posts/1'), throwsA(const TypeMatcher<DioError>()));
+  });
+
+  test('With a file cache', () async {
+    withInterceptor(
+        dio, (builder) => builder..cache('/posts/1', newMemoryDiskCache()));
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1());
+    var receivedResponse1 = await _getResponse(dio, '/posts/1');
+
+    expect(receivedResponse1, providedResponse1);
+
+    _withAnswer(dioAdapterMock, Post._1());
+    var receivedResponse2 = await _getResponse(dio, '/posts/1');
+
+    expect(receivedResponse2, providedResponse1);
   });
 }

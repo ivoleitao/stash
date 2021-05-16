@@ -11,9 +11,9 @@
 
 ## Overview
 
-The `stash` caching library was designed from ground up with extensibility in mind. On it's core provides a simple in-memory cache but supports a vast array of other storage mechanisms as opt-in libraries. From a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction, but also provides pluggable storage and binary serialization mechanisms. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well.
+The `stash` caching library was designed from ground up with extensibility in mind. It's based on a small core that can be plugged to a vast array of storage mechanisms and supports extension points across all code base. From a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well
 
-3rd party library developers support is well defined as well. The library provides a harness with a number of tests that allow the implementers of novel storage and cache frontends to test their implementations against the same baseline tests that were used to validate the in-memory reference implementation
+3rd party library developers support is well defined as well. The library provides a harness with a number of tests that allow the implementers of novel storage and cache frontends to test their implementations against the same baseline tests that were used by the author to validate every extension.
 
 ## Features
 
@@ -32,6 +32,7 @@ There's a vast array of storage implementations available which you can use.
 
 |Package|Pub|Description|
 |-------|---|-----------|
+|[stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory)|[![Pub](https://img.shields.io/pub/v/stash_memory.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_memory)|A memory storage implementation|
 |[stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file)|[![Pub](https://img.shields.io/pub/v/stash_file.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_file)|A file storage implementation|
 |[stash_sqlite](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite)|[![Pub](https://img.shields.io/pub/v/stash_sqlite.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sqlite)|A sqlite storage implementation using the [moor](https://pub.dev/packages/moor) package|
 |[stash_hive](https://github.com/ivoleitao/stash/tree/develop/packages/stash_hive)|[![Pub](https://img.shields.io/pub/v/stash_hive.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_hive)|A hive storage implementation using the [hive](https://pub.dev/packages/hive) package|
@@ -49,11 +50,11 @@ There's also some integrations with well know dart libraries
 
 ## Getting Started
 
-Select one of the storage implementation libraries and add the package to your `pubspec.yaml` replacing x.x.x with the latest version of the storage implementation. The example below uses the base package which provides an in-memory implementation.:
+Select one of the storage implementation libraries and add the package to your `pubspec.yaml` replacing x.x.x with the latest version of the storage implementation. The example below uses the `stash_memory` package which provides an in-memory implementation.:
 
 ```dart
 dependencies:
-    stash: ^x.x.x
+    stash_memory: ^x.x.x
 ```
 
 Run the following command to install dependencies:
@@ -62,7 +63,7 @@ Run the following command to install dependencies:
 dart pub get
 ```
 
-Finally, to start developing import the corresponding implementation. The standalone `stash` library provides a out-of-box in-memory storage provider that you can start using if you import the `stash_memory` library:
+Finally, to start developing import the corresponding implementation. In the example bellow the in-memory storage provider which you can start using if you import the `stash_memory` library:
 
 ```dart
 import 'package:stash/stash_memory.dart';
@@ -172,12 +173,12 @@ Note that this is not the only type of cache provided, there's another, the tier
       newMemoryCache());
 ```
 
-A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_moor](https://github.com/ivoleitao/stash/tree/develop/packages/stash_moor). The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
+A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_sqlite](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite). The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
 
 ```dart
   final cache = newTieredCache(
       newMemoryCache(maxEntries: 10),
-      newDiskCache(cacheName: 'diskCache', maxEntries: 1000));
+      newFileCache(cacheName: 'diskCache', maxEntries: 1000));
 ```
 
 ## Cache Operations
@@ -237,7 +238,7 @@ When the maximum capacity of a cache is exceeded eviction of one or more entries
 
 ## Contributing
 
-`Stash` is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
+The `stash` library is developed by best effort, in the motto of "Scratch your own itch!", meaning APIs that are meaningful for the author use cases.
 
 If you would like to contribute with other parts of the API, feel free to make a [Github pull request](https://github.com/ivoleitao/stash/pulls) as I'm always looking for contributions for:
 * Tests
@@ -246,7 +247,7 @@ If you would like to contribute with other parts of the API, feel free to make a
 
 ### Using the Storage and Cache Harnesses
 
-The `Stash` library provides a way to easily import the set of standard tests that are used for the reference implementations of [CacheStore](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache_store.dart) and the reference implementation of [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) allowing to reuse them to test custom implementations provided by external parties. It also provides as number of classes that allow the generation of values which can be used in each one of the tests:
+The `stash` library provides a way to easily import the set of standard tests that are used for the reference implementations of [CacheStore](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache_store.dart) and the reference implementation of [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) allowing to reuse them to test custom implementations provided by external parties. It also provides as number of classes that allow the generation of values which can be used in each one of the tests:
 * `BoolGenerator`
 * `IntGenerator`
 * `DoubleGenerator`

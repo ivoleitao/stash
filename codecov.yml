@@ -5,6 +5,8 @@ coverage:
       default: off
       stash:
         flags: stash
+      stash_memory:
+        flags: stash_memory
       stash_file:
         flags: stash_file
       stash_sqlite:
@@ -24,6 +26,9 @@ flags:
   stash:
     paths:
       - packages/stash/lib/
+  stash_memory:
+    paths:
+      - packages/stash_memory/lib/
   stash_file:
     paths:
       - packages/stash_file/lib/
