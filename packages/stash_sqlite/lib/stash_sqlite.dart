@@ -1,6 +1,8 @@
 /// Provides a Moor implementation of the Stash caching API for Dart
 library stash_sqlite;
 
+import 'dart:io';
+
 import 'package:moor/ffi.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
@@ -11,7 +13,7 @@ export 'src/sqlite/sqlite_store.dart';
 
 /// Creates a new [Cache] backed by a file based [SqliteStore]
 ///
-/// * [filePath]: The path to the database file
+/// * [file]: The path to the database file
 /// * [cacheName]: The name of the cache
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -22,7 +24,7 @@ export 'src/sqlite/sqlite_store.dart';
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseLog]: If [databaseLog] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
-Cache newSqliteFileCache(String filePath,
+Cache newSqliteFileCache(File file,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -35,7 +37,7 @@ Cache newSqliteFileCache(String filePath,
     DatabaseSetup? databaseSetup}) {
   return Cache.newCache(
       SqliteStore(
-          SqliteFileAdapter(filePath,
+          SqliteFileAdapter(file,
               logStatements: databaseLog, setup: databaseSetup),
           codec: codec,
           fromEncodable: fromEncodable),

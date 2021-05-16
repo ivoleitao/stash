@@ -1,4 +1,4 @@
-## 2.0.2
+## 2.0.3
 
 - Updated dependencies
 - Fixed issue [stash_dio: Null check operator used on a null value](https://github.com/ivoleitao/stash/issues/8)

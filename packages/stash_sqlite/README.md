@@ -67,10 +67,10 @@ void main() async {
   // Temporary directory
   final dirPath = Directory.systemTemp;
   // Temporary database file
-  final filePath = '${dirPath.path}/stash_sqlite.db';
+  final file = File('${dirPath.path}/stash_sqlite.db');
 
   // Creates cache with a sqlite file based storage backend with the capacity of 10 entries
-  final cache = newSqliteFileCache(filePath,
+  final cache = newSqliteFileCache(file,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache

@@ -81,8 +81,8 @@ class SqliteMemoryAdapter extends SqliteAdapter {
 /// The [SqliteFileAdapter] provides a bridge between the store and the
 /// Sqlite backend
 class SqliteFileAdapter extends SqliteAdapter {
-  /// The path to the file that stores the Sqlite database
-  final String filePath;
+  /// The file that stores the Sqlite database
+  final File file;
 
   /// Function that can be used to perform a setup just after
   /// the database is opened, before moor is fully ready
@@ -93,12 +93,12 @@ class SqliteFileAdapter extends SqliteAdapter {
   /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteFileAdapter(this.filePath, {bool? logStatements, this.setup})
+  SqliteFileAdapter(this.file, {bool? logStatements, this.setup})
       : super(logStatements: logStatements);
 
   @override
   QueryExecutor executor() {
-    return VmDatabase(File(filePath),
+    return VmDatabase(file,
         logStatements: logStatements ?? false, setup: setup);
   }
 
@@ -109,6 +109,6 @@ class SqliteFileAdapter extends SqliteAdapter {
 
   @override
   Future<void> deleteAll() {
-    return File(filePath).delete();
+    return file.delete();
   }
 }
