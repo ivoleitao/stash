@@ -3,7 +3,7 @@ import 'package:stash/src/api/cache_store.dart';
 
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary
-/// [Cache] bound to a fast [CacheStore] (a [MemoryStore] for example) and a secondary
+/// [Cache] bound to a fast [CacheStore] and a secondary
 /// cache bound to a persistent [CacheStore] implementation
 class TieredCache extends Cache {
   /// The primary cache
@@ -14,8 +14,8 @@ class TieredCache extends Cache {
 
   /// Builds a [TieredCache] with a primary and a secondary cache
   ///
-  /// * [primary]: The primary [Cache]
-  /// * [secondary]: The secondary [Cache]
+  /// * [_primary]: The primary [Cache]
+  /// * [_secondary]: The secondary [Cache]
   ///
   /// Returns a [TieredCache]
   TieredCache(this._primary, this._secondary);
@@ -58,7 +58,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic /*?*/ > operator [](String key) {
+  Future<dynamic> operator [](String key) {
     return _primary[key]
         .then((value) => value != null ? Future.value(value) : _secondary[key]);
   }

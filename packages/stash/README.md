@@ -11,7 +11,7 @@
 
 ## Overview
 
-The `stash` caching library was designed from ground up with extensibility in mind. It's based on a small core that can be plugged to a vast array of storage mechanisms and supports extension points across all code base. From a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well
+The `stash` caching library was designed from ground up with extensibility in mind. It's based on a small core that relies on several extension points across all code base. From a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well
 
 3rd party library developers support is well defined as well. The library provides a harness with a number of tests that allow the implementers of novel storage and cache frontends to test their implementations against the same baseline tests that were used by the author to validate every extension.
 
