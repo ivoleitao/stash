@@ -1,4 +1,4 @@
-name: Auto Assign to Project(s)
+name: Stash Project
 
 on:
   issues:
