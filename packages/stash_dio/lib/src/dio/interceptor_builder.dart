@@ -130,7 +130,9 @@ class CacheInterceptorBuilder {
       var value = await cache.get(_getKey(options));
       if (value != null) {
         handler.resolve(
-            _responseFromCacheValue(CacheValue.fromJson(value), options),
+            _responseFromCacheValue(
+                value is CacheValue ? value : CacheValue.fromJson(value),
+                options),
             false);
         return;
       }
