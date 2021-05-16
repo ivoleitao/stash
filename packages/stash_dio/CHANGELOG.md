@@ -1,3 +1,7 @@
+## 2.0.4
+
+- Fixed issue [stash_dio crash when reading from hive cache](https://github.com/ivoleitao/stash/issues/9)
+
 ## 2.0.3
 
 - Updated dependencies
