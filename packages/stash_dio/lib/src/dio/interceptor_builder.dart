@@ -165,9 +165,7 @@ class CacheInterceptorBuilder {
     var cacheControl = response.headers.value('cache-control');
     if (cacheControl != null) {
       // try to get maxAge and maxStale from cacheControl
-      var parameters = HeaderValue.parse('cache-control: $cacheControl',
-              parameterSeparator: '', valueSeparator: '=')
-          .parameters;
+      var parameters = HeaderValue.parseCacheControl(cacheControl).parameters;
       maxAge = _tryGetDurationFromMap(parameters, 's-maxage');
       maxAge ??= _tryGetDurationFromMap(parameters, 'max-age');
       // if staleTime has value, don't get max-stale anymore.
