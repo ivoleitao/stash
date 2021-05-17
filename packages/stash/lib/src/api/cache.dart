@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache/tiered_cache.dart';
 import 'package:stash/src/api/cache_store.dart';
+import 'package:stash/src/api/event/event.dart';
 import 'package:stash/src/api/eviction/eviction_policy.dart';
 import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
@@ -128,4 +129,15 @@ abstract class Cache {
   ///
   /// Returns the value if one existed or `null` if no mapping existed for this [key]
   Future<dynamic?> getAndRemove(String key);
+
+  /// Listens for events of Type [T] and its subtypes.
+  ///
+  /// The method is called like this: myCache.on<MyType>();
+  ///
+  /// If the method is called without a type parameter, the [Stream] contains every
+  /// event of this [Cache].
+  ///
+  /// The returned [Stream] is a broadcast stream so multiple subscriptions are
+  /// allowed.
+  Stream<T> on<T extends CacheEvent>();
 }

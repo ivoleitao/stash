@@ -53,7 +53,7 @@ Finally a testing library is also provided to aid in the development of third pa
 
 |Package|Pub|Description|
 |-------|---|-----------|
-|[stash_dio](https://github.com/ivoleitao/stash/tree/develop/packages/stash_test)|[![Pub](https://img.shields.io/pub/v/stash_test.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_test)|Testing support for `stash` extensions|
+|[stash_test](https://github.com/ivoleitao/stash/tree/develop/packages/stash_test)|[![Pub](https://img.shields.io/pub/v/stash_test.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_test)|Testing support for `stash` extensions|
 
 ## Getting Started
 

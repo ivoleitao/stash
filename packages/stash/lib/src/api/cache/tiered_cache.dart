@@ -1,5 +1,7 @@
+import 'package:async/async.dart';
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache_store.dart';
+import 'package:stash/src/api/event/event.dart';
 
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary
@@ -103,5 +105,10 @@ class TieredCache extends Cache {
 
       return _secondary.remove(key).then((any) => value);
     });
+  }
+
+  @override
+  Stream<T> on<T extends CacheEvent>() {
+    return StreamGroup.merge([_primary.on<T>(), _secondary.on<T>()]);
   }
 }
