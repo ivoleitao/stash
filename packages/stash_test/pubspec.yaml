@@ -1,9 +1,8 @@
 name: stash_test
-version: 3.0.0-dev.2
+version: 3.0.0-dev.3
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
-publish_to: none
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_test
 
 environment:
