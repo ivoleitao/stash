@@ -58,8 +58,8 @@ void main() async {
 ```
 
 Notice that in order to leverage the same set of tests a class extending `TextContext` needs to created and used on the calls to the two provided functions:
-* testStore: which runs all the store tests
-* testCache: which runs all the cache tests
+* `testStore`: which runs all the store tests
+* `testCache`: which runs all the cache tests
 
 Please take a look at the examples provided on one of the storage implementations, for example [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_sqlite](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite).
 
