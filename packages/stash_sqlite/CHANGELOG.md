@@ -1,8 +1,12 @@
+## 3.0.0-dev.2
+
+- Updated to the latest dart sdk
+- Updated dependencies
+- Added support for events
+
 ## 3.0.0-dev.1
 
 - Integrated with the new version of stash which implies importing the testing harness from the new stash_test package
-- Updated to the latest dart sdk
-- Updated dependencies
 
 ## 2.0.3
 
