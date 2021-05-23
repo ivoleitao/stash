@@ -1,12 +1,16 @@
-# 3.0.0-dev.1
+# 3.0.0-dev.2
 
 - Updated to the latest dart sdk
 - Updated dependencies
 - Added support for events
 - Some dynamic add ? and the new analyser flags it as a warning, fixed
-- BREAKING: This version removes the harness and the stash memory storage extension from stash 
 - BREAKING: Msgpack was removed into a separate library, `stash_msgpack`, inside stash.
 - BREAKING: CacheEntry does not allow to set the value directly anymore a copyForUpdate operation is now needed
+
+# 3.0.0-dev.2
+
+First development version of the 3.x.x version
+BREAKING: This version removes the harness and the stash memory storage extension from stash
 
 ## 2.0.2
 
