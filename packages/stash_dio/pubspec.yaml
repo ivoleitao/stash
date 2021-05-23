@@ -1,5 +1,5 @@
 name: stash_dio
-version: 3.0.0-dev.2
+version: 3.0.0-dev.1
 description: >-
   Dio extension for the stash caching API. Provides an interceptor that uses
   Stash as a caching layer for Dio
