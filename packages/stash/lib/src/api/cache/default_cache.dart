@@ -6,14 +6,17 @@ import 'package:stash/src/api/cache_entry.dart';
 import 'package:stash/src/api/cache_store.dart';
 import 'package:stash/src/api/event/entry_event.dart';
 import 'package:stash/src/api/event/event.dart';
+import 'package:stash/src/api/event/evicted_entry_event.dart';
 import 'package:stash/src/api/event/expired_entry_event.dart';
 import 'package:stash/src/api/event/removed_entry_event.dart';
+import 'package:stash/src/api/event/updated_entry_event.dart';
 import 'package:stash/src/api/eviction/eviction_policy.dart';
 import 'package:stash/src/api/eviction/lfu_policy.dart';
 import 'package:stash/src/api/expiry/eternal_policy.dart';
 import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/full_sampler.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
+import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 /// Default implementation of the [Cache] interface
@@ -46,6 +49,9 @@ class DefaultCache extends Cache {
   /// The [StreamController] for this cache events
   final StreamController streamController;
 
+  /// The event publishing mode of this cache
+  final EventListenerMode eventPublishingMode;
+
   /// Builds a [DefaultCache] out of a mandatory [CacheStore] and a set of optional configurations
   ///
   /// * [storage]: The [CacheStore]
@@ -56,6 +62,7 @@ class DefaultCache extends Cache {
   /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
   /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
+  /// * [eventListenerMode]: The event listener mode of this cache
   ///
   /// Returns a [DefaultCache]
   DefaultCache(this.storage,
@@ -66,7 +73,7 @@ class DefaultCache extends Cache {
       int? maxEntries,
       CacheLoader? cacheLoader,
       Clock? clock,
-      bool syncEvents = false})
+      EventListenerMode? eventListenerMode})
       : name = name ?? Uuid().v1(),
         expiryPolicy = expiryPolicy ?? const EternalExpiryPolicy(),
         sampler = sampler ?? const FullSampler(),
@@ -75,11 +82,15 @@ class DefaultCache extends Cache {
         maxEntries = maxEntries ?? 0,
         cacheLoader = cacheLoader ?? ((key) => Future.value()),
         clock = clock ?? Clock(),
-        streamController = StreamController.broadcast(sync: syncEvents);
+        eventPublishingMode = eventListenerMode ?? EventListenerMode.Disabled,
+        streamController = StreamController.broadcast(
+            sync: eventListenerMode == EventListenerMode.Sync);
 
   /// Fires a new event on the event bus with the specified [event].
-  void _fire(CacheEvent event) {
-    streamController.add(event);
+  void _fire(CacheEvent? event) {
+    if (eventPublishingMode != EventListenerMode.Disabled && event != null) {
+      streamController.add(event);
+    }
   }
 
   @override
@@ -107,11 +118,11 @@ class DefaultCache extends Cache {
     return storage.getEntry(name, key);
   }
 
-  /// Method used to check if the configured capacity of this cache i.e. was exceeded after the
-  /// inserting [entry]
+  /// Method used to check if the configured capacity of this cache i.e. was
+  /// exceeded after the inserting [entry]
   ///
   /// * [entry]: The added entry
-  Future<bool> _capacityExceeded(CacheEntry entry) => maxEntries == 0
+  Future<bool> _isCapacityExceeded(CacheEntry entry) => maxEntries == 0
       ? Future.value(false)
       : size.then((entries) => entries > maxEntries);
 
@@ -119,18 +130,21 @@ class DefaultCache extends Cache {
   ///
   /// * [key]: The cache key
   /// * [entry]: The cache entry
-  Future<void> _putStorageEntry(String key, CacheEntry entry) {
+  /// * [event]: An optional event
+  Future<void> _putStorageEntry(String key, CacheEntry entry,
+      {CacheEntryEvent? event}) {
     if (entry.valueChanged) {
       return storage
           .putEntry(name, key, entry)
-          .then((_) => _capacityExceeded(entry))
-          .then((exceeded) {
-        if (exceeded) {
+          .then((_) => _fire(event))
+          .then((_) => _isCapacityExceeded(entry))
+          .then((capacityExceeded) {
+        if (capacityExceeded) {
           return storage.keys(name).then(
               (ks) => storage.getStats(name, sampler.sample(ks)).then((stats) {
                     final stat = evictionPolicy.select(stats, entry);
                     if (stat != null) {
-                      return remove(stat.key);
+                      return _removeEntryByKey(stat.key, evicted: true);
                     }
 
                     return Future.value();
@@ -147,6 +161,7 @@ class DefaultCache extends Cache {
   /// Removes the stored [CacheEntry] for the specified [key].
   ///
   /// * [key]: The cache key
+  /// * [event]: The event
   Future<void> _removeStorageEntry(String key, CacheEntryEvent event) {
     return storage.remove(name, key).then((_) => _fire(event));
   }
@@ -184,12 +199,13 @@ class DefaultCache extends Cache {
     // We want to create a new entry, let's update it according with the semantics
     // of the configured expiry policy and store it
     final expiryTime = now.add(duration);
-    final entry = CacheEntry(key, value, expiryTime, DateTime.now());
+    final entry = CacheEntry(key, value, expiryTime, now);
 
     // Check if the entry is expired before adding it to the cache
     if (!entry.isExpired(now)) {
       // Nope, it's not expired let's store it then and return
-      return _putStorageEntry(key, entry).then((v) => true);
+      return _putStorageEntry(key, entry, event: CreatedEntryEvent(this, entry))
+          .then((v) => true);
     }
 
     return Future.value(false);
@@ -202,7 +218,7 @@ class DefaultCache extends Cache {
   ///
   /// * [entry]: the [CacheEntry] holding the value
   /// * [now]: the current date/time
-  Future<dynamic?> _getEntryValue(
+  Future<dynamic> _getEntryValue(
       CacheEntry entry, DateTime now, Duration? expiryDuration) {
     entry.accessTime = now;
     entry.hitCount++;
@@ -226,25 +242,25 @@ class DefaultCache extends Cache {
   /// * [value]: the new value
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache entry to expire.
-  Future<dynamic?> _updateEntry(
+  Future<dynamic> _updateEntry(
       CacheEntry entry, dynamic value, DateTime now, Duration? expiryDuration) {
-    final oldValue = entry.value;
     final duration = expiryPolicy.getExpiryForUpdate();
-    if (duration != null) {
-      // We just need to update the expiry time on the entry
-      // according with the expiry policy in place or if provided the expiry duration
-      entry.expiryTime = now.add(expiryDuration ?? duration);
-    }
-    entry.value = value;
-    entry.updateTime = now;
-    entry.hitCount++;
+    // We just need to update the expiry time on the entry
+    // according with the expiry policy in place or if provided the expiry duration
+    final newEntry = entry.copyForUpdate(value,
+        expiryTime:
+            duration != null ? now.add(expiryDuration ?? duration) : null,
+        updateTime: now,
+        hitCount: entry.hitCount + 1);
 
     // Finally store the entry in the underlining storage
-    return _putStorageEntry(entry.key, entry).then((v) => oldValue);
+    return _putStorageEntry(entry.key, newEntry,
+            event: UpdatedEntryEvent(this, entry, newEntry))
+        .then((v) => entry.value);
   }
 
   @override
-  Future<dynamic?> get(String key, {Duration? expiryDuration}) {
+  Future<dynamic> get(String key, {Duration? expiryDuration}) {
     // Gets the entry from the storage
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -326,13 +342,41 @@ class DefaultCache extends Cache {
     return _clearStorage();
   }
 
-  @override
-  Future<void> remove(String key) {
-    return _removeStorageEntry(key, RemovedEntryEvent(this, key));
+  /// Removes a entry from storage by [key]
+  ///
+  /// * [key]: key whose mapping is to be removed from the cache
+  /// * [evicted]: If the reason for removal was eviction
+  Future<void> _removeEntryByKey(String key, {bool evicted = false}) {
+    // Try to get the entry from the cache
+    return _getStorageEntry(key).then((entry) {
+      if (entry != null) {
+        // The entry exists on cache
+        // Let's check if it is expired
+        if (entry.isExpired(clock.now())) {
+          // If expired let's remove from cache and send an expired event
+          return _removeStorageEntry(key, ExpiredEntryEvent(this, entry));
+        } else {
+          // If not expired let's remove and send and removed event
+          return _removeStorageEntry(
+              key,
+              evicted
+                  ? EvictedEntryEvent(this, entry)
+                  : RemovedEntryEvent(this, entry));
+        }
+      }
+
+      // Do nothing the entry does not exist
+      return Future.value();
+    });
   }
 
   @override
-  Future<dynamic?> getAndPut(String key, dynamic value,
+  Future<void> remove(String key) {
+    return _removeEntryByKey(key);
+  }
+
+  @override
+  Future<dynamic> getAndPut(String key, dynamic value,
       {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
@@ -359,11 +403,22 @@ class DefaultCache extends Cache {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {
-        return _removeStorageEntry(key, RemovedEntryEvent(this, key))
-            .then((_) => entry.isExpired() ? null : entry.value);
+        // The entry exists on cache
+        // Let's check if it is expired
+        if (entry.isExpired(clock.now())) {
+          // If expired let's remove from cache, send an expired event and return
+          // null
+          return _removeStorageEntry(key, ExpiredEntryEvent(this, entry))
+              .then((_) => null);
+        } else {
+          // If not expired let's remove from cache, send a removed event and
+          // return the value
+          return _removeStorageEntry(key, RemovedEntryEvent(this, entry))
+              .then((value) => entry.value);
+        }
       }
 
-      return null;
+      return Future.value();
     });
   }
 }

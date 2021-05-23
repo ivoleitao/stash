@@ -46,7 +46,7 @@ class TieredCache extends Cache {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<dynamic?> get(String key, {Duration? expiryDuration}) {
+  Future<dynamic> get(String key, {Duration? expiryDuration}) {
     return _primary.get(key, expiryDuration: expiryDuration).then((value) =>
         value != null
             ? Future.value(value)
@@ -83,7 +83,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic?> getAndPut(String key, dynamic value,
+  Future<dynamic> getAndPut(String key, dynamic value,
       {Duration? expiryDuration}) {
     return _primary.getAndPut(key, value).then((value) {
       if (value == null) {
@@ -97,7 +97,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic?> getAndRemove(String key) {
+  Future<dynamic> getAndRemove(String key) {
     return _primary.getAndRemove(key).then((value) {
       if (value == null) {
         return _secondary.getAndRemove(key);

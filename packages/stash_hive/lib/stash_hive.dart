@@ -2,7 +2,7 @@
 library stash_hive;
 
 import 'package:hive/hive.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/src/hive/hive_adapter.dart';
 import 'package:stash_hive/src/hive/hive_store.dart';
 
@@ -18,7 +18,10 @@ export 'src/hive/hive_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [encryptionCipher]: The encryption cypher
+/// * [crashRecovery]: If it supports crash recovery
 ///
 /// Returns a new [Cache] backed by a [HiveDefaultStore]
 Cache newHiveCache(String path,
@@ -28,6 +31,7 @@ Cache newHiveCache(String path,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     dynamic Function(dynamic)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
@@ -41,7 +45,8 @@ Cache newHiveCache(String path,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }
 
 /// Creates a new [Cache] backed by a [HiveLazyStore]
@@ -53,7 +58,10 @@ Cache newHiveCache(String path,
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [encryptionCipher]: The encryption cypher
+/// * [crashRecovery]: If it supports crash recovery
 ///
 /// Returns a new [Cache] backed by a [HiveLazyStore]
 Cache newLazyHiveCache(String path,
@@ -63,6 +71,7 @@ Cache newLazyHiveCache(String path,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     dynamic Function(dynamic)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
@@ -76,5 +85,6 @@ Cache newLazyHiveCache(String path,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

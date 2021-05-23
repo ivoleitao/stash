@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:stash_file/stash_file.dart';
 
 class Task {
@@ -24,8 +26,11 @@ class Task {
 }
 
 void main() async {
+  // Temporary path
+  final path = Directory.systemTemp.path;
+
   // Creates a cache on the local storage with the capacity of 10 entries
-  final cache = newLocalFileCache(
+  final cache = newLocalFileCache(path,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache

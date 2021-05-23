@@ -1,6 +1,11 @@
 ## 3.0.0-dev.1
 
+- Updated to the latest dart sdk
+- Updated dependencies
 - Integrated with the new version of stash which implies importing the testing harness from the new stash_test package
+- Added support for events
+- Added file locking support to try to address [#11](https://github.com/ivoleitao/stash/issues/11)
+- BREAKING: The path param is now mandatory in `newLocalFileCache`
 
 ## 2.0.2
 

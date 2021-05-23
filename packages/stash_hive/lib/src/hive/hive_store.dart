@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/src/hive/hive_extensions.dart';
 
 import 'hive_adapter.dart';

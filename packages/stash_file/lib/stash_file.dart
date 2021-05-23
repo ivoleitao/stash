@@ -4,7 +4,7 @@ library stash_file;
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:file/memory.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_file/src/file/file_store.dart';
 
 export 'src/file/file_store.dart';
@@ -18,6 +18,7 @@ export 'src/file/file_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
@@ -30,18 +31,20 @@ Cache newMemoryFileCache(
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable}) {
   FileSystem fs = MemoryFileSystem();
   return Cache.newCache(
       FileStore(fs, path ?? fs.systemTempDirectory.path,
-          codec: codec, fromEncodable: fromEncodable),
+          lock: false, codec: codec, fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }
 
 /// Creates a new [Cache] backed by a local [FileStore]
@@ -53,28 +56,29 @@ Cache newMemoryFileCache(
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [FileStore]
-Cache newLocalFileCache(
-    {String? path,
-    String? cacheName,
+Cache newLocalFileCache(String path,
+    {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable}) {
   FileSystem fs = const LocalFileSystem();
   return Cache.newCache(
-      FileStore(fs, path ?? fs.systemTempDirectory.path,
-          codec: codec, fromEncodable: fromEncodable),
+      FileStore(fs, path, codec: codec, fromEncodable: fromEncodable),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

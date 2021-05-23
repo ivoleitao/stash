@@ -1,11 +1,46 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:matcher/matcher.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
+import 'package:test/test.dart';
 import 'package:time/time.dart';
 
 import 'harness.dart';
 
 /// The default cache name
 const _DefaultCache = 'test';
+
+/// The default type tests perfomed over a store
+final _StoreTypeTests = Map.unmodifiable(TypeTests);
+
+/// The supported cache tests
+enum StoreTest {
+  AddEntry,
+  AddGetEntry,
+  RemoveEntry,
+  Size,
+  Clear,
+  Delete,
+  GetStat,
+  ChangeEntry,
+  Keys,
+  Values,
+  Stats
+}
+
+/// The set of store tests
+const _StoreTests = {
+  StoreTest.AddEntry,
+  StoreTest.AddGetEntry,
+  StoreTest.RemoveEntry,
+  StoreTest.Size,
+  StoreTest.Clear,
+  StoreTest.Delete,
+  StoreTest.GetStat,
+  StoreTest.ChangeEntry,
+  StoreTest.Keys,
+  StoreTest.Values,
+  StoreTest.Stats
+};
 
 /// Calls [CacheStore.size] with a optional cache name
 ///
@@ -398,20 +433,23 @@ Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
   return store;
 }
 
-/// returns the list of tests to execute
-List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>() {
+/// Returns the list of tests to execute
+///
+/// * [tests]: The set of tests
+List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>(
+    {Set<StoreTest> tests = _StoreTests}) {
   return [
-    _storeAddEntry,
-    _storeAddGetEntry,
-    _storeRemoveEntry,
-    _storeSize,
-    _storeClear,
-    _storeDelete,
-    _storeGetStat,
-    _storeChangeEntry,
-    _storeKeys,
-    _storeValues,
-    _storeStats
+    if (tests.contains(StoreTest.AddEntry)) _storeAddEntry,
+    if (tests.contains(StoreTest.AddGetEntry)) _storeAddGetEntry,
+    if (tests.contains(StoreTest.RemoveEntry)) _storeRemoveEntry,
+    if (tests.contains(StoreTest.Size)) _storeSize,
+    if (tests.contains(StoreTest.Clear)) _storeClear,
+    if (tests.contains(StoreTest.Delete)) _storeDelete,
+    if (tests.contains(StoreTest.GetStat)) _storeGetStat,
+    if (tests.contains(StoreTest.ChangeEntry)) _storeChangeEntry,
+    if (tests.contains(StoreTest.Keys)) _storeKeys,
+    if (tests.contains(StoreTest.Values)) _storeValues,
+    if (tests.contains(StoreTest.Stats)) _storeStats
   ];
 }
 
@@ -421,8 +459,24 @@ List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>() {
 /// [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
 ///
 /// * [ctx]: the test context
-Future<void> testStoreWith<T extends CacheStore>(TestContext<T> ctx) async {
+/// * [tests]: The set of tests
+Future<void> testStoreWith<T extends CacheStore>(TestContext<T> ctx,
+    {Set<StoreTest> tests = _StoreTests}) async {
   for (var test in _getTests<T>()) {
     await test(ctx).then(ctx.deleteStore);
+  }
+}
+
+/// Default store test
+///
+/// * [newTestContext]: The context builder
+/// * [types]: The type/generator map
+/// * [tests]: The test set
+void testStore<T extends CacheStore>(TestContextBuilder<T> newTestContext,
+    {Map<TypeTest, Function>? types, Set<StoreTest> tests = _StoreTests}) {
+  for (var entry in (types ?? _StoreTypeTests).entries) {
+    test('Store: ${EnumToString.convertToString(entry.key)}', () async {
+      await testStoreWith<T>(newTestContext(entry.value()), tests: tests);
+    });
   }
 }

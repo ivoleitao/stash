@@ -1,7 +1,7 @@
 /// Provides a Isar implementation of the Stash caching API for Dart
 library stash_isar;
 
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_isar/src/isar/isar_store.dart';
 
 export 'src/isar/isar_store.dart';
@@ -15,6 +15,7 @@ export 'src/isar/isar_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [IsarStore]
@@ -25,6 +26,7 @@ Cache newIsarCache(String path,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     dynamic Function(dynamic)? fromEncodable}) {
   return Cache.newCache(IsarStore(fromEncodable: fromEncodable),
       name: cacheName,
@@ -32,5 +34,6 @@ Cache newIsarCache(String path,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

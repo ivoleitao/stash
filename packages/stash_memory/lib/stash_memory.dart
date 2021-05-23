@@ -1,7 +1,7 @@
 /// Provides a in-memory implementation of the Stash caching API for Dart
 library stash_memory;
 
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_memory/src/memory/memory_store.dart';
 
 export 'src/memory/memory_store.dart';
@@ -14,6 +14,7 @@ export 'src/memory/memory_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 ///
 /// Returns a [Cache] backed by a [MemoryStore]
 Cache newMemoryCache(
@@ -22,12 +23,14 @@ Cache newMemoryCache(
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
-    CacheLoader? cacheLoader}) {
+    CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode}) {
   return Cache.newCache(MemoryStore(),
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

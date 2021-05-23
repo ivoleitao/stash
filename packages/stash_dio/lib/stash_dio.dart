@@ -2,7 +2,7 @@
 library stash_dio;
 
 import 'package:dio/dio.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
 import 'package:stash_memory/stash_memory.dart';
 
@@ -26,14 +26,19 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 ///
 /// Returns a [Interceptor]
-Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
-    {ExpiryPolicy? expiryPolicy,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    CacheLoader? cacheLoader}) {
+Interceptor newMemoryCacheInterceptor(
+  String pattern,
+  String cacheName, {
+  ExpiryPolicy? expiryPolicy,
+  KeySampler? sampler,
+  EvictionPolicy? evictionPolicy,
+  int? maxEntries,
+  CacheLoader? cacheLoader,
+  EventListenerMode? eventListenerMode,
+}) {
   return newCacheInterceptor(
       pattern,
       newMemoryCache(
@@ -42,7 +47,8 @@ Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
           sampler: sampler,
           expiryPolicy: expiryPolicy,
           maxEntries: maxEntries,
-          cacheLoader: cacheLoader));
+          cacheLoader: cacheLoader,
+          eventListenerMode: eventListenerMode));
 }
 
 /// Creates a new [Interceptor] backed by a primary and a secondary [Cache]

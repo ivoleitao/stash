@@ -1,7 +1,7 @@
 /// Provides a Objectbox implementation of the Stash caching API for Dart
 library stash_objectbox;
 
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_store.dart';
 
@@ -17,6 +17,7 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [path]: The base location of the Objectbox storage
@@ -33,6 +34,7 @@ Cache newObjectBoxCache(String path,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable,
     int? maxDBSizeInKB,
@@ -53,5 +55,6 @@ Cache newObjectBoxCache(String path,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

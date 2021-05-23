@@ -7,14 +7,14 @@ description: >-
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.13.0 <3.0.0'
 
 dependencies:
-  equatable: ^2.0.0
+  equatable: ^2.0.2
   uuid: ^3.0.4
   clock: ^1.1.0
   time: ^2.0.0
-  async: ^2.6.1
+  async: ^2.7.0
 dev_dependencies:
   pedantic: ^1.11.0
   test: ^1.17.4

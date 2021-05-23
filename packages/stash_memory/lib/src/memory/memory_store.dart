@@ -1,4 +1,4 @@
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 
 /// In-memory [Map] backed implementation of a [CacheStore]
 class MemoryStore extends CacheStore {

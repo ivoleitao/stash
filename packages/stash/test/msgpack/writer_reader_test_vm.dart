@@ -1,6 +1,6 @@
 @TestOn('!js')
-import 'package:stash/src/api/codec/msgpack/reader.dart';
-import 'package:stash/src/api/codec/msgpack/writer.dart';
+import 'package:stash/src/msgpack/reader.dart';
+import 'package:stash/src/msgpack/writer.dart';
 import 'package:test/test.dart';
 
 void main() {

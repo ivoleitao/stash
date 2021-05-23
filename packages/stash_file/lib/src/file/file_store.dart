@@ -3,7 +3,8 @@ import 'dart:typed_data';
 
 import 'package:file/file.dart';
 import 'package:path/path.dart' as p;
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash/stash_msgpack.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 /// File based implemention of a [CacheStore]
@@ -16,6 +17,9 @@ class FileStore extends CacheStore {
 
   /// The base location of the file storage
   final String _path;
+
+  /// If locks are obtained before performing read/write operations
+  final bool lock;
 
   /// The cache codec to use
   final CacheCodec _codec;
@@ -30,10 +34,12 @@ class FileStore extends CacheStore {
   /// Builds a [FileStore].
   /// * [_fs]: The [FileSystem]
   /// * [_path]: The base location of the file storage
+  /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   FileStore(this._fs, this._path,
-      {CacheCodec? codec,
+      {this.lock = true,
+      CacheCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _codec = codec ?? const MsgpackCodec(),
         _fromEncodable = fromEncodable;
@@ -154,12 +160,24 @@ class FileStore extends CacheStore {
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 
+  /// Reads a [CacheStat] from a [File]
+  ///
+  /// * [file]: The [File] to read the data from
+  ///
+  /// Return [file] [CacheStat]
   Future<CacheStat> _readFileStat(File file) =>
-      file.open(mode: FileMode.read).then((f) {
-        return f
-            .read(_header_size)
+      file.open(mode: FileMode.read).then((raf) {
+        final pre = lock
+            ? (RandomAccessFile f) => f.lock(FileLock.blockingShared)
+            : (RandomAccessFile f) => Future.value(f);
+        final pos = lock
+            ? () => raf.unlock().then((f) => f.close())
+            : () => raf.close();
+
+        return pre(raf)
+            .then((f) => f.read(_header_size))
             .then(((bytes) => _readStat(p.basename(file.path), bytes)))
-            .whenComplete(() => f.close());
+            .whenComplete(pos);
       });
 
   /// Creates a [CacheStat] from the provided [File]
@@ -200,11 +218,17 @@ class FileStore extends CacheStore {
 
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
-    return _cacheFile(name, key).open(mode: FileMode.append).then((file) {
-      file
-          .setPosition(0)
-          .then((file) => file.writeFrom(_writeStat(stat).takeBytes()))
-          .whenComplete(() => file.close());
+    return _cacheFile(name, key).open(mode: FileMode.append).then((raf) {
+      final pre = lock
+          ? (RandomAccessFile f) => f.lock(FileLock.blockingExclusive)
+          : (RandomAccessFile f) => Future.value(f);
+      final pos =
+          lock ? () => raf.unlock().then((f) => f.close()) : () => raf.close();
+
+      return pre(raf)
+          .then((f) => f.setPosition(0))
+          .then((f) => f.writeFrom(_writeStat(stat).takeBytes()))
+          .whenComplete(pos);
     });
   }
 
@@ -233,9 +257,25 @@ class FileStore extends CacheStore {
   /// * [file]: The cache [File]
   ///
   /// Returns a [CacheEntry]
-  Future<CacheEntry> _readFileEntry(File file) => file
-      .readAsBytes()
-      .then((bytes) => _readEntry(p.basename(file.path), bytes));
+  Future<CacheEntry> _readFileEntry(File file) {
+    if (lock) {
+      return file.open(mode: FileMode.read).then((raf) {
+        return raf
+            .lock(FileLock.blockingShared)
+            .then((f) => f.length())
+            .then((length) {
+          final buffer = Uint8List(length);
+          return raf
+              .readInto(buffer, 0, length)
+              .then((_) => _readEntry(p.basename(file.path), buffer));
+        }).whenComplete(() => raf.unlock().then((value) => raf.close()));
+      });
+    } else {
+      return file
+          .readAsBytes()
+          .then((bytes) => _readEntry(p.basename(file.path), bytes));
+    }
+  }
 
   /// Gets a [CacheEntry] from the provided [File]
   ///
@@ -269,16 +309,29 @@ class FileStore extends CacheStore {
     return writer;
   }
 
-  @override
-  Future<void> putEntry(String name, String key, CacheEntry entry) {
+  Future<void> _putFileEntry(File file, CacheEntry entry) {
     var writer = _codec.encoder();
 
     _writeStat(entry, writer: writer);
     _writeValue(entry.value, writer: writer);
 
+    final buffer = writer.takeBytes();
+    if (lock) {
+      return file.open(mode: FileMode.writeOnly).then((raf) {
+        return raf
+            .lock(FileLock.blockingExclusive)
+            .then((f) => f.writeFrom(buffer, 0, buffer.length))
+            .whenComplete(() => raf.unlock().then((value) => raf.close()));
+      });
+    } else {
+      return file.writeAsBytes(buffer);
+    }
+  }
+
+  @override
+  Future<void> putEntry(String name, String key, CacheEntry entry) {
     return _cacheDirectory(name).then((cacheDirectory) {
-      return _cacheDirectoryFile(cacheDirectory, key)
-          .writeAsBytes(writer.takeBytes());
+      return _putFileEntry(_cacheDirectoryFile(cacheDirectory, key), entry);
     });
   }
 

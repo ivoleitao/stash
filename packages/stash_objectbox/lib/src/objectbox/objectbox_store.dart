@@ -1,5 +1,6 @@
 import 'package:objectbox/objectbox.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash/stash_msgpack.dart';
 import 'package:stash_objectbox/objectbox.g.dart';
 
 import 'cache_entity.dart';

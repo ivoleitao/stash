@@ -16,7 +16,7 @@ enum EntryEventType {
   /// An event type indicating that the cache entry was expired.
   EXPIRED,
 
-  /// An event type indicating that the cache entry was evicted.
+  /// An event type indicating that the cache entry was evicted
   EVICTED
 }
 
@@ -28,6 +28,6 @@ abstract class CacheEntryEvent extends CacheEvent {
   /// Builds a [CacheEntryEvent]
   ///
   /// * [source]: The cache that originated the event
-  /// * [type]: The event type of this event
+  /// * [type]: The event type
   CacheEntryEvent(Cache source, this.type) : super(source);
 }

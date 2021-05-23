@@ -1,3 +1,9 @@
+# 3.0.0-dev.1
+
+- Updated to the latest dart sdk
+- Updated dependencies
+- Added support for events
+
 ## 2.0.4
 
 - Fixed issue [stash_dio crash when reading from hive cache](https://github.com/ivoleitao/stash/issues/9)

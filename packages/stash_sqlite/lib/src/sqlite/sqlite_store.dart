@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash/stash_msgpack.dart';
 
 import 'sqlite_adapter.dart';
 

@@ -149,8 +149,8 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, Uint8List fbData) {
-          final buffer = fb.BufferContext.fromBytes(fbData);
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
 
           final object = CacheEntity(
@@ -180,20 +180,35 @@ ModelDefinition getObjectBoxModel() {
 
 /// [CacheEntity] entity fields to define ObjectBox queries.
 class CacheEntity_ {
+  /// see [CacheEntity.id]
   static final id =
       QueryIntegerProperty<CacheEntity>(_entities[0].properties[0]);
+
+  /// see [CacheEntity.expiryTime]
   static final expiryTime =
       QueryStringProperty<CacheEntity>(_entities[0].properties[1]);
+
+  /// see [CacheEntity.creationTime]
   static final creationTime =
       QueryStringProperty<CacheEntity>(_entities[0].properties[2]);
+
+  /// see [CacheEntity.accessTime]
   static final accessTime =
       QueryStringProperty<CacheEntity>(_entities[0].properties[3]);
+
+  /// see [CacheEntity.updateTime]
   static final updateTime =
       QueryStringProperty<CacheEntity>(_entities[0].properties[4]);
+
+  /// see [CacheEntity.hitCount]
   static final hitCount =
       QueryIntegerProperty<CacheEntity>(_entities[0].properties[5]);
+
+  /// see [CacheEntity.key]
   static final key =
       QueryStringProperty<CacheEntity>(_entities[0].properties[6]);
+
+  /// see [CacheEntity.value]
   static final value =
       QueryByteVectorProperty<CacheEntity>(_entities[0].properties[7]);
 }

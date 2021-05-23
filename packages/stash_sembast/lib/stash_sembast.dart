@@ -4,7 +4,7 @@ library stash_sembast;
 import 'dart:io';
 
 import 'package:sembast/sembast.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/src/sembast/sembast_adapter.dart';
 import 'package:stash_sembast/src/sembast/sembast_store.dart';
 
@@ -20,6 +20,7 @@ export 'src/sembast/sembast_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
@@ -34,6 +35,7 @@ Cache newSembastFileCache(File file,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     dynamic Function(dynamic)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
@@ -52,7 +54,8 @@ Cache newSembastFileCache(File file,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }
 
 /// Creates a new [Cache] backed by a in-memory [SembastStore]
@@ -63,6 +66,7 @@ Cache newSembastFileCache(File file,
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
@@ -77,6 +81,7 @@ Cache newSembastMemoryCache(
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     dynamic Function(dynamic)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
@@ -95,5 +100,6 @@ Cache newSembastMemoryCache(
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

@@ -4,7 +4,7 @@ library stash_sqlite;
 import 'dart:io';
 
 import 'package:moor/ffi.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 
@@ -20,6 +20,7 @@ export 'src/sqlite/sqlite_store.dart';
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseLog]: If [databaseLog] is true (defaults to `false`), generated sql statements will be printed before executing
@@ -31,6 +32,7 @@ Cache newSqliteFileCache(File file,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable,
     bool? databaseLog,
@@ -46,7 +48,8 @@ Cache newSqliteFileCache(File file,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }
 
 /// Creates a new [Cache] backed by in memory [SqliteStore]
@@ -57,6 +60,7 @@ Cache newSqliteFileCache(File file,
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
 /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseLog]: If [databaseLog] is true (defaults to `false`), generated sql statements will be printed before executing
@@ -68,6 +72,7 @@ Cache newSqliteMemoryCache(
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable,
     bool? databaseLog,
@@ -82,5 +87,6 @@ Cache newSqliteMemoryCache(
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
-      cacheLoader: cacheLoader);
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode);
 }

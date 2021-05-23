@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:stash/src/api/codec/msgpack/types.dart' as types;
-import 'package:stash/src/api/codec/msgpack/writer.dart';
+import 'package:stash/src/msgpack/types.dart' as types;
+import 'package:stash/src/msgpack/writer.dart';
 import 'package:test/test.dart';
 
 void main() {

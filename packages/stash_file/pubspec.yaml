@@ -3,17 +3,22 @@ version: 3.0.0-dev.1
 description: >-
   File storage extension for the stash caching API. Provides support to store caches
   in the local file system in binary format using the msgpack json format
+publish_to: none
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_file
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.13.0 <3.0.0'
 
 dependencies:
   path: ^1.8.0
-  file: ^6.1.0
+  file: ^6.1.1
   stream_transform: ^2.0.0
-  stash: ^3.0.0-dev.1
+  #stash: ^3.0.0-dev.1
+  stash:
+    path: ../stash
 dev_dependencies:
   pedantic: ^1.11.0
   test: ^1.17.4
-  stash_test: ^3.0.0-dev.2
+  #stash_test: ^3.0.0-dev.2
+  stash_test:
+    path: ../stash_test

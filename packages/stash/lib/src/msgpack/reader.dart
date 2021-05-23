@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:stash/src/api/codec/bytes_reader.dart';
-import 'package:stash/src/api/codec/msgpack/extension.dart';
-import 'package:stash/src/api/codec/msgpack/types.dart' as types;
+import 'package:stash/src/msgpack/extension.dart';
+import 'package:stash/src/msgpack/types.dart' as types;
 
 /// Error thrown by MessagePack serialization if an object cannot be deserialized.
 ///

@@ -1,8 +1,79 @@
 import 'package:clock/clock.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:matcher/matcher.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
+import 'package:test/test.dart';
 
 import 'harness.dart';
+
+/// The default type tests perfomed over a cache
+final _TypeTests = Map.unmodifiable(TypeTests);
+
+/// The supported cache tests
+enum CacheTest {
+  Put,
+  PutRemove,
+  Size,
+  ContainsKey,
+  Keys,
+  PutGet,
+  PutGetOperator,
+  PutPut,
+  PutIfAbsent,
+  GetAndPut,
+  GetAndRemove,
+  Clear,
+  CreatedExpiry,
+  AccessedExpiry,
+  ModifiedExpiry,
+  TouchedExpiry,
+  EternalExpiry,
+  Loader,
+  FifoEviction,
+  FiloEviction,
+  LruEviction,
+  MruEviction,
+  LfuEviction,
+  MfuEviction,
+  CreatedEvent,
+  UpdatedEvent,
+  RemovedEvent,
+  ExpiredEvent,
+  EvictedEvent
+}
+
+/// The set of cache tests
+const _CacheTests = {
+  CacheTest.Put,
+  CacheTest.PutRemove,
+  CacheTest.Size,
+  CacheTest.ContainsKey,
+  CacheTest.Keys,
+  CacheTest.PutGet,
+  CacheTest.PutGetOperator,
+  CacheTest.PutPut,
+  CacheTest.PutIfAbsent,
+  CacheTest.GetAndPut,
+  CacheTest.GetAndRemove,
+  CacheTest.Clear,
+  CacheTest.CreatedExpiry,
+  CacheTest.AccessedExpiry,
+  CacheTest.ModifiedExpiry,
+  CacheTest.TouchedExpiry,
+  CacheTest.EternalExpiry,
+  CacheTest.Loader,
+  CacheTest.FifoEviction,
+  CacheTest.FiloEviction,
+  CacheTest.LruEviction,
+  CacheTest.MruEviction,
+  CacheTest.LfuEviction,
+  CacheTest.MfuEviction,
+  CacheTest.CreatedEvent,
+  CacheTest.UpdatedEvent,
+  CacheTest.RemovedEvent,
+  CacheTest.ExpiredEvent,
+  CacheTest.EvictedEvent
+};
 
 /// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
 ///
@@ -11,11 +82,15 @@ import 'harness.dart';
 /// Returns the created store
 Future<T> _cachePut<T extends CacheStore>(TestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  CacheEvent? created;
+  final cache = ctx.newCache(store, eventListenerMode: EventListenerMode.Sync)
+    ..on().listen((event) => created = event);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
   await cache.put(key, value);
+  check(ctx, created, isNotNull, '_cachePut_1');
+  check(ctx, created, isA<CreatedEntryEvent>(), '_cachePut_2');
 
   return store;
 }
@@ -129,7 +204,11 @@ Future<T> _cacheKeys<T extends CacheStore>(TestContext<T> ctx) async {
 /// Returns the created store
 Future<T> _cachePutGet<T extends CacheStore>(TestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  var createdEntries = 0;
+  var updatedEntries = 0;
+  final cache = ctx.newCache(store, eventListenerMode: EventListenerMode.Sync)
+    ..on<CreatedEntryEvent>().listen((event) => createdEntries++)
+    ..on<UpdatedEntryEvent>().listen((event) => updatedEntries++);
 
   final key1 = 'key_1';
   var value1 = ctx.generator.nextValue(1);
@@ -688,34 +767,312 @@ Future<T> _cacheMfuEviction<T extends CacheStore>(TestContext<T> ctx) async {
   return store;
 }
 
-/// returns the list of tests to execute
-List<Future<T> Function(TestContext<T>)>
-    _getCacheTests<T extends CacheStore>() {
+/// Builds a [Cache] backed by the provided [CacheStore] builder
+/// configured with a [CreatedEntryEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheCreatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final clock1 = Clock.fixed(now1);
+  const expireDuration = ExpiryPolicy.eternal;
+  final expiryTime = clock1.fromNowBy(expireDuration);
+  var clock = clock1;
+  CreatedEntryEvent? created;
+  final cache = ctx.newCache(store,
+      eventListenerMode: EventListenerMode.Sync,
+      clock: Clock(() => clock.now()))
+    ..on<CreatedEntryEvent>().listen((event) => created = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_cacheCreatedEvent_1');
+  check(ctx, created?.source, cache, '_cacheCreatedEvent_2');
+  check(ctx, created?.type, EntryEventType.CREATED, '_cacheCreatedEvent_3');
+  check(ctx, created?.entry.key, key, '_cacheCreatedEvent_4');
+  check(ctx, created?.entry.value, value1, '_cacheCreatedEvent_5');
+  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheCreatedEvent_6');
+  check(ctx, created?.entry.creationTime, clock.now(), '_cacheCreatedEvent_7');
+  check(ctx, created?.entry.accessTime, clock.now(), '_cacheCreatedEvent_8');
+  check(ctx, created?.entry.updateTime, clock.now(), '_cacheCreatedEvent_9');
+  check(ctx, created?.entry.hitCount, 0, '_cacheCreatedEvent_10');
+
+  return store;
+}
+
+/// Builds a [Cache] backed by the provided [CacheStore] builder
+/// configured with a [UpdatedEntryEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now2 = Clock().minutesFromNow(1);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now2);
+  const expireDuration = ExpiryPolicy.eternal;
+  final expiryTime = clock1.fromNowBy(expireDuration);
+  var clock = clock1;
+  CreatedEntryEvent? created;
+  UpdatedEntryEvent? updated;
+  final cache = ctx.newCache(store,
+      eventListenerMode: EventListenerMode.Sync,
+      clock: Clock(() => clock.now()))
+    ..on<CreatedEntryEvent>().listen((event) => created = event)
+    ..on<UpdatedEntryEvent>().listen((event) => updated = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_cacheUpdatedEvent_1');
+  check(ctx, created?.source, cache, '_cacheUpdatedEvent_2');
+  check(ctx, created?.type, EntryEventType.CREATED, '_cacheUpdatedEvent_3');
+  check(ctx, created?.entry.key, key, '_cacheUpdatedEvent_4');
+  check(ctx, created?.entry.value, value1, '_cacheUpdatedEvent_5');
+  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheUpdatedEvent_6');
+  check(ctx, created?.entry.creationTime, clock.now(), '_cacheUpdatedEvent_7');
+  check(ctx, created?.entry.accessTime, clock.now(), '_cacheUpdatedEvent_8');
+  check(ctx, created?.entry.updateTime, clock.now(), '_cacheUpdatedEvent_9');
+  check(ctx, created?.entry.hitCount, 0, '_cacheUpdatedEvent_10');
+
+  clock = clock2;
+  final value2 = ctx.generator.nextValue(2);
+  await cache.put(key, value2);
+  check(ctx, updated, isNotNull, '_cacheUpdatedEvent_11');
+  check(ctx, updated?.source, cache, '_cacheUpdatedEvent_12');
+  check(ctx, updated?.type, EntryEventType.UPDATED, '_cacheUpdatedEvent_13');
+  check(ctx, updated?.oldEntry.key, key, '_cacheUpdatedEvent_14');
+  check(ctx, updated?.oldEntry.value, value1, '_cacheUpdatedEvent_15');
+  check(ctx, updated?.oldEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_16');
+  check(ctx, updated?.oldEntry.creationTime, clock1.now(),
+      '_cacheUpdatedEvent_17');
+  check(
+      ctx, updated?.oldEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_18');
+  check(
+      ctx, updated?.oldEntry.updateTime, clock1.now(), '_cacheUpdatedEvent_19');
+  check(ctx, updated?.oldEntry.hitCount, 0, '_cacheUpdatedEvent_20');
+  check(ctx, updated?.newEntry.key, key, '_cacheUpdatedEvent_21');
+  check(ctx, updated?.newEntry.value, value2, '_cacheUpdatedEvent_22');
+  check(ctx, updated?.newEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_23');
+  check(ctx, updated?.newEntry.creationTime, clock1.now(),
+      '_cacheUpdatedEvent_24');
+  check(
+      ctx, updated?.newEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_25');
+  check(
+      ctx, updated?.newEntry.updateTime, clock2.now(), '_cacheUpdatedEvent_26');
+  check(ctx, updated?.newEntry.hitCount, 1, '_cacheUpdatedEvent_27');
+
+  return store;
+}
+
+/// Builds a [Cache] backed by the provided [CacheStore] builder
+/// configured with a [RemovedEntryEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheRemovedEvent<T extends CacheStore>(TestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now3 = Clock().minutesFromNow(3);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now3);
+  const expireDuration = ExpiryPolicy.eternal;
+  final expiryTime = clock1.fromNowBy(expireDuration);
+  var clock = clock1;
+  CreatedEntryEvent? created;
+  RemovedEntryEvent? removed;
+  final cache = ctx.newCache(store,
+      eventListenerMode: EventListenerMode.Sync,
+      clock: Clock(() => clock.now()))
+    ..on<CreatedEntryEvent>().listen((event) => created = event)
+    ..on<RemovedEntryEvent>().listen((event) => removed = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_cacheRemovedEvent_1');
+  check(ctx, created?.source, cache, '_cacheRemovedEvent_2');
+  check(ctx, created?.type, EntryEventType.CREATED, '_cacheRemovedEvent_3');
+  check(ctx, created?.entry.key, key, '_cacheRemovedEvent_4');
+  check(ctx, created?.entry.value, value1, '_cacheRemovedEvent_5');
+  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheRemovedEvent_6');
+  check(ctx, created?.entry.creationTime, clock.now(), '_cacheRemovedEvent_7');
+  check(ctx, created?.entry.accessTime, clock.now(), '_cacheRemovedEvent_8');
+  check(ctx, created?.entry.updateTime, clock.now(), '_cacheRemovedEvent_9');
+  check(ctx, created?.entry.hitCount, 0, '_cacheRemovedEvent_10');
+
+  clock = clock2;
+  await cache.remove(key);
+  check(ctx, removed, isNotNull, '_cacheRemovedEvent_11');
+  check(ctx, removed?.source, cache, '_cacheRemovedEvent_12');
+  check(ctx, removed?.type, EntryEventType.REMOVED, '_cacheRemovedEvent_13');
+  check(ctx, removed?.entry.key, key, '_cacheRemovedEvent_14');
+  check(ctx, removed?.entry.value, value1, '_cacheRemovedEvent_15');
+  check(ctx, removed?.entry.expiryTime, expiryTime, '_cacheRemovedEvent_16');
+  check(
+      ctx, removed?.entry.creationTime, clock1.now(), '_cacheRemovedEvent_17');
+  check(ctx, removed?.entry.accessTime, clock1.now(), '_cacheRemovedEvent_18');
+  check(ctx, removed?.entry.updateTime, clock1.now(), '_cacheRemovedEvent_19');
+  check(ctx, removed?.entry.hitCount, 0, '_cacheRemovedEvent_20');
+
+  return store;
+}
+
+/// Builds a [Cache] backed by the provided [CacheStore] builder
+/// configured with a [ExpiredEntryEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheExpiredEvent<T extends CacheStore>(TestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now3 = Clock().minutesFromNow(3);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now3);
+  const expireDuration = Duration(minutes: 2);
+  final expiryTime = clock1.fromNowBy(expireDuration);
+  var clock = clock1;
+  CreatedEntryEvent? created;
+  ExpiredEntryEvent? expired;
+  final cache = ctx.newCache(store,
+      expiryPolicy: const CreatedExpiryPolicy(expireDuration),
+      eventListenerMode: EventListenerMode.Sync,
+      clock: Clock(() => clock.now()))
+    ..on<CreatedEntryEvent>().listen((event) => created = event)
+    ..on<ExpiredEntryEvent>().listen((event) => expired = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_cacheExpiredEvent_1');
+  check(ctx, created?.source, cache, '_cacheExpiredEvent_2');
+  check(ctx, created?.type, EntryEventType.CREATED, '_cacheExpiredEvent_3');
+  check(ctx, created?.entry.key, key, '_cacheExpiredEvent_4');
+  check(ctx, created?.entry.value, value1, '_cacheExpiredEvent_5');
+  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheExpiredEvent_6');
+  check(ctx, created?.entry.creationTime, clock.now(), '_cacheExpiredEvent_7');
+  check(ctx, created?.entry.accessTime, clock.now(), '_cacheExpiredEvent_8');
+  check(ctx, created?.entry.updateTime, clock.now(), '_cacheExpiredEvent_9');
+  check(ctx, created?.entry.hitCount, 0, '_cacheExpiredEvent_10');
+
+  clock = clock2;
+  final value2 = await cache.get(key);
+  check(ctx, value2, isNull, '_cacheExpiredEvent_11');
+  check(ctx, expired, isNotNull, '_cacheExpiredEvent_12');
+  check(ctx, expired?.source, cache, '_cacheExpiredEvent_13');
+  check(ctx, expired?.type, EntryEventType.EXPIRED, '_cacheExpiredEvent_14');
+  check(ctx, expired?.entry.key, key, '_cacheExpiredEvent_15');
+  check(ctx, expired?.entry.value, value1, '_cacheExpiredEvent_16');
+  check(ctx, expired?.entry.expiryTime, expiryTime, '_cacheExpiredEvent_17');
+  check(
+      ctx, expired?.entry.creationTime, clock1.now(), '_cacheExpiredEvent_18');
+  check(ctx, expired?.entry.accessTime, clock1.now(), '_cacheExpiredEvent_19');
+  check(ctx, expired?.entry.updateTime, clock1.now(), '_cacheExpiredEvent_20');
+  check(ctx, expired?.entry.hitCount, 0, '_cacheExpiredEvent_21');
+
+  return store;
+}
+
+/// Builds a [Cache] backed by the provided [CacheStore] builder
+/// configured with a [EvictdEntryEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheEvictedEvent<T extends CacheStore>(TestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now2 = Clock().minutesFromNow(3);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now2);
+  const expireDuration = ExpiryPolicy.eternal;
+  final expiryTime = clock1.fromNowBy(expireDuration);
+  var clock = clock1;
+  CreatedEntryEvent? created;
+  EvictedEntryEvent? evicted;
+  final cache = ctx.newCache(store,
+      maxEntries: 1,
+      evictionPolicy: const FiloEvictionPolicy(),
+      eventListenerMode: EventListenerMode.Sync,
+      clock: Clock(() => clock.now()))
+    ..on<CreatedEntryEvent>().listen((event) => created = event)
+    ..on<EvictedEntryEvent>().listen((event) => evicted = event);
+
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key1, value1);
+  check(ctx, created, isNotNull, '_cacheEvictedEvent_1');
+  check(ctx, created?.source, cache, '_cacheEvictedEvent_2');
+  check(ctx, created?.type, EntryEventType.CREATED, '_cacheEvictedEvent_3');
+  check(ctx, created?.entry.key, key1, '_cacheEvictedEvent_4');
+  check(ctx, created?.entry.value, value1, '_cacheEvictedEvent_5');
+  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheEvictedEvent_6');
+  check(ctx, created?.entry.creationTime, clock.now(), '_cacheEvictedEvent_7');
+  check(ctx, created?.entry.accessTime, clock.now(), '_cacheEvictedEvent_8');
+  check(ctx, created?.entry.updateTime, clock.now(), '_cacheEvictedEvent_9');
+  check(ctx, created?.entry.hitCount, 0, '_cacheEvictedEvent_10');
+
+  clock = clock2;
+  final key2 = 'key_2';
+  final value2 = ctx.generator.nextValue(2);
+  await cache.put(key2, value2);
+  check(ctx, evicted, isNotNull, '_cacheEvictedEvent_11');
+  check(ctx, evicted?.source, cache, '_cacheEvictedEvent_12');
+  check(ctx, evicted?.type, EntryEventType.EVICTED, '_cacheEvictedEvent_13');
+  check(ctx, evicted?.entry.key, key1, '_cacheEvictedEvent_14');
+  check(ctx, evicted?.entry.value, value1, '_cacheEvictedEvent_15');
+  check(ctx, evicted?.entry.expiryTime, expiryTime, '_cacheEvictedEvent_16');
+  check(
+      ctx, evicted?.entry.creationTime, clock1.now(), '_cacheEvictedEvent_17');
+  check(ctx, evicted?.entry.accessTime, clock1.now(), '_cacheEvictedEvent_18');
+  check(ctx, evicted?.entry.updateTime, clock1.now(), '_cacheEvictedEvent_19');
+  check(ctx, evicted?.entry.hitCount, 0, '_cacheEvictedEvent_20');
+
+  return store;
+}
+
+/// Returns the list of tests to execute
+///
+/// * [tests]: The set of tests
+List<Future<T> Function(TestContext<T>)> _getCacheTests<T extends CacheStore>(
+    {Set<CacheTest> tests = _CacheTests}) {
   return [
-    _cachePut,
-    _cachePutRemove,
-    _cacheSize,
-    _cacheContainsKey,
-    _cacheKeys,
-    _cachePutGet,
-    _cachePutGetOperator,
-    _cachePutPut,
-    _cachePutIfAbsent,
-    _cacheGetAndPut,
-    _cacheGetAndRemove,
-    _cacheClear,
-    _cacheCreatedExpiry,
-    _cacheAccessedExpiry,
-    _cacheModifiedExpiry,
-    _cacheTouchedExpiry,
-    _cacheEternalExpiry,
-    _cacheLoader,
-    _cacheFifoEviction,
-    _cacheFiloEviction,
-    _cacheLruEviction,
-    _cacheMruEviction,
-    _cacheLfuEviction,
-    _cacheMfuEviction
+    if (tests.contains(CacheTest.Put)) _cachePut,
+    if (tests.contains(CacheTest.PutRemove)) _cachePutRemove,
+    if (tests.contains(CacheTest.Size)) _cacheSize,
+    if (tests.contains(CacheTest.ContainsKey)) _cacheContainsKey,
+    if (tests.contains(CacheTest.Keys)) _cacheKeys,
+    if (tests.contains(CacheTest.PutGet)) _cachePutGet,
+    if (tests.contains(CacheTest.PutGetOperator)) _cachePutGetOperator,
+    if (tests.contains(CacheTest.PutPut)) _cachePutPut,
+    if (tests.contains(CacheTest.PutIfAbsent)) _cachePutIfAbsent,
+    if (tests.contains(CacheTest.GetAndPut)) _cacheGetAndPut,
+    if (tests.contains(CacheTest.GetAndRemove)) _cacheGetAndRemove,
+    if (tests.contains(CacheTest.Clear)) _cacheClear,
+    if (tests.contains(CacheTest.CreatedExpiry)) _cacheCreatedExpiry,
+    if (tests.contains(CacheTest.AccessedExpiry)) _cacheAccessedExpiry,
+    if (tests.contains(CacheTest.ModifiedExpiry)) _cacheModifiedExpiry,
+    if (tests.contains(CacheTest.TouchedExpiry)) _cacheTouchedExpiry,
+    if (tests.contains(CacheTest.EternalExpiry)) _cacheEternalExpiry,
+    if (tests.contains(CacheTest.Loader)) _cacheLoader,
+    if (tests.contains(CacheTest.FifoEviction)) _cacheFifoEviction,
+    if (tests.contains(CacheTest.FiloEviction)) _cacheFiloEviction,
+    if (tests.contains(CacheTest.LruEviction)) _cacheLruEviction,
+    if (tests.contains(CacheTest.MruEviction)) _cacheMruEviction,
+    if (tests.contains(CacheTest.LfuEviction)) _cacheLfuEviction,
+    if (tests.contains(CacheTest.MfuEviction)) _cacheMfuEviction,
+    if (tests.contains(CacheTest.CreatedEvent)) _cacheCreatedEvent,
+    if (tests.contains(CacheTest.UpdatedEvent)) _cacheUpdatedEvent,
+    if (tests.contains(CacheTest.RemovedEvent)) _cacheRemovedEvent,
+    if (tests.contains(CacheTest.ExpiredEvent)) _cacheExpiredEvent,
+    if (tests.contains(CacheTest.EvictedEvent)) _cacheEvictedEvent
   ];
 }
 
@@ -725,8 +1082,24 @@ List<Future<T> Function(TestContext<T>)>
 /// (with a provided [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
 ///
 /// * [ctx]: the test context
-Future<void> testCacheWith<T extends CacheStore>(TestContext<T> ctx) async {
-  for (var test in _getCacheTests<T>()) {
+/// * [tests]: The set of tests
+Future<void> testCacheWith<T extends CacheStore>(TestContext<T> ctx,
+    {Set<CacheTest> tests = _CacheTests}) async {
+  for (var test in _getCacheTests<T>(tests: tests)) {
     await test(ctx).then(ctx.deleteStore);
+  }
+}
+
+/// Default cache test
+///
+/// * [newTestContext]: The context builder
+/// * [types]: The type/generator map
+/// * [tests]: The test set
+void testCache<T extends CacheStore>(TestContextBuilder<T> newTestContext,
+    {Map<TypeTest, Function>? types, Set<CacheTest> tests = _CacheTests}) {
+  for (var entry in (types ?? _TypeTests).entries) {
+    test('Cache: ${EnumToString.convertToString(entry.key)}', () async {
+      await testCacheWith<T>(newTestContext(entry.value()), tests: tests);
+    });
   }
 }

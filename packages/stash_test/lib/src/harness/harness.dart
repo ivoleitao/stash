@@ -1,8 +1,12 @@
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:test/test.dart';
 import 'package:time/time.dart';
+
+/// [TestContext] builder function
+typedef TestContextBuilder<T extends CacheStore> = TestContext<T> Function(
+    ValueGenerator generator);
 
 /// Store builder function
 typedef StoreBuilder<T extends CacheStore> = Future<T> Function();
@@ -16,6 +20,182 @@ typedef CacheBuilder<T extends CacheStore> = DefaultCache Function(T store,
     int maxEntries,
     CacheLoader cacheLoader,
     Clock clock});
+
+/// The range of supported type tests
+enum TypeTest {
+  Bool,
+  Int,
+  Double,
+  String,
+  ListOfBool,
+  ListOfInt,
+  ListOfDouble,
+  ListOfString,
+  MapOfBoolBool,
+  MapOfBoolInt,
+  MapOfBoolDouble,
+  MapOfBoolString,
+  MapOfIntBool,
+  MapOfIntInt,
+  MapOfIntDouble,
+  MapOfIntString,
+  MapOfDoubleBool,
+  MapOfDoubleInt,
+  MapOfDoubleDouble,
+  MapOfDoubleString,
+  MapOfStringBool,
+  MapOfStringInt,
+  MapOfStringDouble,
+  MapOfStringString,
+  ClassOfBool,
+  ClassOfInt,
+  ClassOfDouble,
+  ClassOfString,
+  ClassOfListBool,
+  ClassOfListInt,
+  ClassOfListDouble,
+  ClassOfListString,
+  ClassOfMapBoolBool,
+  ClassOfMapBoolInt,
+  ClassOfMapBoolDouble,
+  ClassOfMapBoolString,
+  ClassOfMapIntBool,
+  ClassOfMapIntInt,
+  ClassOfMapIntDouble,
+  ClassOfMapIntString,
+  ClassOfMapDoubleBool,
+  ClassOfMapDoubleInt,
+  ClassOfMapDoubleDouble,
+  ClassOfMapDoubleString,
+  ClassOfMapStringBool,
+  ClassOfMapStringInt,
+  ClassOfMapStringDouble,
+  ClassOfMapStringString
+}
+
+extension TypeTestValue on TypeTest {
+  ValueGenerator Function() get generator {
+    switch (this) {
+      case TypeTest.Bool:
+        return () => BoolGenerator();
+      case TypeTest.Int:
+        return () => IntGenerator();
+      case TypeTest.Double:
+        return () => DoubleGenerator();
+      case TypeTest.String:
+        return () => StringGenerator();
+      case TypeTest.ListOfBool:
+        return () => IteratorGenerator(BoolGenerator());
+      case TypeTest.ListOfInt:
+        return () => IteratorGenerator(IntGenerator());
+      case TypeTest.ListOfDouble:
+        return () => IteratorGenerator(DoubleGenerator());
+      case TypeTest.ListOfString:
+        return () => IteratorGenerator(StringGenerator());
+      case TypeTest.MapOfBoolBool:
+        return () => MapGenerator(BoolGenerator(), BoolGenerator());
+      case TypeTest.MapOfBoolInt:
+        return () => MapGenerator(BoolGenerator(), IntGenerator());
+      case TypeTest.MapOfBoolDouble:
+        return () => MapGenerator(BoolGenerator(), DoubleGenerator());
+      case TypeTest.MapOfBoolString:
+        return () => MapGenerator(BoolGenerator(), StringGenerator());
+      case TypeTest.MapOfIntBool:
+        return () => MapGenerator(IntGenerator(), BoolGenerator());
+      case TypeTest.MapOfIntInt:
+        return () => MapGenerator(IntGenerator(), IntGenerator());
+      case TypeTest.MapOfIntDouble:
+        return () => MapGenerator(IntGenerator(), DoubleGenerator());
+      case TypeTest.MapOfIntString:
+        return () => MapGenerator(IntGenerator(), StringGenerator());
+      case TypeTest.MapOfDoubleBool:
+        return () => MapGenerator(DoubleGenerator(), BoolGenerator());
+      case TypeTest.MapOfDoubleInt:
+        return () => MapGenerator(DoubleGenerator(), IntGenerator());
+      case TypeTest.MapOfDoubleDouble:
+        return () => MapGenerator(DoubleGenerator(), DoubleGenerator());
+      case TypeTest.MapOfDoubleString:
+        return () => MapGenerator(DoubleGenerator(), StringGenerator());
+      case TypeTest.MapOfStringBool:
+        return () => MapGenerator(StringGenerator(), BoolGenerator());
+      case TypeTest.MapOfStringInt:
+        return () => MapGenerator(StringGenerator(), IntGenerator());
+      case TypeTest.MapOfStringDouble:
+        return () => MapGenerator(StringGenerator(), DoubleGenerator());
+      case TypeTest.MapOfStringString:
+        return () => MapGenerator(StringGenerator(), StringGenerator());
+      case TypeTest.ClassOfBool:
+        return () => SampleClassGenerator(BoolGenerator());
+      case TypeTest.ClassOfInt:
+        return () => SampleClassGenerator(IntGenerator());
+      case TypeTest.ClassOfDouble:
+        return () => SampleClassGenerator(DoubleGenerator());
+      case TypeTest.ClassOfString:
+        return () => SampleClassGenerator(StringGenerator());
+      case TypeTest.ClassOfListBool:
+        return () => SampleClassGenerator(IteratorGenerator(BoolGenerator()));
+      case TypeTest.ClassOfListInt:
+        return () => SampleClassGenerator(IteratorGenerator(IntGenerator()));
+      case TypeTest.ClassOfListDouble:
+        return () => SampleClassGenerator(IteratorGenerator(DoubleGenerator()));
+      case TypeTest.ClassOfListString:
+        return () => SampleClassGenerator(IteratorGenerator(StringGenerator()));
+      case TypeTest.ClassOfMapBoolBool:
+        return () => SampleClassGenerator(
+            MapGenerator(BoolGenerator(), BoolGenerator()));
+      case TypeTest.ClassOfMapBoolInt:
+        return () =>
+            SampleClassGenerator(MapGenerator(BoolGenerator(), IntGenerator()));
+      case TypeTest.ClassOfMapBoolDouble:
+        return () => SampleClassGenerator(
+            MapGenerator(BoolGenerator(), DoubleGenerator()));
+      case TypeTest.ClassOfMapBoolString:
+        return () => SampleClassGenerator(
+            MapGenerator(BoolGenerator(), StringGenerator()));
+      case TypeTest.ClassOfMapIntBool:
+        return () =>
+            SampleClassGenerator(MapGenerator(IntGenerator(), BoolGenerator()));
+      case TypeTest.ClassOfMapIntInt:
+        return () =>
+            SampleClassGenerator(MapGenerator(IntGenerator(), IntGenerator()));
+      case TypeTest.ClassOfMapIntDouble:
+        return () => SampleClassGenerator(
+            MapGenerator(IntGenerator(), DoubleGenerator()));
+      case TypeTest.ClassOfMapIntString:
+        return () => SampleClassGenerator(
+            MapGenerator(IntGenerator(), StringGenerator()));
+      case TypeTest.ClassOfMapDoubleBool:
+        return () => SampleClassGenerator(
+            MapGenerator(DoubleGenerator(), BoolGenerator()));
+      case TypeTest.ClassOfMapDoubleInt:
+        return () => SampleClassGenerator(
+            MapGenerator(DoubleGenerator(), IntGenerator()));
+      case TypeTest.ClassOfMapDoubleDouble:
+        return () => SampleClassGenerator(
+            MapGenerator(DoubleGenerator(), DoubleGenerator()));
+      case TypeTest.ClassOfMapDoubleString:
+        return () => SampleClassGenerator(
+            MapGenerator(DoubleGenerator(), StringGenerator()));
+      case TypeTest.ClassOfMapStringBool:
+        return () => SampleClassGenerator(
+            MapGenerator(StringGenerator(), BoolGenerator()));
+      case TypeTest.ClassOfMapStringInt:
+        return () => SampleClassGenerator(
+            MapGenerator(StringGenerator(), IntGenerator()));
+      case TypeTest.ClassOfMapStringDouble:
+        return () => SampleClassGenerator(
+            MapGenerator(StringGenerator(), DoubleGenerator()));
+      case TypeTest.ClassOfMapStringString:
+        return () => SampleClassGenerator(
+            MapGenerator(StringGenerator(), StringGenerator()));
+    }
+  }
+}
+
+/// List of type tests
+Map<TypeTest, ValueGenerator Function()> TypeTests = {
+  for (var test in TypeTest.values) test: test.generator
+};
 
 /// Assert that [actual] matches [matcher] in a specific test [ctx].
 ///
@@ -38,6 +218,7 @@ void check<T extends CacheStore>(
 /// * [maxEntries]: The max number of entries this cache can hold if provided.
 /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
 /// * [clock]: The source of time to be used
+/// * [eventListenerMode]: The event listener mode of this cache
 Cache newDefaultCache<T extends CacheStore>(T store,
     {String? name,
     ExpiryPolicy? expiryPolicy,
@@ -45,7 +226,8 @@ Cache newDefaultCache<T extends CacheStore>(T store,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader? cacheLoader,
-    Clock? clock}) {
+    Clock? clock,
+    EventListenerMode? eventListenerMode}) {
   return Cache.newCache(store,
       name: name,
       expiryPolicy: expiryPolicy,
@@ -53,7 +235,8 @@ Cache newDefaultCache<T extends CacheStore>(T store,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       cacheLoader: cacheLoader,
-      clock: clock);
+      clock: clock,
+      eventListenerMode: eventListenerMode);
 }
 
 /// Generic definition of a value generator
@@ -64,6 +247,9 @@ abstract class ValueGenerator {
   ///
   /// Returns a new value generated from the provided [seed]
   dynamic nextValue(int seed);
+
+  /// Returns the encoder for the generated class
+  dynamic Function(Map<String, dynamic> json)? get fromEncodable => null;
 }
 
 /// A [bool] implementation of a [ValueGenerator] which produces a [bool] from a provided seed
@@ -192,6 +378,10 @@ class SampleClassGenerator extends ValueGenerator {
   dynamic nextValue(int idx) {
     return SampleClass(value: _ithGenerator.nextValue(idx));
   }
+
+  @override
+  Function(Map<String, dynamic> json) get fromEncodable =>
+      (Map<String, dynamic> json) => SampleClass.fromJson(json);
 }
 
 /// Base class for all the test contexts.
@@ -221,6 +411,7 @@ abstract class TestContext<T extends CacheStore> {
   /// * [maxEntries]: The max number of entries this cache can hold if provided.
   /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
   /// * [clock]: The source of time to be used on this
+  /// * [eventListenerMode]: The event listener mode of this cache
   Cache newCache(T store,
       {String? name,
       ExpiryPolicy? expiryPolicy,
@@ -228,7 +419,8 @@ abstract class TestContext<T extends CacheStore> {
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       CacheLoader? cacheLoader,
-      Clock? clock}) {
+      Clock? clock,
+      EventListenerMode? eventListenerMode}) {
     return newDefaultCache(store,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -236,7 +428,8 @@ abstract class TestContext<T extends CacheStore> {
         evictionPolicy: evictionPolicy,
         maxEntries: maxEntries,
         cacheLoader: cacheLoader,
-        clock: clock);
+        clock: clock,
+        eventListenerMode: eventListenerMode);
   }
 
   /// Deletes a store

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:stash/src/api/codec/msgpack/reader.dart';
-import 'package:stash/src/api/codec/msgpack/writer.dart';
+import 'package:stash/src/msgpack/reader.dart';
+import 'package:stash/src/msgpack/writer.dart';
 
 /// Base definition of a extension. It's purpose is to support custom objects directly without them needing to
 /// provide a method to serialize/deserialize to/from a Map. This mechanism is mostly target to some base types

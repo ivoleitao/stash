@@ -1,4 +1,4 @@
-/// Provides testing support to third party extensions, for example store extensions
+/// Provides testing support to third party extensions
 library stash_test;
 
 export 'src/harness/cache_harness.dart';

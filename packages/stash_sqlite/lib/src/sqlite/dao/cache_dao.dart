@@ -1,5 +1,5 @@
 import 'package:moor/moor.dart';
-import 'package:stash/stash.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/cache_database.dart';
 import 'package:stash_sqlite/src/sqlite/table/cache_table.dart';
 import 'package:stash_sqlite/src/sqlite/table/iso8601_converter.dart';
