@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
@@ -31,7 +32,11 @@ void main() async {
 
   // Creates a memory based cache with a a capacity of 10
   final cache = newObjectBoxCache(path,
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.Sync,
+      fromEncodable: (json) => Task.fromJson(json))
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
   // Adds a task with key 'task1' to the cache
   await cache.put('task1',

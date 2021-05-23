@@ -36,7 +36,8 @@ import 'package:stash_memory/stash_memory.dart';
 The example bellow creates a cache with a in-memory storage backend that supports a maximum of 10 `Task` objects.
 
 ```dart
-import 'package:stash/stash_memory.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash_memory/stash_memory.dart';
 
 class Task {
   final int id;
@@ -53,7 +54,10 @@ class Task {
 
 void main() async {
   // Creates a memory based cache with a a capacity of 10
-  final cache = newMemoryCache(maxEntries: 10);
+  final cache = newMemoryCache(
+      maxEntries: 10, eventListenerMode: EventListenerMode.Sync)
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(

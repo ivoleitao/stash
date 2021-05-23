@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/stash_hive.dart';
 
 class Task {
@@ -31,7 +32,11 @@ void main() async {
 
   // Creates cache with a Hive based storage backend with the capacity of 10 entries
   final cache = newHiveCache(path,
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.Sync,
+      fromEncodable: (json) => Task.fromJson(json))
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(

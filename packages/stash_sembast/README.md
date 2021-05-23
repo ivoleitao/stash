@@ -41,6 +41,7 @@ This storage extension for [stash](https://pub.dartlang.org/packages/stash) prov
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 
 class Task {
@@ -74,7 +75,11 @@ void main() async {
 
   // Creates cache with a Sembast based storage backend with the capacity of 10 entries
   final cache = newSembastFileCache(file,
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.Sync,
+      fromEncodable: (json) => Task.fromJson(json))
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
   // Adds a task with key 'task1' to the cache
   await cache.put('task1',
@@ -84,7 +89,6 @@ void main() async {
 
   print(value);
 }
-
 ```
 
 ## Features and Bugs

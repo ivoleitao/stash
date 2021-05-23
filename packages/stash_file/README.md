@@ -36,44 +36,55 @@ import 'package:stash_file/stash_file.dart';
 The example bellow creates a cache with a file storage backend that supports a maximum of 10 `Task` objects. In the rather simple example bellow the serialization and deserialization of the object is coded by hand but normally it relies on the usage of libraries like [json_serializable](https://pub.dev/packages/json_serializable). Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 
 ```dart
-  import 'package:stash_file/stash_file.dart';
+import 'dart:io';
 
-  class Task {
-    final int id;
-    final String title;
-    final bool completed;
+import 'package:stash/stash_api.dart';
+import 'package:stash_file/stash_file.dart';
 
-    Task({this.id, this.title, this.completed = false});
+class Task {
+  final int id;
+  final String title;
+  final bool completed;
 
-    /// Creates a [Task] from json map
-    factory Task.fromJson(Map<String, dynamic> json) => Task(
-        id: json['id'] as int,
-        title: json['title'] as String,
-        completed: json['completed'] as bool);
+  Task({required this.id, required this.title, this.completed = false});
 
-    /// Creates a json map from a [Task]
-    Map<String, dynamic> toJson() =>
-        <String, dynamic>{'id': id, 'title': title, 'completed': completed};
+  /// Creates a [Task] from json map
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      completed: json['completed'] as bool);
 
-    @override
-    String toString() {
-      return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
-    }
+  /// Creates a json map from a [Task]
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'id': id, 'title': title, 'completed': completed};
+
+  @override
+  String toString() {
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
+}
 
-  void main() async {
-  // Creates a cache on the local storage with a maximum capacity of 10 entries
-  final cache = newLocalDiskCache(
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+void main() async {
+  // Temporary path
+  final path = Directory.systemTemp.path;
 
-    // Adds a task with key 'task1' to the cache
-    await cache.put(
-        'task1', Task(id: 1, title: 'Run stash_file example', completed: true));
-    // Retrieves the value from the cache
-    final value = await cache.get('task1');
+  // Creates a cache on the local storage with the capacity of 10 entries
+  final cache = newLocalFileCache(path,
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.Sync,
+      fromEncodable: (json) => Task.fromJson(json))
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
-    print(value);
-  }
+  // Adds a task with key 'task1' to the cache
+  await cache.put(
+      'task1', Task(id: 1, title: 'Run stash_file example', completed: true));
+  // Retrieves the value from the cache
+  final value = await cache.get('task1');
+
+  print(value);
+}
+
 ```
 ## Features and Bugs
 

@@ -39,20 +39,21 @@ The example bellow creates a cache with a Isar storage backend that supports a m
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_isar/stash_isar.dart';
 
 class Task {
-  final int id;
-  final String title;
-  final bool completed;
+  final int? id;
+  final String? title;
+  final bool? completed;
 
   Task({this.id, this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      completed: json['completed'] as bool);
+      id: json['id'] as int?,
+      title: json['title'] as String?,
+      completed: json['completed'] as bool?);
 
   /// Creates a json map from a [Task]
   Map<String, dynamic> toJson() =>
@@ -60,7 +61,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed! ? "completed" : "not completed"}';
   }
 }
 
@@ -68,9 +69,13 @@ void main() async {
   // Temporary path
   final path = Directory.systemTemp.path;
 
-  // Creates cache with a isar based storage backend with a maximum capacity of 10 entries
+  // Creates cache with a Isar based storage backend with the capacity of 10 entries
   final cache = newIsarCache(path,
-      maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.Sync,
+      fromEncodable: (json) => Task.fromJson(json))
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Entry key "${event.entry.key}" added to the cache'));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(
