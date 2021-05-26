@@ -1,3 +1,8 @@
+# 3.0.0
+
+- Updated dependencies
+- Releasing the lastest development version of 3.x line
+
 ## 3.0.0-dev.3
 
 - Updated to the latest dart sdk
