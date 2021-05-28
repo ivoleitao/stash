@@ -1,3 +1,8 @@
+# 3.0.1
+
+- Updated dependencies
+- Fixed issue [stash_dio crash when reading from named hive cache](https://github.com/ivoleitao/stash/issues/13)
+
 # 3.0.0
 
 - Updated dependencies

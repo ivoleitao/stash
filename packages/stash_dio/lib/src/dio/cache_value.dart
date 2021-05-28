@@ -37,7 +37,7 @@ class CacheValue extends Equatable {
   /// Creates a [CacheValue] from json map
   ///
   /// * [json]: The json map
-  factory CacheValue.fromJson(Map<String, dynamic> json) {
+  factory CacheValue.fromJson(Map<dynamic, dynamic> json) {
     final jsonStaleDate = json['staleDate'] as String?;
 
     return CacheValue(
