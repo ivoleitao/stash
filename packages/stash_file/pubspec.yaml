@@ -1,5 +1,5 @@
 name: stash_file
-version: 3.0.1
+version: 3.0.2
 #publish_to: none
 description: >-
   File storage extension for the stash caching API. Provides support to store caches
@@ -11,14 +11,15 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  file: ^6.1.1
+  file: ^6.1.2
   stream_transform: ^2.0.0
   stash: ^3.0.1
   #stash:
   #  path: ../stash
 dev_dependencies:
   pedantic: ^1.11.0
-  test: ^1.17.4
+  test: ^1.17.9
   stash_test: ^3.0.0
   #stash_test:
   #  path: ../stash_test
+  dependency_validator: ^3.1.0

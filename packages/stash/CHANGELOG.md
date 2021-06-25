@@ -1,5 +1,9 @@
 # 3.0.1
 
+- Updated dependencies
+
+# 3.0.1
+
 - Reverted the async package version to 2.6.1 as 2.7.0 is incompatible with flutter_test as reported in [Stash 3.0.0 is incompatible with flutter_test](https://github.com/ivoleitao/stash/issues/12)
 
 # 3.0.0

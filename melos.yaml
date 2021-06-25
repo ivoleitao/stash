@@ -30,51 +30,18 @@ scripts:
       Run `dart pub outdated` in all packages.
 
   build:
-    run: melos run build:sqlite && melos run build:objectbox
+    run: melos exec --scope="stash_sqlite" --scope="stash_objectbox" -- \
+        "dart run build_runner build --delete-conflicting-outputs"
     description: |
-      Run `dart run build_runner` in supporting packages.
+      Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
   
-  build:sqlite:
-    run: |
-      melos exec --scope "stash_sqlite" -- \
-        "dart run build_runner build"
-    description: |
-      Run `dart run build_runner` in the sqlite stash package.
-
-  build:objectbox:
-    run: |
-      melos exec --scope "stash_objectbox" -- \
-        "dart run build_runner build"
-    description: |
-      Run `dart run build_runner` in the objectbox stash package.
-
   clean:
     run: |
       melos exec -- \
         "dart run build_runner clean"
+    scope: "stash_sqlite"
     description: |
       Run `dart run build_runner clean` in the selected packages.
-    select-package:
-      scope: "stash_sqlite"
-
-  generate:
-    run: melos run generate:sqlite && melos run generate:objectbox
-    description: |
-      Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
-  
-  generate:sqlite:
-    run: |
-      melos exec --scope "stash_sqlite" -- \
-        "dart run build_runner build --delete-conflicting-outputs"
-    description: |
-      Run `dart run build_runner` in the sqlite stash package.
-
-  generate:objectbox:
-    run: |
-      melos exec --scope "stash_objectbox" -- \
-        "dart run build_runner build --delete-conflicting-outputs"
-    description: |
-      Run `dart run build_runner` in the objectbox stash package.
 
   analyze:
     run: |
@@ -89,6 +56,13 @@ scripts:
         "dart format --set-exit-if-changed ."
     description: |
       Run `dart format` in all packages.
+  
+  dependency-validator:
+    run: |
+      melos exec -- \
+        "dart run dependency_validator"
+    description: |
+      Run `dart run dependency_validator` in all packages.
 
   doc:
     run: |
@@ -111,7 +85,7 @@ scripts:
 
   test:chrome:
     run: |
-      melos exec --scope "stash" --scope "stash_memory" --scope "stash_dio" -- \
+      melos exec --scope="stash" --scope="stash_memory" --scope="stash_dio" \
         "dart test -p chrome"
     description: |
       Run `dart test -p chome` in the selected packages. 

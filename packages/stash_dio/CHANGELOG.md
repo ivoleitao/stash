@@ -1,6 +1,11 @@
 # 3.0.1
 
 - Updated dependencies
+- Fixed issue [Multiple cache-control headers are not handled](https://github.com/ivoleitao/stash/issues/14)
+
+# 3.0.1
+
+- Updated dependencies
 - Fixed issue [stash_dio crash when reading from named hive cache](https://github.com/ivoleitao/stash/issues/13)
 
 # 3.0.0

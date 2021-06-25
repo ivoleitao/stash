@@ -51,12 +51,14 @@ void withInterceptor(
 }
 
 Map<String, dynamic>? _withAnswer(_DioAdapterMock mock, dynamic obj,
-    {int statusCode = 200}) {
+    {int statusCode = 200,
+    Map<String, List<String>> headers = const <String, List<String>>{}}) {
   Map<String, dynamic>? response = obj.toJson();
 
   var responseBody =
       ResponseBody.fromString(json.encode(response), statusCode, headers: {
     Headers.contentTypeHeader: [Headers.jsonContentType],
+    ...headers
   });
 
   when(() => mock.fetch(captureAny(), captureAny(), captureAny()))
@@ -174,4 +176,15 @@ void main() async {
 
     expect(receivedResponse2, providedResponse1);
   }, testOn: '!js');
+
+  test('stash-dio #14', () async {
+    withInterceptor(
+        dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1(), headers: {
+      'cache-control': ['no-cache', 'no-store']
+    });
+    var receivedResponse1 = await _getResponse(dio, '/posts/1');
+
+    expect(receivedResponse1, providedResponse1);
+  });
 }

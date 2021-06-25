@@ -165,10 +165,12 @@ class CacheInterceptorBuilder {
   void _tryParseHead(Response response, _ParseHeadCallback callback) {
     Duration? maxAge;
     Duration? maxStale;
-    var cacheControl = response.headers.value('cache-control');
-    if (cacheControl != null) {
+    final cacheControlList = response.headers['cache-control'];
+    if (cacheControlList != null) {
+      // Collate all the cache control headers into a valid string
+      final cacheControl = cacheControlList.join(',');
       // try to get maxAge and maxStale from cacheControl
-      var parameters = HeaderValue.parseCacheControl(cacheControl).parameters;
+      final parameters = HeaderValue.parseCacheControl(cacheControl).parameters;
       maxAge = _tryGetDurationFromMap(parameters, 's-maxage');
       maxAge ??= _tryGetDurationFromMap(parameters, 'max-age');
       // if staleTime has value, don't get max-stale anymore.
