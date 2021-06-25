@@ -1,4 +1,4 @@
-# 3.0.1
+# 3.0.2
 
 - Updated dependencies
 - Fixed issue [Multiple cache-control headers are not handled](https://github.com/ivoleitao/stash/issues/14)
