@@ -11,9 +11,9 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  #stash: ^3.0.1
-  stash:
-    path: ../stash
+  stash: ^3.1.0
+  #stash:
+  #  path: ../stash
   objectbox: ^1.0.0
 dev_dependencies:
   lints: ^1.0.1

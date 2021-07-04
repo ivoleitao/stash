@@ -11,9 +11,9 @@ environment:
 
 dependencies:
   moor: ^4.4.0
-  #stash: ^3.0.1
-  stash:
-    path: ../stash
+  stash: ^3.1.0
+  #stash:
+  #  path: ../stash
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.17.9

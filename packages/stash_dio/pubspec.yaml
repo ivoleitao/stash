@@ -14,9 +14,9 @@ dependencies:
   http_parser: ^4.0.0
   crypto: ^3.0.1
   dio: ^4.0.0
-  #stash: ^3.0.1
-  stash:
-    path: ../stash
+  stash: ^3.1.0
+  # stash:
+  #  path: ../stash
   #stash_memory: ^3.0.1
   stash_memory:
     path: ../stash_memory
