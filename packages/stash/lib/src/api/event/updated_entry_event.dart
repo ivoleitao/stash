@@ -16,5 +16,5 @@ class UpdatedEntryEvent extends CacheEntryEvent {
   /// * [oldEntry]: The old entry
   /// * [newEntry]: The new entry
   UpdatedEntryEvent(Cache source, this.oldEntry, this.newEntry)
-      : super(source, EntryEventType.UPDATED);
+      : super(source, EntryEventType.updated);
 }

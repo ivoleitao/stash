@@ -12,5 +12,5 @@ class CreatedEntryEvent extends CacheEntryEvent {
   /// * [source]: The cache that originated the event
   /// * [entry]: The created entry
   CreatedEntryEvent(Cache source, this.entry)
-      : super(source, EntryEventType.CREATED);
+      : super(source, EntryEventType.created);
 }

@@ -11,5 +11,5 @@ class ExpiredEntryEvent extends RemovedEntryEvent {
   /// * [source]: The cache that originated the event
   /// * [entry]: The removed entry
   ExpiredEntryEvent(Cache source, CacheEntry entry)
-      : super(source, entry, type: EntryEventType.EXPIRED);
+      : super(source, entry, type: EntryEventType.expired);
 }

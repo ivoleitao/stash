@@ -28,10 +28,9 @@ class CacheStat with EquatableMixin {
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
-  CacheStat(this.key, this.expiryTime, DateTime creationTime,
+  CacheStat(this.key, this.expiryTime, this.creationTime,
       {DateTime? accessTime, DateTime? updateTime, int? hitCount})
       : assert(key.isNotEmpty),
-        creationTime = creationTime,
         assert(hitCount == null || hitCount >= 0),
         accessTime = accessTime ?? creationTime,
         updateTime = updateTime ?? creationTime,

@@ -82,13 +82,13 @@ class DefaultCache extends Cache {
         maxEntries = maxEntries ?? 0,
         cacheLoader = cacheLoader ?? ((key) => Future.value()),
         clock = clock ?? Clock(),
-        eventPublishingMode = eventListenerMode ?? EventListenerMode.Disabled,
+        eventPublishingMode = eventListenerMode ?? EventListenerMode.disabled,
         streamController = StreamController.broadcast(
-            sync: eventListenerMode == EventListenerMode.Sync);
+            sync: eventListenerMode == EventListenerMode.synchronous);
 
   /// Fires a new event on the event bus with the specified [event].
   void _fire(CacheEvent? event) {
-    if (eventPublishingMode != EventListenerMode.Disabled && event != null) {
+    if (eventPublishingMode != EventListenerMode.disabled && event != null) {
       streamController.add(event);
     }
   }
@@ -302,10 +302,13 @@ class DefaultCache extends Cache {
             : Future.value();
 
         // And finally we add it to the cache
-        return pre.then((_) => _putEntry(key, value, now, expiryDuration));
+        return pre
+            .then((_) => _putEntry(key, value, now, expiryDuration))
+            .then((_) => null);
       } else {
         // Already present let's update the cache instead
-        return _updateEntry(entry, value, now, expiryDuration);
+        return _updateEntry(entry, value, now, expiryDuration)
+            .then((_) => null);
       }
     });
   }

@@ -12,12 +12,12 @@ void main() {
 
   void packFalse() {
     var bytes = msgPackWrite(false);
-    expect(bytes, orderedEquals([types.bool_false]));
+    expect(bytes, orderedEquals([types.boolFalse]));
   }
 
   void packTrue() {
     var bytes = msgPackWrite(true);
-    expect(bytes, orderedEquals([types.bool_true]));
+    expect(bytes, orderedEquals([types.boolTrue]));
   }
 
   void packPositiveFixInt() {

@@ -9,7 +9,7 @@ class MruEvictionPolicy extends EvictionPolicy {
 
   @override
   CacheStat? select(Iterable<CacheStat?> entries, CacheStat justAdded) {
-    var selectedEntry;
+    CacheStat? selectedEntry;
     for (var entry in entries) {
       if (entry != null &&
           (selectedEntry == null ||

@@ -1,3 +1,10 @@
+# 3.1.0
+
+- Switched from `pedantic` to lints
+- BREAKING: Due to new lint rules the EventListenerMode enum now uses camel case constants
+- BREAKING: Due to new lint rules the EntryEventType enum now uses camel case constants
+- Updated dependencies
+
 # 3.0.1
 
 - Updated dependencies

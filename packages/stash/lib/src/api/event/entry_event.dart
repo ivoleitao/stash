@@ -5,19 +5,19 @@ import 'event.dart';
 /// The type of event received by the listener.
 enum EntryEventType {
   /// An event type indicating that the cache entry was created.
-  CREATED,
+  created,
 
   /// An event type indicating that the cache entry was updated.
-  UPDATED,
+  updated,
 
   /// An event type indicating that the cache entry was removed.
-  REMOVED,
+  removed,
 
   /// An event type indicating that the cache entry was expired.
-  EXPIRED,
+  expired,
 
   /// An event type indicating that the cache entry was evicted
-  EVICTED
+  evicted
 }
 
 /// A Cache entry event base class.

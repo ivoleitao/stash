@@ -2,10 +2,10 @@
 const int nil = 0xc0;
 
 /// false
-const int bool_false = 0xc2;
+const int boolFalse = 0xc2;
 
 /// true
-const int bool_true = 0xc3;
+const int boolTrue = 0xc3;
 
 /// bin 8
 const int bin8 = 0xc4;

@@ -153,9 +153,9 @@ class MsgPackReader extends BytesReader {
     switch (u) {
       case types.nil:
         return null;
-      case types.bool_false:
+      case types.boolFalse:
         return false;
-      case types.bool_true:
+      case types.boolTrue:
         return true;
       case types.bin8:
         return readBuffer(readUInt8());

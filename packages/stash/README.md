@@ -248,7 +248,7 @@ The user of a `Cache` can subscribe to cache enty events if they are enabled thr
 ```dart
   // Creates a memory cache with a max capacity of 10 and subscribes to all the 
   // cache events
-  final cache = newMemoryCache(maxEntries: 10, eventListenerMode: EventListenerMode.Sync)
+  final cache = newMemoryCache(maxEntries: 10, eventListenerMode: EventListenerMode.synchronous)
     ..on().listen((event) => print(event));
 ```
 
@@ -265,7 +265,7 @@ The user of a `Cache` can subscribe to cache enty events if they are enabled thr
 ```dart
   // Creates a memory cache with a max capacity of 10 which subscribes to the Created and 
   // the Updated cache events
-  final cache = newMemoryCache(maxEntries: 10, eventListenerMode: EventListenerMode.Sync)
+  final cache = newMemoryCache(maxEntries: 10, eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen((event) => print(event.type))
     ..on<UpdatedEntryEvent>().listen((event) => print(event.type));
 ```

@@ -7,39 +7,39 @@ import 'package:time/time.dart';
 import 'harness.dart';
 
 /// The default cache name
-const _DefaultCache = 'test';
+const _defaultCache = 'test';
 
 /// The default type tests perfomed over a store
-final _StoreTypeTests = Map.unmodifiable(TypeTests);
+final _storeTypeTests = Map.unmodifiable(typeTests);
 
 /// The supported cache tests
 enum StoreTest {
-  AddEntry,
-  AddGetEntry,
-  RemoveEntry,
-  Size,
-  Clear,
-  Delete,
-  GetStat,
-  ChangeEntry,
-  Keys,
-  Values,
-  Stats
+  addEntry,
+  addGetEntry,
+  removeEntry,
+  size,
+  clear,
+  delete,
+  getStat,
+  changeEntry,
+  keys,
+  getValues,
+  stats
 }
 
 /// The set of store tests
-const _StoreTests = {
-  StoreTest.AddEntry,
-  StoreTest.AddGetEntry,
-  StoreTest.RemoveEntry,
-  StoreTest.Size,
-  StoreTest.Clear,
-  StoreTest.Delete,
-  StoreTest.GetStat,
-  StoreTest.ChangeEntry,
-  StoreTest.Keys,
-  StoreTest.Values,
-  StoreTest.Stats
+const _storeTests = {
+  StoreTest.addEntry,
+  StoreTest.addGetEntry,
+  StoreTest.removeEntry,
+  StoreTest.size,
+  StoreTest.clear,
+  StoreTest.delete,
+  StoreTest.getStat,
+  StoreTest.changeEntry,
+  StoreTest.keys,
+  StoreTest.getValues,
+  StoreTest.stats
 };
 
 /// Calls [CacheStore.size] with a optional cache name
@@ -48,7 +48,7 @@ const _StoreTests = {
 /// * [name]: An optional cache name, assigned a default value if not provided
 ///
 /// Returns the result of calling size on the provided [CacheStore]
-Future<int> _size(CacheStore store, {String name = _DefaultCache}) {
+Future<int> _size(CacheStore store, {String name = _defaultCache}) {
   return store.size(name);
 }
 
@@ -60,7 +60,7 @@ Future<int> _size(CacheStore store, {String name = _DefaultCache}) {
 ///
 /// Returns the result of calling containsKey on the provided [CacheStore]
 Future<bool> _containsKey(CacheStore store, String key,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.containsKey(name, key);
 }
 
@@ -72,7 +72,7 @@ Future<bool> _containsKey(CacheStore store, String key,
 ///
 /// Returns the result of calling getStat on the provided [CacheStore]
 Future<CacheStat?> _getStat(CacheStore store, String key,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.getStat(name, key);
 }
 
@@ -84,7 +84,7 @@ Future<CacheStat?> _getStat(CacheStore store, String key,
 ///
 /// Returns the result of calling getEntry on the provided [CacheStore]
 Future<CacheEntry?> _getEntry(CacheStore store, String key,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.getEntry(name, key);
 }
 
@@ -95,7 +95,7 @@ Future<CacheEntry?> _getEntry(CacheStore store, String key,
 /// * [entry]: The [CacheEntry] to store
 /// * [name]: An optional cache name, assigned a default value if not provided
 Future<void> _putEntry(CacheStore store, String key, CacheEntry entry,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.putEntry(name, key, entry);
 }
 
@@ -115,7 +115,7 @@ Future<void> _putEntry(CacheStore store, String key, CacheEntry entry,
 /// Returns the created [CacheEntry]
 Future<CacheEntry> _putGetEntry(
     CacheStore store, ValueGenerator generator, int seed,
-    {String name = _DefaultCache,
+    {String name = _defaultCache,
     String? key,
     DateTime? expiryTime,
     DateTime? creationTime,
@@ -138,7 +138,7 @@ Future<CacheEntry> _putGetEntry(
 /// * [key]: The cache key
 /// * [name]: An optional cache name, assigned a default value if not provided
 Future<void> _remove(CacheStore store, String key,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.remove(name, key);
 }
 
@@ -149,7 +149,7 @@ Future<void> _remove(CacheStore store, String key,
 ///
 /// Returns the result of calling keys on the provided [CacheStore]
 Future<Iterable<String>> _keys(CacheStore store,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.keys(name);
 }
 
@@ -160,7 +160,7 @@ Future<Iterable<String>> _keys(CacheStore store,
 ///
 /// Returns the result of calling stats on the provided [CacheStore]
 Future<Iterable<CacheStat?>> _stats(CacheStore store,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.stats(name);
 }
 
@@ -171,7 +171,7 @@ Future<Iterable<CacheStat?>> _stats(CacheStore store,
 ///
 /// Returns the result of calling values on the provided [CacheStore]
 Future<Iterable<CacheEntry?>> _values(CacheStore store,
-    {String name = _DefaultCache}) {
+    {String name = _defaultCache}) {
   return store.values(name);
 }
 
@@ -179,7 +179,7 @@ Future<Iterable<CacheEntry?>> _values(CacheStore store,
 ///
 /// * [store]: The [CacheStore]
 /// * [name]: An optional cache name, assigned a default value if not provided
-Future<void> _clear(CacheStore store, {String name = _DefaultCache}) {
+Future<void> _clear(CacheStore store, {String name = _defaultCache}) {
   return store.clear(name);
 }
 
@@ -187,7 +187,7 @@ Future<void> _clear(CacheStore store, {String name = _DefaultCache}) {
 ///
 /// * [store]: The [CacheStore]
 /// * [name]: An optional cache name, assigned a default value if not provided
-Future<void> _delete(CacheStore store, {String name = _DefaultCache}) {
+Future<void> _delete(CacheStore store, {String name = _defaultCache}) {
   return store.delete(name);
 }
 
@@ -437,19 +437,19 @@ Future<T> _storeStats<T extends CacheStore>(TestContext<T> ctx) async {
 ///
 /// * [tests]: The set of tests
 List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>(
-    {Set<StoreTest> tests = _StoreTests}) {
+    {Set<StoreTest> tests = _storeTests}) {
   return [
-    if (tests.contains(StoreTest.AddEntry)) _storeAddEntry,
-    if (tests.contains(StoreTest.AddGetEntry)) _storeAddGetEntry,
-    if (tests.contains(StoreTest.RemoveEntry)) _storeRemoveEntry,
-    if (tests.contains(StoreTest.Size)) _storeSize,
-    if (tests.contains(StoreTest.Clear)) _storeClear,
-    if (tests.contains(StoreTest.Delete)) _storeDelete,
-    if (tests.contains(StoreTest.GetStat)) _storeGetStat,
-    if (tests.contains(StoreTest.ChangeEntry)) _storeChangeEntry,
-    if (tests.contains(StoreTest.Keys)) _storeKeys,
-    if (tests.contains(StoreTest.Values)) _storeValues,
-    if (tests.contains(StoreTest.Stats)) _storeStats
+    if (tests.contains(StoreTest.addEntry)) _storeAddEntry,
+    if (tests.contains(StoreTest.addGetEntry)) _storeAddGetEntry,
+    if (tests.contains(StoreTest.removeEntry)) _storeRemoveEntry,
+    if (tests.contains(StoreTest.size)) _storeSize,
+    if (tests.contains(StoreTest.clear)) _storeClear,
+    if (tests.contains(StoreTest.delete)) _storeDelete,
+    if (tests.contains(StoreTest.getStat)) _storeGetStat,
+    if (tests.contains(StoreTest.changeEntry)) _storeChangeEntry,
+    if (tests.contains(StoreTest.keys)) _storeKeys,
+    if (tests.contains(StoreTest.getValues)) _storeValues,
+    if (tests.contains(StoreTest.stats)) _storeStats
   ];
 }
 
@@ -461,7 +461,7 @@ List<Future<T> Function(TestContext<T>)> _getTests<T extends CacheStore>(
 /// * [ctx]: the test context
 /// * [tests]: The set of tests
 Future<void> testStoreWith<T extends CacheStore>(TestContext<T> ctx,
-    {Set<StoreTest> tests = _StoreTests}) async {
+    {Set<StoreTest> tests = _storeTests}) async {
   for (var test in _getTests<T>()) {
     await test(ctx).then(ctx.deleteStore);
   }
@@ -473,8 +473,8 @@ Future<void> testStoreWith<T extends CacheStore>(TestContext<T> ctx,
 /// * [types]: The type/generator map
 /// * [tests]: The test set
 void testStore<T extends CacheStore>(TestContextBuilder<T> newTestContext,
-    {Map<TypeTest, Function>? types, Set<StoreTest> tests = _StoreTests}) {
-  for (var entry in (types ?? _StoreTypeTests).entries) {
+    {Map<TypeTest, Function>? types, Set<StoreTest> tests = _storeTests}) {
+  for (var entry in (types ?? _storeTypeTests).entries) {
     test('Store: ${EnumToString.convertToString(entry.key)}', () async {
       await testStoreWith<T>(newTestContext(entry.value()), tests: tests);
     });

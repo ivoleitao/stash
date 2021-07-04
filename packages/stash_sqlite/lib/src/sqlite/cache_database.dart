@@ -14,7 +14,7 @@ part 'cache_database.g.dart';
 /// The database class
 class CacheDatabase extends _$CacheDatabase {
   /// The version if the schema
-  static const int SchemaVersion = 1;
+  static const int _schemaVersion = 1;
 
   /// Builds a [CacheDatabase]
   ///
@@ -22,7 +22,7 @@ class CacheDatabase extends _$CacheDatabase {
   CacheDatabase(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => SchemaVersion;
+  int get schemaVersion => _schemaVersion;
 
   @override
   MigrationStrategy get migration {

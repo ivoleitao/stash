@@ -98,7 +98,7 @@ class MsgPackWriter extends BytesWriter {
 
   @override
   void writeBool(bool b) {
-    writeUint8(b ? types.bool_true : types.bool_false);
+    writeUint8(b ? types.boolTrue : types.boolFalse);
   }
 
   /// Writes a negative [int] [n] into the buffer

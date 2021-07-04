@@ -13,5 +13,5 @@ class RemovedEntryEvent extends CacheEntryEvent {
   /// * [entry]: The removed entry
   /// * [type]: The event type
   RemovedEntryEvent(Cache source, this.entry, {EntryEventType? type})
-      : super(source, type ?? EntryEventType.REMOVED);
+      : super(source, type ?? EntryEventType.removed);
 }

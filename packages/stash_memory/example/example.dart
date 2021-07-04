@@ -17,7 +17,7 @@ class Task {
 void main() async {
   // Creates a memory based cache with a a capacity of 10
   final cache = newMemoryCache(
-      maxEntries: 10, eventListenerMode: EventListenerMode.Sync)
+      maxEntries: 10, eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen(
         (event) => print('Entry key "${event.entry.key}" added to the cache'));
 

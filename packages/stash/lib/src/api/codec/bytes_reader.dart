@@ -46,56 +46,56 @@ abstract class BytesReader {
   /// Reads a uint16 from the backing buffer
   int readUInt16() {
     final res = _data.getUint16(_offset);
-    _offset += uint16_size;
+    _offset += uint16Size;
     return res;
   }
 
   /// Reads a int16 from the backing buffer
   int readInt16() {
     final res = _data.getInt16(_offset);
-    _offset += int16_size;
+    _offset += int16Size;
     return res;
   }
 
   /// Reads a uint32 from the backing buffer
   int readUInt32() {
     final res = _data.getUint32(_offset);
-    _offset += uint32_size;
+    _offset += uint32Size;
     return res;
   }
 
   /// Reads a int32 from the backing buffer
   int readInt32() {
     final res = _data.getInt32(_offset);
-    _offset += int32_size;
+    _offset += int32Size;
     return res;
   }
 
   /// Reads a uint64 from the backing buffer
   int readUInt64() {
     final res = _data.getUint64(_offset);
-    _offset += uint64_size;
+    _offset += uint64Size;
     return res;
   }
 
   /// Reads a int64 from the backing buffer
   int readInt64() {
     final res = _data.getInt64(_offset);
-    _offset += int64_size;
+    _offset += int64Size;
     return res;
   }
 
   /// Reads a float32 from the backing buffer
   double readFloat32() {
     final res = _data.getFloat32(_offset);
-    _offset += float32_size;
+    _offset += float32Size;
     return res;
   }
 
   /// Reads a float64 from the backing buffer
   double readFloat64() {
     final res = _data.getFloat64(_offset);
-    _offset += float64_size;
+    _offset += float64Size;
     return res;
   }
 

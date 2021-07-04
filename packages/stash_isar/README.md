@@ -72,7 +72,7 @@ void main() async {
   // Creates cache with a Isar based storage backend with the capacity of 10 entries
   final cache = newIsarCache(path,
       maxEntries: 10,
-      eventListenerMode: EventListenerMode.Sync,
+      eventListenerMode: EventListenerMode.synchronous,
       fromEncodable: (json) => Task.fromJson(json))
     ..on<CreatedEntryEvent>().listen(
         (event) => print('Entry key "${event.entry.key}" added to the cache'));

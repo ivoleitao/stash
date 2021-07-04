@@ -180,7 +180,7 @@ abstract class SembastAdapter extends CacheStoreAdapter {
   Future<void> delete(String name) {
     return _database().then((db) {
       return _store(name).delete(db);
-    });
+    }).then((_) => null);
   }
 
   @override

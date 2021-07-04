@@ -361,105 +361,46 @@ class $CacheTableTable extends CacheTable
   final String? _alias;
   $CacheTableTable(this._db, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedTextColumn name = _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
-  @override
-  late final GeneratedTextColumn key = _constructKey();
-  GeneratedTextColumn _constructKey() {
-    return GeneratedTextColumn(
-      'key',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
+      'key', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _expiryTimeMeta = const VerificationMeta('expiryTime');
-  @override
-  late final GeneratedTextColumn expiryTime = _constructExpiryTime();
-  GeneratedTextColumn _constructExpiryTime() {
-    return GeneratedTextColumn(
-      'expiry_time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<DateTime, String?> expiryTime =
+      GeneratedColumn<String?>('expiry_time', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<DateTime>($CacheTableTable.$converter0);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
-  @override
-  late final GeneratedTextColumn creationTime = _constructCreationTime();
-  GeneratedTextColumn _constructCreationTime() {
-    return GeneratedTextColumn(
-      'creation_time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<DateTime, String?> creationTime =
+      GeneratedColumn<String?>('creation_time', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<DateTime>($CacheTableTable.$converter1);
   final VerificationMeta _accessTimeMeta = const VerificationMeta('accessTime');
-  @override
-  late final GeneratedTextColumn accessTime = _constructAccessTime();
-  GeneratedTextColumn _constructAccessTime() {
-    return GeneratedTextColumn(
-      'access_time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<DateTime, String?> accessTime =
+      GeneratedColumn<String?>('access_time', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<DateTime>($CacheTableTable.$converter2);
   final VerificationMeta _updateTimeMeta = const VerificationMeta('updateTime');
-  @override
-  late final GeneratedTextColumn updateTime = _constructUpdateTime();
-  GeneratedTextColumn _constructUpdateTime() {
-    return GeneratedTextColumn(
-      'update_time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<DateTime, String?> updateTime =
+      GeneratedColumn<String?>('update_time', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<DateTime>($CacheTableTable.$converter3);
   final VerificationMeta _hitCountMeta = const VerificationMeta('hitCount');
-  @override
-  late final GeneratedIntColumn hitCount = _constructHitCount();
-  GeneratedIntColumn _constructHitCount() {
-    return GeneratedIntColumn(
-      'hit_count',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> hitCount = GeneratedColumn<int?>(
+      'hit_count', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _extraMeta = const VerificationMeta('extra');
-  @override
-  late final GeneratedBlobColumn extra = _constructExtra();
-  GeneratedBlobColumn _constructExtra() {
-    return GeneratedBlobColumn(
-      'extra',
-      $tableName,
-      true,
-    );
-  }
-
+  late final GeneratedColumn<Uint8List?> extra = GeneratedColumn<Uint8List?>(
+      'extra', aliasedName, true,
+      typeName: 'BLOB', requiredDuringInsert: false);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
-  @override
-  late final GeneratedBlobColumn value = _constructValue();
-  GeneratedBlobColumn _constructValue() {
-    return GeneratedBlobColumn(
-      'value',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<Uint8List?> value = GeneratedColumn<Uint8List?>(
+      'value', aliasedName, false,
+      typeName: 'BLOB', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         name,
@@ -473,11 +414,9 @@ class $CacheTableTable extends CacheTable
         value
       ];
   @override
-  $CacheTableTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'Cache';
   @override
-  String get $tableName => _alias ?? 'Cache';
-  @override
-  final String actualTableName = 'Cache';
+  String get actualTableName => 'Cache';
   @override
   VerificationContext validateIntegrity(Insertable<CacheData> instance,
       {bool isInserting = false}) {
@@ -522,8 +461,8 @@ class $CacheTableTable extends CacheTable
   Set<GeneratedColumn> get $primaryKey => {name, key};
   @override
   CacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return CacheData.fromData(data, _db, prefix: effectivePrefix);
+    return CacheData.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override

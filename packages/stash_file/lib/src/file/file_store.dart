@@ -10,7 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 /// File based implemention of a [CacheStore]
 class FileStore extends CacheStore {
   /// The size in bytes of the cache entry header
-  static const int _header_size = uint64_size * 5;
+  static const int _headerSize = uint64Size * 5;
 
   /// The base location of the file storage
   final FileSystem _fs;
@@ -175,7 +175,7 @@ class FileStore extends CacheStore {
             : () => raf.close();
 
         return pre(raf)
-            .then((f) => f.read(_header_size))
+            .then((f) => f.read(_headerSize))
             .then(((bytes) => _readStat(p.basename(file.path), bytes)))
             .whenComplete(pos);
       });
@@ -187,8 +187,8 @@ class FileStore extends CacheStore {
   ///
   /// Returns a [CacheStat]
   Future<CacheStat?> _getStat(File file, {bool checkFile = false}) {
-    final statGet =
-        (bool readFile) => readFile ? _readFileStat(file) : Future.value(null);
+    statGet(bool readFile) =>
+        readFile ? _readFileStat(file) : Future.value(null);
 
     return checkFile ? file.exists().then(statGet) : statGet(true);
   }
@@ -228,7 +228,8 @@ class FileStore extends CacheStore {
       return pre(raf)
           .then((f) => f.setPosition(0))
           .then((f) => f.writeFrom(_writeStat(stat).takeBytes()))
-          .whenComplete(pos);
+          .whenComplete(pos)
+          .then((_) => null);
     });
   }
 
@@ -284,8 +285,8 @@ class FileStore extends CacheStore {
   ///
   /// Returns a [CacheEntry]
   Future<CacheEntry?> _getEntry(File file, {bool checkFile = false}) {
-    final entryGet =
-        (bool readFile) => readFile ? _readFileEntry(file) : Future.value(null);
+    entryGet(bool readFile) =>
+        readFile ? _readFileEntry(file) : Future.value(null);
 
     return checkFile ? file.exists().then(entryGet) : entryGet(true);
   }
@@ -322,9 +323,9 @@ class FileStore extends CacheStore {
             .lock(FileLock.blockingExclusive)
             .then((f) => f.writeFrom(buffer, 0, buffer.length))
             .whenComplete(() => raf.unlock().then((value) => raf.close()));
-      });
+      }).then((_) => null);
     } else {
-      return file.writeAsBytes(buffer);
+      return file.writeAsBytes(buffer).then((_) => null);
     }
   }
 

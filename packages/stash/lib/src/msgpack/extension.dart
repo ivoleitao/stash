@@ -64,10 +64,10 @@ abstract class MsgPackExtension {
 /// Datetime extension for msgpack
 class DateTimeExtension extends MsgPackExtension {
   /// Datetime type code
-  static const int DatetimeType = 1;
+  static const int datetimeType = 1;
 
-  /// Builds a [DateTimeExtension] with type code equal to [DatetimeType]
-  const DateTimeExtension() : super(DatetimeType);
+  /// Builds a [DateTimeExtension] with type code equal to [datetimeType]
+  const DateTimeExtension() : super(datetimeType);
 
   @override
   bool doWrite(MsgPackWriter writer, dynamic object) {

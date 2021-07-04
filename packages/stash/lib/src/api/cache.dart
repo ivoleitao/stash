@@ -10,11 +10,11 @@ import 'package:stash/src/api/sampler/sampler.dart';
 // The event listener mode
 enum EventListenerMode {
   // No events are published
-  Disabled,
+  disabled,
   // Synchronous listener
-  Sync,
+  synchronous,
   // Asynchronous listener
-  Async
+  asynchronous
 }
 
 /// Cache loader function

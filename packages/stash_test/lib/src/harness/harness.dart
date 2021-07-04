@@ -23,169 +23,169 @@ typedef CacheBuilder<T extends CacheStore> = DefaultCache Function(T store,
 
 /// The range of supported type tests
 enum TypeTest {
-  Bool,
-  Int,
-  Double,
-  String,
-  ListOfBool,
-  ListOfInt,
-  ListOfDouble,
-  ListOfString,
-  MapOfBoolBool,
-  MapOfBoolInt,
-  MapOfBoolDouble,
-  MapOfBoolString,
-  MapOfIntBool,
-  MapOfIntInt,
-  MapOfIntDouble,
-  MapOfIntString,
-  MapOfDoubleBool,
-  MapOfDoubleInt,
-  MapOfDoubleDouble,
-  MapOfDoubleString,
-  MapOfStringBool,
-  MapOfStringInt,
-  MapOfStringDouble,
-  MapOfStringString,
-  ClassOfBool,
-  ClassOfInt,
-  ClassOfDouble,
-  ClassOfString,
-  ClassOfListBool,
-  ClassOfListInt,
-  ClassOfListDouble,
-  ClassOfListString,
-  ClassOfMapBoolBool,
-  ClassOfMapBoolInt,
-  ClassOfMapBoolDouble,
-  ClassOfMapBoolString,
-  ClassOfMapIntBool,
-  ClassOfMapIntInt,
-  ClassOfMapIntDouble,
-  ClassOfMapIntString,
-  ClassOfMapDoubleBool,
-  ClassOfMapDoubleInt,
-  ClassOfMapDoubleDouble,
-  ClassOfMapDoubleString,
-  ClassOfMapStringBool,
-  ClassOfMapStringInt,
-  ClassOfMapStringDouble,
-  ClassOfMapStringString
+  bool,
+  int,
+  double,
+  string,
+  listOfBool,
+  listOfInt,
+  listOfDouble,
+  listOfString,
+  mapOfBoolBool,
+  mapOfBoolInt,
+  mapOfBoolDouble,
+  mapOfBoolString,
+  mapOfIntBool,
+  mapOfIntInt,
+  mapOfIntDouble,
+  mapOfIntString,
+  mapOfDoubleBool,
+  mapOfDoubleInt,
+  mapOfDoubleDouble,
+  mapOfDoubleString,
+  mapOfStringBool,
+  mapOfStringInt,
+  mapOfStringDouble,
+  mapOfStringString,
+  classOfBool,
+  classOfInt,
+  classOfDouble,
+  classOfString,
+  classOfListBool,
+  classOfListInt,
+  classOfListDouble,
+  classOfListString,
+  classOfMapBoolBool,
+  classOfMapBoolInt,
+  classOfMapBoolDouble,
+  classOfMapBoolString,
+  classOfMapIntBool,
+  classOfMapIntInt,
+  classOfMapIntDouble,
+  classOfMapIntString,
+  classOfMapDoubleBool,
+  classOfMapDoubleInt,
+  classOfMapDoubleDouble,
+  classOfMapDoubleString,
+  classOfMapStringBool,
+  classOfMapStringInt,
+  classOfMapStringDouble,
+  classOfMapStringString
 }
 
 extension TypeTestValue on TypeTest {
   ValueGenerator Function() get generator {
     switch (this) {
-      case TypeTest.Bool:
+      case TypeTest.bool:
         return () => BoolGenerator();
-      case TypeTest.Int:
+      case TypeTest.int:
         return () => IntGenerator();
-      case TypeTest.Double:
+      case TypeTest.double:
         return () => DoubleGenerator();
-      case TypeTest.String:
+      case TypeTest.string:
         return () => StringGenerator();
-      case TypeTest.ListOfBool:
+      case TypeTest.listOfBool:
         return () => IteratorGenerator(BoolGenerator());
-      case TypeTest.ListOfInt:
+      case TypeTest.listOfInt:
         return () => IteratorGenerator(IntGenerator());
-      case TypeTest.ListOfDouble:
+      case TypeTest.listOfDouble:
         return () => IteratorGenerator(DoubleGenerator());
-      case TypeTest.ListOfString:
+      case TypeTest.listOfString:
         return () => IteratorGenerator(StringGenerator());
-      case TypeTest.MapOfBoolBool:
+      case TypeTest.mapOfBoolBool:
         return () => MapGenerator(BoolGenerator(), BoolGenerator());
-      case TypeTest.MapOfBoolInt:
+      case TypeTest.mapOfBoolInt:
         return () => MapGenerator(BoolGenerator(), IntGenerator());
-      case TypeTest.MapOfBoolDouble:
+      case TypeTest.mapOfBoolDouble:
         return () => MapGenerator(BoolGenerator(), DoubleGenerator());
-      case TypeTest.MapOfBoolString:
+      case TypeTest.mapOfBoolString:
         return () => MapGenerator(BoolGenerator(), StringGenerator());
-      case TypeTest.MapOfIntBool:
+      case TypeTest.mapOfIntBool:
         return () => MapGenerator(IntGenerator(), BoolGenerator());
-      case TypeTest.MapOfIntInt:
+      case TypeTest.mapOfIntInt:
         return () => MapGenerator(IntGenerator(), IntGenerator());
-      case TypeTest.MapOfIntDouble:
+      case TypeTest.mapOfIntDouble:
         return () => MapGenerator(IntGenerator(), DoubleGenerator());
-      case TypeTest.MapOfIntString:
+      case TypeTest.mapOfIntString:
         return () => MapGenerator(IntGenerator(), StringGenerator());
-      case TypeTest.MapOfDoubleBool:
+      case TypeTest.mapOfDoubleBool:
         return () => MapGenerator(DoubleGenerator(), BoolGenerator());
-      case TypeTest.MapOfDoubleInt:
+      case TypeTest.mapOfDoubleInt:
         return () => MapGenerator(DoubleGenerator(), IntGenerator());
-      case TypeTest.MapOfDoubleDouble:
+      case TypeTest.mapOfDoubleDouble:
         return () => MapGenerator(DoubleGenerator(), DoubleGenerator());
-      case TypeTest.MapOfDoubleString:
+      case TypeTest.mapOfDoubleString:
         return () => MapGenerator(DoubleGenerator(), StringGenerator());
-      case TypeTest.MapOfStringBool:
+      case TypeTest.mapOfStringBool:
         return () => MapGenerator(StringGenerator(), BoolGenerator());
-      case TypeTest.MapOfStringInt:
+      case TypeTest.mapOfStringInt:
         return () => MapGenerator(StringGenerator(), IntGenerator());
-      case TypeTest.MapOfStringDouble:
+      case TypeTest.mapOfStringDouble:
         return () => MapGenerator(StringGenerator(), DoubleGenerator());
-      case TypeTest.MapOfStringString:
+      case TypeTest.mapOfStringString:
         return () => MapGenerator(StringGenerator(), StringGenerator());
-      case TypeTest.ClassOfBool:
+      case TypeTest.classOfBool:
         return () => SampleClassGenerator(BoolGenerator());
-      case TypeTest.ClassOfInt:
+      case TypeTest.classOfInt:
         return () => SampleClassGenerator(IntGenerator());
-      case TypeTest.ClassOfDouble:
+      case TypeTest.classOfDouble:
         return () => SampleClassGenerator(DoubleGenerator());
-      case TypeTest.ClassOfString:
+      case TypeTest.classOfString:
         return () => SampleClassGenerator(StringGenerator());
-      case TypeTest.ClassOfListBool:
+      case TypeTest.classOfListBool:
         return () => SampleClassGenerator(IteratorGenerator(BoolGenerator()));
-      case TypeTest.ClassOfListInt:
+      case TypeTest.classOfListInt:
         return () => SampleClassGenerator(IteratorGenerator(IntGenerator()));
-      case TypeTest.ClassOfListDouble:
+      case TypeTest.classOfListDouble:
         return () => SampleClassGenerator(IteratorGenerator(DoubleGenerator()));
-      case TypeTest.ClassOfListString:
+      case TypeTest.classOfListString:
         return () => SampleClassGenerator(IteratorGenerator(StringGenerator()));
-      case TypeTest.ClassOfMapBoolBool:
+      case TypeTest.classOfMapBoolBool:
         return () => SampleClassGenerator(
             MapGenerator(BoolGenerator(), BoolGenerator()));
-      case TypeTest.ClassOfMapBoolInt:
+      case TypeTest.classOfMapBoolInt:
         return () =>
             SampleClassGenerator(MapGenerator(BoolGenerator(), IntGenerator()));
-      case TypeTest.ClassOfMapBoolDouble:
+      case TypeTest.classOfMapBoolDouble:
         return () => SampleClassGenerator(
             MapGenerator(BoolGenerator(), DoubleGenerator()));
-      case TypeTest.ClassOfMapBoolString:
+      case TypeTest.classOfMapBoolString:
         return () => SampleClassGenerator(
             MapGenerator(BoolGenerator(), StringGenerator()));
-      case TypeTest.ClassOfMapIntBool:
+      case TypeTest.classOfMapIntBool:
         return () =>
             SampleClassGenerator(MapGenerator(IntGenerator(), BoolGenerator()));
-      case TypeTest.ClassOfMapIntInt:
+      case TypeTest.classOfMapIntInt:
         return () =>
             SampleClassGenerator(MapGenerator(IntGenerator(), IntGenerator()));
-      case TypeTest.ClassOfMapIntDouble:
+      case TypeTest.classOfMapIntDouble:
         return () => SampleClassGenerator(
             MapGenerator(IntGenerator(), DoubleGenerator()));
-      case TypeTest.ClassOfMapIntString:
+      case TypeTest.classOfMapIntString:
         return () => SampleClassGenerator(
             MapGenerator(IntGenerator(), StringGenerator()));
-      case TypeTest.ClassOfMapDoubleBool:
+      case TypeTest.classOfMapDoubleBool:
         return () => SampleClassGenerator(
             MapGenerator(DoubleGenerator(), BoolGenerator()));
-      case TypeTest.ClassOfMapDoubleInt:
+      case TypeTest.classOfMapDoubleInt:
         return () => SampleClassGenerator(
             MapGenerator(DoubleGenerator(), IntGenerator()));
-      case TypeTest.ClassOfMapDoubleDouble:
+      case TypeTest.classOfMapDoubleDouble:
         return () => SampleClassGenerator(
             MapGenerator(DoubleGenerator(), DoubleGenerator()));
-      case TypeTest.ClassOfMapDoubleString:
+      case TypeTest.classOfMapDoubleString:
         return () => SampleClassGenerator(
             MapGenerator(DoubleGenerator(), StringGenerator()));
-      case TypeTest.ClassOfMapStringBool:
+      case TypeTest.classOfMapStringBool:
         return () => SampleClassGenerator(
             MapGenerator(StringGenerator(), BoolGenerator()));
-      case TypeTest.ClassOfMapStringInt:
+      case TypeTest.classOfMapStringInt:
         return () => SampleClassGenerator(
             MapGenerator(StringGenerator(), IntGenerator()));
-      case TypeTest.ClassOfMapStringDouble:
+      case TypeTest.classOfMapStringDouble:
         return () => SampleClassGenerator(
             MapGenerator(StringGenerator(), DoubleGenerator()));
-      case TypeTest.ClassOfMapStringString:
+      case TypeTest.classOfMapStringString:
         return () => SampleClassGenerator(
             MapGenerator(StringGenerator(), StringGenerator()));
     }
@@ -193,7 +193,7 @@ extension TypeTestValue on TypeTest {
 }
 
 /// List of type tests
-Map<TypeTest, ValueGenerator Function()> TypeTests = {
+Map<TypeTest, ValueGenerator Function()> typeTests = {
   for (var test in TypeTest.values) test: test.generator
 };
 
@@ -375,8 +375,8 @@ class SampleClassGenerator extends ValueGenerator {
   SampleClassGenerator(this._ithGenerator);
 
   @override
-  dynamic nextValue(int idx) {
-    return SampleClass(value: _ithGenerator.nextValue(idx));
+  dynamic nextValue(int seed) {
+    return SampleClass(value: _ithGenerator.nextValue(seed));
   }
 
   @override

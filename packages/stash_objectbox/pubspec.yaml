@@ -1,6 +1,6 @@
 name: stash_objectbox
-version: 3.0.2
-#publish_to: none
+version: 3.1.0
+publish_to: none
 description: >-
   Objectbox storage extension for the stash caching API. Provides support to store caches
   in the Objectbox database
@@ -11,16 +11,16 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  stash: ^3.0.1
-  #stash:
-  #  path: ../stash
+  #stash: ^3.0.1
+  stash:
+    path: ../stash
   objectbox: ^1.0.0
 dev_dependencies:
-  pedantic: ^1.11.0
+  lints: ^1.0.1
   test: ^1.17.9
   build_runner: ^2.0.5
-  stash_test: ^3.0.0
-  #stash_test:
-  #  path: ../stash_test
+  #stash_test: ^3.0.0
+  stash_test:
+    path: ../stash_test
   objectbox_generator: ^1.0.0
   dependency_validator: ^3.1.0

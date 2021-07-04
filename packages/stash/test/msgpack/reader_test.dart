@@ -12,13 +12,13 @@ void main() {
   }
 
   void unpackFalse() {
-    var data = Uint8List.fromList([types.bool_false]);
+    var data = Uint8List.fromList([types.boolFalse]);
     var value = msgPackRead(data);
     expect(value, isFalse);
   }
 
   void unpackTrue() {
-    var data = Uint8List.fromList([types.bool_true]);
+    var data = Uint8List.fromList([types.boolTrue]);
     var value = msgPackRead(data);
     expect(value, isTrue);
   }

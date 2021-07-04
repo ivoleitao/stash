@@ -37,9 +37,8 @@ scripts:
   
   clean:
     run: |
-      melos exec -- \
+      melos exec --scope="stash_sqlite" --scope="stash_objectbox" -- \
         "dart run build_runner clean"
-    scope: "stash_sqlite"
     description: |
       Run `dart run build_runner clean` in the selected packages.
 

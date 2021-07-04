@@ -20,7 +20,7 @@ class Post {
 
   Post({this.userId, this.id, this.title, this.body});
 
-  Post._1(
+  Post._a(
       {int userId = 1,
       int id = 1,
       title = 'sunt aut facere repellat provident occaecati',
@@ -109,19 +109,19 @@ void main() async {
   });
 
   test('Without cache', () async {
-    final providedResponse = _withAnswer(dioAdapterMock, Post._1());
+    final providedResponse = _withAnswer(dioAdapterMock, Post._a());
     final receivedResponse = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse, providedResponse);
   });
 
   test('Without cache setting two different responses', () async {
-    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1());
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse1, providedResponse1);
 
-    var providedResponse2 = _withAnswer(dioAdapterMock, Post._1(userId: 2));
+    var providedResponse2 = _withAnswer(dioAdapterMock, Post._a(userId: 2));
     var receivedResponse2 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse2, providedResponse2);
@@ -130,12 +130,12 @@ void main() async {
   test('With cache setting two different responses', () async {
     withInterceptor(
         dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
-    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1());
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse1, providedResponse1);
 
-    _withAnswer(dioAdapterMock, Post._1());
+    _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse2 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse2, providedResponse1);
@@ -144,12 +144,12 @@ void main() async {
   test('With cache but not matching the request', () async {
     withInterceptor(
         dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
-    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1());
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/2');
 
     expect(receivedResponse1, providedResponse1);
 
-    var providedResponse2 = _withAnswer(dioAdapterMock, Post._1());
+    var providedResponse2 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse2 = await _getResponse(dio, '/posts/2');
 
     expect(receivedResponse2, providedResponse2);
@@ -158,7 +158,7 @@ void main() async {
   test('With cache but with status code out of the allowed range', () async {
     withInterceptor(
         dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
-    _withAnswer(dioAdapterMock, Post._1(), statusCode: 404);
+    _withAnswer(dioAdapterMock, Post._a(), statusCode: 404);
     expect(
         _getResponse(dio, '/posts/1'), throwsA(const TypeMatcher<DioError>()));
   });
@@ -166,12 +166,12 @@ void main() async {
   test('With a file cache', () async {
     withInterceptor(
         dio, (builder) => builder..cache('/posts/1', newMemoryFileCache()));
-    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1());
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse1, providedResponse1);
 
-    _withAnswer(dioAdapterMock, Post._1());
+    _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse2 = await _getResponse(dio, '/posts/1');
 
     expect(receivedResponse2, providedResponse1);
@@ -180,7 +180,7 @@ void main() async {
   test('stash-dio #14', () async {
     withInterceptor(
         dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
-    var providedResponse1 = _withAnswer(dioAdapterMock, Post._1(), headers: {
+    var providedResponse1 = _withAnswer(dioAdapterMock, Post._a(), headers: {
       'cache-control': ['no-cache', 'no-store']
     });
     var receivedResponse1 = await _getResponse(dio, '/posts/1');

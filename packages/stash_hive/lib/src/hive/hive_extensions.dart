@@ -1,4 +1,4 @@
-import 'package:stash/src/api/cache_entry.dart';
+import 'package:stash/stash_api.dart';
 
 /// Extensions to a [CacheEntry] to provide support to Hive
 extension HiveExtensions on CacheEntry {

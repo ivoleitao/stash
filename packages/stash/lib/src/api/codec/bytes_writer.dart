@@ -82,18 +82,18 @@ abstract class BytesWriter {
   ///
   /// * [i]: The value to write
   void writeUint8(int i) {
-    _ensureSize(uint8_size);
+    _ensureSize(uint8Size);
     _scratchData!.setUint8(_scratchOffset, i);
-    _scratchOffset += uint8_size;
+    _scratchOffset += uint8Size;
   }
 
   /// Writes a int8 [i] into the buffer
   ///
   /// * [i]: The value to write
   void writeInt8(int i) {
-    _ensureSize(int8_size);
+    _ensureSize(int8Size);
     _scratchData!.setInt8(_scratchOffset, i);
-    _scratchOffset += int8_size;
+    _scratchOffset += int8Size;
   }
 
   /// Writes a uint16 [i] into the buffer
@@ -101,9 +101,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint16(int i, [Endian endian = Endian.big]) {
-    _ensureSize(uint16_size);
+    _ensureSize(uint16Size);
     _scratchData!.setUint16(_scratchOffset, i, endian);
-    _scratchOffset += uint16_size;
+    _scratchOffset += uint16Size;
   }
 
   /// Writes a int16 [i] in the buffer
@@ -111,9 +111,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt16(int i, [Endian endian = Endian.big]) {
-    _ensureSize(int16_size);
+    _ensureSize(int16Size);
     _scratchData!.setInt16(_scratchOffset, i, endian);
-    _scratchOffset += int16_size;
+    _scratchOffset += int16Size;
   }
 
   /// Writes a uint32 [i] into the buffer
@@ -121,9 +121,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint32(int i, [Endian endian = Endian.big]) {
-    _ensureSize(uint32_size);
+    _ensureSize(uint32Size);
     _scratchData!.setUint32(_scratchOffset, i, endian);
-    _scratchOffset += uint32_size;
+    _scratchOffset += uint32Size;
   }
 
   /// Writes a int32 [i] into the buffer
@@ -131,9 +131,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt32(int i, [Endian endian = Endian.big]) {
-    _ensureSize(int32_size);
+    _ensureSize(int32Size);
     _scratchData!.setInt32(_scratchOffset, i, endian);
-    _scratchOffset += int32_size;
+    _scratchOffset += int32Size;
   }
 
   /// Writes a uint64 [i] into the buffer
@@ -141,9 +141,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeUint64(int i, [Endian endian = Endian.big]) {
-    _ensureSize(uint64_size);
+    _ensureSize(uint64Size);
     _scratchData!.setUint64(_scratchOffset, i, endian);
-    _scratchOffset += uint64_size;
+    _scratchOffset += uint64Size;
   }
 
   /// Writes a int64 [i] into the buffer
@@ -151,9 +151,9 @@ abstract class BytesWriter {
   /// * [i]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeInt64(int i, [Endian endian = Endian.big]) {
-    _ensureSize(int64_size);
+    _ensureSize(int64Size);
     _scratchData!.setInt64(_scratchOffset, i, endian);
-    _scratchOffset += int64_size;
+    _scratchOffset += int64Size;
   }
 
   /// Writes a float32 [f] into the buffer
@@ -161,9 +161,9 @@ abstract class BytesWriter {
   /// * [f]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeFloat32(double f, [Endian endian = Endian.big]) {
-    _ensureSize(float32_size);
+    _ensureSize(float32Size);
     _scratchData!.setFloat32(_scratchOffset, f, endian);
-    _scratchOffset += float32_size;
+    _scratchOffset += float32Size;
   }
 
   /// Writes a float64 [d] into the buffer
@@ -171,9 +171,9 @@ abstract class BytesWriter {
   /// * [d]: The value to write
   /// * [endian]: The endianess, [Endian.big] by default
   void writeFloat64(double d, [Endian endian = Endian.big]) {
-    _ensureSize(float64_size);
+    _ensureSize(float64Size);
     _scratchData!.setFloat64(_scratchOffset, d, endian);
-    _scratchOffset += float64_size;
+    _scratchOffset += float64Size;
   }
 
   /// Writes a list of bytes

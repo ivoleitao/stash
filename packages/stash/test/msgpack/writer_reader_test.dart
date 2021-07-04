@@ -79,9 +79,9 @@ class Ext32 extends Equatable {
 }
 
 class FixExt1Extension extends MsgPackExtension {
-  static const int FixExt1Type = 2;
+  static const int fixExt1Type = 2;
 
-  const FixExt1Extension() : super(FixExt1Type);
+  const FixExt1Extension() : super(fixExt1Type);
 
   @override
   bool doWrite(MsgPackWriter writer, dynamic object) {

@@ -11,5 +11,5 @@ class EvictedEntryEvent extends RemovedEntryEvent {
   /// * [source]: The cache that originated the event
   /// * [entry]: The evicted entry
   EvictedEntryEvent(Cache source, CacheEntry entry)
-      : super(source, entry, type: EntryEventType.EVICTED);
+      : super(source, entry, type: EntryEventType.evicted);
 }

@@ -1,6 +1,6 @@
 import 'package:sembast/blob.dart';
 import 'package:sembast/timestamp.dart';
-import 'package:stash/src/api/cache_entry.dart';
+import 'package:stash/stash_api.dart';
 
 /// Extensions to a [CacheEntry] to provide support to Sembast
 extension SembastExtensions on CacheEntry {
