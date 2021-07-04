@@ -1,6 +1,5 @@
 name: stash_file
 version: 3.1.0
-publish_to: none
 description: >-
   File storage extension for the stash caching API. Provides support to store caches
   in the local file system in binary format using the msgpack json format
