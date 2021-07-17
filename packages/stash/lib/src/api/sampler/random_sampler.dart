@@ -18,12 +18,6 @@ class RandomSampler extends KeySampler {
   @override
   Iterable<String> sample(Iterable<String> items) {
     var samples = List<String>.from(items)..shuffle(_random);
-
-    var count = sampleSize(items.length);
-    for (var item in items.take(count)) {
-      samples.add(item);
-    }
-
-    return samples;
+    return samples.take(sampleSize(items.length));
   }
 }
