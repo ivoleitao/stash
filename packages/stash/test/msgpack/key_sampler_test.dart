@@ -34,6 +34,6 @@ void main() {
   group('RandomSampler', () {
     test('randomSamplerFull', randomSamplerFull);
     test('randomSamplerHalf', randomSamplerHalf);
-    test('randomSamplerNone', randomSamplerTheOnePercent);
+    test('randomSamplerTheOnePercent', randomSamplerTheOnePercent);
   });
 }
