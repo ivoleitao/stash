@@ -815,10 +815,18 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final now2 = Clock().minutesFromNow(1);
+  final now3 = Clock().minutesFromNow(3);
+  final now4 = Clock().minutesFromNow(5);
   final clock1 = Clock.fixed(now1);
   final clock2 = Clock.fixed(now2);
-  const expireDuration = ExpiryPolicy.eternal;
-  final expiryTime = clock1.fromNowBy(expireDuration);
+  final clock3 = Clock.fixed(now3);
+  final clock4 = Clock.fixed(now4);
+  const eternalDuration = ExpiryPolicy.eternal;
+  final shorterDuration = Duration(days: 30);
+  final expiryTime1 = clock1.fromNowBy(eternalDuration);
+  final expiryTime2 = clock2.fromNowBy(eternalDuration);
+  final expiryTime3 = clock3.fromNowBy(shorterDuration);
+  final expiryTime4 = clock4.fromNowBy(eternalDuration);
   var clock = clock1;
   CreatedEntryEvent? created;
   UpdatedEntryEvent? updated;
@@ -836,7 +844,7 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   check(ctx, created?.type, EntryEventType.created, '_cacheUpdatedEvent_3');
   check(ctx, created?.entry.key, key, '_cacheUpdatedEvent_4');
   check(ctx, created?.entry.value, value1, '_cacheUpdatedEvent_5');
-  check(ctx, created?.entry.expiryTime, expiryTime, '_cacheUpdatedEvent_6');
+  check(ctx, created?.entry.expiryTime, expiryTime1, '_cacheUpdatedEvent_6');
   check(ctx, created?.entry.creationTime, clock.now(), '_cacheUpdatedEvent_7');
   check(ctx, created?.entry.accessTime, clock.now(), '_cacheUpdatedEvent_8');
   check(ctx, created?.entry.updateTime, clock.now(), '_cacheUpdatedEvent_9');
@@ -850,7 +858,8 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   check(ctx, updated?.type, EntryEventType.updated, '_cacheUpdatedEvent_13');
   check(ctx, updated?.oldEntry.key, key, '_cacheUpdatedEvent_14');
   check(ctx, updated?.oldEntry.value, value1, '_cacheUpdatedEvent_15');
-  check(ctx, updated?.oldEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_16');
+  check(
+      ctx, updated?.oldEntry.expiryTime, expiryTime1, '_cacheUpdatedEvent_16');
   check(ctx, updated?.oldEntry.creationTime, clock1.now(),
       '_cacheUpdatedEvent_17');
   check(
@@ -860,7 +869,8 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   check(ctx, updated?.oldEntry.hitCount, 0, '_cacheUpdatedEvent_20');
   check(ctx, updated?.newEntry.key, key, '_cacheUpdatedEvent_21');
   check(ctx, updated?.newEntry.value, value2, '_cacheUpdatedEvent_22');
-  check(ctx, updated?.newEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_23');
+  check(
+      ctx, updated?.newEntry.expiryTime, expiryTime2, '_cacheUpdatedEvent_23');
   check(ctx, updated?.newEntry.creationTime, clock1.now(),
       '_cacheUpdatedEvent_24');
   check(
@@ -868,6 +878,21 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   check(
       ctx, updated?.newEntry.updateTime, clock2.now(), '_cacheUpdatedEvent_26');
   check(ctx, updated?.newEntry.hitCount, 1, '_cacheUpdatedEvent_27');
+
+  clock = clock3;
+  final value3 = ctx.generator.nextValue(3);
+  await cache.put(key, value3, expiryDuration: shorterDuration);
+  check(
+      ctx, updated?.oldEntry.expiryTime, expiryTime2, '_cacheUpdatedEvent_27');
+  check(
+      ctx, updated?.newEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_28');
+
+  clock = clock4;
+  await cache.put(key, value3, expiryDuration: null);
+  check(
+      ctx, updated?.oldEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_27');
+  check(
+      ctx, updated?.newEntry.expiryTime, expiryTime4, '_cacheUpdatedEvent_28');
 
   return store;
 }
