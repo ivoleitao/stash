@@ -883,16 +883,16 @@ Future<T> _cacheUpdatedEvent<T extends CacheStore>(TestContext<T> ctx) async {
   final value3 = ctx.generator.nextValue(3);
   await cache.put(key, value3, expiryDuration: shorterDuration);
   check(
-      ctx, updated?.oldEntry.expiryTime, expiryTime2, '_cacheUpdatedEvent_27');
+      ctx, updated?.oldEntry.expiryTime, expiryTime2, '_cacheUpdatedEvent_28');
   check(
-      ctx, updated?.newEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_28');
+      ctx, updated?.newEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_29');
 
   clock = clock4;
   await cache.put(key, value3, expiryDuration: null);
   check(
-      ctx, updated?.oldEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_27');
+      ctx, updated?.oldEntry.expiryTime, expiryTime3, '_cacheUpdatedEvent_30');
   check(
-      ctx, updated?.newEntry.expiryTime, expiryTime4, '_cacheUpdatedEvent_28');
+      ctx, updated?.newEntry.expiryTime, expiryTime4, '_cacheUpdatedEvent_31');
 
   return store;
 }
