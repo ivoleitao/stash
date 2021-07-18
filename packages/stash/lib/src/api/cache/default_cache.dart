@@ -222,11 +222,11 @@ class DefaultCache extends Cache {
       CacheEntry entry, DateTime now, Duration? expiryDuration) {
     entry.accessTime = now;
     entry.hitCount++;
-    final duration = expiryPolicy.getExpiryForAccess();
+    final duration = expiryDuration ?? expiryPolicy.getExpiryForAccess();
     if (duration != null) {
       // We just need to update the expiry time on the entry
       // according with the expiry policy in place or if provided the expiry duration
-      entry.expiryTime = now.add(expiryDuration ?? duration);
+      entry.expiryTime = now.add(duration);
     }
 
     // Store the entry changes and return the value
@@ -244,12 +244,11 @@ class DefaultCache extends Cache {
   /// * [expiryDuration]: how much time for this cache entry to expire.
   Future<dynamic> _updateEntry(
       CacheEntry entry, dynamic value, DateTime now, Duration? expiryDuration) {
-    final duration = expiryPolicy.getExpiryForUpdate();
+    final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
     final newEntry = entry.copyForUpdate(value,
-        expiryTime:
-            duration != null ? now.add(expiryDuration ?? duration) : null,
+        expiryTime: now.add(expiryDuration ?? duration),
         updateTime: now,
         hitCount: entry.hitCount + 1);
 
