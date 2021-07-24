@@ -1,5 +1,6 @@
 name: stash_test
-version: 3.1.0
+version: 3.1.1
+publish_to: none
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
