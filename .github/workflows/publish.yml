@@ -35,7 +35,6 @@ jobs:
         run: |
           pub global activate melos
           melos bootstrap
-          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
 
       - name: Coverage
         run: |

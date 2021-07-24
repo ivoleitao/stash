@@ -21,7 +21,7 @@ dependencies:
   #  path: ../stash_memory
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.17.9
+  test: ^1.17.10
   mocktail: ^0.1.4
   stash_file: ^3.1.0
   #stash_file:

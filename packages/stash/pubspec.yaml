@@ -1,5 +1,6 @@
 name: stash
-version: 3.1.0
+version: 3.1.1
+publish_to: none
 description: >-
   Standard caching API for Dart. Defines a common mechanism to create, 
   access, update, and remove information from caches. Provides a in memory
@@ -16,5 +17,5 @@ dependencies:
   async: ^2.6.1
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.17.9
+  test: ^1.17.10
   dependency_validator: ^3.1.0

@@ -57,7 +57,7 @@ Finally a testing library is provided to aid in the development of third party e
 
 ## Getting Started
 
-Select one of the storage implementation libraries and add the package to your `pubspec.yaml` replacing x.x.x with the latest version of the storage implementation. The example below uses the `stash_memory` package which provides an in-memory implementation.:
+Select one of the storage implementation libraries and add the package to your `pubspec.yaml` replacing x.x.x with the latest version of the storage implementation. The example below uses the `stash_memory` package which provides an in-memory implementation:
 
 ```dart
 dependencies:
@@ -163,6 +163,30 @@ void main() async {
   print(value);
 }
 ```
+
+You may want to reuse the same store for multiple caches. In order to make use of that feature you will need to create the store first:
+
+```dart
+  // Creates a store
+  final store = newMemoryStore();
+  // In a more general sense 'newXXXStore' where xxx is the name of the storage provider, 
+  // memory, file, sqlite, hive and so on
+```
+
+Then it's just a matter of instanciating caches from the store as presented bellow where the same memory store is used to create two different caches. This is particulary relevant when using stores like sqlite, hive, file and similar where it's to normal to rely in a unique store.
+
+```dart
+  // Creates a cache from the previously created store with a capacity of 10 and name 'cache1'
+  final cache1 = store.cache(
+      cacheName: 'cache1',
+      maxEntries: 10);
+
+  // Creates a second cache from the previously created store with a capacity of 10 and name 'cache2'
+  final cache1 = store.cache(
+      cacheName: 'cache2',
+      maxEntries: 10);
+```
+
 
 ### Cache Types
 
