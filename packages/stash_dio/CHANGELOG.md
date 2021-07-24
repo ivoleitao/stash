@@ -1,3 +1,8 @@
+# 3.1.1
+
+- Updated dependencies
+- It's now easier to reuse a store in multiple cache interceptors
+
 # 3.1.0
 
 - Updated dependencies

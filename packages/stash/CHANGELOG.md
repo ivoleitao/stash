@@ -2,7 +2,6 @@
 
 - Updated dependencies
 - Applied pull request [RandomSampler fix to return correct sample size](https://github.com/ivoleitao/stash/pull/15)
-- It's now easier to reuse a store in multiple cache instances
 
 # 3.1.0
 
