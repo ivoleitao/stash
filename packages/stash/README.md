@@ -11,7 +11,7 @@
 
 ## Overview
 
-The `stash` caching library was designed from ground up with extensibility in mind. It's based on a small core that relies on several extension points and from a feature perspective it supports the most traditional capabilities found on well know caching libraries like expiration or eviction. The API itself was heavily influenced by the JCache spec from the Java world, but draws inspiration from other libraries as well.
+The `stash` caching library was designed from ground up with extensibility in mind. It's based on a small core that relies on several extension points. Featurewise it supports the most traditional capabilities found on well know caching libraries like expiration or eviction. The API itself was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, but draws inspiration from other libraries as well.
 
 3rd party library support was a major concern since it's inception, as such, a library `stash_test` is provided with a complete set of tests that allow the implementers of novel storage and cache frontends to test their implementations against the same baseline tests that were used by the main library.
 
@@ -114,7 +114,7 @@ Finally, retrieve that element:
   final value = await cache.get('key1');
 ```
 
-The in-memory example is the simplest one. Note that on that case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that on those cases additional configuration is needed to allow the serilization/deserialization to happen.
+The in-memory example is the simplest one, on this case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that on those cases additional configuration is needed to allow the serilization/deserialization to happen.
 
 Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) as the storage implementation of the cache. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
 
@@ -151,20 +151,18 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a cache on the local storage with the capacity of 10 entries
-  final cache = newLocalFileCache(path,
+  final cache = newLocalFileCache(path: path,
       maxEntries: 10, fromEncodable: (json) => Task.fromJson(json));
 
   // Adds a task with key 'task1' to the cache
   await cache.put(
       'task1', Task(id: 1, title: 'Run stash_file example', completed: true));
-  // Retrieves the value from the cache
-  final value = await cache.get('task1');
-
-  print(value);
+  // Retrieves and prints the value from the cache
+  print(await cache.get('task1'));
 }
 ```
 
-You may want to reuse the same store for multiple caches. In order to make use of that feature you will need to create the store first:
+You may want to reuse the same store for multiple caches. In order to do that you will need to create the store first like in example bellow:
 
 ```dart
   // Creates a store
@@ -173,7 +171,7 @@ You may want to reuse the same store for multiple caches. In order to make use o
   // memory, file, sqlite, hive and so on
 ```
 
-Then it's just a matter of instanciating caches from the store as presented bellow where the same memory store is used to create two different caches. This is particulary relevant when using stores like sqlite, hive, file and similar where it's to normal to rely in a unique store.
+Then, it's just a matter of instanciating caches from the store, as presented bellow, where the same memory store is used to create two different caches. This is particulary relevant when using stores like sqlite, hive, file and similar where it's normal to rely in a unique store.
 
 ```dart
   // Creates a cache from the previously created store with a capacity of 10 and name 'cache1'
@@ -186,7 +184,6 @@ Then it's just a matter of instanciating caches from the store as presented bell
       cacheName: 'cache2',
       maxEntries: 10);
 ```
-
 
 ### Cache Types
 
