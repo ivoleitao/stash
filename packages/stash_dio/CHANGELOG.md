@@ -1,3 +1,7 @@
+# 3.2.1
+
+- Fixed the README file
+
 # 3.2.0
 
 - Updated dependencies
