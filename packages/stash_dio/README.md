@@ -35,14 +35,15 @@ import 'package:stash_dio/stash_dio.dart';
 
 ```dart
 import 'package:dio/dio.dart';
-import 'package:stash_dio/dio_stash.dart';
+import 'package:stash_dio/stash_dio.dart';
+import 'package:stash_memory/stash_memory.dart';
 
 class Task {
   final int id;
   final String title;
   final bool completed;
 
-  Task({this.id, this.title, this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -56,15 +57,17 @@ class Task {
 
   @override
   String toString() {
-    return 'Task ${id}: "${title}" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
   }
 }
 
 void main() async {
+  // Creates a store
+  final store = newMemoryStore();
   // Configures a a dio client
   final dio = Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'))
     ..interceptors.addAll([
-      newMemoryCacheInterceptor('/todos/1', 'task'),
+      newMemoryCacheInterceptor('/todos/1', 'task', store: store),
       LogInterceptor(
           requestHeader: false,
           requestBody: false,
@@ -85,7 +88,6 @@ void main() async {
       .then((Response<dynamic> response) => Task.fromJson(response.data));
   print(task2);
 }
-
 ```
 
 ## Features and Bugs
