@@ -1,7 +1,9 @@
-# 3.1.1
+# 3.2.0
 
 - Updated dependencies
 - It's now easier to reuse a store in multiple cache instances
+- BREAKING: `path` is now an optional parameter in `newMemoryFileCache`
+- BREAKING: `path` is now an optional parameter in `newLocalFileCache`
 
 # 3.1.0
 

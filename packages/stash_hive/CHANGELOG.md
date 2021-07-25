@@ -1,7 +1,9 @@
-# 3.1.1
+# 3.2.0
 
 - Updated dependencies
 - It's now easier to reuse a store in multiple cache instances
+- BREAKING: `path` is now an optional parameter in `newHiveCache`
+- BREAKING: `path` is now an optional parameter in `newLazyHiveCache`
 
 # 3.1.0
 

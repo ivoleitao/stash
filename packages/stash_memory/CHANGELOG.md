@@ -1,4 +1,4 @@
-# 3.1.1
+# 3.2.0
 
 - Updated dependencies
 - It's now easier to reuse a store in multiple cache instances

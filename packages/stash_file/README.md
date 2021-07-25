@@ -33,7 +33,7 @@ import 'package:stash_file/stash_file.dart';
 
 ## Usage
 
-The example bellow creates a cache with a file storage backend that supports a maximum of 10 `Task` objects. In the rather simple example bellow the serialization and deserialization of the object is coded by hand but normally it relies on the usage of libraries like [json_serializable](https://pub.dev/packages/json_serializable). Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
+The example bellow creates two caches with a shared file storage backend. In this rather simple example the serialization and deserialization of the object is coded by hand but it's more usual to rely on libraries like [json_serializable](https://pub.dev/packages/json_serializable). Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 
 ```dart
 import 'dart:io';
@@ -65,24 +65,38 @@ class Task {
 }
 
 void main() async {
-  // Temporary path
+  // Temporary directory
   final path = Directory.systemTemp.path;
 
-  // Creates a cache on the local storage with the capacity of 10 entries
-  final cache = newLocalFileCache(path,
+  // Creates a store
+  final store = newLocalFileStore(
+      path: path, fromEncodable: (json) => Task.fromJson(json));
+  // Creates a cache with a capacity of 10 from the previously created store
+  final cache1 = store.cache(
+      cacheName: 'cache1',
       maxEntries: 10,
-      eventListenerMode: EventListenerMode.synchronous,
-      fromEncodable: (json) => Task.fromJson(json))
+      eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen(
-        (event) => print('Entry key "${event.entry.key}" added to the cache'));
+        (event) => print('Key "${event.entry.key}" added to the first cache'));
+  // Creates a second cache with a capacity of 10 from the previously created store
+  final cache2 = store.cache(
+      cacheName: 'cache2',
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.synchronous)
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Key "${event.entry.key}" added to the second cache'));
 
-  // Adds a task with key 'task1' to the cache
-  await cache.put(
-      'task1', Task(id: 1, title: 'Run stash_file example', completed: true));
-  // Retrieves the value from the cache
-  final value = await cache.get('task1');
+  // Adds a task with key 'task1' to the first cache
+  await cache1.put('task1',
+      Task(id: 1, title: 'Run shared store example (1)', completed: true));
+  // Retrieves the value from the first cache
+  print(await cache1.get('task1'));
 
-  print(value);
+  // Adds a task with key 'task1' to the second cache
+  await cache2.put('task1',
+      Task(id: 2, title: 'Run shared store example (2)', completed: true));
+  // Retrieves the value from the second cache
+  print(await cache2.get('task1'));
 }
 
 ```

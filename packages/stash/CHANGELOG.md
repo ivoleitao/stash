@@ -1,4 +1,4 @@
-# 3.1.1
+# 3.2.0
 
 - Updated dependencies
 - Applied pull request [RandomSampler fix to return correct sample size](https://github.com/ivoleitao/stash/pull/15)

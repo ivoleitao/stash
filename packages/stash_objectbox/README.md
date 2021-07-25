@@ -34,7 +34,7 @@ import 'package:stash_objectbox/stash_objectbox.dart';
 
 ## Usage
 
-The example bellow creates a cache with a Objectbox storage backend that supports a maximum of 10 `Task` objects. In the rather simple example bellow the serialization and deserialization of the object is coded by hand but normally it relies on the usage of libraries like [json_serializable](https://pub.dev/packages/json_serializable). Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
+The example bellow creates two caches with a shared objectbox storage backend. In this rather simple example the serialization and deserialization of the object is coded by hand but it's more usual to rely on libraries like [json_serializable](https://pub.dev/packages/json_serializable). Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 
 ```dart
 import 'dart:io';
@@ -43,17 +43,17 @@ import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
-  final int id;
-  final String title;
-  final bool completed;
+  final int? id;
+  final String? title;
+  final bool? completed;
 
-  Task({required this.id, required this.title, this.completed = false});
+  Task({this.id, this.title, this.completed = false});
 
   /// Creates a [Task] from json map
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      completed: json['completed'] as bool);
+      id: json['id'] as int?,
+      title: json['title'] as String?,
+      completed: json['completed'] as bool?);
 
   /// Creates a json map from a [Task]
   Map<String, dynamic> toJson() =>
@@ -61,7 +61,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task $id: "$title" is ${completed ? "completed" : "not completed"}';
+    return 'Task $id: "$title" is ${completed! ? "completed" : "not completed"}';
   }
 }
 
@@ -69,21 +69,35 @@ void main() async {
   // Temporary path
   final path = Directory.systemTemp.path;
 
-  // Creates a memory based cache with a a capacity of 10
-  final cache = newObjectBoxCache(path,
+  // Creates a store
+  final store = newObjectboxStore(
+      path: path, fromEncodable: (json) => Task.fromJson(json));
+  // Creates a cache with a capacity of 10 from the previously created store
+  final cache1 = store.cache(
+      cacheName: 'cache1',
       maxEntries: 10,
-      eventListenerMode: EventListenerMode.synchronous,
-      fromEncodable: (json) => Task.fromJson(json))
+      eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen(
-        (event) => print('Entry key "${event.entry.key}" added to the cache'));
+        (event) => print('Key "${event.entry.key}" added to the first cache'));
+  // Creates a second cache with a capacity of 10 from the previously created store
+  final cache2 = store.cache(
+      cacheName: 'cache2',
+      maxEntries: 10,
+      eventListenerMode: EventListenerMode.synchronous)
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Key "${event.entry.key}" added to the second cache'));
 
-  // Adds a task with key 'task1' to the cache
-  await cache.put('task1',
-      Task(id: 1, title: 'Run stash_objectbox example', completed: true));
-  // Retrieves the value from the cache
-  final value = await cache.get('task1');
+  // Adds a task with key 'task1' to the first cache
+  await cache1.put('task1',
+      Task(id: 1, title: 'Run shared store example (1)', completed: true));
+  // Retrieves the value from the first cache
+  print(await cache1.get('task1'));
 
-  print(value);
+  // Adds a task with key 'task1' to the second cache
+  await cache2.put('task1',
+      Task(id: 2, title: 'Run shared store example (2)', completed: true));
+  // Retrieves the value from the second cache
+  print(await cache2.get('task1'));
 }
 
 ```

@@ -21,10 +21,10 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
 ///
 /// * [pattern]: All the calls with a url matching this pattern will be cached
 /// * [cacheName]: The name of the cache
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
 ///
@@ -32,10 +32,10 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
 Interceptor newMemoryCacheInterceptor(
   String pattern,
   String cacheName, {
-  ExpiryPolicy? expiryPolicy,
   KeySampler? sampler,
   EvictionPolicy? evictionPolicy,
   int? maxEntries,
+  ExpiryPolicy? expiryPolicy,
   CacheLoader? cacheLoader,
   EventListenerMode? eventListenerMode,
 }) {

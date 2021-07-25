@@ -6,7 +6,7 @@ class Task {
   final String title;
   final bool completed;
 
-  Task(this.id, this.title, {this.completed = false});
+  Task({required this.id, required this.title, this.completed = false});
 
   @override
   String toString() {
@@ -15,44 +15,32 @@ class Task {
 }
 
 void main() async {
-  // Creates a memory based cache with a capacity of 10
-  final cache = newMemoryCache(
-      maxEntries: 10, eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>()
-        .listen((event) => print('Key "${event.entry.key}" added to cache'));
-
-  // Adds task with key 'task1' to the cache
-  await cache.put('task1',
-      Task(1, 'Run stash_memory embedded store example', completed: true));
-  // Retrieves the value from the cache
-  print(await cache.get('task1'));
-
   // Creates a store
   final store = newMemoryStore();
-  // Creates cache1 from the previously created store with a capacity of 10
+  // Creates a cache with a capacity of 10 from the previously created store
   final cache1 = store.cache(
       cacheName: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>()
-        .listen((event) => print('Key "${event.entry.key}" added to cache1'));
-  // Creates cache2 from the previously created store with a capacity of 10
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Key "${event.entry.key}" added to the first cache'));
+  // Creates a third cache with a capacity of 10 from the previously created store
   final cache2 = store.cache(
       cacheName: 'cache2',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>()
-        .listen((event) => print('Key "${event.entry.key}" added to cache2'));
+    ..on<CreatedEntryEvent>().listen(
+        (event) => print('Key "${event.entry.key}" added to the second cache'));
 
-  // Adds a task with key 'task1' to cache1
+  // Adds a task with key 'task1' to the first cache
   await cache1.put('task1',
-      Task(2, 'Run stash_memory shared store example 1', completed: true));
-  // Retrieves the value from cache1
+      Task(id: 1, title: 'Run shared store example (1)', completed: true));
+  // Retrieves the value from the first cache
   print(await cache1.get('task1'));
 
-  // Adds a task with key 'task1' to cache2
+  // Adds a task with key 'task1' to the second cache
   await cache2.put('task1',
-      Task(3, 'Run stash_memory shared store example 2', completed: true));
-  // Retrieves the value from cache2
+      Task(id: 2, title: 'Run shared store example (2)', completed: true));
+  // Retrieves the value from the second cache
   print(await cache2.get('task1'));
 }
