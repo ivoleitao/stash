@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:stash_dio/stash_dio.dart';
+import 'package:stash_memory/stash_memory.dart';
 
 class Task {
   final int id;
@@ -25,10 +26,12 @@ class Task {
 }
 
 void main() async {
+  // Creates a store
+  final store = newMemoryStore();
   // Configures a a dio client
   final dio = Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'))
     ..interceptors.addAll([
-      newMemoryCacheInterceptor('/todos/1', 'task'),
+      newMemoryCacheInterceptor('/todos/1', 'task', store: store),
       LogInterceptor(
           requestHeader: false,
           requestBody: false,

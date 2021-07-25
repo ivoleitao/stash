@@ -27,18 +27,17 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
+/// * [store]: An existing store
 ///
 /// Returns a [Interceptor]
-Interceptor newMemoryCacheInterceptor(
-  String pattern,
-  String cacheName, {
-  KeySampler? sampler,
-  EvictionPolicy? evictionPolicy,
-  int? maxEntries,
-  ExpiryPolicy? expiryPolicy,
-  CacheLoader? cacheLoader,
-  EventListenerMode? eventListenerMode,
-}) {
+Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
+    {KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    ExpiryPolicy? expiryPolicy,
+    CacheLoader? cacheLoader,
+    EventListenerMode? eventListenerMode,
+    MemoryStore? store}) {
   return newCacheInterceptor(
       pattern,
       newMemoryCache(
@@ -48,7 +47,8 @@ Interceptor newMemoryCacheInterceptor(
           expiryPolicy: expiryPolicy,
           maxEntries: maxEntries,
           cacheLoader: cacheLoader,
-          eventListenerMode: eventListenerMode));
+          eventListenerMode: eventListenerMode,
+          store: store));
 }
 
 /// Creates a new [Interceptor] backed by a primary and a secondary [Cache]
