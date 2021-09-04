@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast_memory.dart';
-import 'package:sembast_web/sembast_web.dart';
 
 /// The [CacheStoreAdapter] provides a bridge between the store and the
 /// backend
@@ -196,18 +193,18 @@ abstract class SembastAdapter extends CacheStoreAdapter {
   }
 }
 
-class SembastFileAdapter extends SembastAdapter {
+class SembastPathAdapter extends SembastAdapter {
   /// The location of the database file
-  final File file;
+  final String path;
 
-  /// Builds a [SembastFileAdapter].
+  /// Builds a [SembastPathAdapter].
   ///
-  /// * [file]: The location of the database file
+  /// * [path]: The location of the database file
   /// * [version]: The expected version
   /// * [onVersionChanged]:  If [version] not null and if the existing version is different, onVersionChanged is called
   /// * [mode]: The database mode
   /// * [codec]: The codec which can be used to load/save a record, allowing for user encryption
-  SembastFileAdapter(this.file,
+  SembastPathAdapter(this.path,
       {int? version,
       OnVersionChangedFunction? onVersionChanged,
       DatabaseMode? mode,
@@ -220,7 +217,7 @@ class SembastFileAdapter extends SembastAdapter {
 
   @override
   Future<Database> openDatabase() {
-    return databaseFactoryIo.openDatabase(file.path,
+    return databaseFactoryIo.openDatabase(path,
         version: version,
         onVersionChanged: onVersionChanged,
         mode: mode,
@@ -260,6 +257,7 @@ class SembastMemoryAdapter extends SembastAdapter {
   }
 }
 
+/*
 class SembastWebAdapter extends SembastAdapter {
   final String name;
 
@@ -290,3 +288,4 @@ class SembastWebAdapter extends SembastAdapter {
         codec: codec);
   }
 }
+*/

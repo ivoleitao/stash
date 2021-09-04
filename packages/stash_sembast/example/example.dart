@@ -30,11 +30,11 @@ void main() async {
   // Temporary path
   final dir = Directory.systemTemp;
   // Temporary database file for a shared store
-  final file = File('${dir.path}/stash_sqlite.db');
+  final path = '${dir.path}/stash_sqlite.db';
 
   // Creates a store
   final store = newSembastFileStore(
-      file: file, fromEncodable: (json) => Task.fromJson(json));
+      path: path, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
   final cache1 = store.cache(
       cacheName: 'cache1',

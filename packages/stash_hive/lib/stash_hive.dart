@@ -1,8 +1,6 @@
 /// Provides a Hive implementation of the Stash caching API for Dart
 library stash_hive;
 
-import 'dart:io';
-
 import 'package:hive/hive.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_hive/src/hive/hive_adapter.dart';
@@ -41,7 +39,7 @@ Cache _newHiveCache(HiveDefaultStore store,
 
 /// Creates a new [HiveDefaultStore]
 ///
-/// * [path]: The base storage location for this store
+/// * [path]: The base storage location for this store, the current directoy if not provided
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
@@ -51,7 +49,7 @@ HiveDefaultStore newHiveStore(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return HiveDefaultStore(
-      HiveDefaultAdapter(path ?? Directory.systemTemp.path,
+      HiveDefaultAdapter(path ?? '.',
           encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }
@@ -131,7 +129,7 @@ Cache _newLazyHiveCache(HiveLazyStore store,
 
 /// Creates a new [HiveLazyStore]
 ///
-/// * [path]: The base storage location for this store
+/// * [path]: The base storage location for this store, the current directory if not provided
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
@@ -141,7 +139,7 @@ HiveLazyStore newHiveLazyStore(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return HiveLazyStore(
-      HiveLazyAdapter(path ?? Directory.systemTemp.path,
+      HiveLazyAdapter(path ?? '.',
           encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }

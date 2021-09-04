@@ -1,6 +1,7 @@
 # 3.2.1
 
 - Updated dependencies
+- Removed dart:io dependencies
 
 # 3.2.0
 

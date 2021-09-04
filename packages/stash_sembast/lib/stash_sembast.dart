@@ -1,8 +1,6 @@
 /// Provides a Sembast implementation of the Stash caching API for Dart
 library stash_sembast;
 
-import 'dart:io';
-
 import 'package:sembast/sembast.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/src/sembast/sembast_adapter.dart';
@@ -41,22 +39,21 @@ Cache _newSembastCache(SembastStore store,
 
 /// Creates a new [SembastStore] on a file
 ///
-/// * [file]: The location of this store
+/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
 SembastStore newSembastFileStore(
-    {File? file,
+    {String? path,
     dynamic Function(dynamic)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
   return SembastStore(
-      SembastFileAdapter(
-          file ?? File('${Directory.systemTemp.path}/stash_sqlite.db'),
+      SembastPathAdapter(path ?? 'stash_sembast.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
@@ -66,6 +63,7 @@ SembastStore newSembastFileStore(
 
 /// Creates a new [Cache] backed by a [SembastStore]
 ///
+/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
@@ -74,7 +72,6 @@ SembastStore newSembastFileStore(
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
-/// * [file]: The location of this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
@@ -83,7 +80,7 @@ SembastStore newSembastFileStore(
 ///
 /// Returns a new [Cache] backed by a [SembastStore]
 Cache newSembastFileCache(
-    {File? file,
+    {String? path,
     String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -99,7 +96,7 @@ Cache newSembastFileCache(
     SembastCodec? sembastCodec}) {
   return _newSembastCache(
       newSembastFileStore(
-          file: file,
+          path: path,
           fromEncodable: fromEncodable,
           databaseVersion: databaseVersion,
           onVersionChanged: onVersionChanged,
