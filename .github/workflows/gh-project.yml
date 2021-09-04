@@ -1,4 +1,4 @@
-name: Stash Project
+name: Github Project
 
 on:
   issues:
