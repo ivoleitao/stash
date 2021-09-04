@@ -1,4 +1,4 @@
-name: Stash Build
+name: Dart CI
 
 on:
   schedule:
@@ -9,7 +9,7 @@ on:
     paths:
       - 'melos.yaml'
       - 'packages/**'
-      - '.github/workflows/build.yml'
+      - '.github/workflows/dart-ci.yml'
 
   pull_request:
     branches:
@@ -17,18 +17,21 @@ on:
     paths:
       - 'melos.yaml'
       - 'packages/**'
-      - '.github/workflows/build.yml'
+      - '.github/workflows/dart-ci.yml'
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  ci:
+    name: Dart CI
+
     strategy:
       matrix:
         os: ['ubuntu-latest']
         sdk: ['stable']
 
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Setup os
+      - name: Install libraries
         run: |
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
@@ -42,10 +45,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Install tools
+      - name: Install packages
         run: |
           pub global activate melos
-          pub global activate pana
 
       - name: Bootstrap
         run: |
@@ -65,6 +67,6 @@ jobs:
         run: |
           melos run doc
 
-      - name: Calculate scores
+      - name: Verify
         run: |
-          melos run pana
+          melos run verify

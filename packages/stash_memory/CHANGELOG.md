@@ -1,8 +1,11 @@
 # 3.2.0
 
 - Updated dependencies
-- It's now easier to reuse a store in multiple cache instances
 
+# 3.2.0
+
+- Updated dependencies
+- It's now easier to reuse a store in multiple cache instances
 # 3.1.0
 
 - Updated dependencies

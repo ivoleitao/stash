@@ -96,12 +96,12 @@ scripts:
     description: |
       Run `dart test` and collects coverage in all packages.
 
-  pana:
+  verify:
     run: |
-      melos exec -c 1 -- \
-        "../../tool/pana.sh"
+      melos exec -- \
+        "dart pub publish --dry-run"
     description: |
-      Run `pana` in all packages.
+      Verify package
 
   codecov:
     run: |

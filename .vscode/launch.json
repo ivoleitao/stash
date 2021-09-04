@@ -42,14 +42,6 @@
             "console": "debugConsole"
         },
         {
-            "name": "Isar",
-            "program": "packages/stash_isar/example/example.dart",
-            "args": [],
-            "request": "launch",
-            "type": "dart",
-            "console": "debugConsole"
-        },
-        {
             "name": "Objectbox",
             "program": "packages/stash_objectbox/example/example.dart",
             "args": [],

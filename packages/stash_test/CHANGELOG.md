@@ -1,8 +1,13 @@
+# 3.2.1
+
+- Updated dependencies
+
 # 3.2.0
 
 - Updated dependencies
 
-# 3.1.0
+#
+ 3.1.0
 
 - Updated dependencies
 - Switched from `pedantic` to lints

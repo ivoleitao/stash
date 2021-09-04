@@ -1,4 +1,4 @@
-name: Stash Publish
+name: Dart Coverage
 
 on:
   push:
@@ -6,18 +6,22 @@ on:
       - master
     paths:
       - 'packages/**'
-      - '.github/workflows/publish.yml'
+      - '.github/workflows/dart-coverage.yml'
 
 jobs:
-  publish:
-    runs-on: ${{ matrix.os }}
+  coverage:
+    name: Dart Coverage
+
     strategy:
       matrix:
         os: ['ubuntu-latest']
         sdk: ['stable']
 
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Setup os
+      - name: Install libraries
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
@@ -31,15 +35,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Bootstrap
+      - name: Install packages
         run: |
           pub global activate melos
+
+      - name: Bootstrap
+        run: |
           melos bootstrap
 
       - name: Coverage
         run: |
           melos run coverage
-
-      - name: Upload coverage
-        run: |
           melos run codecov

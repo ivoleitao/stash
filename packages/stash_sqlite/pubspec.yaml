@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 3.2.0
+version: 3.2.1
 description: >-
    storage extension for the stash caching API. Provides support to store caches
    in a sqlite database in binary format using the msgpack json format
@@ -9,16 +9,16 @@ environment:
   sdk: '>=2.13.0 <3.0.0'
 
 dependencies:
-  moor: ^4.4.1
+  moor: ^4.5.0
   stash: ^3.2.0
   #stash:
   #  path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.17.10
-  build_runner: ^2.0.6
+  test: ^1.17.12
+  build_runner: ^2.1.2
   stash_test: ^3.2.0
   #stash_test:
   #  path: ../stash_test
-  moor_generator: ^4.4.1
+  moor_generator: ^4.5.1
   dependency_validator: ^3.1.0
