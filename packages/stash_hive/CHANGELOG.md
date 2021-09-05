@@ -2,6 +2,7 @@
 
 - Updated dependencies
 - Removed dart:io dependencies
+- Added support for web
 
 # 3.2.0
 
