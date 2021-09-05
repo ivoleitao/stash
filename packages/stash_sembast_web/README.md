@@ -1,9 +1,9 @@
 # stash_sembast_web
 A [stash](https://github.com/ivoleitao/stash) storage extension for [sembast_web](https://pub.dev/packages/sembast_web)
 
-[![Pub Package](https://img.shields.io/pub/v/stash_sembast.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast_web)
-[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sembast)](https://codecov.io/gh/ivoleitao/stash_sembast_web)
-[![Package Documentation](https://img.shields.io/badge/doc-stash_sembast-blue.svg)](https://www.dartdocs.org/documentation/stash_sembast_web/latest)
+[![Pub Package](https://img.shields.io/pub/v/stash_sembast_web.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast_web)
+[![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sembast_web)](https://codecov.io/gh/ivoleitao/stash_sembast_web)
+[![Package Documentation](https://img.shields.io/badge/doc-stash_sembast_web-blue.svg)](https://www.dartdocs.org/documentation/stash_sembast_web/latest)
 [![GitHub License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
