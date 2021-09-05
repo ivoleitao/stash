@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   moor: ^4.5.0
-  stash: ^3.2.1
+  stash: ^3.2.2
   #stash:
   #  path: ../stash
 dev_dependencies:

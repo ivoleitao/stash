@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   hive: ^2.0.4
-  stash: ^3.2.1
+  stash: ^3.2.2
   universal_platform: ^1.0.0+1
   #stash:
   #  path: ../stash
