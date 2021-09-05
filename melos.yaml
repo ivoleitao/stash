@@ -84,7 +84,7 @@ scripts:
 
   test:chrome:
     run: |
-      melos exec --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_dio" \
+      melos exec --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_sembast_web" --scope="stash_dio" \
         "dart test -p chrome"
     description: |
       Run `dart test -p chome` in the selected packages. 

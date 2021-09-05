@@ -180,13 +180,15 @@ abstract class SembastAdapter extends CacheStoreAdapter {
     }).then((_) => null);
   }
 
+  Future<void> deleteDatabase(String path);
+
   @override
   Future<void> deleteAll() {
     return Future.wait(_cacheStore.keys.map((name) {
       return _database().then((db) {
         return db
             .close()
-            .then((_) => databaseFactoryIo.deleteDatabase(db.path))
+            .then((_) => deleteDatabase(db.path))
             .then((_) => _cacheStore.remove(name));
       });
     }));
@@ -223,6 +225,11 @@ class SembastPathAdapter extends SembastAdapter {
         mode: mode,
         codec: codec);
   }
+
+  @override
+  Future<void> deleteDatabase(String path) {
+    return databaseFactoryIo.deleteDatabase(path);
+  }
 }
 
 class SembastMemoryAdapter extends SembastAdapter {
@@ -255,37 +262,9 @@ class SembastMemoryAdapter extends SembastAdapter {
         mode: mode,
         codec: codec);
   }
-}
-
-/*
-class SembastWebAdapter extends SembastAdapter {
-  final String name;
-
-  /// Builds a [SembastWebAdapter].
-  ///
-  /// * [name]: The name of the database
-  /// * [version]: The expected version
-  /// * [onVersionChanged]:  If [version] not null and if the existing version is different, onVersionChanged is called
-  /// * [mode]: The database mode
-  /// * [codec]: The codec which can be used to load/save a record, allowing for user encryption
-  SembastWebAdapter(this.name,
-      {int? version,
-      OnVersionChangedFunction? onVersionChanged,
-      DatabaseMode? mode,
-      SembastCodec? codec})
-      : super(
-            version: version,
-            onVersionChanged: onVersionChanged,
-            mode: mode,
-            codec: codec);
 
   @override
-  Future<Database> openDatabase() {
-    return databaseFactoryWeb.openDatabase(name,
-        version: version,
-        onVersionChanged: onVersionChanged,
-        mode: mode,
-        codec: codec);
+  Future<void> deleteDatabase(String path) {
+    return databaseFactoryMemory.deleteDatabase(path);
   }
 }
-*/
