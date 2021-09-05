@@ -98,7 +98,7 @@ scripts:
 
   verify:
     run: |
-      melos exec -- \
+      melos exec --no-private \
         "dart pub publish --dry-run"
     description: |
       Verify package
