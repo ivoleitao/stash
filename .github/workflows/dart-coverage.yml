@@ -5,6 +5,7 @@ on:
     branches:
       - master
     paths:
+      - 'melos.yaml'
       - 'packages/**'
       - '.github/workflows/dart-coverage.yml'
 
