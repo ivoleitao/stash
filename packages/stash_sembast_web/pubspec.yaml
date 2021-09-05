@@ -10,7 +10,6 @@ environment:
   sdk: '>=2.13.0 <3.0.0'
 
 dependencies:
-  universal_platform: ^1.0.0+1
   sembast: ^3.1.0+2
   sembast_web: ^2.0.0+2
   stash: ^3.2.0

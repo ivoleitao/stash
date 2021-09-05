@@ -47,7 +47,7 @@ jobs:
 
       - name: Install packages
         run: |
-          pub global activate melos
+          dart pub global activate melos
 
       - name: Bootstrap
         run: |
