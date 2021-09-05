@@ -1,3 +1,7 @@
+# 3.2.2
+
+- Fixed location of the build action
+
 # 3.2.1
 
 - Updated dependencies
