@@ -17,6 +17,8 @@ coverage:
         flags: stash_hive
       stash_sembast:
         flags: stash_sembast
+      stash_sembast_web:
+        flags: stash_sembast_web
       stash_objectbox:
         flags: stash_objectbox
       stash_dio:
@@ -44,6 +46,9 @@ flags:
   stash_sembast:
     paths:
       - packages/stash_sembast/lib/
+  stash_sembast_web:
+    paths:
+      - packages/stash_sembast_web/lib/
   stash_objectbox:
     paths:
       - packages/stash_objectbox/lib/

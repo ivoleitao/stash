@@ -1,8 +1,7 @@
-import 'dart:io';
-
-import 'package:stash_hive/src/hive/hive_adapter.dart';
 import 'package:stash_hive/stash_hive.dart';
 import 'package:stash_test/stash_test.dart';
+
+import "vm_store.dart" if (dart.library.js) "web_store.dart";
 
 class DefaultContext extends TestContext<HiveStore> {
   DefaultContext(ValueGenerator generator,
@@ -11,9 +10,7 @@ class DefaultContext extends TestContext<HiveStore> {
 
   @override
   Future<HiveStore> newStore() {
-    return Directory.systemTemp.createTemp('stash_hive').then((d) =>
-        HiveDefaultStore(HiveDefaultAdapter(d.path),
-            fromEncodable: fromEncodable));
+    return newTestStore(fromEncodable);
   }
 }
 

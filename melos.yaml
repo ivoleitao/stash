@@ -77,14 +77,14 @@ scripts:
   
   test:vm:
     run: |
-      melos exec -- \
+      melos exec --ignore="stash_sembast_web" \
         "dart test -p vm"
     description: |
       Run `dart test -p vm` in all packages.
 
   test:chrome:
     run: |
-      melos exec --scope="stash" --scope="stash_memory" --scope="stash_dio" \
+      melos exec --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_dio" \
         "dart test -p chrome"
     description: |
       Run `dart test -p chome` in the selected packages. 

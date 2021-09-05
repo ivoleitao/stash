@@ -49,8 +49,10 @@ HiveDefaultStore newHiveStore(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return HiveDefaultStore(
-      HiveDefaultAdapter(path ?? '.',
-          encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
+      HiveDefaultAdapter(
+          path: path ?? '.',
+          encryptionCipher: encryptionCipher,
+          crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }
 

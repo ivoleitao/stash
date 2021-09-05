@@ -11,12 +11,13 @@ environment:
 dependencies:
   hive: ^2.0.4
   stash: ^3.2.0
+  universal_platform: ^1.0.0+1
   #stash:
   #  path: ../stash
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.17.12
-  stash_test: ^3.2.0
-  #stash_test:
-  #  path: ../stash_test
+  # stash_test: ^3.2.0
+  stash_test:
+    path: ../stash_test
   dependency_validator: ^3.1.0

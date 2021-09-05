@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 /// The [CacheStoreAdapter] provides a bridge between the store and the
 /// backend
@@ -18,7 +19,7 @@ abstract class CacheStoreAdapter {
 /// Hive backend
 abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   /// The path to the box
-  final String path;
+  final String? path;
 
   /// The encryption cypher
   final HiveCipher? encryptionCipher;
@@ -32,7 +33,7 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   /// Builds a [HiveAdapter].
   ///
   /// * [path]: The base location of the Hive storage
-  HiveAdapter(this.path, {this.encryptionCipher, this.crashRecovery});
+  HiveAdapter({this.path, this.encryptionCipher, this.crashRecovery});
 
   /// Opens the box
   ///
@@ -59,10 +60,19 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
     });
   }
 
+  Future<void> _delete(String name) {
+    if (UniversalPlatform.isWeb) {
+      // https://github.com/hivedb/hive/issues/344
+      return _cacheStore[name]!.clear().then((_) => _cacheStore.remove(name));
+    } else {
+      return Hive.deleteBoxFromDisk(name).then((_) => _cacheStore.remove(name));
+    }
+  }
+
   @override
   Future<void> delete(String name) {
     if (_cacheStore.containsKey(name)) {
-      return Hive.deleteBoxFromDisk(name).then((_) => _cacheStore.remove(name));
+      return _delete(name);
     }
 
     return Future.value();
@@ -71,16 +81,18 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends CacheStoreAdapter {
   @override
   Future<void> deleteAll() {
     return Future.wait(_cacheStore.keys.map((name) {
-      return Hive.deleteBoxFromDisk(name).then((_) => _cacheStore.remove(name));
+      return _delete(name);
     }));
   }
 }
 
 class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
-  HiveDefaultAdapter(String path,
-      {HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(path,
-            encryptionCipher: encryptionCipher, crashRecovery: crashRecovery);
+  HiveDefaultAdapter(
+      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery})
+      : super(
+            path: path,
+            encryptionCipher: encryptionCipher,
+            crashRecovery: crashRecovery);
 
   @override
   Future<Box<Map>> openBox(String name) {
@@ -99,8 +111,10 @@ class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
 class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
   HiveLazyAdapter(String path,
       {HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(path,
-            encryptionCipher: encryptionCipher, crashRecovery: crashRecovery);
+      : super(
+            path: path,
+            encryptionCipher: encryptionCipher,
+            crashRecovery: crashRecovery);
 
   @override
   Future<LazyBox<Map>> openBox(String name) {

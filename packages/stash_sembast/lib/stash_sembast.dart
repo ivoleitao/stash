@@ -19,7 +19,7 @@ export 'src/sembast/sembast_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newSembastCache(SembastStore store,
+Cache newSembastCache(SembastStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -94,7 +94,7 @@ Cache newSembastFileCache(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return _newSembastCache(
+  return newSembastCache(
       newSembastFileStore(
           path: path,
           fromEncodable: fromEncodable,
@@ -113,7 +113,6 @@ Cache newSembastFileCache(
 
 /// Creates a new in-memory [SembastStore]
 ///
-/// *
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
@@ -165,7 +164,7 @@ Cache newSembastMemoryCache(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return _newSembastCache(
+  return newSembastCache(
       newSembastMemoryStore(
           fromEncodable: fromEncodable,
           databaseVersion: databaseVersion,
@@ -192,7 +191,7 @@ extension SembastStoreExtension on SembastStore {
       ExpiryPolicy? expiryPolicy,
       CacheLoader? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newSembastCache(this,
+    return newSembastCache(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
