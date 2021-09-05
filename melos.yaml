@@ -73,14 +73,14 @@ scripts:
   test:
     run: melos run test:vm && melos run test:chrome
     description: |
-      Run `dart test` with multiple platforms in all packages.
+      Run `dart test` in vm and chrome in the selected packages
   
   test:vm:
     run: |
       melos exec --ignore="stash_sembast_web" \
         "dart test -p vm"
     description: |
-      Run `dart test -p vm` in all packages.
+      Run `dart test -p vm` in the selected packages.
 
   test:chrome:
     run: |
@@ -90,11 +90,23 @@ scripts:
       Run `dart test -p chome` in the selected packages. 
 
   coverage:
-    run: |
-      melos exec -c 1 -- \
-        "dart test --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib"
+    run: melos run coverage:vm && melos run coverage:chrome
     description: |
-      Run `dart test` and collects coverage in all packages.
+      Run `dart test` in vm and chrome and collects coverage.
+
+  coverage:vm:
+    run: |
+      melos exec -c 1 --ignore="stash_sembast_web" \
+        "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib"
+    description: |
+      Run `dart test -p vm` in the selected packages and collects coverage.
+
+  coverage:chrome:
+    run: |
+      melos exec -c 1 --scope="stash_sembast_web" \
+        "dart test -p chrome --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib"
+    description: |
+      Run `dart test -p chrome` in the selected packages and collects coverage.
 
   verify:
     run: |
