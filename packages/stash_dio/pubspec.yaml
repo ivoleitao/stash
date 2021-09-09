@@ -6,7 +6,7 @@ description: >-
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_dio
 
 environment:
-  sdk: '>=2.13.0 <3.0.0'
+  sdk: '>=2.14.0 <3.0.0'
 
 dependencies:
   equatable: ^2.0.3

@@ -1,3 +1,8 @@
+# 3.2.3
+
+- Updated SDK
+- Updated dependencies
+
 # 3.2.2
 
 - Fixed location of the build action

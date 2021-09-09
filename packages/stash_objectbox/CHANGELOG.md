@@ -1,3 +1,7 @@
+# 3.2.2
+
+- Updated SDK
+
 # 3.2.1
 
 - Updated dependencies

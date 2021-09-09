@@ -55,9 +55,9 @@ jobs:
           
       - name: Linter
         run: |
-          melos run dependency-validator
           melos run format
           melos run analyze
+          melos run dependency-validator
 
       - name: Test
         run: |

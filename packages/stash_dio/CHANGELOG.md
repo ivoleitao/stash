@@ -1,6 +1,7 @@
 # 3.2.3
 
 - Corrected formatting
+- Updated SDK
 
 # 3.2.2
 
