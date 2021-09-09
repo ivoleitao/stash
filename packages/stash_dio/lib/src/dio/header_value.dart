@@ -62,7 +62,11 @@ class _HeaderValue implements HeaderValue {
     sb.write(_value);
     if (parameters != null && parameters!.isNotEmpty) {
       _parameters!.forEach((String name, String? value) {
-        sb..write('; ')..write(name)..write('=')..write(value);
+        sb
+          ..write('; ')
+          ..write(name)
+          ..write('=')
+          ..write(value);
       });
     }
     return sb.toString();

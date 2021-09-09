@@ -207,10 +207,10 @@ Future<T> _cachePutGet<T extends CacheStore>(TestContext<T> ctx) async {
   final store = await ctx.newStore();
   var createdEntries = 0;
   var updatedEntries = 0;
-  final cache = ctx.newCache(store,
-      eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>().listen((event) => createdEntries++)
-    ..on<UpdatedEntryEvent>().listen((event) => updatedEntries++);
+  final cache =
+      ctx.newCache(store, eventListenerMode: EventListenerMode.synchronous)
+        ..on<CreatedEntryEvent>().listen((event) => createdEntries++)
+        ..on<UpdatedEntryEvent>().listen((event) => updatedEntries++);
 
   final key1 = 'key_1';
   var value1 = ctx.generator.nextValue(1);
