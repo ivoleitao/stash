@@ -25,13 +25,14 @@ jobs:
 
     strategy:
       matrix:
-        os: ['ubuntu-latest']
+        host: ['ubuntu-latest']
         sdk: ['stable']
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.host }}
 
     steps:
       - name: Install libraries
+        if: matrix.host == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
@@ -42,12 +43,12 @@ jobs:
         with:
           sdk: ${{ matrix.sdk }}
 
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
       - name: Install packages
         run: |
           dart pub global activate melos
+
+      - name: Checkout sources
+        uses: actions/checkout@v2
 
       - name: Bootstrap
         run: |
