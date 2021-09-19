@@ -30,23 +30,22 @@ extension SembastExtensions on CacheEntry {
   /// * [fromJson]: optional function to convert the value to the object stored in the cache
   static CacheEntry fromJson(Map<String, dynamic> json,
       {dynamic Function(Map<String, dynamic>)? fromJson}) {
-    return CacheEntry(
-      json['key'] as String,
-      json['value'] == null
-          ? null
-          : fromJson != null
-              ? fromJson((json['value'] as Map).cast<String, dynamic>())
-              : json['value'],
-      DateTime.parse(json['expiryTime'] as String),
-      DateTime.parse(json['creationTime'] as String),
-      accessTime: json['accessTime'] == null
-          ? null
-          : DateTime.parse(json['accessTime'] as String),
-      updateTime: json['updateTime'] == null
-          ? null
-          : DateTime.parse(json['updateTime'] as String),
-      hitCount: json['hitCount'] as int?,
-    );
+    return CacheEntry.newEntry(
+        json['key'] as String,
+        DateTime.parse(json['creationTime'] as String),
+        DateTime.parse(json['expiryTime'] as String),
+        json['value'] == null
+            ? null
+            : fromJson != null
+                ? fromJson((json['value'] as Map).cast<String, dynamic>())
+                : json['value'],
+        accessTime: json['accessTime'] == null
+            ? null
+            : DateTime.parse(json['accessTime'] as String),
+        updateTime: json['updateTime'] == null
+            ? null
+            : DateTime.parse(json['updateTime'] as String),
+        hitCount: json['hitCount'] as int?);
   }
 
   /// Creates a json map from a [CacheEntry]. The value is either handled as is or converted to a supported data

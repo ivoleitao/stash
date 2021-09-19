@@ -102,13 +102,15 @@ class SembastStore extends CacheStore {
   @override
   Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
     return _adapter.getByKeys(name, keys).then((records) =>
-        records.map((record) => _getEntryFromValue(record)).toList());
+        records.map((record) => _getEntryFromValue(record)?.stat).toList());
   }
 
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
-    return _getEntryFromStore(name, key).then((entry) =>
-        _adapter.put(name, key, (entry!..stat = stat).toSembastJson()));
+    return _getEntryFromStore(name, key).then((entry) {
+      entry!.updateStat(stat);
+      _adapter.put(name, key, entry.toSembastJson());
+    });
   }
 
   @override

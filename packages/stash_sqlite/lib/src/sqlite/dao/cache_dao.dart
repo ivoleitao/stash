@@ -68,13 +68,13 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
     var converter = const Iso8601Converter();
 
     final key = row.read(cacheTable.key);
-    var expiryTime = converter.mapToDart(row.read(cacheTable.expiryTime));
     var creationTime = converter.mapToDart(row.read(cacheTable.creationTime));
+    var expiryTime = converter.mapToDart(row.read(cacheTable.expiryTime));
     var accessTime = converter.mapToDart(row.read(cacheTable.accessTime));
     var updateTime = converter.mapToDart(row.read(cacheTable.updateTime));
     var hitCount = row.read(cacheTable.hitCount);
 
-    return CacheStat(key!, expiryTime!, creationTime!,
+    return CacheStat(key!, creationTime!, expiryTime!,
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 
@@ -98,8 +98,8 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   CacheEntry? _toCacheEntry(
       CacheData? data, dynamic Function(Uint8List) valueDecoder) {
     return data != null
-        ? CacheEntry(data.key, valueDecoder(data.value), data.expiryTime,
-            data.creationTime,
+        ? CacheEntry.newEntry(data.key, data.creationTime, data.expiryTime,
+            valueDecoder(data.value),
             accessTime: data.accessTime,
             updateTime: data.updateTime,
             hitCount: data.hitCount)
@@ -169,8 +169,8 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
           ..where(
               (entry) => entry.name.equals(name) & entry.key.equals(stat.key)))
         .write(CacheTableCompanion(
-            expiryTime: Value(stat.expiryTime),
             creationTime: Value(stat.creationTime),
+            expiryTime: Value(stat.expiryTime),
             accessTime: Value(stat.accessTime),
             updateTime: Value(stat.updateTime),
             hitCount: Value(stat.hitCount)));
@@ -203,12 +203,11 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
     return CacheData(
         name: name,
         key: entry.key,
-        expiryTime: entry.expiryTime,
         creationTime: entry.creationTime,
+        expiryTime: entry.expiryTime,
         accessTime: entry.accessTime,
         updateTime: entry.updateTime,
         hitCount: entry.hitCount,
-        extra: null,
         value: valueEncoder(entry.value));
   }
 

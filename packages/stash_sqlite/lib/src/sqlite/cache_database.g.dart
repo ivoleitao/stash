@@ -14,11 +14,11 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   /// Returns a [TextColumn] for the key
   final String key;
 
-  /// Returns a [TextColumn] that stores the expiry time with a String format through the [Iso8601Converter]
-  final DateTime expiryTime;
-
   /// Returns a [TextColumn] that stores the creation time with a String format through the [Iso8601Converter]
   final DateTime creationTime;
+
+  /// Returns a [TextColumn] that stores the expiry time with a String format through the [Iso8601Converter]
+  final DateTime expiryTime;
 
   /// Returns a [TextColumn] that stores the access time with a String format through the [Iso8601Converter]
   final DateTime accessTime;
@@ -29,20 +29,16 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   /// Returns a [IntColumn] for the hit count
   final int hitCount;
 
-  /// Returns a [BlobColumn] to store the extra field
-  final Uint8List? extra;
-
   /// Returns a [BlobColumn] to store the value field
   final Uint8List value;
   CacheData(
       {required this.name,
       required this.key,
-      required this.expiryTime,
       required this.creationTime,
+      required this.expiryTime,
       required this.accessTime,
       required this.updateTime,
       required this.hitCount,
-      this.extra,
       required this.value});
   factory CacheData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -52,18 +48,16 @@ class CacheData extends DataClass implements Insertable<CacheData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
       key: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}key'])!,
-      expiryTime: $CacheTableTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}expiry_time']))!,
-      creationTime: $CacheTableTable.$converter1.mapToDart(const StringType()
+      creationTime: $CacheTableTable.$converter0.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}creation_time']))!,
+      expiryTime: $CacheTableTable.$converter1.mapToDart(const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}expiry_time']))!,
       accessTime: $CacheTableTable.$converter2.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}access_time']))!,
       updateTime: $CacheTableTable.$converter3.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}update_time']))!,
       hitCount: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}hit_count'])!,
-      extra: const BlobType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}extra']),
       value: const BlobType()
           .mapFromDatabaseResponse(data['${effectivePrefix}value'])!,
     );
@@ -75,12 +69,12 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     map['key'] = Variable<String>(key);
     {
       final converter = $CacheTableTable.$converter0;
-      map['expiry_time'] = Variable<String>(converter.mapToSql(expiryTime)!);
+      map['creation_time'] =
+          Variable<String>(converter.mapToSql(creationTime)!);
     }
     {
       final converter = $CacheTableTable.$converter1;
-      map['creation_time'] =
-          Variable<String>(converter.mapToSql(creationTime)!);
+      map['expiry_time'] = Variable<String>(converter.mapToSql(expiryTime)!);
     }
     {
       final converter = $CacheTableTable.$converter2;
@@ -91,9 +85,6 @@ class CacheData extends DataClass implements Insertable<CacheData> {
       map['update_time'] = Variable<String>(converter.mapToSql(updateTime)!);
     }
     map['hit_count'] = Variable<int>(hitCount);
-    if (!nullToAbsent || extra != null) {
-      map['extra'] = Variable<Uint8List?>(extra);
-    }
     map['value'] = Variable<Uint8List>(value);
     return map;
   }
@@ -102,13 +93,11 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     return CacheTableCompanion(
       name: Value(name),
       key: Value(key),
-      expiryTime: Value(expiryTime),
       creationTime: Value(creationTime),
+      expiryTime: Value(expiryTime),
       accessTime: Value(accessTime),
       updateTime: Value(updateTime),
       hitCount: Value(hitCount),
-      extra:
-          extra == null && nullToAbsent ? const Value.absent() : Value(extra),
       value: Value(value),
     );
   }
@@ -119,12 +108,11 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     return CacheData(
       name: serializer.fromJson<String>(json['name']),
       key: serializer.fromJson<String>(json['key']),
-      expiryTime: serializer.fromJson<DateTime>(json['expiryTime']),
       creationTime: serializer.fromJson<DateTime>(json['creationTime']),
+      expiryTime: serializer.fromJson<DateTime>(json['expiryTime']),
       accessTime: serializer.fromJson<DateTime>(json['accessTime']),
       updateTime: serializer.fromJson<DateTime>(json['updateTime']),
       hitCount: serializer.fromJson<int>(json['hitCount']),
-      extra: serializer.fromJson<Uint8List?>(json['extra']),
       value: serializer.fromJson<Uint8List>(json['value']),
     );
   }
@@ -134,12 +122,11 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     return <String, dynamic>{
       'name': serializer.toJson<String>(name),
       'key': serializer.toJson<String>(key),
-      'expiryTime': serializer.toJson<DateTime>(expiryTime),
       'creationTime': serializer.toJson<DateTime>(creationTime),
+      'expiryTime': serializer.toJson<DateTime>(expiryTime),
       'accessTime': serializer.toJson<DateTime>(accessTime),
       'updateTime': serializer.toJson<DateTime>(updateTime),
       'hitCount': serializer.toJson<int>(hitCount),
-      'extra': serializer.toJson<Uint8List?>(extra),
       'value': serializer.toJson<Uint8List>(value),
     };
   }
@@ -147,22 +134,20 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   CacheData copyWith(
           {String? name,
           String? key,
-          DateTime? expiryTime,
           DateTime? creationTime,
+          DateTime? expiryTime,
           DateTime? accessTime,
           DateTime? updateTime,
           int? hitCount,
-          Uint8List? extra,
           Uint8List? value}) =>
       CacheData(
         name: name ?? this.name,
         key: key ?? this.key,
-        expiryTime: expiryTime ?? this.expiryTime,
         creationTime: creationTime ?? this.creationTime,
+        expiryTime: expiryTime ?? this.expiryTime,
         accessTime: accessTime ?? this.accessTime,
         updateTime: updateTime ?? this.updateTime,
         hitCount: hitCount ?? this.hitCount,
-        extra: extra ?? this.extra,
         value: value ?? this.value,
       );
   @override
@@ -170,12 +155,11 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     return (StringBuffer('CacheData(')
           ..write('name: $name, ')
           ..write('key: $key, ')
-          ..write('expiryTime: $expiryTime, ')
           ..write('creationTime: $creationTime, ')
+          ..write('expiryTime: $expiryTime, ')
           ..write('accessTime: $accessTime, ')
           ..write('updateTime: $updateTime, ')
           ..write('hitCount: $hitCount, ')
-          ..write('extra: $extra, ')
           ..write('value: $value')
           ..write(')'))
         .toString();
@@ -187,65 +171,59 @@ class CacheData extends DataClass implements Insertable<CacheData> {
       $mrjc(
           key.hashCode,
           $mrjc(
-              expiryTime.hashCode,
+              creationTime.hashCode,
               $mrjc(
-                  creationTime.hashCode,
+                  expiryTime.hashCode,
                   $mrjc(
                       accessTime.hashCode,
-                      $mrjc(
-                          updateTime.hashCode,
-                          $mrjc(hitCount.hashCode,
-                              $mrjc(extra.hashCode, value.hashCode)))))))));
+                      $mrjc(updateTime.hashCode,
+                          $mrjc(hitCount.hashCode, value.hashCode))))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CacheData &&
           other.name == this.name &&
           other.key == this.key &&
-          other.expiryTime == this.expiryTime &&
           other.creationTime == this.creationTime &&
+          other.expiryTime == this.expiryTime &&
           other.accessTime == this.accessTime &&
           other.updateTime == this.updateTime &&
           other.hitCount == this.hitCount &&
-          other.extra == this.extra &&
           other.value == this.value);
 }
 
 class CacheTableCompanion extends UpdateCompanion<CacheData> {
   final Value<String> name;
   final Value<String> key;
-  final Value<DateTime> expiryTime;
   final Value<DateTime> creationTime;
+  final Value<DateTime> expiryTime;
   final Value<DateTime> accessTime;
   final Value<DateTime> updateTime;
   final Value<int> hitCount;
-  final Value<Uint8List?> extra;
   final Value<Uint8List> value;
   const CacheTableCompanion({
     this.name = const Value.absent(),
     this.key = const Value.absent(),
-    this.expiryTime = const Value.absent(),
     this.creationTime = const Value.absent(),
+    this.expiryTime = const Value.absent(),
     this.accessTime = const Value.absent(),
     this.updateTime = const Value.absent(),
     this.hitCount = const Value.absent(),
-    this.extra = const Value.absent(),
     this.value = const Value.absent(),
   });
   CacheTableCompanion.insert({
     required String name,
     required String key,
-    required DateTime expiryTime,
     required DateTime creationTime,
+    required DateTime expiryTime,
     required DateTime accessTime,
     required DateTime updateTime,
     required int hitCount,
-    this.extra = const Value.absent(),
     required Uint8List value,
   })  : name = Value(name),
         key = Value(key),
-        expiryTime = Value(expiryTime),
         creationTime = Value(creationTime),
+        expiryTime = Value(expiryTime),
         accessTime = Value(accessTime),
         updateTime = Value(updateTime),
         hitCount = Value(hitCount),
@@ -253,23 +231,21 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
   static Insertable<CacheData> custom({
     Expression<String>? name,
     Expression<String>? key,
-    Expression<DateTime>? expiryTime,
     Expression<DateTime>? creationTime,
+    Expression<DateTime>? expiryTime,
     Expression<DateTime>? accessTime,
     Expression<DateTime>? updateTime,
     Expression<int>? hitCount,
-    Expression<Uint8List?>? extra,
     Expression<Uint8List>? value,
   }) {
     return RawValuesInsertable({
       if (name != null) 'name': name,
       if (key != null) 'key': key,
-      if (expiryTime != null) 'expiry_time': expiryTime,
       if (creationTime != null) 'creation_time': creationTime,
+      if (expiryTime != null) 'expiry_time': expiryTime,
       if (accessTime != null) 'access_time': accessTime,
       if (updateTime != null) 'update_time': updateTime,
       if (hitCount != null) 'hit_count': hitCount,
-      if (extra != null) 'extra': extra,
       if (value != null) 'value': value,
     });
   }
@@ -277,22 +253,20 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
   CacheTableCompanion copyWith(
       {Value<String>? name,
       Value<String>? key,
-      Value<DateTime>? expiryTime,
       Value<DateTime>? creationTime,
+      Value<DateTime>? expiryTime,
       Value<DateTime>? accessTime,
       Value<DateTime>? updateTime,
       Value<int>? hitCount,
-      Value<Uint8List?>? extra,
       Value<Uint8List>? value}) {
     return CacheTableCompanion(
       name: name ?? this.name,
       key: key ?? this.key,
-      expiryTime: expiryTime ?? this.expiryTime,
       creationTime: creationTime ?? this.creationTime,
+      expiryTime: expiryTime ?? this.expiryTime,
       accessTime: accessTime ?? this.accessTime,
       updateTime: updateTime ?? this.updateTime,
       hitCount: hitCount ?? this.hitCount,
-      extra: extra ?? this.extra,
       value: value ?? this.value,
     );
   }
@@ -306,15 +280,15 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     if (key.present) {
       map['key'] = Variable<String>(key.value);
     }
-    if (expiryTime.present) {
-      final converter = $CacheTableTable.$converter0;
-      map['expiry_time'] =
-          Variable<String>(converter.mapToSql(expiryTime.value)!);
-    }
     if (creationTime.present) {
-      final converter = $CacheTableTable.$converter1;
+      final converter = $CacheTableTable.$converter0;
       map['creation_time'] =
           Variable<String>(converter.mapToSql(creationTime.value)!);
+    }
+    if (expiryTime.present) {
+      final converter = $CacheTableTable.$converter1;
+      map['expiry_time'] =
+          Variable<String>(converter.mapToSql(expiryTime.value)!);
     }
     if (accessTime.present) {
       final converter = $CacheTableTable.$converter2;
@@ -329,9 +303,6 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     if (hitCount.present) {
       map['hit_count'] = Variable<int>(hitCount.value);
     }
-    if (extra.present) {
-      map['extra'] = Variable<Uint8List?>(extra.value);
-    }
     if (value.present) {
       map['value'] = Variable<Uint8List>(value.value);
     }
@@ -343,12 +314,11 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     return (StringBuffer('CacheTableCompanion(')
           ..write('name: $name, ')
           ..write('key: $key, ')
-          ..write('expiryTime: $expiryTime, ')
           ..write('creationTime: $creationTime, ')
+          ..write('expiryTime: $expiryTime, ')
           ..write('accessTime: $accessTime, ')
           ..write('updateTime: $updateTime, ')
           ..write('hitCount: $hitCount, ')
-          ..write('extra: $extra, ')
           ..write('value: $value')
           ..write(')'))
         .toString();
@@ -368,15 +338,15 @@ class $CacheTableTable extends CacheTable
   late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
       'key', aliasedName, false,
       typeName: 'TEXT', requiredDuringInsert: true);
-  final VerificationMeta _expiryTimeMeta = const VerificationMeta('expiryTime');
-  late final GeneratedColumnWithTypeConverter<DateTime, String?> expiryTime =
-      GeneratedColumn<String?>('expiry_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
-          .withConverter<DateTime>($CacheTableTable.$converter0);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
   late final GeneratedColumnWithTypeConverter<DateTime, String?> creationTime =
       GeneratedColumn<String?>('creation_time', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<DateTime>($CacheTableTable.$converter0);
+  final VerificationMeta _expiryTimeMeta = const VerificationMeta('expiryTime');
+  late final GeneratedColumnWithTypeConverter<DateTime, String?> expiryTime =
+      GeneratedColumn<String?>('expiry_time', aliasedName, false,
               typeName: 'TEXT', requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter1);
   final VerificationMeta _accessTimeMeta = const VerificationMeta('accessTime');
@@ -393,10 +363,6 @@ class $CacheTableTable extends CacheTable
   late final GeneratedColumn<int?> hitCount = GeneratedColumn<int?>(
       'hit_count', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: true);
-  final VerificationMeta _extraMeta = const VerificationMeta('extra');
-  late final GeneratedColumn<Uint8List?> extra = GeneratedColumn<Uint8List?>(
-      'extra', aliasedName, true,
-      typeName: 'BLOB', requiredDuringInsert: false);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
   late final GeneratedColumn<Uint8List?> value = GeneratedColumn<Uint8List?>(
       'value', aliasedName, false,
@@ -405,12 +371,11 @@ class $CacheTableTable extends CacheTable
   List<GeneratedColumn> get $columns => [
         name,
         key,
-        expiryTime,
         creationTime,
+        expiryTime,
         accessTime,
         updateTime,
         hitCount,
-        extra,
         value
       ];
   @override
@@ -434,8 +399,8 @@ class $CacheTableTable extends CacheTable
     } else if (isInserting) {
       context.missing(_keyMeta);
     }
-    context.handle(_expiryTimeMeta, const VerificationResult.success());
     context.handle(_creationTimeMeta, const VerificationResult.success());
+    context.handle(_expiryTimeMeta, const VerificationResult.success());
     context.handle(_accessTimeMeta, const VerificationResult.success());
     context.handle(_updateTimeMeta, const VerificationResult.success());
     if (data.containsKey('hit_count')) {
@@ -443,10 +408,6 @@ class $CacheTableTable extends CacheTable
           hitCount.isAcceptableOrUnknown(data['hit_count']!, _hitCountMeta));
     } else if (isInserting) {
       context.missing(_hitCountMeta);
-    }
-    if (data.containsKey('extra')) {
-      context.handle(
-          _extraMeta, extra.isAcceptableOrUnknown(data['extra']!, _extraMeta));
     }
     if (data.containsKey('value')) {
       context.handle(

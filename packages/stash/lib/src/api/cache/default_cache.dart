@@ -142,7 +142,7 @@ class DefaultCache<T> extends Cache<T> {
         if (capacityExceeded) {
           return storage.keys(name).then(
               (ks) => storage.getStats(name, sampler.sample(ks)).then((stats) {
-                    final stat = evictionPolicy.select(stats, entry);
+                    final stat = evictionPolicy.select(stats, entry.stat);
                     if (stat != null) {
                       return _removeEntryByKey(stat.key, evicted: true);
                     }
@@ -154,7 +154,7 @@ class DefaultCache<T> extends Cache<T> {
         return Future.value();
       });
     } else {
-      return storage.setStat(name, key, entry);
+      return storage.setStat(name, key, entry.stat);
     }
   }
 
@@ -199,7 +199,7 @@ class DefaultCache<T> extends Cache<T> {
     // We want to create a new entry, let's update it according with the semantics
     // of the configured expiry policy and store it
     final expiryTime = now.add(duration);
-    final entry = CacheEntry(key, value, expiryTime, now);
+    final entry = CacheEntry.newEntry(key, now, expiryTime, value);
 
     // Check if the entry is expired before adding it to the cache
     if (!entry.isExpired(now)) {
@@ -247,7 +247,7 @@ class DefaultCache<T> extends Cache<T> {
     final duration = expiryPolicy.getExpiryForUpdate();
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
-    final newEntry = entry.copyForUpdate(value,
+    final newEntry = entry.updateEntry(value,
         expiryTime:
             duration != null ? now.add(expiryDuration ?? duration) : null,
         updateTime: now,

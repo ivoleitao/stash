@@ -14,11 +14,11 @@ class CacheTable extends Table {
   /// Returns a [TextColumn] for the key
   TextColumn get key => text()();
 
-  /// Returns a [TextColumn] that stores the expiry time with a String format through the [Iso8601Converter]
-  TextColumn get expiryTime => text().map(const Iso8601Converter())();
-
   /// Returns a [TextColumn] that stores the creation time with a String format through the [Iso8601Converter]
   TextColumn get creationTime => text().map(const Iso8601Converter())();
+
+  /// Returns a [TextColumn] that stores the expiry time with a String format through the [Iso8601Converter]
+  TextColumn get expiryTime => text().map(const Iso8601Converter())();
 
   /// Returns a [TextColumn] that stores the access time with a String format through the [Iso8601Converter]
   TextColumn get accessTime => text().map(const Iso8601Converter())();
@@ -28,9 +28,6 @@ class CacheTable extends Table {
 
   /// Returns a [IntColumn] for the hit count
   IntColumn get hitCount => integer()();
-
-  /// Returns a [BlobColumn] to store the extra field
-  BlobColumn get extra => blob().nullable()();
 
   /// Returns a [BlobColumn] to store the value field
   BlobColumn get value => blob()();

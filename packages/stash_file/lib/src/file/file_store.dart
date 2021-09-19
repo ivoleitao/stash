@@ -150,13 +150,13 @@ class FileStore extends CacheStore {
   CacheStat _readStat(String key, Uint8List bytes) {
     var reader = _codec.decoder(bytes);
 
-    var expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
     var creationTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    var expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
     var accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
     var updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
     var hitCount = reader.readUInt64();
 
-    return CacheStat(key, expiryTime, creationTime,
+    return CacheStat(key, creationTime, expiryTime,
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 
@@ -207,8 +207,8 @@ class FileStore extends CacheStore {
   BytesWriter _writeStat(CacheStat stat, {BytesWriter? writer}) {
     writer = writer ?? _codec.encoder();
 
-    writer.writeUint64(stat.expiryTime.microsecondsSinceEpoch);
     writer.writeUint64(stat.creationTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.expiryTime.microsecondsSinceEpoch);
     writer.writeUint64(stat.accessTime.microsecondsSinceEpoch);
     writer.writeUint64(stat.updateTime.microsecondsSinceEpoch);
     writer.writeUint64(stat.hitCount);
@@ -240,16 +240,17 @@ class FileStore extends CacheStore {
   ///
   /// Returns a [CacheEntry]
   CacheEntry _readEntry(String key, Uint8List bytes) {
-    var reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
 
-    var expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var creationTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var hitCount = reader.readUInt64();
-    var value = reader.read();
+    final creationTime =
+        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final hitCount = reader.readUInt64();
+    final value = reader.read();
 
-    return CacheEntry(key, value, expiryTime, creationTime,
+    return CacheEntry.newEntry(key, creationTime, expiryTime, value,
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 
@@ -313,7 +314,7 @@ class FileStore extends CacheStore {
   Future<void> _putFileEntry(File file, CacheEntry entry) {
     var writer = _codec.encoder();
 
-    _writeStat(entry, writer: writer);
+    _writeStat(entry.stat, writer: writer);
     _writeValue(entry.value, writer: writer);
 
     final buffer = writer.takeBytes();

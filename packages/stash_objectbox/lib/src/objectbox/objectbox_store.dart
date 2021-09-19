@@ -50,8 +50,11 @@ class ObjectboxStore extends CacheStore {
           _codec.decoder(entity.value, fromEncodable: _fromEncodable);
       final value = reader.read();
 
-      return CacheEntry(entity.key, value, DateTime.parse(entity.expiryTime),
+      return CacheEntry.newEntry(
+          entity.key,
           DateTime.parse(entity.creationTime),
+          DateTime.parse(entity.expiryTime),
+          value,
           accessTime: entity.accessTime != null
               ? DateTime.parse(entity.accessTime!)
               : null,
@@ -98,7 +101,7 @@ class ObjectboxStore extends CacheStore {
   Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) =>
       _adapter.objectbox(name).then((box) => box
           .getMany(keys.map((key) => key.hashCode).toList())
-          .map((entity) => _toCacheEntry(entity)!)
+          .map((entity) => _toCacheEntry(entity)?.stat)
           .toList());
 
   @override

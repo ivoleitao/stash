@@ -115,8 +115,10 @@ abstract class HiveStore<T extends BoxBase<Map>> extends CacheStore {
   @override
   Future<void> setStat(String name, String key, CacheStat stat) {
     return _adapter.store(name).then((store) {
-      return _getEntryFromStore(store, key)
-          .then((entry) => store.put(key, (entry!..stat = stat).toHiveJson()));
+      return _getEntryFromStore(store, key).then((entry) {
+        entry!.updateStat(stat);
+        store.put(key, entry.toHiveJson());
+      });
     });
   }
 

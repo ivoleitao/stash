@@ -459,7 +459,12 @@ CacheEntry newEntry(ValueGenerator generator, int seed,
     DateTime? accessTime,
     DateTime? updateTime,
     int? hitCount}) {
-  return CacheEntry(key ?? 'cache_key_$seed', generator.nextValue(seed),
-      expiryTime ?? seed.minutes.fromNow, creationTime ?? DateTime.now(),
-      accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
+  return CacheEntry.newEntry(
+      key ?? 'cache_key_$seed',
+      creationTime ?? DateTime.now(),
+      expiryTime ?? seed.minutes.fromNow,
+      generator.nextValue(seed),
+      accessTime: accessTime,
+      updateTime: updateTime,
+      hitCount: hitCount);
 }

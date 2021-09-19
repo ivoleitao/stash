@@ -1,75 +1,92 @@
-import 'package:stash/src/api/cache_stat.dart';
+import 'cache_stat.dart';
+import 'entry.dart';
 
 /// The wrapper around the object that is added to the cache
-class CacheEntry extends CacheStat {
-  /// The value stored in the cache
-  dynamic _value;
+class CacheEntry extends Entry<CacheStat> {
+  /// The expiry time getter
+  DateTime get expiryTime => stat.expiryTime;
 
-  /// Tracks any changes to the [CacheEntry] after obtaining it from the store
-  bool? _valueChanged;
-
-  CacheEntry._(String key, dynamic value, DateTime expiryTime,
-      DateTime creationTime, this._valueChanged,
-      {DateTime? accessTime, DateTime? updateTime, int? hitCount})
-      : _value = value,
-        super(key, expiryTime, creationTime,
-            accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
-
-  CacheEntry(
-      String key, dynamic value, DateTime expiryTime, DateTime creationTime,
-      {DateTime? accessTime, DateTime? updateTime, int? hitCount})
-      : this._(key, value, expiryTime, creationTime, null,
-            accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
-
-  /// Returns the stored value
-  dynamic get value => _value;
-
-  /// Returns true if the value was changed after retrieval from the store or if it was newly created
-  bool get valueChanged => _valueChanged ?? true;
-
-  /// Returns a [CacheStat] from this [CacheEntry]
-  CacheStat get stat => CacheStat(key, expiryTime, creationTime)
-    ..accessTime = accessTime
-    ..updateTime = updateTime
-    ..hitCount = hitCount;
-
-  /// Sets the [CacheStat] part of this [CacheEntry]
+  /// The expiry time setter
   ///
-  /// * [stat]: The new [CacheStat]
-  set stat(CacheStat stat) {
-    expiryTime = stat.expiryTime;
-    accessTime = stat.accessTime;
-    updateTime = stat.updateTime;
-    hitCount = stat.hitCount;
+  /// * [expiryTime]: The expiry time
+  set expiryTime(DateTime expiryTime) {
+    stat.expiryTime = expiryTime;
   }
 
-  /// Copies a [CacheEntry]
+  /// The hit count getter
+  int get hitCount => stat.hitCount;
+
+  /// The hit count setter
   ///
-  /// * [value]: The value
+  /// * [hitCount]: The hit count
+  set hitCount(int hitCount) {
+    stat.hitCount = hitCount;
+  }
+
+  /// Creates a [CacheEntry]
+  ///
+  /// * [stat]: The cache stat
+  /// * [value]: The cache value
+  /// * [valueChanged]: If this value was changed
+  CacheEntry._(CacheStat stat, dynamic value, bool? valueChanged)
+      : super(stat, value, valueChanged);
+
+  /// Creates a new [CacheEntry]
+  ///
   /// * [key]: The cache key
-  /// * [expiryTime]: The cache expiry time
   /// * [creationTime]: The cache creation time
+  /// * [expiryTime]: The cache expiry time
+  /// * [value]: The cache value
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
-  CacheEntry copyForUpdate(dynamic value,
-          {String? key,
-          DateTime? expiryTime,
-          DateTime? creationTime,
+  CacheEntry.newEntry(
+      String key, DateTime creationTime, DateTime expiryTime, dynamic value,
+      {DateTime? accessTime, DateTime? updateTime, int? hitCount})
+      : this._(
+            CacheStat(key, creationTime, expiryTime,
+                accessTime: accessTime,
+                updateTime: updateTime,
+                hitCount: hitCount),
+            value,
+            null);
+
+  /// Updates a [CacheEntry] stat
+  ///
+  /// * [stat]: The updated stat
+  @override
+  void updateStat(CacheStat stat) {
+    super.updateStat(stat);
+    this.stat.expiryTime = stat.expiryTime;
+    this.stat.hitCount = stat.hitCount;
+  }
+
+  /// Updates a [CacheEntry]
+  ///
+  /// * [value]: The value
+  /// * [expiryTime]: The cache expiry time
+  /// * [accessTime]: The cache access time
+  /// * [updateTime]: The cache update time
+  /// * [hitCount]: The cache hit count
+  CacheEntry updateEntry(dynamic value,
+          {DateTime? expiryTime,
           DateTime? accessTime,
           DateTime? updateTime,
           int? hitCount}) =>
       CacheEntry._(
-        key ?? this.key,
-        value,
-        expiryTime ?? this.expiryTime,
-        creationTime ?? this.creationTime,
-        true,
-        accessTime: accessTime ?? this.accessTime,
-        updateTime: updateTime ?? this.updateTime,
-        hitCount: hitCount ?? this.hitCount,
-      );
+          CacheStat(key, creationTime, expiryTime ?? this.expiryTime,
+              accessTime: accessTime,
+              updateTime: updateTime ?? this.updateTime,
+              hitCount: hitCount ?? this.hitCount),
+          value,
+          true);
 
-  @override
-  List<Object?> get props => [...super.props, value];
+  /// Checks if the cache entry is expired
+  ///
+  /// * [now]: An optional value for the current time
+  ///
+  /// Return true if expired, false if not
+  bool isExpired([DateTime? now]) {
+    return stat.expiryTime.isBefore(now ?? DateTime.now());
+  }
 }
