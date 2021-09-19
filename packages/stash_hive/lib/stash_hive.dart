@@ -19,15 +19,15 @@ export 'src/hive/hive_store.dart';
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newHiveCache(HiveDefaultStore store,
+Cache<T> _newHiveCache<T>(HiveDefaultStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
@@ -72,20 +72,20 @@ HiveDefaultStore newHiveStore(
 /// * [crashRecovery]: If it supports crash recovery
 ///
 /// Returns a new [Cache] backed by a [HiveDefaultStore]
-Cache newHiveCache(
+Cache<T> newHiveCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     HiveDefaultStore? store,
     String? path,
     dynamic Function(dynamic)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return _newHiveCache(
+  return _newHiveCache<T>(
       store ??
           newHiveStore(
               path: path,
@@ -111,15 +111,15 @@ Cache newHiveCache(
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newLazyHiveCache(HiveLazyStore store,
+Cache<T> _newLazyHiveCache<T>(HiveLazyStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -162,20 +162,20 @@ HiveLazyStore newHiveLazyStore(
 /// * [crashRecovery]: If it supports crash recovery
 ///
 /// Returns a new [Cache] backed by a [HiveLazyStore]
-Cache newLazyHiveCache(
+Cache newLazyHiveCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     HiveLazyStore? store,
     String? path,
     dynamic Function(dynamic)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return _newLazyHiveCache(
+  return _newLazyHiveCache<T>(
       store ??
           newHiveLazyStore(
               path: path,
@@ -194,15 +194,15 @@ Cache newLazyHiveCache(
 /// Extension over [HiveDefaultStore] allowing the creation of multiple caches from
 /// the same store
 extension HiveDefaultStoreExtension on HiveDefaultStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newHiveCache(this,
+    return _newHiveCache<T>(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
@@ -216,15 +216,15 @@ extension HiveDefaultStoreExtension on HiveDefaultStore {
 /// Extension over [HiveLazyStore] allowing the creation of multiple caches from
 /// the same store
 extension HiveLazyStoreExtension on HiveLazyStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newLazyHiveCache(this,
+    return _newLazyHiveCache<T>(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,

@@ -34,14 +34,14 @@ void main() async {
   final store = newObjectboxStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache1 = store.cache(
+  final cache1 = store.cache<Task>(
       cacheName: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen(
         (event) => print('Key "${event.entry.key}" added to the first cache'));
   // Creates a second cache with a capacity of 10 from the previously created store
-  final cache2 = store.cache(
+  final cache2 = store.cache<Task>(
       cacheName: 'cache2',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)

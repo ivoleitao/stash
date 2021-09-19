@@ -19,15 +19,15 @@ export 'src/sembast/sembast_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache newSembastCache(SembastStore store,
+Cache<T> newSembastCache<T>(SembastStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -79,14 +79,14 @@ SembastStore newSembastFileStore(
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
 ///
 /// Returns a new [Cache] backed by a [SembastStore]
-Cache newSembastFileCache(
+Cache<T> newSembastFileCache<T>(
     {String? path,
     String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     CacheStore? store,
     dynamic Function(dynamic)? fromEncodable,
@@ -94,7 +94,7 @@ Cache newSembastFileCache(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return newSembastCache(
+  return newSembastCache<T>(
       newSembastFileStore(
           path: path,
           fromEncodable: fromEncodable,
@@ -150,13 +150,13 @@ SembastStore newSembastMemoryStore(
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
 ///
 /// Returns a new [Cache] backed by a [SembastStore]
-Cache newSembastMemoryCache(
+Cache<T> newSembastMemoryCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     CacheStore? store,
     dynamic Function(dynamic)? fromEncodable,
@@ -164,7 +164,7 @@ Cache newSembastMemoryCache(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return newSembastCache(
+  return newSembastCache<T>(
       newSembastMemoryStore(
           fromEncodable: fromEncodable,
           databaseVersion: databaseVersion,
@@ -183,15 +183,15 @@ Cache newSembastMemoryCache(
 /// Extension over [SembastStore] allowing the creation of multiple caches from
 /// the same store
 extension SembastStoreExtension on SembastStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return newSembastCache(this,
+    return newSembastCache<T>(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,

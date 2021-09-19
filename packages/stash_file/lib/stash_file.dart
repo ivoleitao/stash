@@ -19,15 +19,15 @@ export 'src/file/file_store.dart';
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newFileCache(FileStore store,
+Cache<T> _newFileCache<T>(FileStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -66,19 +66,19 @@ FileStore newMemoryFileStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [FileStore]
-Cache newMemoryFileCache(
+Cache<T> newMemoryFileCache<T>(
     {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     FileStore? store,
     String? path,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable}) {
-  return _newFileCache(
+  return _newFileCache<T>(
       store ??
           newMemoryFileStore(
               path: path, codec: codec, fromEncodable: fromEncodable),
@@ -120,19 +120,19 @@ FileStore newLocalFileStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
 /// Returns a new [Cache] backed by a [FileStore]
-Cache newLocalFileCache(
+Cache<T> newLocalFileCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     FileStore? store,
     String? path,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable}) {
-  return _newFileCache(
+  return _newFileCache<T>(
       newLocalFileStore(path: path, codec: codec, fromEncodable: fromEncodable),
       cacheName: cacheName,
       sampler: sampler,
@@ -146,15 +146,15 @@ Cache newLocalFileCache(
 /// Extension over [FileStore] allowing the creation of multiple caches from
 /// the same store
 extension FileStoreExtension on FileStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newFileCache(this,
+    return _newFileCache<T>(this,
         cacheName: cacheName,
         sampler: sampler,
         evictionPolicy: evictionPolicy,

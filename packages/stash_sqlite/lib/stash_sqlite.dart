@@ -21,15 +21,15 @@ export 'src/sqlite/sqlite_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newSqliteCache(SqliteStore store,
+Cache<T> _newSqliteCache<T>(SqliteStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -76,13 +76,13 @@ SqliteStore newSqliteFileStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseLog]: If [databaseLog] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
-Cache newSqliteFileCache(
+Cache<T> newSqliteFileCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     SqliteStore? store,
     File? file,
@@ -90,7 +90,7 @@ Cache newSqliteFileCache(
     dynamic Function(dynamic)? fromEncodable,
     bool? databaseLog,
     DatabaseSetup? databaseSetup}) {
-  return _newSqliteCache(
+  return _newSqliteCache<T>(
       store ??
           newSqliteFileStore(
               file: file,
@@ -138,20 +138,20 @@ SqliteStore newSqliteMemoryStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseLog]: If [databaseLog] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
-Cache newSqliteMemoryCache(
+Cache<T> newSqliteMemoryCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     SqliteStore? store,
     CacheCodec? codec,
     dynamic Function(dynamic)? fromEncodable,
     bool? databaseLog,
     DatabaseSetup? databaseSetup}) {
-  return _newSqliteCache(
+  return _newSqliteCache<T>(
       store ??
           newSqliteMemoryStore(
               codec: codec,
@@ -170,15 +170,15 @@ Cache newSqliteMemoryCache(
 /// Extension over [SqliteStore] allowing the creation of multiple caches from
 /// the same store
 extension SqliteStoreExtension on SqliteStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newSqliteCache(this,
+    return _newSqliteCache<T>(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,

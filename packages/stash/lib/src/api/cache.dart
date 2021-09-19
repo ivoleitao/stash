@@ -18,10 +18,10 @@ enum EventListenerMode {
 }
 
 /// Cache loader function
-typedef CacheLoader = Future<dynamic> Function(String key);
+typedef CacheLoader<T> = Future<T> Function(String key);
 
 /// The Stash cache definition and the hub for the creation of the [Cache] caches
-abstract class Cache {
+abstract class Cache<T> {
   /// The default constructor
   Cache();
 
@@ -44,10 +44,10 @@ abstract class Cache {
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       Clock? clock,
       EventListenerMode? eventListenerMode}) {
-    return DefaultCache(storage,
+    return DefaultCache<T>(storage,
         name: name,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
@@ -64,8 +64,8 @@ abstract class Cache {
   /// * [secondary]: The secondary cache
   ///
   /// Returns a new [Cache]
-  factory Cache.newTieredCache(Cache primary, Cache secondary) {
-    return TieredCache(primary, secondary);
+  factory Cache.newTieredCache(Cache<T> primary, Cache<T> secondary) {
+    return TieredCache<T>(primary, secondary);
   }
 
   /// The number of entries on the cache
@@ -87,7 +87,7 @@ abstract class Cache {
   ///
   /// * [key]: the key
   /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
-  Future<dynamic> get(String key, {Duration? expiryDuration});
+  Future<T?> get(String key, {Duration? expiryDuration});
 
   /// Add / Replace the cache [value] for the specified [key]. If specified [expiryDuration] is used
   /// instead of the configured expiry policy duration
@@ -95,12 +95,12 @@ abstract class Cache {
   /// * [key]: the key
   /// * [value]: the value
   /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
-  Future<void> put(String key, dynamic value, {Duration? expiryDuration});
+  Future<void> put(String key, T value, {Duration? expiryDuration});
 
   /// Get the cache value for the specified [key].
   ///
   /// * [key]: the key
-  Future<dynamic> operator [](String key);
+  Future<T?> operator [](String key);
 
   /// Associates the specified [key] with the given [value]
   /// if not already associated with a value.
@@ -109,8 +109,7 @@ abstract class Cache {
   /// * [value]: value to be associated with the specified key
   ///
   /// Returns `true` if a value was set.
-  Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration? expiryDuration});
+  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration});
 
   /// Clears the contents of the cache
   Future<void> clear();
@@ -133,15 +132,14 @@ abstract class Cache {
   ///
   /// The previous value is returned, or `null` if there was no value
   /// associated with the [key] previously.
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration? expiryDuration});
+  Future<T?> getAndPut(String key, T value, {Duration? expiryDuration});
 
   /// Removes the entry for a [key] only if currently mapped to some value.
   ///
   /// * [key]: key with which the specified value is associated
   ///
   /// Returns the value if one existed or `null` if no mapping existed for this [key]
-  Future<dynamic> getAndRemove(String key);
+  Future<T?> getAndRemove(String key);
 
   /// Listens for events of Type `T` and its subtypes.
   ///
@@ -152,5 +150,5 @@ abstract class Cache {
   ///
   /// The returned [Stream] is a broadcast stream so multiple subscriptions are
   /// allowed.
-  Stream<T> on<T extends CacheEvent>();
+  Stream<E> on<E extends CacheEvent>();
 }

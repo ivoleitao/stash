@@ -1,5 +1,6 @@
 name: stash_sembast
 version: 3.3.1
+publish_to: none
 description: >-
   Sembast storage extension for the stash caching API. Provides support to store caches
   in the local file system in binary format using the msgpack json format
@@ -10,13 +11,13 @@ environment:
 
 dependencies:
   sembast: ^3.1.0+2
-  stash: ^3.2.2
-  #stash:
-  #  path: ../stash
+  #stash: ^3.2.2
+  stash:
+    path: ../stash
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.17.12
-  stash_test: ^3.2.1
-  #stash_test:
-  #  path: ../stash_test
+  #stash_test: ^3.2.1
+  stash_test:
+    path: ../stash_test
   dependency_validator: ^3.1.0

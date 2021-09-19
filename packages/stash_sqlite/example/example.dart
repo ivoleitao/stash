@@ -30,20 +30,20 @@ void main() async {
   // Temporary directory
   final dirPath = Directory.systemTemp;
   // Temporary database file for a shared store
-  final file = File('${dirPath.path}/stash_sqlite.db');
+  final file = File('${dirPath.path}/stash_sqlite.sdb');
 
   // Creates a store
   final store = newSqliteFileStore(
       file: file, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache1 = store.cache(
+  final cache1 = store.cache<Task>(
       cacheName: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CreatedEntryEvent>().listen(
         (event) => print('Key "${event.entry.key}" added to the first cache'));
   // Creates a second cache with a capacity of 10 from the previously created store
-  final cache2 = store.cache(
+  final cache2 = store.cache<Task>(
       cacheName: 'cache2',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)

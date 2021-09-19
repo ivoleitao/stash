@@ -41,7 +41,7 @@ class CacheInterceptorBuilder {
   ///
   /// Returns the [Cache] if any
   Cache? _getCache(Uri uri) {
-    var input = '${uri.host}${uri.path}?${uri.query}';
+    final input = '${uri.host}${uri.path}?${uri.query}';
     for (var entry in _cacheMap.entries) {
       if (entry.key.hasMatch(input)) {
         return entry.value;
@@ -125,9 +125,9 @@ class CacheInterceptorBuilder {
   /// available on cache
   void _onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    var cache = _getCache(options.uri);
+    final cache = _getCache(options.uri);
     if (cache != null) {
-      var value = await cache.get(_getKey(options));
+      final value = await cache.get(_getKey(options));
       if (value != null) {
         handler.resolve(
             _responseFromCacheValue(
@@ -150,7 +150,7 @@ class CacheInterceptorBuilder {
   Duration? _tryGetDurationFromMap(
       Map<String, String?>? parameters, String key) {
     if (null != parameters && parameters.containsKey(key)) {
-      var value = int.tryParse(parameters[key]!);
+      final value = int.tryParse(parameters[key]!);
       if (value != null && value >= 0) {
         return Duration(seconds: value);
       }
@@ -177,9 +177,9 @@ class CacheInterceptorBuilder {
       maxStale ??= _tryGetDurationFromMap(parameters, 'max-stale');
     } else {
       // try to get expiryTime from expires
-      var expires = response.headers.value('expires');
+      final expires = response.headers.value('expires');
       if (expires != null && expires.length > 4) {
-        var endTime = parseHttpDate(expires).toLocal();
+        final endTime = parseHttpDate(expires).toLocal();
         if (endTime.compareTo(DateTime.now()) >= 0) {
           maxAge = endTime.difference(DateTime.now());
         }
@@ -198,9 +198,9 @@ class CacheInterceptorBuilder {
   void _onResponse(
       Response<dynamic> response, ResponseInterceptorHandler handler) async {
     if (response.statusCode! >= 200 && response.statusCode! < 300) {
-      var cache = _getCache(response.requestOptions.uri);
+      final cache = _getCache(response.requestOptions.uri);
       if (cache != null) {
-        var options = response.requestOptions;
+        final options = response.requestOptions;
         Duration? maxAge;
         DateTime? staleDate;
         if (maxAge == null) {
@@ -240,7 +240,7 @@ class CacheInterceptorBuilder {
   ///
   /// Returns the error
   void _onError(DioError e, ErrorInterceptorHandler handler) async {
-    var cache = _getCache(e.requestOptions.uri);
+    final cache = _getCache(e.requestOptions.uri);
     if (cache != null) {
       final value = (await cache.get(_getKey(e.requestOptions))) as CacheValue?;
 

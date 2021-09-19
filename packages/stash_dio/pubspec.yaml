@@ -1,5 +1,6 @@
 name: stash_dio
 version: 3.2.2
+publish_to: none
 description: >-
   Dio extension for the stash caching API. Provides an interceptor that uses
   Stash as a caching layer for Dio
@@ -13,17 +14,17 @@ dependencies:
   http_parser: ^4.0.0
   crypto: ^3.0.1
   dio: ^4.0.0
-  stash: ^3.2.2
-  # stash:
-  #  path: ../stash
-  stash_memory: ^3.2.1
-  #stash_memory:
-  #  path: ../stash_memory
+  #stash: ^3.2.2
+  stash:
+    path: ../stash
+  #stash_memory: ^3.2.1
+  stash_memory:
+    path: ../stash_memory
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.17.12
   mocktail: ^0.1.4
-  stash_file: ^3.2.1
-  #stash_file:
-  #  path: ../stash_file
+  #stash_file: ^3.2.1
+  stash_file:
+    path: ../stash_file
   dependency_validator: ^3.1.0

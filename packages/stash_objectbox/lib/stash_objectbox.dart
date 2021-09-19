@@ -20,15 +20,15 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newObjectboxCache(ObjectboxStore store,
+Cache<T> _newObjectboxCache<T>(ObjectboxStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -84,14 +84,14 @@ ObjectboxStore newObjectboxStore(
 /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive, the default is true
 ///
 /// Returns a new [Cache] backed by a [ObjectboxStore]
-Cache newObjectBoxCache(
+Cache<T> newObjectBoxCache<T>(
     {String? path,
     String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     CacheStore? store,
     CacheCodec? codec,
@@ -100,7 +100,7 @@ Cache newObjectBoxCache(
     int? fileMode,
     int? maxReaders,
     bool? queriesCaseSensitiveDefault}) {
-  return _newObjectboxCache(
+  return _newObjectboxCache<T>(
       newObjectboxStore(
           path: path,
           codec: codec,
@@ -121,15 +121,15 @@ Cache newObjectBoxCache(
 /// Extension over [ObjectboxStore] allowing the creation of multiple caches from
 /// the same store
 extension ObjectboxStoreExtension on ObjectboxStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return _newObjectboxCache(this,
+    return _newObjectboxCache<T>(this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,

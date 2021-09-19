@@ -47,13 +47,13 @@ SembastStore newSembastWebStore(
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
 ///
 /// Returns a new [Cache] backed by a [SembastStore]
-Cache newSembastWebCache(
+Cache<T> newSembastWebCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     CacheStore? store,
     dynamic Function(dynamic)? fromEncodable,
@@ -61,7 +61,7 @@ Cache newSembastWebCache(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return newSembastCache(
+  return newSembastCache<T>(
       newSembastWebStore(
           fromEncodable: fromEncodable,
           databaseVersion: databaseVersion,

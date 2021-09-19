@@ -7,12 +7,12 @@ import 'package:stash/src/api/event/event.dart';
 /// of a primary and secondary caches. It was designed to be used with a primary
 /// [Cache] bound to a fast [CacheStore] and a secondary
 /// cache bound to a persistent [CacheStore] implementation
-class TieredCache extends Cache {
+class TieredCache<T> extends Cache<T> {
   /// The primary cache
-  final Cache _primary;
+  final Cache<T> _primary;
 
   /// The secondary cache
-  final Cache _secondary;
+  final Cache<T> _secondary;
 
   /// Builds a [TieredCache] with a primary and a secondary cache
   ///
@@ -46,7 +46,7 @@ class TieredCache extends Cache {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<dynamic> get(String key, {Duration? expiryDuration}) {
+  Future<T?> get(String key, {Duration? expiryDuration}) {
     return _primary.get(key, expiryDuration: expiryDuration).then((value) =>
         value != null
             ? Future.value(value)
@@ -54,20 +54,19 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<void> put(String key, dynamic value, {Duration? expiryDuration}) {
+  Future<void> put(String key, T value, {Duration? expiryDuration}) {
     _secondary.put(key, value, expiryDuration: expiryDuration);
     return _primary.put(key, value, expiryDuration: expiryDuration);
   }
 
   @override
-  Future<dynamic> operator [](String key) {
+  Future<T?> operator [](String key) {
     return _primary[key]
         .then((value) => value != null ? Future.value(value) : _secondary[key]);
   }
 
   @override
-  Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration? expiryDuration}) {
+  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration}) {
     _secondary.putIfAbsent(key, value, expiryDuration: expiryDuration);
     return _primary.putIfAbsent(key, value, expiryDuration: expiryDuration);
   }
@@ -83,10 +82,9 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration? expiryDuration}) {
-    return _primary.getAndPut(key, value).then((value) {
-      if (value == null) {
+  Future<T?> getAndPut(String key, T value, {Duration? expiryDuration}) {
+    return _primary.getAndPut(key, value).then((primaryValue) {
+      if (primaryValue == null) {
         return _secondary.getAndPut(key, value);
       }
 
@@ -97,7 +95,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndRemove(String key) {
+  Future<T?> getAndRemove(String key) {
     return _primary.getAndRemove(key).then((value) {
       if (value == null) {
         return _secondary.getAndRemove(key);
@@ -108,7 +106,7 @@ class TieredCache extends Cache {
   }
 
   @override
-  Stream<T> on<T extends CacheEvent>() {
-    return StreamGroup.merge([_primary.on<T>(), _secondary.on<T>()]);
+  Stream<E> on<E extends CacheEvent>() {
+    return StreamGroup.merge([_primary.on<E>(), _secondary.on<E>()]);
   }
 }

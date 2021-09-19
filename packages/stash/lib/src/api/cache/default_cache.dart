@@ -20,7 +20,7 @@ import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 /// Default implementation of the [Cache] interface
-class DefaultCache extends Cache {
+class DefaultCache<T> extends Cache<T> {
   /// The name of this cache
   final String name;
 
@@ -41,7 +41,7 @@ class DefaultCache extends Cache {
 
   /// The [CacheLoader] for this cache. When set is used
   /// when the cache is expired to fetch a new value
-  final CacheLoader cacheLoader;
+  final CacheLoader<T> cacheLoader;
 
   /// The source of time to be used on this cache
   final Clock clock;
@@ -71,7 +71,7 @@ class DefaultCache extends Cache {
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       Clock? clock,
       EventListenerMode? eventListenerMode})
       : name = name ?? Uuid().v1(),
@@ -94,11 +94,11 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Stream<T> on<T extends CacheEvent>() {
-    if (T == dynamic) {
-      return streamController.stream as Stream<T>;
+  Stream<E> on<E extends CacheEvent>() {
+    if (E == dynamic) {
+      return streamController.stream as Stream<E>;
     } else {
-      return streamController.stream.where((event) => event is T).cast<T>();
+      return streamController.stream.where((event) => event is E).cast<E>();
     }
   }
 
@@ -193,7 +193,7 @@ class DefaultCache extends Cache {
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache to expire.
   Future<bool> _putEntry(
-      String key, dynamic value, DateTime now, Duration? expiryDuration) {
+      String key, T value, DateTime now, Duration? expiryDuration) {
     // How much time till the expiration of this cache entry
     final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
     // We want to create a new entry, let's update it according with the semantics
@@ -218,7 +218,7 @@ class DefaultCache extends Cache {
   ///
   /// * [entry]: the [CacheEntry] holding the value
   /// * [now]: the current date/time
-  Future<dynamic> _getEntryValue(
+  Future<T> _getEntryValue(
       CacheEntry entry, DateTime now, Duration? expiryDuration) {
     entry.accessTime = now;
     entry.hitCount++;
@@ -242,8 +242,8 @@ class DefaultCache extends Cache {
   /// * [value]: the new value
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache entry to expire.
-  Future<dynamic> _updateEntry(
-      CacheEntry entry, dynamic value, DateTime now, Duration? expiryDuration) {
+  Future<T> _updateEntry(
+      CacheEntry entry, T value, DateTime now, Duration? expiryDuration) {
     final duration = expiryPolicy.getExpiryForUpdate();
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
@@ -260,7 +260,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> get(String key, {Duration? expiryDuration}) {
+  Future<T?> get(String key, {Duration? expiryDuration}) {
     // Gets the entry from the storage
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -288,7 +288,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<void> put(String key, dynamic value, {Duration? expiryDuration}) {
+  Future<void> put(String key, T value, {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -314,13 +314,12 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> operator [](String key) {
+  Future<T?> operator [](String key) {
     return get(key);
   }
 
   @override
-  Future<bool> putIfAbsent(String key, dynamic value,
-      {Duration? expiryDuration}) {
+  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -379,8 +378,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndPut(String key, dynamic value,
-      {Duration? expiryDuration}) {
+  Future<T?> getAndPut(String key, T value, {Duration? expiryDuration}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       final now = clock.now();
@@ -402,7 +400,7 @@ class DefaultCache extends Cache {
   }
 
   @override
-  Future<dynamic> getAndRemove(String key) {
+  Future<T?> getAndRemove(String key) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {

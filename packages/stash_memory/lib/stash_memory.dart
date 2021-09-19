@@ -16,15 +16,15 @@ export 'src/memory/memory_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache _newMemoryCache(MemoryStore store,
+Cache<T> _newMemoryCache<T>(MemoryStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode}) {
-  return Cache.newCache(store,
+  return Cache<T>.newCache(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -51,16 +51,16 @@ MemoryStore newMemoryStore() {
 /// * [store]: An existing store
 ///
 /// Returns a [Cache] backed by a [MemoryStore]
-Cache newMemoryCache(
+Cache<T> newMemoryCache<T>(
     {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
-    CacheLoader? cacheLoader,
+    CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
     MemoryStore? store}) {
-  return _newMemoryCache(store ?? newMemoryStore(),
+  return _newMemoryCache<T>(store ?? newMemoryStore(),
       cacheName: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -73,15 +73,15 @@ Cache newMemoryCache(
 /// Extension over [MemoryStore] allowing the creation of multiple caches from
 /// the same store
 extension MemoryStoreExtension on MemoryStore {
-  Cache cache(
+  Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
-      CacheLoader? cacheLoader,
+      CacheLoader<T>? cacheLoader,
       EventListenerMode? eventListenerMode}) {
-    return newMemoryCache(
+    return newMemoryCache<T>(
         store: this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,

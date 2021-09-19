@@ -44,6 +44,6 @@ export 'src/api/sampler/sampler.dart';
 /// * [secondary]: The secondary cache
 ///
 /// Returns a [Cache] backed by a [TieredCache]
-Cache newTieredCache(Cache primary, Cache secondary) {
-  return Cache.newTieredCache(primary, secondary);
+Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary) {
+  return Cache<T>.newTieredCache(primary, secondary);
 }
