@@ -10,7 +10,7 @@ import 'package:stash_objectbox/src/objectbox/objectbox_store.dart';
 export 'src/objectbox/objectbox_adapter.dart';
 export 'src/objectbox/objectbox_store.dart';
 
-/// Creates a new [Cache] backed by a [ObjectboxStore]
+/// Creates a new [Cache] backed by a [ObjectboxCacheStore]
 ///
 /// * [store]: An existing objectbox store
 /// * [cacheName]: The name of the cache
@@ -20,7 +20,7 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> _newObjectboxCache<T>(ObjectboxStore store,
+Cache<T> _newObjectboxCache<T>(ObjectboxCacheStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -38,24 +38,24 @@ Cache<T> _newObjectboxCache<T>(ObjectboxStore store,
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new [ObjectboxStore]
+/// Creates a new [ObjectboxCacheStore]
 ///
 /// * [path]: The base storage location for this store
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [maxDBSizeInKB]: The max DB size
 /// * [fileMode]: The file mode
 /// * [maxReaders]: The number of maximum readers
 /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive, the default is true
-ObjectboxStore newObjectboxStore(
+ObjectboxCacheStore newObjectboxCacheStore(
     {String? path,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? maxDBSizeInKB,
     int? fileMode,
     int? maxReaders,
     bool? queriesCaseSensitiveDefault}) {
-  return ObjectboxStore(
+  return ObjectboxCacheStore(
       ObjectboxAdapter(path ?? Directory.systemTemp.path,
           maxDBSizeInKB: maxDBSizeInKB,
           fileMode: fileMode,
@@ -65,7 +65,7 @@ ObjectboxStore newObjectboxStore(
       fromEncodable: fromEncodable);
 }
 
-/// Creates a new [Cache] backed by a [ObjectboxStore]
+/// Creates a new [Cache] backed by a [ObjectboxCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -76,7 +76,7 @@ ObjectboxStore newObjectboxStore(
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [store]: An existing store, note that [codec], [fromEncodable], [path], [maxDBSizeInKB], [fileMode], [maxReaders] and [queriesCaseSensitiveDefault] will be all ignored is this parameter is provided
 /// * [path]: The base storage location for this cache
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [maxDBSizeInKB]: The max DB size
 /// * [fileMode]: The file mode
@@ -93,15 +93,15 @@ Cache<T> newObjectBoxCache<T>(
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    CacheStore? store,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable,
+    ObjectboxCacheStore? store,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? maxDBSizeInKB,
     int? fileMode,
     int? maxReaders,
     bool? queriesCaseSensitiveDefault}) {
   return _newObjectboxCache<T>(
-      newObjectboxStore(
+      newObjectboxCacheStore(
           path: path,
           codec: codec,
           fromEncodable: fromEncodable,
@@ -120,7 +120,7 @@ Cache<T> newObjectBoxCache<T>(
 
 /// Extension over [ObjectboxStore] allowing the creation of multiple caches from
 /// the same store
-extension ObjectboxStoreExtension on ObjectboxStore {
+extension ObjectboxStoreExtension on ObjectboxCacheStore {
   Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,

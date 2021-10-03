@@ -1,16 +1,15 @@
-import 'package:stash_sembast/src/sembast/sembast_adapter.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<SembastStore> {
+class DefaultContext extends TestContext<SembastCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);
 
   @override
-  Future<SembastStore> newStore() {
-    return Future.value(SembastStore(SembastMemoryAdapter('sembast'),
-        fromEncodable: fromEncodable));
+  Future<SembastCacheStore> newStore() {
+    return Future.value(
+        newSembastMemoryCacheStore(fromEncodable: fromEncodable));
   }
 }
 

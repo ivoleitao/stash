@@ -1,26 +1,26 @@
 import 'package:moor/moor.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash_sqlite/src/sqlite/dao/cache_dao.dart';
 import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
-import 'package:stash_sqlite/src/sqlite/table/cache_table.dart';
+import 'package:stash_sqlite/src/sqlite/dao/vault_dao.dart';
 import 'package:stash_sqlite/src/sqlite/table/iso8601_converter.dart';
+import 'package:stash_sqlite/src/sqlite/table/vault_table.dart';
 
 import 'sqlite_database.dart';
 
-part 'cache_database.g.dart';
+part 'vault_database.g.dart';
 
-@UseMoor(tables: [CacheTable], daos: [CacheDao])
+@UseMoor(tables: [VaultTable], daos: [VaultDao])
 
-/// The cache database class
-class CacheDatabase extends _$CacheDatabase
-    implements SqliteDatabase<CacheStat, CacheEntry> {
+/// The vault database class
+class VaultDatabase extends _$VaultDatabase
+    implements SqliteDatabase<VaultStat, VaultEntry> {
   /// The version if the schema
   static const int _schemaVersion = 1;
 
-  /// Builds a [CacheDatabase]
+  /// Builds a [VaultDatabase]
   ///
-  /// * [executor]: The [QueryExecutor]
-  CacheDatabase(QueryExecutor executor) : super(executor);
+  /// * [executor]: The [QueryExecutor] to user
+  VaultDatabase(QueryExecutor executor) : super(executor);
 
   @override
   int get schemaVersion => _schemaVersion;
@@ -34,5 +34,5 @@ class CacheDatabase extends _$CacheDatabase
   }
 
   @override
-  DaoAdapter<CacheStat, CacheEntry> get dao => cacheDao;
+  DaoAdapter<VaultStat, VaultEntry> get dao => vaultDao;
 }

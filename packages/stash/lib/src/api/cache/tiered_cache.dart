@@ -1,13 +1,12 @@
 import 'package:async/async.dart';
 import 'package:stash/src/api/cache.dart';
-import 'package:stash/src/api/cache_store.dart';
 import 'package:stash/src/api/event/event.dart';
 
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary
 /// [Cache] bound to a fast [CacheStore] and a secondary
 /// cache bound to a persistent [CacheStore] implementation
-class TieredCache<T> extends Cache<T> {
+class TieredCache<T> implements Cache<T> {
   /// The primary cache
   final Cache<T> _primary;
 

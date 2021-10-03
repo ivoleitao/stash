@@ -8,20 +8,20 @@ import 'package:stash_sembast_web/src/sembast/sembast_web_adapter.dart';
 
 export 'src/sembast/sembast_web_adapter.dart';
 
-/// Creates a new web [SembastStore]
+/// Creates a new web [SembastCacheStore]
 ///
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [databaseVersion]: The expected version
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastStore newSembastWebStore(
-    {dynamic Function(dynamic)? fromEncodable,
+SembastCacheStore newSembastWebStore(
+    {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastStore(
+  return SembastCacheStore(
       SembastWebAdapter('sembast_web',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
@@ -46,7 +46,7 @@ SembastStore newSembastWebStore(
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
 ///
-/// Returns a new [Cache] backed by a [SembastStore]
+/// Returns a new [Cache] backed by a [SembastCacheStore]
 Cache<T> newSembastWebCache<T>(
     {String? cacheName,
     KeySampler? sampler,
@@ -55,8 +55,8 @@ Cache<T> newSembastWebCache<T>(
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    CacheStore? store,
-    dynamic Function(dynamic)? fromEncodable,
+    SembastCacheStore? store,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,

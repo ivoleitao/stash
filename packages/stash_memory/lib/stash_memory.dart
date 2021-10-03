@@ -6,7 +6,25 @@ import 'package:stash_memory/src/memory/memory_store.dart';
 
 export 'src/memory/memory_store.dart';
 
-/// Creates a new [Cache] backed by a [MemoryStore]
+/// Creates a new [MemoryVaultStore]
+MemoryVaultStore newMemoryVaultStore() {
+  return MemoryVaultStore();
+}
+
+/// Creates a new [MemoryCacheStore]
+MemoryCacheStore newMemoryCacheStore() {
+  return MemoryCacheStore();
+}
+
+/// Creates a new [Vault] backed by a [MemoryVaultStore]
+///
+/// * [store]: An existing sqlite store
+/// * [vaultName]: The name of the vault
+Vault<T> _newMemoryVault<T>(MemoryVaultStore store, {String? vaultName}) {
+  return Vault<T>.newVault(store, name: vaultName);
+}
+
+/// Creates a new [Cache] backed by a [MemoryCacheStore]
 ///
 /// * [store]: An existing sqlite store
 /// * [cacheName]: The name of the cache
@@ -16,7 +34,7 @@ export 'src/memory/memory_store.dart';
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> _newMemoryCache<T>(MemoryStore store,
+Cache<T> _newMemoryCache<T>(MemoryCacheStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -34,9 +52,15 @@ Cache<T> _newMemoryCache<T>(MemoryStore store,
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new [MemoryStore]
-MemoryStore newMemoryStore() {
-  return MemoryStore();
+/// Creates a new [Vault] backed by a [MemoryVaultStore]
+///
+/// * [vaultName]: The name of the vault
+/// * [store]: An existing store
+///
+/// Returns a [Vault] backed by a [MemoryVaultStore]
+Vault<T> newMemoryVault<T>({String? vaultName, MemoryVaultStore? store}) {
+  return _newMemoryVault<T>(store ?? newMemoryVaultStore(),
+      vaultName: vaultName);
 }
 
 /// Creates a new [Cache] backed by a [MemoryStore]
@@ -50,7 +74,7 @@ MemoryStore newMemoryStore() {
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [store]: An existing store
 ///
-/// Returns a [Cache] backed by a [MemoryStore]
+/// Returns a [Cache] backed by a [MemoryCacheStore]
 Cache<T> newMemoryCache<T>(
     {String? cacheName,
     ExpiryPolicy? expiryPolicy,
@@ -59,8 +83,8 @@ Cache<T> newMemoryCache<T>(
     int? maxEntries,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    MemoryStore? store}) {
-  return _newMemoryCache<T>(store ?? newMemoryStore(),
+    MemoryCacheStore? store}) {
+  return _newMemoryCache<T>(store ?? newMemoryCacheStore(),
       cacheName: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -70,9 +94,17 @@ Cache<T> newMemoryCache<T>(
       eventListenerMode: eventListenerMode);
 }
 
-/// Extension over [MemoryStore] allowing the creation of multiple caches from
+/// Extension over [MemoryVaultStore] allowing the creation of multiple vaults from
 /// the same store
-extension MemoryStoreExtension on MemoryStore {
+extension MemoryVaultStoreExtension on MemoryVaultStore {
+  Vault<T> vault<T>({String? vaultName}) {
+    return newMemoryVault<T>(store: this, vaultName: vaultName);
+  }
+}
+
+/// Extension over [MemoryCacheStore] allowing the creation of multiple caches from
+/// the same store
+extension MemoryCacheStoreExtension on MemoryCacheStore {
   Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,

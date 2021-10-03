@@ -4,15 +4,19 @@ import 'package:stash_sqlite/src/sqlite/cache_database.dart';
 import 'package:stash_sqlite/src/sqlite/table/cache_table.dart';
 import 'package:stash_sqlite/src/sqlite/table/iso8601_converter.dart';
 
+import 'dao_adapter.dart';
+
 part 'cache_dao.g.dart';
 
 @UseDao(tables: [CacheTable])
 
 /// Dao that encapsulates operations over the database
-class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
+class CacheDao extends DatabaseAccessor<CacheDatabase>
+    with _$CacheDaoMixin
+    implements DaoAdapter<CacheStat, CacheEntry> {
   /// Builds a [CacheDao]
   ///
-  /// * [db]: The [CacheDatabase]
+  /// * [db]: The [StoreDatabase]
   CacheDao(CacheDatabase db) : super(db);
 
   /// Counts the number of entries on a named cache
@@ -20,6 +24,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   ///
   /// Returns the number of entries on the named cache
+  @override
   Future<int> count(String name) {
     final countColumn = cacheTable.key.count();
     final query = selectOnly(cacheTable)
@@ -34,6 +39,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   ///
   /// Returns all the keys on the named cache
+  @override
   Future<List<String>> keys(String name) {
     final keyColumn = cacheTable.key;
     final query = selectOnly(cacheTable)
@@ -65,7 +71,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   ///
   /// Returns the [CacheStat] after conversion
   CacheStat _statMapper(TypedResult row) {
-    var converter = const Iso8601Converter();
+    final converter = const Iso8601Converter();
 
     final key = row.read(cacheTable.key);
     var creationTime = converter.mapToDart(row.read(cacheTable.creationTime));
@@ -83,6 +89,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   ///
   /// Returns a [Iterable] over all [CacheStat]s
+  @override
   Future<Iterable<CacheStat>> stats(String name) {
     var query = _statQuery()..where(cacheTable.name.equals(name));
 
@@ -111,6 +118,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   ///
   /// Returns a [Iterable] over all [CacheEntry]s
+  @override
   Future<Iterable<CacheEntry>> entries(
       String cacheName, dynamic Function(Uint8List) valueDecoder) {
     return (select(cacheTable)..where((entry) => entry.name.equals(cacheName)))
@@ -125,6 +133,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [key]: The key to check on the named cache
   ///
   /// Returns true if the named cached contains the provided key, false otherwise
+  @override
   Future<bool> containsKey(String name, String key) {
     return (select(cacheTable)
           ..where((entry) => entry.name.equals(name) & entry.key.equals(key)))
@@ -138,6 +147,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [key]: The key on the cache
   ///
   /// Returns the named cache key [CacheStat]
+  @override
   Future<CacheStat> getStat(String name, String key) {
     var query = _statQuery()
       ..where(cacheTable.name.equals(name) & cacheTable.key.equals(key));
@@ -151,6 +161,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [keys]: The list of keys
   ///
   /// Returns a [Iterable] over all [CacheStat]s retrieved
+  @override
   Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys) {
     var query = _statQuery()
       ..where(cacheTable.name.equals(name) & cacheTable.key.isIn(keys));
@@ -164,6 +175,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [stat]: The [CacheStat]
   ///
   /// Returns the number of updated enties
+  @override
   Future<int> updateStat(String name, CacheStat stat) {
     return (update(cacheTable)
           ..where(
@@ -183,6 +195,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [valueDecoder]: The function used to convert a list of bytes to the cache value
   ///
   /// Returns the named cache key [CacheEntry]
+  @override
   Future<CacheEntry?> getEntry(
       String name, String key, dynamic Function(Uint8List) valueDecoder) {
     return (select(cacheTable)
@@ -216,6 +229,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   /// * [entry]: The cache entry
   /// * [valueEncoder]: The function used to serialize a object to a list of bytes
+  @override
   Future<void> putEntry(
       String name, CacheEntry entry, Uint8List Function(dynamic) valueEncoder) {
     return into(cacheTable).insert(_toCacheData(name, entry, valueEncoder),
@@ -228,6 +242,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [key]: The cache key
   ///
   /// Returns the number of records updated
+  @override
   Future<int> remove(String name, String key) {
     return (delete(cacheTable)
           ..where((entry) => entry.name.equals(name) & entry.key.equals(key)))
@@ -239,6 +254,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// * [name]: The name of the cache
   ///
   /// Return the number of records updated
+  @override
   Future<int> clear(String name) {
     return (delete(cacheTable)..where((entry) => entry.name.equals(name))).go();
   }
@@ -246,6 +262,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase> with _$CacheDaoMixin {
   /// Deletes all caches
   ///
   /// Return the number of records updated
+  @override
   Future<int> clearAll() {
     return delete(cacheTable).go();
   }

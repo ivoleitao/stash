@@ -27,7 +27,7 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryStore();
+  final store = newMemoryCacheStore();
   // Configures a a dio client
   final dio = Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'))
     ..interceptors.addAll([

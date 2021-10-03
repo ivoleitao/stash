@@ -1,77 +1,76 @@
 import 'package:stash/stash_api.dart';
 
-/// In-memory [Map] backed implementation of a [CacheStore]
-class MemoryStore extends CacheStore {
-  /// In-memory [Map] to stores multiple caches.
-  /// The value is [Map] of key/[CacheEntry]
-  final Map<String, Map<String, CacheEntry>> _store =
-      <String, Map<String, CacheEntry>>{};
+/// In-memory [Map] backed implementation of a [Store]
+abstract class MemoryStore<S extends Stat, E extends Entry<S>>
+    implements Store<S, E> {
+  /// In-memory [Map] to stores multiple entries.
+  /// The value is a [Map] of key/[Entry]
+  final Map<String, Map<String, E>> _store = <String, Map<String, E>>{};
 
-  /// Returns a specific cache identified by [name] or a empty [Map] of key/[CacheEntry]
-  Map<String, CacheEntry> _cacheStore(String name) =>
-      _store[name] ?? const <String, CacheEntry>{};
+  /// Returns a specific record identified by [name] or a empty [Map] of key/[Entry]
+  Map<String, E> _memoryStore(String name) => _store[name] ?? <String, E>{};
 
   @override
-  Future<int> size(String name) => Future.value(_cacheStore(name).length);
+  Future<int> size(String name) => Future.value(_memoryStore(name).length);
 
   @override
   Future<Iterable<String>> keys(String name) =>
-      Future.value(_cacheStore(name).keys);
+      Future.value(_memoryStore(name).keys);
 
   @override
-  Future<Iterable<CacheStat>> stats(String name) =>
-      Future.value(_cacheStore(name).values.map((value) => value.stat));
+  Future<Iterable<S>> stats(String name) =>
+      Future.value(_memoryStore(name).values.map((value) => value.stat));
 
   @override
-  Future<Iterable<CacheEntry>> values(String name) =>
-      Future.value(_cacheStore(name).values);
+  Future<Iterable<E>> values(String name) =>
+      Future.value(_memoryStore(name).values);
 
   @override
   Future<bool> containsKey(String name, String key) {
-    return Future.value(_cacheStore(name).containsKey(key));
+    return Future.value(_memoryStore(name).containsKey(key));
   }
 
   @override
-  Future<CacheStat?> getStat(String name, String key) {
-    return Future.value(_cacheStore(name)[key]?.stat);
+  Future<S?> getStat(String name, String key) {
+    return Future.value(_memoryStore(name)[key]?.stat);
   }
 
   @override
-  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
-    return Future.value(keys.map((key) => _cacheStore(name)[key]?.stat));
+  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) {
+    return Future.value(keys.map((key) => _memoryStore(name)[key]?.stat));
   }
 
   @override
-  Future<void> setStat(String name, String key, CacheStat stat) {
+  Future<void> setStat(String name, String key, S stat) {
     _store[name]![key]!.updateStat(stat);
     return Future.value();
   }
 
   @override
-  Future<CacheEntry?> getEntry(String name, String key) {
-    return Future.value(_cacheStore(name)[key]);
+  Future<E?> getEntry(String name, String key) {
+    return Future.value(_memoryStore(name)[key]);
   }
 
   @override
-  Future<void> putEntry(String name, String key, CacheEntry entry) {
+  Future<void> putEntry(String name, String key, E entry) {
     if (!_store.containsKey(name)) {
       _store[name] = {};
     }
 
-    _cacheStore(name)[key] = entry;
+    _memoryStore(name)[key] = entry;
 
     return Future.value();
   }
 
   @override
   Future<void> remove(String name, String key) {
-    _cacheStore(name).remove(key);
+    _memoryStore(name).remove(key);
     return Future.value();
   }
 
   @override
   Future<void> clear(String name) {
-    _cacheStore(name).clear();
+    _memoryStore(name).clear();
     return Future.value();
   }
 
@@ -87,3 +86,7 @@ class MemoryStore extends CacheStore {
     return Future.value();
   }
 }
+
+class MemoryVaultStore extends MemoryStore<VaultStat, VaultEntry> {}
+
+class MemoryCacheStore extends MemoryStore<CacheStat, CacheEntry> {}

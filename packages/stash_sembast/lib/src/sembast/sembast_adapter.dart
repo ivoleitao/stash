@@ -2,23 +2,9 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast_memory.dart';
 
-/// The [CacheStoreAdapter] provides a bridge between the store and the
-/// backend
-abstract class CacheStoreAdapter {
-  /// Deletes a named cache from a store or the store itself if a named cache is
-  /// stored individually
-  ///
-  /// * [name]: The cache name
-  Future<void> delete(String name);
-
-  /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named caches in one storage, or stores(s) if multiple storages are used
-  Future<void> deleteAll();
-}
-
 /// The [SembastAdapter] provides a bridge between the store and the
 /// Hive backend
-abstract class SembastAdapter extends CacheStoreAdapter {
+abstract class SembastAdapter {
   final int? version;
   final OnVersionChangedFunction? onVersionChanged;
   final DatabaseMode? mode;
@@ -173,7 +159,10 @@ abstract class SembastAdapter extends CacheStoreAdapter {
     });
   }
 
-  @override
+  /// Deletes a named cache from a store or the store itself if a named cache is
+  /// stored individually
+  ///
+  /// * [name]: The cache name
   Future<void> delete(String name) {
     return _database().then((db) {
       return _store(name).delete(db);
@@ -182,7 +171,8 @@ abstract class SembastAdapter extends CacheStoreAdapter {
 
   Future<void> deleteDatabase(String path);
 
-  @override
+  /// Deletes the store a if a store is implemented in a way that puts all the
+  /// named caches in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll() {
     return Future.wait(_cacheStore.keys.map((name) {
       return _database().then((db) {

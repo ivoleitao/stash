@@ -165,7 +165,7 @@ void main() async {
 
   test('With a file cache', () async {
     withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newMemoryFileCache()));
+        dio, (builder) => builder..cache('/posts/1', newFileMemoryCache()));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 

@@ -17,7 +17,7 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
   return (CacheInterceptorBuilder()..cache(pattern, cache)).build();
 }
 
-/// Creates a new [Interceptor] backed by a [Cache] with [MemoryStore] storage
+/// Creates a new [Interceptor] backed by a [Cache] with [MemoryCacheStore] storage
 ///
 /// * [pattern]: All the calls with a url matching this pattern will be cached
 /// * [cacheName]: The name of the cache
@@ -37,7 +37,7 @@ Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
     ExpiryPolicy? expiryPolicy,
     CacheLoader? cacheLoader,
     EventListenerMode? eventListenerMode,
-    MemoryStore? store}) {
+    MemoryCacheStore? store}) {
   return newCacheInterceptor(
       pattern,
       newMemoryCache(

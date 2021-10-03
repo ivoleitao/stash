@@ -2,13 +2,13 @@ import 'dart:typed_data';
 
 import 'package:stash/src/api/codec/bytes_reader.dart';
 import 'package:stash/src/api/codec/bytes_writer.dart';
-import 'package:stash/src/api/codec/cache_codec.dart';
+import 'package:stash/src/api/codec/store_codec.dart';
 import 'package:stash/src/msgpack/extension.dart';
 import 'package:stash/src/msgpack/reader.dart';
 import 'package:stash/src/msgpack/writer.dart';
 
 /// Msgpack binary codec implementation
-class MsgpackCodec extends CacheCodec {
+class MsgpackCodec extends StoreCodec {
   /// The list of [MsgPackExtension] extensions to consider
   final List<MsgPackExtension> _extensions;
 

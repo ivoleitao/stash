@@ -4,25 +4,10 @@ import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart' as p;
 
 import '../../objectbox.g.dart';
-import 'cache_entity.dart';
-
-/// The [CacheStoreAdapter] provides a bridge between the store and the
-/// backend
-abstract class CacheStoreAdapter {
-  /// Deletes a named cache from a store or the store itself if a named cache is
-  /// stored individually
-  ///
-  /// * [name]: The cache name
-  Future<void> delete(String name);
-
-  /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named caches in one storage, or stores(s) if multiple storages are used
-  Future<void> deleteAll();
-}
 
 /// The [ObjectboxAdapter] provides a bridge between the store and the
 /// Hive backend
-class ObjectboxAdapter extends CacheStoreAdapter {
+class ObjectboxAdapter {
   /// The base location of the Objectbox storage
   final String path;
   final int? maxDBSizeInKB;
@@ -80,11 +65,14 @@ class ObjectboxAdapter extends CacheStoreAdapter {
   /// * [name]: The name of the cache
   ///
   /// Returns the [Box] where the cache is stored
-  Future<Box<CacheEntity>> objectbox(String name) {
-    return _store(name).then((store) => store.box<CacheEntity>());
+  Future<Box<O>> box<O>(String name) {
+    return _store(name).then((store) => store.box<O>());
   }
 
-  @override
+  /// Deletes a named cache from a store or the store itself if a named cache is
+  /// stored individually
+  ///
+  /// * [name]: The cache name
   Future<void> delete(String name) {
     if (_cacheStore.containsKey(name)) {
       _cacheStore[name]?.close();
@@ -96,7 +84,8 @@ class ObjectboxAdapter extends CacheStoreAdapter {
     return Future.value();
   }
 
-  @override
+  /// Deletes the store a if a store is implemented in a way that puts all the
+  /// named caches in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll() {
     return Future.wait(_cacheStore.keys.map((name) {
       _cacheStore[name]?.close();

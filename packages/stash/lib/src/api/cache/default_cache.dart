@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:stash/src/api/cache.dart';
 import 'package:stash/src/api/cache_entry.dart';
-import 'package:stash/src/api/cache_store.dart';
+import 'package:stash/src/api/cache_stat.dart';
+import 'package:stash/src/api/event/created_entry_event.dart';
 import 'package:stash/src/api/event/entry_event.dart';
 import 'package:stash/src/api/event/event.dart';
 import 'package:stash/src/api/event/evicted_entry_event.dart';
@@ -16,16 +17,16 @@ import 'package:stash/src/api/expiry/eternal_policy.dart';
 import 'package:stash/src/api/expiry/expiry_policy.dart';
 import 'package:stash/src/api/sampler/full_sampler.dart';
 import 'package:stash/src/api/sampler/sampler.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/src/api/store.dart';
 import 'package:uuid/uuid.dart';
 
 /// Default implementation of the [Cache] interface
-class DefaultCache<T> extends Cache<T> {
+class DefaultCache<T> implements Cache<T> {
   /// The name of this cache
   final String name;
 
   /// The [CacheStore] for this cache
-  final CacheStore storage;
+  final Store<CacheStat, CacheEntry> storage;
 
   /// The [ExpiryPolicy] for this cache
   final ExpiryPolicy expiryPolicy;

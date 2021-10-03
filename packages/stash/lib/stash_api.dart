@@ -10,11 +10,11 @@ export 'src/api/cache/default_cache.dart';
 export 'src/api/cache/tiered_cache.dart';
 export 'src/api/cache_entry.dart';
 export 'src/api/cache_stat.dart';
-export 'src/api/cache_store.dart';
 export 'src/api/codec/bytes_reader.dart';
 export 'src/api/codec/bytes_util.dart';
 export 'src/api/codec/bytes_writer.dart';
-export 'src/api/codec/cache_codec.dart';
+export 'src/api/codec/store_codec.dart';
+export 'src/api/entry.dart';
 export 'src/api/event/created_entry_event.dart';
 export 'src/api/event/entry_event.dart';
 export 'src/api/event/event.dart';
@@ -37,6 +37,12 @@ export 'src/api/expiry/modified_policy.dart';
 export 'src/api/expiry/touched_policy.dart';
 export 'src/api/sampler/full_sampler.dart';
 export 'src/api/sampler/sampler.dart';
+export 'src/api/stat.dart';
+export 'src/api/store.dart';
+export 'src/api/vault.dart';
+export 'src/api/vault/default_vault.dart';
+export 'src/api/vault_entry.dart';
+export 'src/api/vault_stat.dart';
 
 /// Creates a new [TieredCache] with a primary and secondary [Cache] instances
 ///

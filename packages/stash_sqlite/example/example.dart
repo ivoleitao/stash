@@ -33,7 +33,7 @@ void main() async {
   final file = File('${dirPath.path}/stash_sqlite.sdb');
 
   // Creates a store
-  final store = newSqliteFileStore(
+  final store = newSqliteLocalCacheStore(
       file: file, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
   final cache1 = store.cache<Task>(

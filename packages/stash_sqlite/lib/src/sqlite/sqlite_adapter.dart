@@ -2,17 +2,29 @@ import 'dart:io';
 
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-import 'package:stash_sqlite/src/sqlite/dao/cache_dao.dart';
+import 'package:stash/stash_api.dart';
+import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 
-import 'cache_database.dart';
+import 'sqlite_database.dart';
 
-/// The [CacheStoreAdapter] provides a bridge between the store and the
-/// backend
-abstract class CacheStoreAdapter {
-  /// Deletes a named cache from a store or the store itself if a named cache is
-  /// stored individually
+typedef SqliteBuilder<S extends Stat, E extends Entry<S>> = SqliteDatabase<S, E>
+    Function(QueryExecutor executor);
+
+/// The [SqliteAdapter] provides a bridge between the store and the
+/// Sqlite backend
+abstract class SqliteAdapter<S extends Stat, E extends Entry<S>> {
+  /// The [SqliteDatabase] to use
+  late final SqliteDatabase<S, E> _db;
+
+  /// Builds a [SqliteAdapter].
+  SqliteAdapter();
+
+  /// Returns the [DaoAdapter] for the underlining [Store]
+  DaoAdapter<S, E> get dao => _db.dao;
+
+  /// Deletes a named store or the store itself
   ///
-  /// * [name]: The cache name
+  /// * [name]: The vault/cache name
   Future<void> delete(String name);
 
   /// Deletes the store a if a store is implemented in a way that puts all the
@@ -20,91 +32,51 @@ abstract class CacheStoreAdapter {
   Future<void> deleteAll();
 }
 
-/// The [SqliteAdapter] provides a bridge between the store and the
-/// Sqlite backend
-abstract class SqliteAdapter extends CacheStoreAdapter {
-  /// The [CacheDatabase] to use
-  late final CacheDatabase _cacheStore;
-
-  /// Generated sql statements will be printed before executing.
-  final bool? logStatements;
-
-  /// Retrieves the appropriate executor
-  QueryExecutor executor();
-
-  /// Builds a [SqliteAdapter].
-  ///
-  /// * [logStatements]: Generated sql statements will be printed before executing
-  SqliteAdapter({this.logStatements}) {
-    _cacheStore = CacheDatabase(executor());
-  }
-
-  /// Returns the [CacheDao] for the underlining [CacheDatabase]
-  CacheDao get dao => _cacheStore.cacheDao;
-
-  CacheDatabase store(String name) {
-    return _cacheStore;
-  }
-}
-
 /// The [SqliteMemoryAdapter] provides a bridge between the store and the
 /// Sqlite in-memory backend
-class SqliteMemoryAdapter extends SqliteAdapter {
-  /// Function that can be used to perform a setup just after
-  /// the database is opened, before moor is fully ready
-  final DatabaseSetup? setup;
-
+class SqliteMemoryAdapter<S extends Stat, E extends Entry<S>>
+    extends SqliteAdapter<S, E> {
   /// Builds a [SqliteMemoryAdapter].
   ///
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteMemoryAdapter({bool? logStatements, this.setup})
-      : super(logStatements: logStatements);
-
-  @override
-  QueryExecutor executor() {
-    return VmDatabase.memory(
-        logStatements: logStatements ?? false, setup: setup);
+  SqliteMemoryAdapter(SqliteBuilder<S, E> builder,
+      {bool? logStatements, DatabaseSetup? setup}) {
+    _db = builder(
+        VmDatabase.memory(logStatements: logStatements ?? false, setup: setup));
   }
 
   @override
   Future<void> delete(String name) {
-    return _cacheStore.cacheDao.clear(name);
+    return dao.clear(name);
   }
 
   @override
   Future<void> deleteAll() {
-    return _cacheStore.cacheDao.clearAll();
+    return dao.clearAll();
   }
 }
 
 /// The [SqliteFileAdapter] provides a bridge between the store and the
 /// Sqlite backend
-class SqliteFileAdapter extends SqliteAdapter {
-  /// The file that stores the Sqlite database
+class SqliteFileAdapter<S extends Stat, E extends Entry<S>>
+    extends SqliteAdapter<S, E> {
   final File file;
-
-  /// Function that can be used to perform a setup just after
-  /// the database is opened, before moor is fully ready
-  final DatabaseSetup? setup;
 
   /// Builds a [SqliteMemoryAdapter].
   ///
   /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteFileAdapter(this.file, {bool? logStatements, this.setup})
-      : super(logStatements: logStatements);
-
-  @override
-  QueryExecutor executor() {
-    return VmDatabase(file,
-        logStatements: logStatements ?? false, setup: setup);
+  SqliteFileAdapter(SqliteBuilder<S, E> builder, this.file,
+      {bool? logStatements, DatabaseSetup? setup}) {
+    _db = builder(
+        VmDatabase(file, logStatements: logStatements ?? false, setup: setup));
   }
 
   @override
   Future<void> delete(String name) {
-    return _cacheStore.cacheDao.clear(name);
+    return dao.clear(name);
   }
 
   @override

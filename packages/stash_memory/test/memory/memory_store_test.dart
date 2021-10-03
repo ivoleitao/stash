@@ -1,12 +1,12 @@
 import 'package:stash_memory/stash_memory.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<MemoryStore> {
+class DefaultContext extends TestContext<MemoryCacheStore> {
   DefaultContext(ValueGenerator generator) : super(generator);
 
   @override
-  Future<MemoryStore> newStore() {
-    return Future.value(MemoryStore());
+  Future<MemoryCacheStore> newStore() {
+    return Future.value(newMemoryCacheStore());
   }
 }
 

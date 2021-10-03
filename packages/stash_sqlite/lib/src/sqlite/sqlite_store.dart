@@ -5,13 +5,13 @@ import 'package:stash/stash_msgpack.dart';
 
 import 'sqlite_adapter.dart';
 
-/// Sqlite based implemention of a [CacheStore]
-class SqliteStore extends CacheStore {
+/// Sqlite based implemention of a [Store]
+class SqliteStore<S extends Stat, E extends Entry<S>> implements Store<S, E> {
   /// The adapter
-  final SqliteAdapter _adapter;
+  final SqliteAdapter<S, E> _adapter;
 
   /// The cache codec to use
-  final CacheCodec _codec;
+  final StoreCodec _codec;
 
   /// The function that converts between the Map representation to the
   /// object stored in the cache
@@ -20,10 +20,10 @@ class SqliteStore extends CacheStore {
   /// Builds a [SqliteStore].
   ///
   /// * [_adapter]: The [SqliteAdapter]
-  /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   SqliteStore(this._adapter,
-      {CacheCodec? codec,
+      {StoreCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _codec = codec ?? MsgpackCodec(),
         _fromEncodable = fromEncodable;
@@ -35,7 +35,7 @@ class SqliteStore extends CacheStore {
   Future<Iterable<String>> keys(String name) => _adapter.dao.keys(name);
 
   @override
-  Future<Iterable<CacheStat>> stats(String name) => _adapter.dao.stats(name);
+  Future<Iterable<S>> stats(String name) => _adapter.dao.stats(name);
 
   /// Returns a value decoded from the provided list of bytes
   ///
@@ -49,7 +49,7 @@ class SqliteStore extends CacheStore {
   }
 
   @override
-  Future<Iterable<CacheEntry>> values(String name) =>
+  Future<Iterable<E>> values(String name) =>
       _adapter.dao.entries(name, _valueDecoder);
 
   @override
@@ -58,22 +58,22 @@ class SqliteStore extends CacheStore {
   }
 
   @override
-  Future<CacheStat> getStat(String name, String key) {
+  Future<S> getStat(String name, String key) {
     return _adapter.dao.getStat(name, key);
   }
 
   @override
-  Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys) {
+  Future<Iterable<S>> getStats(String name, Iterable<String> keys) {
     return _adapter.dao.getStats(name, keys);
   }
 
   @override
-  Future<void> setStat(String name, String key, CacheStat stat) {
+  Future<void> setStat(String name, String key, S stat) {
     return _adapter.dao.updateStat(name, stat);
   }
 
   @override
-  Future<CacheEntry?> getEntry(String name, String key) {
+  Future<E?> getEntry(String name, String key) {
     return _adapter.dao.getEntry(name, key, _valueDecoder);
   }
 
@@ -91,7 +91,7 @@ class SqliteStore extends CacheStore {
   }
 
   @override
-  Future<void> putEntry(String name, String key, CacheEntry entry) {
+  Future<void> putEntry(String name, String key, E entry) {
     return _adapter.dao.putEntry(name, entry, _valueEncoder);
   }
 
@@ -114,4 +114,30 @@ class SqliteStore extends CacheStore {
   Future<void> deleteAll() {
     return _adapter.dao.clearAll();
   }
+}
+
+/// Sqlite based implemention of a Vault [Store]
+class SqliteVaultStore extends SqliteStore<VaultStat, VaultEntry> {
+  /// Builds a [SqliteVaultStore].
+  ///
+  /// * [_adapter]: The [SqliteAdapter]
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  SqliteVaultStore(SqliteAdapter<VaultStat, VaultEntry> adapter,
+      {StoreCodec? codec,
+      dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(adapter, codec: codec, fromEncodable: fromEncodable);
+}
+
+/// Sqlite based implemention of a Cache [Store]
+class SqliteCacheStore extends SqliteStore<CacheStat, CacheEntry> {
+  /// Builds a [SqliteCacheStore].
+  ///
+  /// * [_adapter]: The [SqliteAdapter]
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  SqliteCacheStore(SqliteAdapter<CacheStat, CacheEntry> adapter,
+      {StoreCodec? codec,
+      dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(adapter, codec: codec, fromEncodable: fromEncodable);
 }

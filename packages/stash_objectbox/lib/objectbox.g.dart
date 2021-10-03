@@ -9,6 +9,7 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 
 import 'src/objectbox/cache_entity.dart';
+import 'src/objectbox/vault_entity.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -61,6 +62,45 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(5, 471229950508017654),
+      name: 'VaultEntity',
+      lastPropertyId: const IdUid(6, 856894059769238353),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2731128255168746009),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 4748832657952197732),
+            name: 'key',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 4568051061604154803),
+            name: 'value',
+            type: 23,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 3094685031228680348),
+            name: 'creationTime',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 7015534216969269053),
+            name: 'accessTime',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 856894059769238353),
+            name: 'updateTime',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -84,7 +124,7 @@ Store openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(4, 5011109035722287274),
+      lastEntityId: const IdUid(5, 471229950508017654),
       lastIndexId: const IdUid(0, 0),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
@@ -188,6 +228,53 @@ ModelDefinition getObjectBoxModel() {
                   .vTableGetNullable(buffer, rootOffset, 20));
 
           return object;
+        }),
+    VaultEntity: EntityDefinition<VaultEntity>(
+        model: _entities[1],
+        toOneRelations: (VaultEntity object) => [],
+        toManyRelations: (VaultEntity object) => {},
+        getId: (VaultEntity object) => object.id,
+        setId: (VaultEntity object, int id) {
+          object.id = id;
+        },
+        objectToFB: (VaultEntity object, fb.Builder fbb) {
+          final keyOffset = fbb.writeString(object.key);
+          final valueOffset = fbb.writeListInt8(object.value);
+          final creationTimeOffset = fbb.writeString(object.creationTime);
+          final accessTimeOffset = object.accessTime == null
+              ? null
+              : fbb.writeString(object.accessTime!);
+          final updateTimeOffset = object.updateTime == null
+              ? null
+              : fbb.writeString(object.updateTime!);
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, keyOffset);
+          fbb.addOffset(2, valueOffset);
+          fbb.addOffset(3, creationTimeOffset);
+          fbb.addOffset(4, accessTimeOffset);
+          fbb.addOffset(5, updateTimeOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = VaultEntity(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              key: const fb.StringReader().vTableGet(buffer, rootOffset, 6, ''),
+              value: Uint8List.fromList(
+                  const fb.ListReader<int>(fb.Int8Reader())
+                      .vTableGet(buffer, rootOffset, 8, [])),
+              creationTime:
+                  const fb.StringReader().vTableGet(buffer, rootOffset, 10, ''),
+              accessTime: const fb.StringReader()
+                  .vTableGetNullable(buffer, rootOffset, 12),
+              updateTime: const fb.StringReader()
+                  .vTableGetNullable(buffer, rootOffset, 14));
+
+          return object;
         })
   };
 
@@ -227,4 +314,31 @@ class CacheEntity_ {
   /// see [CacheEntity.value]
   static final value =
       QueryByteVectorProperty<CacheEntity>(_entities[0].properties[7]);
+}
+
+/// [VaultEntity] entity fields to define ObjectBox queries.
+class VaultEntity_ {
+  /// see [VaultEntity.id]
+  static final id =
+      QueryIntegerProperty<VaultEntity>(_entities[1].properties[0]);
+
+  /// see [VaultEntity.key]
+  static final key =
+      QueryStringProperty<VaultEntity>(_entities[1].properties[1]);
+
+  /// see [VaultEntity.value]
+  static final value =
+      QueryByteVectorProperty<VaultEntity>(_entities[1].properties[2]);
+
+  /// see [VaultEntity.creationTime]
+  static final creationTime =
+      QueryStringProperty<VaultEntity>(_entities[1].properties[3]);
+
+  /// see [VaultEntity.accessTime]
+  static final accessTime =
+      QueryStringProperty<VaultEntity>(_entities[1].properties[4]);
+
+  /// see [VaultEntity.updateTime]
+  static final updateTime =
+      QueryStringProperty<VaultEntity>(_entities[1].properties[5]);
 }

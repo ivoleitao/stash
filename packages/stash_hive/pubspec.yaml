@@ -10,6 +10,7 @@ environment:
   sdk: '>=2.14.0 <3.0.0'
 
 dependencies:
+  meta: ^1.7.0
   hive: ^2.0.4
   universal_platform: ^1.0.0+1
   #stash: ^3.2.2

@@ -4,9 +4,9 @@ import 'package:stash/src/api/codec/bytes_reader.dart';
 import 'package:stash/src/api/codec/bytes_writer.dart';
 
 /// Defines the contract of a binary codec that should be used for the serialization / deserealization of a value
-abstract class CacheCodec {
-  /// Builds a [CacheCodec]
-  const CacheCodec();
+abstract class StoreCodec {
+  /// Builds a [StoreCodec]
+  const StoreCodec();
 
   /// Returns a [BytesWriter] implementation that will handle the serialization
   ///

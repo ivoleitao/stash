@@ -33,7 +33,7 @@ void main() async {
   final path = '${dir.path}/stash_sqlite.db';
 
   // Creates a store
-  final store = newSembastFileStore(
+  final store = newSembastFileCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
   final cache1 = store.cache<Task>(

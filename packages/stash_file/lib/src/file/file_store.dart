@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:file/file.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:stash/stash_api.dart';
 import 'package:stash/stash_msgpack.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 /// File based implemention of a [CacheStore]
-class FileStore extends CacheStore {
-  /// The size in bytes of the cache entry header
-  static const int _headerSize = uint64Size * 5;
-
+abstract class FileStore<S extends Stat, E extends Entry<S>>
+    implements Store<S, E> {
   /// The base location of the file storage
   final FileSystem _fs;
 
@@ -22,7 +21,7 @@ class FileStore extends CacheStore {
   final bool lock;
 
   /// The cache codec to use
-  final CacheCodec _codec;
+  final StoreCodec _codec;
 
   /// The function that converts between the Map representation to the
   /// object stored in the cache
@@ -35,11 +34,10 @@ class FileStore extends CacheStore {
   /// * [_fs]: The [FileSystem]
   /// * [_path]: The base location of the file storage
   /// * [lock]: If locks are obtained before doing read/write operations
-  /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  FileStore(this._fs, this._path,
-      {this.lock = true,
-      CacheCodec? codec,
+  FileStore(this._fs, this._path, this.lock,
+      {StoreCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _codec = codec ?? const MsgpackCodec(),
         _fromEncodable = fromEncodable;
@@ -91,8 +89,8 @@ class FileStore extends CacheStore {
   /// * [predicate]: Predicate that filters the returned cache files
   ///
   /// Returns a list of cache files filtered and converted according with the provided parameters
-  Future<List<E>> _cacheFiles<E>(
-      String name, FutureOr<E> Function(File) convert,
+  Future<List<T>> _cacheFiles<T>(
+      String name, FutureOr<T> Function(File) convert,
       {bool Function(FileSystemEntity fse)? predicate}) {
     final filter = predicate ?? ((fse) => true);
     return _cacheDirectory(name).then((cacheDirectory) => cacheDirectory
@@ -119,15 +117,15 @@ class FileStore extends CacheStore {
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
   @override
-  Future<Iterable<CacheStat>> stats(String name) => _cacheFiles(
+  Future<Iterable<S>> stats(String name) => _cacheFiles(
       name, (FileSystemEntity fse) => _readFileStat(_fs.file(fse.path)));
 
   @override
-  Future<Iterable<CacheEntry>> values(String name) => _cacheFiles(
+  Future<Iterable<E>> values(String name) => _cacheFiles(
       name, (FileSystemEntity fse) => _readFileEntry(_fs.file(fse.path)));
 
   @override
-  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) =>
+  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) =>
       _cacheFiles(name, (FileSystemEntity fse) => _getStat(_fs.file(fse.path)),
           predicate: (fse) => keys.contains(p.basename(fse.path)));
 
@@ -141,31 +139,25 @@ class FileStore extends CacheStore {
     return _cacheFile(name, key).exists();
   }
 
-  /// Creates a [CacheStat] from the provided byte list
+  /// The size of the [Stat] header
+  @protected
+  int get _headerSize;
+
+  /// Creates a [Stat] from the provided byte list
   ///
   /// * [key]: The cache key
   /// * [bytes]: A [Uint8List] with the cache value
   ///
-  /// Returns a [CacheStat]
-  CacheStat _readStat(String key, Uint8List bytes) {
-    var reader = _codec.decoder(bytes);
+  /// Returns a [Stat]
+  @protected
+  S _readStat(String key, Uint8List bytes);
 
-    var creationTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    var hitCount = reader.readUInt64();
-
-    return CacheStat(key, creationTime, expiryTime,
-        accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
-  }
-
-  /// Reads a [CacheStat] from a [File]
+  /// Reads a [Stat] from a [File]
   ///
   /// * [file]: The [File] to read the data from
   ///
-  /// Return [file] [CacheStat]
-  Future<CacheStat> _readFileStat(File file) =>
+  /// Return [file] [Stat]
+  Future<S> _readFileStat(File file) =>
       file.open(mode: FileMode.read).then((raf) {
         final pre = lock
             ? (RandomAccessFile f) => f.lock(FileLock.blockingShared)
@@ -180,13 +172,13 @@ class FileStore extends CacheStore {
             .whenComplete(pos);
       });
 
-  /// Creates a [CacheStat] from the provided [File]
+  /// Creates a [Stat] from the provided [File]
   ///
   /// * [file]: The cache [File]
   /// * [checkFile]: If the existence of the file should be checked, defaults to false
   ///
-  /// Returns a [CacheStat]
-  Future<CacheStat?> _getStat(File file, {bool checkFile = false}) {
+  /// Returns a [Stat]
+  Future<S?> _getStat(File file, {bool checkFile = false}) {
     statGet(bool readFile) =>
         readFile ? _readFileStat(file) : Future.value(null);
 
@@ -194,30 +186,21 @@ class FileStore extends CacheStore {
   }
 
   @override
-  Future<CacheStat?> getStat(String name, String key) {
+  Future<S?> getStat(String name, String key) {
     return _getStat(_cacheFile(name, key), checkFile: true);
   }
 
   /// Updates only the statistics of a cache not the full cache
   ///
-  /// * [stat]: The [CacheStat] to write
+  /// * [stat]: The [Stat] to write
   /// * [writer]: An optional instance of the [BytesWriter] in case it was already instanciated.
   ///
-  /// Returns the provided [BytesWriter] or a new one after writing [CacheStat] into it
-  BytesWriter _writeStat(CacheStat stat, {BytesWriter? writer}) {
-    writer = writer ?? _codec.encoder();
-
-    writer.writeUint64(stat.creationTime.microsecondsSinceEpoch);
-    writer.writeUint64(stat.expiryTime.microsecondsSinceEpoch);
-    writer.writeUint64(stat.accessTime.microsecondsSinceEpoch);
-    writer.writeUint64(stat.updateTime.microsecondsSinceEpoch);
-    writer.writeUint64(stat.hitCount);
-
-    return writer;
-  }
+  /// Returns the provided [BytesWriter] or a new one after writing [Stat] into it
+  @protected
+  BytesWriter _writeStat(S stat, {BytesWriter? writer});
 
   @override
-  Future<void> setStat(String name, String key, CacheStat stat) {
+  Future<void> setStat(String name, String key, S stat) {
     return _cacheFile(name, key).open(mode: FileMode.append).then((raf) {
       final pre = lock
           ? (RandomAccessFile f) => f.lock(FileLock.blockingExclusive)
@@ -233,33 +216,20 @@ class FileStore extends CacheStore {
     });
   }
 
-  /// Reads a [CacheEntry] from a [Uint8List]
+  /// Reads a [Entry] from a [Uint8List]
   ///
   /// * [key]: The cache key
-  /// * [bytes]: The list of bytes from where the [CacheEntry] should be read
+  /// * [bytes]: The list of bytes from where the [Entry] should be read
   ///
-  /// Returns a [CacheEntry]
-  CacheEntry _readEntry(String key, Uint8List bytes) {
-    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+  /// Returns a [Entry]
+  E _readEntry(String key, Uint8List bytes);
 
-    final creationTime =
-        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    final expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
-    final hitCount = reader.readUInt64();
-    final value = reader.read();
-
-    return CacheEntry.newEntry(key, creationTime, expiryTime, value,
-        accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
-  }
-
-  /// Reads a [CacheEntry] from the provided [File]
+  /// Reads a [Entry] from the provided [File]
   ///
   /// * [file]: The cache [File]
   ///
-  /// Returns a [CacheEntry]
-  Future<CacheEntry> _readFileEntry(File file) {
+  /// Returns a [Entry]
+  Future<E> _readFileEntry(File file) {
     if (lock) {
       return file.open(mode: FileMode.read).then((raf) {
         return raf
@@ -279,13 +249,13 @@ class FileStore extends CacheStore {
     }
   }
 
-  /// Gets a [CacheEntry] from the provided [File]
+  /// Gets a [Entry] from the provided [File]
   ///
   /// * [file]: The cache [File]
   /// * [checkFile]: If the existence of the [File] should be checked
   ///
-  /// Returns a [CacheEntry]
-  Future<CacheEntry?> _getEntry(File file, {bool checkFile = false}) {
+  /// Returns a [Entry]
+  Future<E?> _getEntry(File file, {bool checkFile = false}) {
     entryGet(bool readFile) =>
         readFile ? _readFileEntry(file) : Future.value(null);
 
@@ -293,7 +263,7 @@ class FileStore extends CacheStore {
   }
 
   @override
-  Future<CacheEntry?> getEntry(String name, String key) {
+  Future<E?> getEntry(String name, String key) {
     return _getEntry(_cacheFile(name, key), checkFile: true);
   }
 
@@ -311,7 +281,7 @@ class FileStore extends CacheStore {
     return writer;
   }
 
-  Future<void> _putFileEntry(File file, CacheEntry entry) {
+  Future<void> _putFileEntry(File file, E entry) {
     var writer = _codec.encoder();
 
     _writeStat(entry.stat, writer: writer);
@@ -331,7 +301,7 @@ class FileStore extends CacheStore {
   }
 
   @override
-  Future<void> putEntry(String name, String key, CacheEntry entry) {
+  Future<void> putEntry(String name, String key, E entry) {
     return _cacheDirectory(name).then((cacheDirectory) {
       return _putFileEntry(_cacheDirectoryFile(cacheDirectory, key), entry);
     });
@@ -371,5 +341,127 @@ class FileStore extends CacheStore {
 
       return Future.value();
     }));
+  }
+}
+
+class FileVaultStore extends FileStore<VaultStat, VaultEntry> {
+  /// The size in bytes of the cache entry header
+  static const int _cacheHeaderSize = uint64Size * 3;
+
+  @override
+  int get _headerSize => _cacheHeaderSize;
+
+  /// Builds a [FileCacheStore].
+  /// * [fs]: The [FileSystem]
+  /// * [path]: The base location of the file storage
+  /// * [lock]: If locks are obtained before doing read/write operations
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  FileVaultStore(FileSystem fs, String path,
+      {bool lock = true,
+      StoreCodec? codec,
+      dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(fs, path, lock);
+
+  @override
+  VaultStat _readStat(String key, Uint8List bytes) {
+    final reader = _codec.decoder(bytes);
+
+    final creationTime =
+        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+
+    return VaultStat(key, creationTime,
+        accessTime: accessTime, updateTime: updateTime);
+  }
+
+  @override
+  BytesWriter _writeStat(VaultStat stat, {BytesWriter? writer}) {
+    writer = writer ?? _codec.encoder();
+
+    writer.writeUint64(stat.creationTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.accessTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.updateTime.microsecondsSinceEpoch);
+
+    return writer;
+  }
+
+  @override
+  VaultEntry _readEntry(String key, Uint8List bytes) {
+    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+
+    final creationTime =
+        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final value = reader.read();
+
+    return VaultEntry.newEntry(key, creationTime, value,
+        accessTime: accessTime, updateTime: updateTime);
+  }
+}
+
+class FileCacheStore extends FileStore<CacheStat, CacheEntry> {
+  /// The size in bytes of the cache entry header
+  static const int _cacheHeaderSize = uint64Size * 5;
+
+  @override
+  int get _headerSize => _cacheHeaderSize;
+
+  /// Builds a [FileCacheStore].
+  /// * [fs]: The [FileSystem]
+  /// * [path]: The base location of the file storage
+  /// * [lock]: If locks are obtained before doing read/write operations
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  FileCacheStore(FileSystem fs, String path,
+      {bool lock = true,
+      StoreCodec? codec,
+      dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(fs, path, lock, codec: codec, fromEncodable: fromEncodable);
+
+  @override
+  CacheStat _readStat(String key, Uint8List bytes) {
+    final reader = _codec.decoder(bytes);
+
+    final creationTime =
+        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final hitCount = reader.readUInt64();
+
+    return CacheStat(key, creationTime, expiryTime,
+        accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
+  }
+
+  @override
+  BytesWriter _writeStat(CacheStat stat, {BytesWriter? writer}) {
+    writer = writer ?? _codec.encoder();
+
+    writer.writeUint64(stat.creationTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.expiryTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.accessTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.updateTime.microsecondsSinceEpoch);
+    writer.writeUint64(stat.hitCount);
+
+    return writer;
+  }
+
+  @override
+  CacheEntry _readEntry(String key, Uint8List bytes) {
+    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+
+    final creationTime =
+        DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final expiryTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final accessTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
+    final hitCount = reader.readUInt64();
+    final value = reader.read();
+
+    return CacheEntry.newEntry(key, creationTime, expiryTime, value,
+        accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 }

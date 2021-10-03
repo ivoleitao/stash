@@ -1,11 +1,14 @@
+import 'package:meta/meta.dart';
+import 'package:sembast/blob.dart';
 import 'package:sembast/sembast.dart';
+import 'package:sembast/timestamp.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash_sembast/src/sembast/sembast_extensions.dart';
 
 import 'sembast_adapter.dart';
 
-/// Sembast based implemention of a [CacheStore]
-class SembastStore extends CacheStore {
+/// Sembast based implemention of a [Store]
+abstract class SembastStore<S extends Stat, E extends Entry<S>>
+    implements Store<S, E> {
   /// The adapter
   final SembastAdapter _adapter;
 
@@ -27,42 +30,48 @@ class SembastStore extends CacheStore {
   @override
   Future<Iterable<String>> keys(String name) => _adapter.keys(name);
 
-  /// Retrieves a [CacheEntry] from a json map
+  /// Reads a [Entry] from a json map
   ///
   /// * [value]: The json map
   ///
-  ///  Returns the corresponding [CacheEntry]
-  CacheEntry? _getEntryFromValue(Map<String, dynamic>? value) {
-    return value != null
-        ? SembastExtensions.fromJson(value, fromJson: _fromEncodable)
-        : null;
+  ///  Returns the corresponding [Entry]
+  @protected
+  E _readEntry(Map<String, dynamic> json);
+
+  /// Retrieves a [Entry] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Entry]
+  E? _getEntryFromValue(Map<String, dynamic>? value) {
+    return value != null ? _readEntry(value) : null;
   }
 
-  /// Retrieves a [CacheStat] from a json map
+  /// Retrieves a [Stat] from a json map
   ///
   /// * [value]: The json map
   ///
-  ///  Returns the corresponding [CacheStat]
-  CacheStat? _getStatFromValue(Map<String, dynamic> value) {
+  ///  Returns the corresponding [Stat]
+  S? _getStatFromValue(Map<String, dynamic> value) {
     return _getEntryFromValue(value)?.stat;
   }
 
-  /// Calls the [CacheDao] and retries a [CacheEntry] by key
+  /// Calls the [CacheDao] and retries a [Entry] by key
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key
   ///
-  ///  Returns the corresponding [CacheEntry]
-  Future<CacheEntry?> _getEntryFromStore(String name, String key) =>
+  ///  Returns the corresponding [Entry]
+  Future<E?> _getEntryFromStore(String name, String key) =>
       _adapter.getByKey(name, key).then(_getEntryFromValue);
 
-  /// Returns the [CacheEntry] for the named cache value specified [key].
+  /// Returns the [Entry] for the named cache value specified [key].
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key
   ///
-  /// Returns a [CacheEntry]
-  Future<CacheEntry?> _getEntry(String name, String key) {
+  /// Returns a [Entry]
+  Future<E?> _getEntry(String name, String key) {
     return _getEntryFromStore(name, key);
   }
 
@@ -77,14 +86,14 @@ class SembastStore extends CacheStore {
   }
 
   @override
-  Future<Iterable<CacheStat>> stats(String name) =>
+  Future<Iterable<S>> stats(String name) =>
       _getRecords(name).then((records) => records
           .map((record) => _getStatFromValue(record.value))
           .map((stat) => stat!)
           .toList());
 
   @override
-  Future<Iterable<CacheEntry>> values(String name) =>
+  Future<Iterable<E>> values(String name) =>
       _getRecords(name).then((records) => records
           .map((record) => _getEntryFromValue(record.value))
           .map((entry) => entry!)
@@ -95,32 +104,60 @@ class SembastStore extends CacheStore {
       _adapter.exists(name, key);
 
   @override
-  Future<CacheStat?> getStat(String name, String key) {
+  Future<S?> getStat(String name, String key) {
     return _getEntry(name, key).then((entry) => entry?.stat);
   }
 
   @override
-  Future<Iterable<CacheStat?>> getStats(String name, Iterable<String> keys) {
+  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) {
     return _adapter.getByKeys(name, keys).then((records) =>
         records.map((record) => _getEntryFromValue(record)?.stat).toList());
   }
 
+  /// Checks if the [value] is one of the base datatypes supported by Sembast either returning that value if it is or
+  /// invoking toJson to transform it in a supported value
+  ///
+  /// * [value]: the value to convert
+  @protected
+  dynamic _toJsonValue(dynamic value) {
+    if (value == null ||
+        value is bool ||
+        value is int ||
+        value is double ||
+        value is String ||
+        value is Blob ||
+        value is Timestamp ||
+        value is List ||
+        value is Map) {
+      return value;
+    }
+
+    return value.toJson();
+  }
+
+  /// Returns the json representation of a [Entry]
+  ///
+  /// * [entry]: The entry
+  ///
+  /// Returns the json representation of a [Entry]
+  Map<String, dynamic> _writeEntry(E entry);
+
   @override
-  Future<void> setStat(String name, String key, CacheStat stat) {
+  Future<void> setStat(String name, String key, S stat) {
     return _getEntryFromStore(name, key).then((entry) {
       entry!.updateStat(stat);
-      _adapter.put(name, key, entry.toSembastJson());
+      _adapter.put(name, key, _writeEntry(entry));
     });
   }
 
   @override
-  Future<CacheEntry?> getEntry(String name, String key) {
+  Future<E?> getEntry(String name, String key) {
     return _getEntry(name, key);
   }
 
   @override
-  Future<void> putEntry(String name, String key, CacheEntry entry) {
-    return _adapter.put(name, key, entry.toSembastJson());
+  Future<void> putEntry(String name, String key, E entry) {
+    return _adapter.put(name, key, _writeEntry(entry));
   }
 
   @override
@@ -141,5 +178,89 @@ class SembastStore extends CacheStore {
   @override
   Future<void> deleteAll() {
     return _adapter.deleteAll();
+  }
+}
+
+class SembastVaultStore extends SembastStore<VaultStat, VaultEntry> {
+  /// Builds a [SembastVaultStore].
+  ///
+  /// * [_adapter]: The sembast store adapter
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  SembastVaultStore(SembastAdapter _adapter,
+      {dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(_adapter, fromEncodable: fromEncodable);
+
+  @override
+  VaultEntry _readEntry(Map<String, dynamic> json) {
+    return VaultEntry.newEntry(
+        json['key'] as String,
+        DateTime.parse(json['creationTime'] as String),
+        json['value'] == null
+            ? null
+            : _fromEncodable != null
+                ? _fromEncodable!(
+                    (json['value'] as Map).cast<String, dynamic>())
+                : json['value'],
+        accessTime: json['accessTime'] == null
+            ? null
+            : DateTime.parse(json['accessTime'] as String),
+        updateTime: json['updateTime'] == null
+            ? null
+            : DateTime.parse(json['updateTime'] as String));
+  }
+
+  @override
+  Map<String, dynamic> _writeEntry(VaultEntry entry) {
+    return <String, dynamic>{
+      'key': entry.key,
+      'creationTime': entry.creationTime.toIso8601String(),
+      'accessTime': entry.accessTime.toIso8601String(),
+      'updateTime': entry.updateTime.toIso8601String(),
+      'value': _toJsonValue(entry.value),
+    };
+  }
+}
+
+class SembastCacheStore extends SembastStore<CacheStat, CacheEntry> {
+  /// Builds a [SembastCacheStore].
+  ///
+  /// * [_adapter]: The sembast store adapter
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+  SembastCacheStore(SembastAdapter _adapter,
+      {dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(_adapter, fromEncodable: fromEncodable);
+
+  @override
+  CacheEntry _readEntry(Map<String, dynamic> json) {
+    return CacheEntry.newEntry(
+        json['key'] as String,
+        DateTime.parse(json['creationTime'] as String),
+        DateTime.parse(json['expiryTime'] as String),
+        json['value'] == null
+            ? null
+            : _fromEncodable != null
+                ? _fromEncodable!(
+                    (json['value'] as Map).cast<String, dynamic>())
+                : json['value'],
+        accessTime: json['accessTime'] == null
+            ? null
+            : DateTime.parse(json['accessTime'] as String),
+        updateTime: json['updateTime'] == null
+            ? null
+            : DateTime.parse(json['updateTime'] as String),
+        hitCount: json['hitCount'] as int?);
+  }
+
+  @override
+  Map<String, dynamic> _writeEntry(CacheEntry entry) {
+    return <String, dynamic>{
+      'key': entry.key,
+      'expiryTime': entry.expiryTime.toIso8601String(),
+      'creationTime': entry.creationTime.toIso8601String(),
+      'accessTime': entry.accessTime.toIso8601String(),
+      'updateTime': entry.updateTime.toIso8601String(),
+      'hitCount': entry.hitCount,
+      'value': _toJsonValue(entry.value),
+    };
   }
 }

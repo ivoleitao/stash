@@ -9,7 +9,7 @@ import 'package:stash_hive/src/hive/hive_store.dart';
 export 'src/hive/hive_adapter.dart';
 export 'src/hive/hive_store.dart';
 
-/// Creates a new [Cache] backed by a [HiveDefaultStore]
+/// Creates a new [Cache] backed by a [HiveDefaultCacheStore]
 ///
 /// * [store]: An existing hive store
 /// * [cacheName]: The name of the cache
@@ -19,7 +19,7 @@ export 'src/hive/hive_store.dart';
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> _newHiveCache<T>(HiveDefaultStore store,
+Cache<T> _newHiveCache<T>(HiveDefaultCacheStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -37,18 +37,18 @@ Cache<T> _newHiveCache<T>(HiveDefaultStore store,
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new [HiveDefaultStore]
+/// Creates a new [HiveDefaultCacheStore]
 ///
 /// * [path]: The base storage location for this store, the current directoy if not provided
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveDefaultStore newHiveStore(
+HiveDefaultCacheStore newHiveCacheStore(
     {String? path,
-    dynamic Function(dynamic)? fromEncodable,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveDefaultStore(
+  return HiveDefaultCacheStore(
       HiveDefaultAdapter(
           path: path ?? '.',
           encryptionCipher: encryptionCipher,
@@ -56,7 +56,7 @@ HiveDefaultStore newHiveStore(
       fromEncodable: fromEncodable);
 }
 
-/// Creates a new [Cache] backed by a [HiveDefaultStore]
+/// Creates a new [Cache] backed by a [HiveDefaultCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -80,14 +80,14 @@ Cache<T> newHiveCache<T>(
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    HiveDefaultStore? store,
+    HiveDefaultCacheStore? store,
     String? path,
-    dynamic Function(dynamic)? fromEncodable,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return _newHiveCache<T>(
       store ??
-          newHiveStore(
+          newHiveCacheStore(
               path: path,
               fromEncodable: fromEncodable,
               encryptionCipher: encryptionCipher,
@@ -101,7 +101,7 @@ Cache<T> newHiveCache<T>(
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new [Cache] backed by a [HiveLazyStore]
+/// Creates a new [Cache] backed by a [HiveLazyCacheStore]
 ///
 /// * [store]: An existing hive store
 /// * [cacheName]: The name of the cache
@@ -111,7 +111,7 @@ Cache<T> newHiveCache<T>(
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> _newLazyHiveCache<T>(HiveLazyStore store,
+Cache<T> _newLazyHiveCache<T>(HiveLazyCacheStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -135,18 +135,18 @@ Cache<T> _newLazyHiveCache<T>(HiveLazyStore store,
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveLazyStore newHiveLazyStore(
+HiveLazyCacheStore newHiveLazyCacheStore(
     {String? path,
-    dynamic Function(dynamic)? fromEncodable,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveLazyStore(
+  return HiveLazyCacheStore(
       HiveLazyAdapter(path ?? '.',
           encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }
 
-/// Creates a new [Cache] backed by a [HiveLazyStore]
+/// Creates a new [Cache] backed by a [HiveLazyCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
@@ -161,7 +161,7 @@ HiveLazyStore newHiveLazyStore(
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
 ///
-/// Returns a new [Cache] backed by a [HiveLazyStore]
+/// Returns a new [Cache] backed by a [HiveLazyCacheStore]
 Cache newLazyHiveCache<T>(
     {String? cacheName,
     KeySampler? sampler,
@@ -170,14 +170,14 @@ Cache newLazyHiveCache<T>(
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    HiveLazyStore? store,
+    HiveLazyCacheStore? store,
     String? path,
-    dynamic Function(dynamic)? fromEncodable,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return _newLazyHiveCache<T>(
       store ??
-          newHiveLazyStore(
+          newHiveLazyCacheStore(
               path: path,
               fromEncodable: fromEncodable,
               encryptionCipher: encryptionCipher,
@@ -193,7 +193,7 @@ Cache newLazyHiveCache<T>(
 
 /// Extension over [HiveDefaultStore] allowing the creation of multiple caches from
 /// the same store
-extension HiveDefaultStoreExtension on HiveDefaultStore {
+extension HiveDefaultStoreExtension on HiveDefaultCacheStore {
   Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
@@ -215,7 +215,7 @@ extension HiveDefaultStoreExtension on HiveDefaultStore {
 
 /// Extension over [HiveLazyStore] allowing the creation of multiple caches from
 /// the same store
-extension HiveLazyStoreExtension on HiveLazyStore {
+extension HiveLazyStoreExtension on HiveLazyCacheStore {
   Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,

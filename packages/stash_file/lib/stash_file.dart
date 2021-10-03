@@ -9,7 +9,71 @@ import 'package:stash_file/src/file/file_store.dart';
 
 export 'src/file/file_store.dart';
 
-/// Creates a new [Cache] backed by a [FileStore]
+/// Creates a new in-memory [FileVaultStore]
+///
+/// * [path]: The base storage location for this store
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+FileVaultStore newFileMemoryVaultStore(
+    {String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  FileSystem fs = MemoryFileSystem();
+  return FileVaultStore(fs, path ?? fs.systemTempDirectory.path,
+      lock: false, codec: codec, fromEncodable: fromEncodable);
+}
+
+/// Creates a new in-memory [FileCacheStore]
+///
+/// * [path]: The base storage location for this store
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+FileCacheStore newFileMemoryCacheStore(
+    {String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  FileSystem fs = MemoryFileSystem();
+  return FileCacheStore(fs, path ?? fs.systemTempDirectory.path,
+      lock: false, codec: codec, fromEncodable: fromEncodable);
+}
+
+/// Creates a local [FileVaultStore]
+///
+/// * [path]: The base storage location for this store
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+FileVaultStore newFileLocalVaultStore(
+    {String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  FileSystem fs = const LocalFileSystem();
+  return FileVaultStore(fs, path ?? fs.systemTempDirectory.path,
+      codec: codec, fromEncodable: fromEncodable);
+}
+
+/// Creates a local [FileCacheStore]
+///
+/// * [path]: The base storage location for this store
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+FileCacheStore newFileLocalCacheStore(
+    {String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  FileSystem fs = const LocalFileSystem();
+  return FileCacheStore(fs, path ?? fs.systemTempDirectory.path,
+      codec: codec, fromEncodable: fromEncodable);
+}
+
+/// Creates a new [Vault] backed by a [FileVaultStore]
+///
+/// * [store]: An existing file store
+/// * [vaultName]: The name of the vault
+Vault<T> _newFileVault<T>(FileVaultStore store, {String? vaultName}) {
+  return Vault<T>.newVault(store, name: vaultName);
+}
+
+/// Creates a new [Cache] backed by a [FileCacheStore]
 ///
 /// * [store]: An existing file store
 /// * [cacheName]: The name of the cache
@@ -19,7 +83,7 @@ export 'src/file/file_store.dart';
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> _newFileCache<T>(FileStore store,
+Cache<T> _newFileCache<T>(FileCacheStore store,
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -37,21 +101,50 @@ Cache<T> _newFileCache<T>(FileStore store,
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new in-memory [FileStore]
+/// Creates a new [Vault] backed by a in-memory [FileVaultStore]
 ///
-/// * [path]: The base storage location for this store
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [vaultName]: The name of the vault
+/// * [store]: An existing store, note that [codec] and [fromEncodable] will be all ignored is this parameter is provided
+/// * [path]: The base storage location for this cache
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-FileStore newMemoryFileStore(
-    {String? path,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable}) {
-  FileSystem fs = MemoryFileSystem();
-  return FileStore(fs, path ?? fs.systemTempDirectory.path,
-      lock: false, codec: codec, fromEncodable: fromEncodable);
+///
+/// Returns a new [Vault] backed by a [FileVaultStore]
+Vault<T> newFileMemoryVault<T>(
+    {String? vaultName,
+    FileVaultStore? store,
+    String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  return _newFileVault<T>(
+      store ??
+          newFileMemoryVaultStore(
+              path: path, codec: codec, fromEncodable: fromEncodable),
+      vaultName: vaultName);
 }
 
-/// Creates a new [Cache] backed by a in-memory [FileStore]
+/// Creates a new [Vault] backed by a local [FileVaultStore]
+///
+/// * [vaultName]: The name of the vault
+/// * [store]: An existing store, note that [codec] and [fromEncodable] will be ignored if this parameter is provided
+/// * [path]: The base storage location for this vault
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+///
+/// Returns a new [Vault] backed by a [FileVaultStore]
+Vault<T> newFileLocalVault<T>(
+    {String? vaultName,
+    FileVaultStore? store,
+    String? path,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
+  return _newFileVault<T>(
+      newFileLocalVaultStore(
+          path: path, codec: codec, fromEncodable: fromEncodable),
+      vaultName: vaultName);
+}
+
+/// Creates a new [Cache] backed by a in-memory [FileCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -62,11 +155,11 @@ FileStore newMemoryFileStore(
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [store]: An existing store, note that [codec] and [fromEncodable] will be all ignored is this parameter is provided
 /// * [path]: The base storage location for this cache
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [FileStore]
-Cache<T> newMemoryFileCache<T>(
+/// Returns a new [Cache] backed by a [FileCacheStore]
+Cache<T> newFileMemoryCache<T>(
     {String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
@@ -74,13 +167,13 @@ Cache<T> newMemoryFileCache<T>(
     int? maxEntries,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    FileStore? store,
+    FileCacheStore? store,
     String? path,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable}) {
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
   return _newFileCache<T>(
       store ??
-          newMemoryFileStore(
+          newFileMemoryCacheStore(
               path: path, codec: codec, fromEncodable: fromEncodable),
       cacheName: cacheName,
       expiryPolicy: expiryPolicy,
@@ -91,21 +184,7 @@ Cache<T> newMemoryFileCache<T>(
       eventListenerMode: eventListenerMode);
 }
 
-/// Creates a new in-memory [FileStore]
-///
-/// * [path]: The base storage location for this store
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-FileStore newLocalFileStore(
-    {String? path,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable}) {
-  FileSystem fs = const LocalFileSystem();
-  return FileStore(fs, path ?? fs.systemTempDirectory.path,
-      codec: codec, fromEncodable: fromEncodable);
-}
-
-/// Creates a new [Cache] backed by a local [FileStore]
+/// Creates a new [Cache] backed by a local [FileCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -116,11 +195,11 @@ FileStore newLocalFileStore(
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [store]: An existing store, note that [codec] and [fromEncodable] will be ignored if this parameter is provided
 /// * [path]: The base storage location for this cache
-/// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 ///
-/// Returns a new [Cache] backed by a [FileStore]
-Cache<T> newLocalFileCache<T>(
+/// Returns a new [Cache] backed by a [FileCacheStore]
+Cache<T> newFileLocalCache<T>(
     {String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -130,10 +209,11 @@ Cache<T> newLocalFileCache<T>(
     EventListenerMode? eventListenerMode,
     FileStore? store,
     String? path,
-    CacheCodec? codec,
-    dynamic Function(dynamic)? fromEncodable}) {
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable}) {
   return _newFileCache<T>(
-      newLocalFileStore(path: path, codec: codec, fromEncodable: fromEncodable),
+      newFileLocalCacheStore(
+          path: path, codec: codec, fromEncodable: fromEncodable),
       cacheName: cacheName,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
@@ -143,9 +223,17 @@ Cache<T> newLocalFileCache<T>(
       eventListenerMode: eventListenerMode);
 }
 
-/// Extension over [FileStore] allowing the creation of multiple caches from
+/// Extension over [FileVaultStore] allowing the creation of multiple vaults from
 /// the same store
-extension FileStoreExtension on FileStore {
+extension FileVaultStoreExtension on FileVaultStore {
+  Vault<T> vault<T>({String? vaultName}) {
+    return _newFileVault<T>(this, vaultName: vaultName);
+  }
+}
+
+/// Extension over [FileCacheStore] allowing the creation of multiple caches from
+/// the same store
+extension FileCacheStoreExtension on FileCacheStore {
   Cache<T> cache<T>(
       {String? cacheName,
       KeySampler? sampler,
