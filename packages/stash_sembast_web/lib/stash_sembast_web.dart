@@ -8,6 +8,28 @@ import 'package:stash_sembast_web/src/sembast/sembast_web_adapter.dart';
 
 export 'src/sembast/sembast_web_adapter.dart';
 
+/// Creates a new web [SembastVaultStore]
+///
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+SembastVaultStore newSembastWebVaultStore(
+    {dynamic Function(Map<String, dynamic>)? fromEncodable,
+    int? databaseVersion,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? databaseMode,
+    SembastCodec? sembastCodec}) {
+  return SembastVaultStore(
+      SembastWebAdapter('sembast_web',
+          version: databaseVersion,
+          onVersionChanged: onVersionChanged,
+          mode: databaseMode,
+          codec: sembastCodec),
+      fromEncodable: fromEncodable);
+}
+
 /// Creates a new web [SembastCacheStore]
 ///
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
@@ -15,7 +37,7 @@ export 'src/sembast/sembast_web_adapter.dart';
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastCacheStore newSembastWebStore(
+SembastCacheStore newSembastWebCacheStore(
     {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
@@ -30,7 +52,36 @@ SembastCacheStore newSembastWebStore(
       fromEncodable: fromEncodable);
 }
 
-/// Creates a new [Cache] backed by a web [SembastStore]
+/// Creates a new [Vault] backed by a web [SembastVaultStore]
+///
+/// * [vaultName]: The name of the vault
+/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+///
+/// Returns a new [Vault] backed by a [SembastVaultStore]
+Vault<T> newSembastWebVault<T>(
+    {String? vaultName,
+    SembastVaultStore? store,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
+    int? databaseVersion,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? databaseMode,
+    SembastCodec? sembastCodec}) {
+  return newSembastVault<T>(
+      newSembastWebVaultStore(
+          fromEncodable: fromEncodable,
+          databaseVersion: databaseVersion,
+          onVersionChanged: onVersionChanged,
+          databaseMode: databaseMode,
+          sembastCodec: sembastCodec),
+      vaultName: vaultName);
+}
+
+/// Creates a new [Cache] backed by a web [SembastCacheStore]
 ///
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -62,7 +113,7 @@ Cache<T> newSembastWebCache<T>(
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
   return newSembastCache<T>(
-      newSembastWebStore(
+      newSembastWebCacheStore(
           fromEncodable: fromEncodable,
           databaseVersion: databaseVersion,
           onVersionChanged: onVersionChanged,

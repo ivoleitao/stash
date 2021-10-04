@@ -9,7 +9,7 @@ class DefaultContext extends TestContext<SembastCacheStore> {
 
   @override
   Future<SembastCacheStore> newStore() {
-    return Future.value(newSembastWebStore(fromEncodable: fromEncodable));
+    return Future.value(newSembastWebCacheStore(fromEncodable: fromEncodable));
   }
 }
 
