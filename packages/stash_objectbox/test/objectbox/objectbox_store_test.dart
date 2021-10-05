@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:stash_objectbox/stash_objectbox.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<ObjectboxCacheStore> {
+class DefaultContext extends CacheTestContext<ObjectboxCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);

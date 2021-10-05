@@ -1,7 +1,7 @@
 import 'package:stash_sembast/stash_sembast.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<SembastCacheStore> {
+class DefaultContext extends CacheTestContext<SembastCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);

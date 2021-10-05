@@ -3,7 +3,7 @@ import 'package:stash_test/stash_test.dart';
 
 import "vm_store.dart" if (dart.library.js) "web_store.dart";
 
-class DefaultContext extends TestContext<HiveCacheStore> {
+class DefaultContext extends CacheTestContext<HiveCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);

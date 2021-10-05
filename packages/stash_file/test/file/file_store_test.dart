@@ -1,7 +1,7 @@
 import 'package:stash_file/stash_file.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<FileCacheStore> {
+class DefaultContext extends CacheTestContext<FileCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);

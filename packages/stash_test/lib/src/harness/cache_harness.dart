@@ -81,7 +81,7 @@ const _cacheTests = {
 ///
 /// Returns the created store
 Future<T> _cachePut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   CacheEvent? created;
   final cache = ctx.newCache(store,
@@ -104,7 +104,7 @@ Future<T> _cachePut<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cachePutRemove<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -125,7 +125,7 @@ Future<T> _cachePutRemove<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheSize<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -162,7 +162,7 @@ Future<T> _cacheSize<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheContainsKey<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -182,7 +182,7 @@ Future<T> _cacheContainsKey<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheKeys<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -209,7 +209,7 @@ Future<T> _cacheKeys<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cachePutGet<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var createdEntries = 0;
   var updatedEntries = 0;
@@ -248,7 +248,7 @@ Future<T> _cachePutGet<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cachePutGetOperator<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -269,7 +269,7 @@ Future<T> _cachePutGetOperator<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cachePutPut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -297,7 +297,7 @@ Future<T> _cachePutPut<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cachePutIfAbsent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -326,7 +326,7 @@ Future<T> _cachePutIfAbsent<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheGetAndPut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -352,7 +352,7 @@ Future<T> _cacheGetAndPut<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheGetAndRemove<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -377,7 +377,7 @@ Future<T> _cacheGetAndRemove<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheClear<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store);
 
@@ -401,7 +401,7 @@ Future<T> _cacheClear<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheCreatedExpiry<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
 
@@ -428,7 +428,7 @@ Future<T> _cacheCreatedExpiry<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheAccessedExpiry<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().fromNow(seconds: 1);
 
@@ -455,7 +455,7 @@ Future<T> _cacheAccessedExpiry<T extends Store<CacheStat, CacheEntry>>(
 //
 /// Returns the created store
 Future<T> _cacheModifiedExpiry<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
 
@@ -501,7 +501,7 @@ Future<T> _cacheModifiedExpiry<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheTouchedExpiry<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
 
@@ -554,7 +554,7 @@ Future<T> _cacheTouchedExpiry<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheEternalExpiry<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   var now = Clock().fromNow(seconds: 1);
   final store = await ctx.newStore();
   final cache = ctx.newCache(store,
@@ -579,7 +579,7 @@ Future<T> _cacheEternalExpiry<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheLoader<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   var now = Clock().fromNow(minutes: 10);
   final store = await ctx.newStore();
 
@@ -604,7 +604,7 @@ Future<T> _cacheLoader<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheFifoEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FifoEvictionPolicy());
@@ -631,7 +631,7 @@ Future<T> _cacheFifoEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheFiloEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FiloEvictionPolicy());
@@ -658,7 +658,7 @@ Future<T> _cacheFiloEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheLruEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
   final cache = ctx.newCache(store,
@@ -694,7 +694,7 @@ Future<T> _cacheLruEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheMruEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
   final cache = ctx.newCache(store,
@@ -730,7 +730,7 @@ Future<T> _cacheMruEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheLfuEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store,
       maxEntries: 3, evictionPolicy: const LfuEvictionPolicy());
@@ -765,7 +765,7 @@ Future<T> _cacheLfuEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheMfuEviction<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final cache = ctx.newCache(store,
       maxEntries: 3, evictionPolicy: const MfuEvictionPolicy());
@@ -800,7 +800,7 @@ Future<T> _cacheMfuEviction<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheCreatedEvent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final clock1 = Clock.fixed(now1);
@@ -837,7 +837,7 @@ Future<T> _cacheCreatedEvent<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheUpdatedEvent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final now2 = Clock().minutesFromNow(1);
@@ -905,7 +905,7 @@ Future<T> _cacheUpdatedEvent<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheRemovedEvent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final now3 = Clock().minutesFromNow(3);
@@ -960,7 +960,7 @@ Future<T> _cacheRemovedEvent<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheExpiredEvent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final now3 = Clock().minutesFromNow(3);
@@ -1017,7 +1017,7 @@ Future<T> _cacheExpiredEvent<T extends Store<CacheStat, CacheEntry>>(
 ///
 /// Returns the created store
 Future<T> _cacheEvictedEvent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+    CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final now1 = Clock().now();
   final now2 = Clock().minutesFromNow(3);
@@ -1072,7 +1072,7 @@ Future<T> _cacheEvictedEvent<T extends Store<CacheStat, CacheEntry>>(
 /// Returns the list of tests to execute
 ///
 /// * [tests]: The set of tests
-List<Future<T> Function(TestContext<T>)>
+List<Future<T> Function(CacheTestContext<T>)>
     _getCacheTests<T extends Store<CacheStat, CacheEntry>>(
         {Set<CacheTest> tests = _cacheTests}) {
   return [
@@ -1111,12 +1111,12 @@ List<Future<T> Function(TestContext<T>)>
 /// Entry point for the cache testing harness. It delegates most of the
 /// construction to user provided functions that are responsible for the [CacheStore] creation,
 /// the [Cache] creation and by the generation of testing values
-/// (with a provided [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
+/// (with a provided [ValueGenerator] instance). They are encapsulated in provided [CacheTestContext] object
 ///
 /// * [ctx]: the test context
 /// * [tests]: The set of tests
 Future<void> testCacheWith<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx,
+    CacheTestContext<T> ctx,
     {Set<CacheTest> tests = _cacheTests}) async {
   for (var test in _getCacheTests<T>(tests: tests)) {
     await test(ctx).then(ctx.deleteStore);
@@ -1125,16 +1125,16 @@ Future<void> testCacheWith<T extends Store<CacheStat, CacheEntry>>(
 
 /// Default cache test
 ///
-/// * [newTestContext]: The context builder
+/// * [newCacheTestContext]: The context builder
 /// * [types]: The type/generator map
 /// * [tests]: The test set
 void testCache<T extends Store<CacheStat, CacheEntry>>(
-    TestContextBuilder<T> newTestContext,
+    CacheTestContextBuilder<T> newCacheTestContext,
     {Map<TypeTest, Function>? types,
     Set<CacheTest> tests = _cacheTests}) {
   for (var entry in (types ?? _typeTests).entries) {
     test('Cache: ${EnumToString.convertToString(entry.key)}', () async {
-      await testCacheWith<T>(newTestContext(entry.value()), tests: tests);
+      await testCacheWith<T>(newCacheTestContext(entry.value()), tests: tests);
     });
   }
 }

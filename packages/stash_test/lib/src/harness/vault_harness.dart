@@ -40,38 +40,33 @@ const _vaultTests = {
   VaultTest.clear
 };
 
-/// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPut<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  CacheEvent? created;
-  final vault = ctx.newCache(store,
-      eventListenerMode: EventListenerMode.synchronous)
-    ..on().listen((event) => created = event);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
   await vault.put(key, value);
-  check(ctx, created, isNotNull, '_vaultPut_1');
-  check(ctx, created, isA<CreatedEntryEvent>(), '_vaultPut_2');
 
   return store;
 }
 
-/// Calls [Cache.put] on a [Cache] backed by the provided [CacheStore] builder
-/// and removes the value through [Cache.remove]
+/// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
+/// and removes the value through [Vault.remove]
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutRemove<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPutRemove<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   var size = await vault.size;
@@ -84,15 +79,15 @@ Future<T> _vaultPutRemove<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.size] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.size] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultSize<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultSize<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   var size = await vault.size;
@@ -121,15 +116,15 @@ Future<T> _vaultSize<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.containsKey] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.containsKey] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultContainsKey<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultContainsKey<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
@@ -141,15 +136,15 @@ Future<T> _vaultContainsKey<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.keys] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.keys] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultKeys<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultKeys<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key1 = 'key_1';
   await vault.put(key1, ctx.generator.nextValue(1));
@@ -167,21 +162,16 @@ Future<T> _vaultKeys<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.put] followed by a [Cache.get] on a [Cache] backed by
-/// the provided [CacheStore] builder
+/// Calls [Vault.put] followed by a [Vault.get] on a [Vault] backed by
+/// the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutGet<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPutGet<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  var createdEntries = 0;
-  var updatedEntries = 0;
-  final vault =
-      ctx.newCache(store, eventListenerMode: EventListenerMode.synchronous)
-        ..on<CreatedEntryEvent>().listen((event) => createdEntries++)
-        ..on<UpdatedEntryEvent>().listen((event) => updatedEntries++);
+  final vault = ctx.newVault(store);
 
   final key1 = 'key_1';
   var value1 = ctx.generator.nextValue(1);
@@ -206,16 +196,16 @@ Future<T> _vaultPutGet<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.put] followed by a operator call on
-/// a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.put] followed by a operator call on
+/// a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutGetOperator<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPutGetOperator<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -227,16 +217,16 @@ Future<T> _vaultPutGetOperator<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.put] followed by a second [Cache.put] on a [Cache] backed by
-/// the provided [CacheStore] builder
+/// Calls [Vault.put] followed by a second [Vault.put] on a [Vault] backed by
+/// the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutPut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPutPut<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   var value1 = ctx.generator.nextValue(1);
@@ -256,15 +246,15 @@ Future<T> _vaultPutPut<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.putIfAbsent] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.putIfAbsent] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutIfAbsent<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultPutIfAbsent<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -285,15 +275,15 @@ Future<T> _vaultPutIfAbsent<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.getAndPut] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.getAndPut] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultGetAndPut<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultGetAndPut<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -311,15 +301,15 @@ Future<T> _vaultGetAndPut<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.getAndRemove] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.getAndRemove] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultGetAndRemove<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultGetAndRemove<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -336,15 +326,15 @@ Future<T> _vaultGetAndRemove<T extends Store<CacheStat, CacheEntry>>(
   return store;
 }
 
-/// Calls [Cache.clear] on a [Cache] backed by the provided [CacheStore] builder
+/// Calls [Vault.clear] on a [Vault] backed by the provided [VaultStore] builder
 ///
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultClear<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx) async {
+Future<T> _vaultClear<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newCache(store);
+  final vault = ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   await vault.put('key_2', ctx.generator.nextValue(2));
@@ -362,8 +352,8 @@ Future<T> _vaultClear<T extends Store<CacheStat, CacheEntry>>(
 /// Returns the list of tests to execute
 ///
 /// * [tests]: The set of tests
-List<Future<T> Function(TestContext<T>)>
-    _getCacheTests<T extends Store<CacheStat, CacheEntry>>(
+List<Future<T> Function(VaultTestContext<T>)>
+    _getVaultTests<T extends Store<VaultStat, VaultEntry>>(
         {Set<VaultTest> tests = _vaultTests}) {
   return [
     if (tests.contains(VaultTest.put)) _vaultPut,
@@ -382,32 +372,32 @@ List<Future<T> Function(TestContext<T>)>
 }
 
 /// Entry point for the vault testing harness. It delegates most of the
-/// construction to user provided functions that are responsible for the [CacheStore] creation,
-/// the [Cache] creation and by the generation of testing values
-/// (with a provided [ValueGenerator] instance). They are encapsulated in provided [TestContext] object
+/// construction to user provided functions that are responsible for the [Store] creation,
+/// the [Vault] creation and by the generation of testing values
+/// (with a provided [ValueGenerator] instance). They are encapsulated in provided [VaultTestContext] object
 ///
 /// * [ctx]: the test context
 /// * [tests]: The set of tests
-Future<void> testCacheWith<T extends Store<CacheStat, CacheEntry>>(
-    TestContext<T> ctx,
+Future<void> testVaultWith<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContext<T> ctx,
     {Set<VaultTest> tests = _vaultTests}) async {
-  for (var test in _getCacheTests<T>(tests: tests)) {
+  for (var test in _getVaultTests<T>(tests: tests)) {
     await test(ctx).then(ctx.deleteStore);
   }
 }
 
 /// Default vault test
 ///
-/// * [newTestContext]: The context builder
+/// * [newVaultTestContext]: The context builder
 /// * [types]: The type/generator map
 /// * [tests]: The test set
-void testCache<T extends Store<CacheStat, CacheEntry>>(
-    TestContextBuilder<T> newTestContext,
+void testVault<T extends Store<VaultStat, VaultEntry>>(
+    VaultTestContextBuilder<T> newVaultTestContext,
     {Map<TypeTest, Function>? types,
     Set<VaultTest> tests = _vaultTests}) {
   for (var entry in (types ?? _typeTests).entries) {
-    test('Cache: ${EnumToString.convertToString(entry.key)}', () async {
-      await testCacheWith<T>(newTestContext(entry.value()), tests: tests);
+    test('Vault: ${EnumToString.convertToString(entry.key)}', () async {
+      await testVaultWith<T>(newVaultTestContext(entry.value()), tests: tests);
     });
   }
 }

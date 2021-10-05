@@ -3,7 +3,7 @@ import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 import 'package:stash_test/stash_test.dart';
 
-class DefaultContext extends TestContext<SqliteCacheStore> {
+class DefaultContext extends CacheTestContext<SqliteCacheStore> {
   DefaultContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);
