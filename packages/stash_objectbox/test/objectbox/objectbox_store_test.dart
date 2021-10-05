@@ -11,7 +11,7 @@ class DefaultContext extends TestContext<ObjectboxCacheStore> {
   @override
   Future<ObjectboxCacheStore> newStore() {
     return Directory.systemTemp.createTemp('stash_objectbox').then((d) =>
-        newObjectboxCacheStore(
+        newObjectboxLocalCacheStore(
             path: d.path,
             queriesCaseSensitiveDefault: true,
             fromEncodable: fromEncodable));
