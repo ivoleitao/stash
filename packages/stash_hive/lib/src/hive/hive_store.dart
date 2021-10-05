@@ -4,7 +4,7 @@ import 'package:stash/stash_api.dart';
 
 import 'hive_adapter.dart';
 
-/// Hive based implemention of a [CacheStore]
+/// Hive based implemention of a [Store]
 abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
     E extends Entry<S>> implements Store<S, E> {
   /// The adapter
@@ -71,7 +71,7 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
     return _getEntry(name, key).then((entry) => entry?.stat);
   }
 
-  /// Returns a [Iterable] over all the [CacheStore] [Stat]s keys requested
+  /// Returns a [Iterable] over all the [Store] [Stat]s keys requested
   /// of a named cache.
   ///
   /// * [name]: The cache name
@@ -89,7 +89,7 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
       .then((keys) => _getStats(name, keys))
       .then((stats) => stats.map((stat) => stat!));
 
-  /// Returns a [Iterable] over all the [CacheStore] [Entry]s
+  /// Returns a [Iterable] over all the [Store] [Entry]s
   /// of a named cache.
   ///
   /// * [name]: The cache name

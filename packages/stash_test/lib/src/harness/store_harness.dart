@@ -10,9 +10,9 @@ import 'harness.dart';
 const _defaultStore = 'test';
 
 /// The default type tests perfomed over a store
-final _storeTypeTests = Map.unmodifiable(typeTests);
+final _storeTypeTests = Map.unmodifiable(defaultStoreTypeTests);
 
-/// The supported cache tests
+/// The supported store tests
 enum StoreTest {
   addEntry,
   addGetEntry,
@@ -111,11 +111,9 @@ Future<void> _putEntry<S extends Stat, E extends Entry<S>>(
 /// * [seed]: The seed for the [ValueGenerator]
 /// * [name]: An optional store name, assigned a default value if not provided
 /// * [key]: The store key
-/// * [expiryTime]: The cache expiry time
-/// * [creationTime]: The cache creation time
-/// * [accessTime]: The cache accessTime
-/// * [updateTime]: The cache update time
-/// * [hitCount]: The cache hit count
+/// * [creationTime]: The entry creation time
+/// * [accessTime]: The entry accessTime
+/// * [updateTime]: The entry update time
 ///
 /// Returns the created [Entry]
 Future<E> _putGetEntry<S extends Stat, E extends Entry<S>>(
@@ -145,7 +143,7 @@ Future<void> _remove<S extends Stat, E extends Entry<S>>(
   return store.remove(name, key);
 }
 
-/// Calls [Store.keys] with an optional cache name
+/// Calls [Store.keys] with an optional store name
 ///
 /// * [store]: The [Store]
 /// * [name]: An optional store name, assigned a default value if not provided
@@ -181,7 +179,7 @@ Future<Iterable<E?>> _values<S extends Stat, E extends Entry<S>>(
   return store.values(name);
 }
 
-/// Calls [Store.clear] with an optional cache name
+/// Calls [Store.clear] with an optional store name
 ///
 /// * [store]: The [Store]
 /// * [name]: An optional store name, assigned a default value if not provided
@@ -294,21 +292,21 @@ Future<T>
         TestContext<S, E, T> ctx) async {
   final store = await ctx.newStore();
 
-  await _putGetEntry(store, ctx, 1, name: 'cache1');
-  await _putGetEntry(store, ctx, 2, name: 'cache1');
-  var size = await _size(store, name: 'cache1');
+  await _putGetEntry(store, ctx, 1, name: 'entry1');
+  await _putGetEntry(store, ctx, 2, name: 'entry1');
+  var size = await _size(store, name: 'entry1');
   check(ctx, size, 2, '_storeClear_1');
 
-  await _putGetEntry(store, ctx, 1, name: 'cache2');
-  await _putGetEntry(store, ctx, 2, name: 'cache2');
-  size = await _size(store, name: 'cache2');
+  await _putGetEntry(store, ctx, 1, name: 'entry2');
+  await _putGetEntry(store, ctx, 2, name: 'entry2');
+  size = await _size(store, name: 'entry2');
   check(ctx, size, 2, '_storeClear_2');
 
-  await _clear(store, name: 'cache1');
-  size = await _size(store, name: 'cache1');
+  await _clear(store, name: 'entry1');
+  size = await _size(store, name: 'entry1');
   check(ctx, size, 0, '_storeClear_3');
 
-  size = await _size(store, name: 'cache2');
+  size = await _size(store, name: 'entry2');
   check(ctx, size, 2, '_storeClear_4');
 
   return store;
@@ -324,21 +322,21 @@ Future<T>
         TestContext<S, E, T> ctx) async {
   final store = await ctx.newStore();
 
-  await _putGetEntry(store, ctx, 1, name: 'cache1');
-  await _putGetEntry(store, ctx, 2, name: 'cache1');
-  var size = await _size(store, name: 'cache1');
+  await _putGetEntry(store, ctx, 1, name: 'entry1');
+  await _putGetEntry(store, ctx, 2, name: 'entry1');
+  var size = await _size(store, name: 'entry1');
   check(ctx, size, 2, '_storeDelete_1');
 
-  await _putGetEntry(store, ctx, 1, name: 'cache2');
-  await _putGetEntry(store, ctx, 2, name: 'cache2');
-  size = await _size(store, name: 'cache2');
+  await _putGetEntry(store, ctx, 1, name: 'entry2');
+  await _putGetEntry(store, ctx, 2, name: 'entry2');
+  size = await _size(store, name: 'entry2');
   check(ctx, size, 2, '_storeDelete_2');
 
-  await _delete(store, name: 'cache1');
-  size = await _size(store, name: 'cache1');
+  await _delete(store, name: 'entry1');
+  size = await _size(store, name: 'entry1');
   check(ctx, size, 0, '_storeDelete_3');
 
-  size = await _size(store, name: 'cache2');
+  size = await _size(store, name: 'entry2');
   check(ctx, size, 2, '_storeDelete_4');
 
   return store;

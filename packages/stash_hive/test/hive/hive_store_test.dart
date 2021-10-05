@@ -3,18 +3,31 @@ import 'package:stash_test/stash_test.dart';
 
 import "vm_store.dart" if (dart.library.js) "web_store.dart";
 
-class DefaultContext extends CacheTestContext<HiveCacheStore> {
-  DefaultContext(ValueGenerator generator,
+class VaultStoreContext extends VaultTestContext<HiveVaultStore> {
+  VaultStoreContext(ValueGenerator generator,
+      {dynamic Function(Map<String, dynamic>)? fromEncodable})
+      : super(generator, fromEncodable: generator.fromEncodable);
+
+  @override
+  Future<HiveVaultStore> newStore() {
+    return newVaultStore(fromEncodable);
+  }
+}
+
+class CacheStoreContext extends CacheTestContext<HiveCacheStore> {
+  CacheStoreContext(ValueGenerator generator,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
       : super(generator, fromEncodable: generator.fromEncodable);
 
   @override
   Future<HiveCacheStore> newStore() {
-    return newTestStore(fromEncodable);
+    return newCacheStore(fromEncodable);
   }
 }
 
 void main() async {
-  testStore((generator) => DefaultContext(generator));
-  testCache((generator) => DefaultContext(generator));
+  testStore((generator) => VaultStoreContext(generator));
+  testStore((generator) => CacheStoreContext(generator));
+  testCache((generator) => CacheStoreContext(generator));
+  testVault((generator) => VaultStoreContext(generator));
 }

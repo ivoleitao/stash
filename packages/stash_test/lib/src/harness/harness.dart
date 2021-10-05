@@ -203,9 +203,79 @@ extension TypeTestValue on TypeTest {
   }
 }
 
-/// List of type tests
-Map<TypeTest, ValueGenerator Function()> typeTests = {
+/// All type tests
+Map<TypeTest, ValueGenerator Function()> allTypeTests = {
   for (var test in TypeTest.values) test: test.generator
+};
+
+/// Default store type tests
+Map<TypeTest, ValueGenerator Function()> defaultStoreTypeTests = {
+  TypeTest.bool: TypeTest.bool.generator,
+  TypeTest.int: TypeTest.int.generator,
+  TypeTest.double: TypeTest.double.generator,
+  TypeTest.string: TypeTest.string.generator,
+  TypeTest.listOfBool: TypeTest.listOfBool.generator,
+  TypeTest.listOfInt: TypeTest.listOfInt.generator,
+  TypeTest.listOfDouble: TypeTest.listOfDouble.generator,
+  TypeTest.listOfString: TypeTest.listOfString.generator,
+  TypeTest.mapOfBoolBool: TypeTest.mapOfBoolBool.generator,
+  TypeTest.mapOfIntInt: TypeTest.mapOfIntInt.generator,
+  TypeTest.mapOfDoubleDouble: TypeTest.mapOfDoubleDouble.generator,
+  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
+  TypeTest.classOfBool: TypeTest.classOfBool.generator,
+  TypeTest.classOfInt: TypeTest.classOfInt.generator,
+  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
+  TypeTest.classOfString: TypeTest.classOfString.generator,
+  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
+  TypeTest.classOfListInt: TypeTest.classOfListInt.generator,
+  TypeTest.classOfListDouble: TypeTest.classOfListDouble.generator,
+  TypeTest.classOfListString: TypeTest.classOfListString.generator,
+  TypeTest.classOfMapBoolBool: TypeTest.classOfMapBoolBool.generator,
+  TypeTest.classOfMapIntInt: TypeTest.classOfMapIntInt.generator,
+  TypeTest.classOfMapDoubleDouble: TypeTest.classOfMapDoubleDouble.generator,
+  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
+};
+
+/// Json store type tests
+Map<TypeTest, ValueGenerator Function()> jsonStoreTypeTests = {
+  TypeTest.bool: TypeTest.bool.generator,
+  TypeTest.int: TypeTest.int.generator,
+  TypeTest.double: TypeTest.double.generator,
+  TypeTest.string: TypeTest.string.generator,
+  TypeTest.listOfBool: TypeTest.listOfBool.generator,
+  TypeTest.listOfInt: TypeTest.listOfInt.generator,
+  TypeTest.listOfDouble: TypeTest.listOfDouble.generator,
+  TypeTest.listOfString: TypeTest.listOfString.generator,
+  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
+  TypeTest.classOfBool: TypeTest.classOfBool.generator,
+  TypeTest.classOfInt: TypeTest.classOfInt.generator,
+  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
+  TypeTest.classOfString: TypeTest.classOfString.generator,
+  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
+  TypeTest.classOfListInt: TypeTest.classOfListInt.generator,
+  TypeTest.classOfListDouble: TypeTest.classOfListDouble.generator,
+  TypeTest.classOfListString: TypeTest.classOfListString.generator,
+  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
+};
+
+/// Default stash type tests
+Map<TypeTest, ValueGenerator Function()> defaultStashTypeTests = {
+  TypeTest.bool: TypeTest.bool.generator,
+  TypeTest.listOfInt: TypeTest.listOfInt.generator,
+  TypeTest.mapOfDoubleDouble: TypeTest.mapOfDoubleDouble.generator,
+  TypeTest.classOfString: TypeTest.classOfString.generator,
+  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
+  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
+};
+
+/// Json stash type tests
+Map<TypeTest, ValueGenerator Function()> jsonStashTypeTests = {
+  TypeTest.bool: TypeTest.bool.generator,
+  TypeTest.listOfInt: TypeTest.listOfInt.generator,
+  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
+  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
+  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
+  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
 };
 
 /// Assert that [actual] matches [matcher] in a specific test [ctx].
@@ -231,7 +301,7 @@ Vault<V> newDefaultVault<V, T extends Store<VaultStat, VaultEntry>>(
   return Vault<V>.newVault(store, name: name, clock: clock);
 }
 
-/// Creates a new [DefaultCache] bound to an implementation of the [CacheStore] interface
+/// Creates a new [DefaultCache] bound to an implementation of the [Store] interface
 ///
 /// * [store]: The store implementation
 /// * [name]: The name of the cache
@@ -447,7 +517,7 @@ abstract class TestContext<S extends Stat, E extends Entry<S>,
 
   /// Deletes a store
   ///
-  /// * [store]: The [CacheStore]
+  /// * [store]: The [Store]
   Future<void> deleteStore(T store) {
     return store.deleteAll();
   }

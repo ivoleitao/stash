@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'harness.dart';
 
 /// The default type tests perfomed over a cache
-final _typeTests = Map.unmodifiable(typeTests);
+final _typeTests = Map.unmodifiable(defaultStashTypeTests);
 
 /// The supported cache tests
 enum CacheTest {
@@ -1109,7 +1109,7 @@ List<Future<T> Function(CacheTestContext<T>)>
 }
 
 /// Entry point for the cache testing harness. It delegates most of the
-/// construction to user provided functions that are responsible for the [CacheStore] creation,
+/// construction to user provided functions that are responsible for the [Store] creation,
 /// the [Cache] creation and by the generation of testing values
 /// (with a provided [ValueGenerator] instance). They are encapsulated in provided [CacheTestContext] object
 ///

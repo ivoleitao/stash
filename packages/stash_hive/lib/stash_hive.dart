@@ -156,7 +156,7 @@ Cache<T> _newHiveLazyCache<T>(HiveLazyCacheStore store,
 
 /// Creates a new [Vault] backed by a [HiveDefaultVaultStore]
 ///
-/// * [cacheName]: The name of the cache
+/// * [vaultName]: The name of the vault
 /// * [store]: An existing store, note that [fromEncodable], [encryptionCipher] and [crashRecovery] will be all ignored is this parameter is provided
 /// * [path]: The base storage location for this cache
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
@@ -196,7 +196,7 @@ Vault<T> newHiveDefaultVault<T>(
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
 ///
-/// Returns a new [Cache] backed by a [HiveDefaultStore]
+/// Returns a new [Cache] backed by a [HiveDefaultCacheStore]
 Cache<T> newHiveDefaultCache<T>(
     {String? cacheName,
     KeySampler? sampler,

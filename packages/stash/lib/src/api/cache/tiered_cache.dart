@@ -4,8 +4,8 @@ import 'package:stash/src/api/event/event.dart';
 
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary
-/// [Cache] bound to a fast [CacheStore] and a secondary
-/// cache bound to a persistent [CacheStore] implementation
+/// [Cache] bound to a fast store and a secondary
+/// cache bound to a persistent store implementation
 class TieredCache<T> implements Cache<T> {
   /// The primary cache
   final Cache<T> _primary;

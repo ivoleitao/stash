@@ -8,7 +8,7 @@ import 'package:stash/stash_api.dart';
 import 'package:stash/stash_msgpack.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-/// File based implemention of a [CacheStore]
+/// File based implemention of a [Store]
 abstract class FileStore<S extends Stat, E extends Entry<S>>
     implements Store<S, E> {
   /// The base location of the file storage
@@ -361,7 +361,7 @@ class FileVaultStore extends FileStore<VaultStat, VaultEntry> {
       {bool lock = true,
       StoreCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(fs, path, lock);
+      : super(fs, path, lock, codec: codec, fromEncodable: fromEncodable);
 
   @override
   VaultStat _readStat(String key, Uint8List bytes) {

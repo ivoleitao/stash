@@ -24,7 +24,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, S extends Stat,
   /// Builds a [ObjectboxStore].
   ///
   /// * [_adapter]: The objectbox store adapter
-  /// * [codec]: The [CacheCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   ObjectboxStore(this._adapter,
       {StoreCodec? codec,

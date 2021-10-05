@@ -25,7 +25,7 @@ class DefaultCache<T> implements Cache<T> {
   /// The name of this cache
   final String name;
 
-  /// The [CacheStore] for this cache
+  /// The [Store] for this cache
   final Store<CacheStat, CacheEntry> storage;
 
   /// The [ExpiryPolicy] for this cache
@@ -53,9 +53,9 @@ class DefaultCache<T> implements Cache<T> {
   /// The event publishing mode of this cache
   final EventListenerMode eventPublishingMode;
 
-  /// Builds a [DefaultCache] out of a mandatory [CacheStore] and a set of optional configurations
+  /// Builds a [DefaultCache] out of a mandatory [Store] and a set of optional configurations
   ///
-  /// * [storage]: The [CacheStore]
+  /// * [storage]: The [Store]
   /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -127,7 +127,7 @@ class DefaultCache<T> implements Cache<T> {
       ? Future.value(false)
       : size.then((entries) => entries > maxEntries);
 
-  /// Puts a cache entry identified by [key] on the configured [CacheStore]
+  /// Puts a cache entry identified by [key] on the configured [Store]
   ///
   /// * [key]: The cache key
   /// * [entry]: The cache entry
