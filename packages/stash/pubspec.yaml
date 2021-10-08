@@ -1,5 +1,5 @@
 name: stash
-version: 3.2.3
+version: 4.0.0
 publish_to: none
 description: >-
   Standard caching API for Dart. Defines a common mechanism to create, 

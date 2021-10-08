@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 3.2.2
+version: 4.0.0
 publish_to: none
 description: >-
    storage extension for the stash caching API. Provides support to store caches
@@ -12,14 +12,14 @@ environment:
 dependencies:
   meta: ^1.7.0
   moor: ^4.5.0
-  #stash: ^3.2.2
+  #stash: ^4.0.0
   stash:
     path: ../stash
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.17.12
   build_runner: ^2.1.2
-  #stash_test: ^3.2.1
+  #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
   moor_generator: ^4.5.1
