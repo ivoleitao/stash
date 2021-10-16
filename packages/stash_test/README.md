@@ -32,7 +32,7 @@ import 'package:stash_test/stash_test.dart';
 ```
 ## Usage
 
-The `stash_test` library provides a way to easily import the set of standard tests for [CacheStore](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache_store.dart) and [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) allowing to reuse them to test custom implementations provided by external parties but also to test the storage and cache implementations provided in the package ecossistem of `stash`. The main objective is to guarantee that all storage implementations perform the full suite of type tests but also the standart `stash` tests.
+The `stash_test` library provides a way to easily import the set of standard tests for [Store](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache_store.dart) and [Cache](https://github.com/ivoleitao/stash/blob/develop/packages/stash/lib/src/api/cache.dart) allowing to reuse them to test custom implementations provided by external parties but also to test the storage and cache implementations provided in the package ecossistem of `stash`. The main objective is to guarantee that all storage implementations perform the full suite of type tests but also the standart `stash` tests.
 
 For example let's consider that a third party developer creates a custom store, `CustomStore`, and wishes to test it against the same set of tests that are used on `stash_file`, `stash_hive` and similar packages. On the `test/custom` folder of the package the following file `custom_store_test.dart` can be created:
 

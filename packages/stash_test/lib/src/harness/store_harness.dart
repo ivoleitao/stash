@@ -20,11 +20,11 @@ enum StoreTest {
   size,
   clear,
   delete,
-  getStat,
+  getInfo,
   changeEntry,
   keys,
   getValues,
-  stats
+  infos
 }
 
 /// The set of store tests
@@ -35,11 +35,11 @@ const _storeTests = {
   StoreTest.size,
   StoreTest.clear,
   StoreTest.delete,
-  StoreTest.getStat,
+  StoreTest.getInfo,
   StoreTest.changeEntry,
   StoreTest.keys,
   StoreTest.getValues,
-  StoreTest.stats
+  StoreTest.infos
 };
 
 /// Calls [Store.size] with a optional store name
@@ -48,7 +48,7 @@ const _storeTests = {
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
 /// Returns the result of calling size on the provided [Store]
-Future<int> _size<S extends Stat, E extends Entry<S>>(Store<S, E> store,
+Future<int> _size<I extends Info, E extends Entry<I>>(Store<I, E> store,
     {String name = _defaultStore}) {
   return store.size(name);
 }
@@ -60,23 +60,23 @@ Future<int> _size<S extends Stat, E extends Entry<S>>(Store<S, E> store,
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
 /// Returns the result of calling containsKey on the provided [Store]
-Future<bool> _containsKey<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, String key,
+Future<bool> _containsKey<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, String key,
     {String name = _defaultStore}) {
   return store.containsKey(name, key);
 }
 
-/// Calls [Store.getStat] with an optional store name
+/// Calls [Store.getInfo] with an optional store name
 ///
 /// * [store]: The [Store]
 /// * [key]: The store key
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
-/// Returns the result of calling getStat on the provided [Store]
-Future<S?> _getStat<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, String key,
+/// Returns the result of calling getInfo on the provided [Store]
+Future<I?> _getInfo<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, String key,
     {String name = _defaultStore}) {
-  return store.getStat(name, key);
+  return store.getInfo(name, key);
 }
 
 /// Calls [Store.getEntry] with an optional store name
@@ -86,8 +86,8 @@ Future<S?> _getStat<S extends Stat, E extends Entry<S>>(
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
 /// Returns the result of calling getEntry on the provided [Store]
-Future<E?> _getEntry<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, String key,
+Future<E?> _getEntry<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, String key,
     {String name = _defaultStore}) {
   return store.getEntry(name, key);
 }
@@ -98,8 +98,8 @@ Future<E?> _getEntry<S extends Stat, E extends Entry<S>>(
 /// * [key]: The store key
 /// * [entry]: The [Entry] to store
 /// * [name]: An optional store name, assigned a default value if not provided
-Future<void> _putEntry<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, String key, E entry,
+Future<void> _putEntry<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, String key, E entry,
     {String name = _defaultStore}) {
   return store.putEntry(name, key, entry);
 }
@@ -116,8 +116,8 @@ Future<void> _putEntry<S extends Stat, E extends Entry<S>>(
 /// * [updateTime]: The entry update time
 ///
 /// Returns the created [Entry]
-Future<E> _putGetEntry<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, EntryBuilder<S, E> builder, int seed,
+Future<E> _putGetEntry<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, EntryBuilder<I, E> builder, int seed,
     {String name = _defaultStore,
     String? key,
     DateTime? creationTime,
@@ -128,7 +128,7 @@ Future<E> _putGetEntry<S extends Stat, E extends Entry<S>>(
       creationTime: creationTime,
       accessTime: accessTime,
       updateTime: updateTime);
-  return _putEntry<S, E>(store, entry.key, entry, name: name)
+  return _putEntry<I, E>(store, entry.key, entry, name: name)
       .then((v) => entry);
 }
 
@@ -137,8 +137,8 @@ Future<E> _putGetEntry<S extends Stat, E extends Entry<S>>(
 /// * [store]: The [Store]
 /// * [key]: The store key
 /// * [name]: An optional store name, assigned a default value if not provided
-Future<void> _remove<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store, String key,
+Future<void> _remove<I extends Info, E extends Entry<I>>(
+    Store<I, E> store, String key,
     {String name = _defaultStore}) {
   return store.remove(name, key);
 }
@@ -149,22 +149,22 @@ Future<void> _remove<S extends Stat, E extends Entry<S>>(
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
 /// Returns the result of calling keys on the provided [Store]
-Future<Iterable<String>> _keys<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store,
+Future<Iterable<String>> _keys<I extends Info, E extends Entry<I>>(
+    Store<I, E> store,
     {String name = _defaultStore}) {
   return store.keys(name);
 }
 
-/// Calls [Store.stats] with an optional store name
+/// Calls [Store.infos] with an optional store name
 ///
 /// * [store]: The [Store]
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
-/// Returns the result of calling stats on the provided [Store]
-Future<Iterable<S?>> _stats<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store,
+/// Returns the result of calling infos on the provided [Store]
+Future<Iterable<I?>> _infos<I extends Info, E extends Entry<I>>(
+    Store<I, E> store,
     {String name = _defaultStore}) {
-  return store.stats(name);
+  return store.infos(name);
 }
 
 /// Calls [Store.values] with an optional store name
@@ -173,8 +173,8 @@ Future<Iterable<S?>> _stats<S extends Stat, E extends Entry<S>>(
 /// * [name]: An optional store name, assigned a default value if not provided
 ///
 /// Returns the result of calling values on the provided [Store]
-Future<Iterable<E?>> _values<S extends Stat, E extends Entry<S>>(
-    Store<S, E> store,
+Future<Iterable<E?>> _values<I extends Info, E extends Entry<I>>(
+    Store<I, E> store,
     {String name = _defaultStore}) {
   return store.values(name);
 }
@@ -183,7 +183,7 @@ Future<Iterable<E?>> _values<S extends Stat, E extends Entry<S>>(
 ///
 /// * [store]: The [Store]
 /// * [name]: An optional store name, assigned a default value if not provided
-Future<void> _clear<S extends Stat, E extends Entry<S>>(Store<S, E> store,
+Future<void> _clear<I extends Info, E extends Entry<I>>(Store<I, E> store,
     {String name = _defaultStore}) {
   return store.clear(name);
 }
@@ -192,7 +192,7 @@ Future<void> _clear<S extends Stat, E extends Entry<S>>(Store<S, E> store,
 ///
 /// * [store]: The [Store]
 /// * [name]: An optional store name, assigned a default value if not provided
-Future<void> _delete<S extends Stat, E extends Entry<S>>(Store<S, E> store,
+Future<void> _delete<I extends Info, E extends Entry<I>>(Store<I, E> store,
     {String name = _defaultStore}) {
   return store.delete(name);
 }
@@ -203,8 +203,8 @@ Future<void> _delete<S extends Stat, E extends Entry<S>>(Store<S, E> store,
 ///
 /// Return the created store
 Future<T>
-    _storeAddEntry<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeAddEntry<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry = await _putGetEntry(store, ctx, 1);
@@ -219,8 +219,8 @@ Future<T>
 /// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeAddGetEntry<S extends Stat, E extends Entry<S>,
-    T extends Store<S, E>>(TestContext<S, E, T> ctx) async {
+Future<T> _storeAddGetEntry<I extends Info, E extends Entry<I>,
+    T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
@@ -236,8 +236,8 @@ Future<T> _storeAddGetEntry<S extends Stat, E extends Entry<S>,
 /// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeRemoveEntry<S extends Stat, E extends Entry<S>,
-    T extends Store<S, E>>(TestContext<S, E, T> ctx) async {
+Future<T> _storeRemoveEntry<I extends Info, E extends Entry<I>,
+    T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
@@ -256,8 +256,8 @@ Future<T> _storeRemoveEntry<S extends Stat, E extends Entry<S>,
 /// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeSize<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-    TestContext<S, E, T> ctx) async {
+Future<T> _storeSize<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+    TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   var size = await _size(store);
@@ -288,8 +288,8 @@ Future<T> _storeSize<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
 ///
 /// Return the created store
 Future<T>
-    _storeClear<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeClear<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   await _putGetEntry(store, ctx, 1, name: 'entry1');
@@ -318,8 +318,8 @@ Future<T>
 ///
 /// Return the created store
 Future<T>
-    _storeDelete<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeDelete<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   await _putGetEntry(store, ctx, 1, name: 'entry1');
@@ -342,24 +342,24 @@ Future<T>
   return store;
 }
 
-/// Test that gets the [Stat] from the store
+/// Test that gets the [Info] from the store
 ///
 /// * [ctx]: The test context
 ///
 /// Return the created store
 Future<T>
-    _storeGetStat<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeGetInfo<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry = await _putGetEntry(store, ctx, 1);
-  final stat = await _getStat(store, entry.key);
+  final info = await _getInfo(store, entry.key);
 
-  check(ctx, stat, isNotNull, '_storeGetStat_1');
-  check(ctx, stat?.key, entry.key, '_storeGetStat_2');
-  check(ctx, stat?.creationTime, entry.creationTime, '_storeGetStat_3');
-  check(ctx, stat?.accessTime, entry.accessTime, '_storeGetStat_4');
-  check(ctx, stat?.updateTime, entry.updateTime, '_storeGetStat_5');
+  check(ctx, info, isNotNull, '_storeGetInfo_1');
+  check(ctx, info?.key, entry.key, '_storeGetInfo_2');
+  check(ctx, info?.creationTime, entry.creationTime, '_storeGetInfo_3');
+  check(ctx, info?.accessTime, entry.accessTime, '_storeGetInfo_4');
+  check(ctx, info?.updateTime, entry.updateTime, '_storeGetInfo_5');
 
   return store;
 }
@@ -369,8 +369,8 @@ Future<T>
 /// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeChangeEntry<S extends Stat, E extends Entry<S>,
-    T extends Store<S, E>>(TestContext<S, E, T> ctx) async {
+Future<T> _storeChangeEntry<I extends Info, E extends Entry<I>,
+    T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
@@ -397,8 +397,8 @@ Future<T> _storeChangeEntry<S extends Stat, E extends Entry<S>,
 /// * [ctx]: The test context
 ///
 /// Return the created store
-Future<T> _storeKeys<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-    TestContext<S, E, T> ctx) async {
+Future<T> _storeKeys<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+    TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
@@ -416,8 +416,8 @@ Future<T> _storeKeys<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
 ///
 /// Return the created store
 Future<T>
-    _storeValues<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeValues<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
@@ -429,21 +429,21 @@ Future<T>
   return store;
 }
 
-/// Test that retrieves the stats from the store
+/// Test that retrieves the infos from the store
 ///
 /// * [ctx]: The test context
 ///
 /// Return the created store
 Future<T>
-    _storeStats<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx) async {
+    _storeInfos<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   final entry2 = await _putGetEntry(store, ctx, 2);
-  final stats = await _stats(store);
+  final infos = await _infos(store);
 
-  check(ctx, stats, containsAll([entry1.stat, entry2.stat]), '_storeStats_1');
+  check(ctx, infos, containsAll([entry1.info, entry2.info]), '_storeInfos_1');
 
   return store;
 }
@@ -452,8 +452,8 @@ Future<T>
 ///
 /// * [tests]: The set of tests
 List<
-    Future<T> Function<S extends Stat, E extends Entry<S>,
-        T extends Store<S, E>>(TestContext<S, E, T>)> _getTests<S, E, T>(
+    Future<T> Function<I extends Info, E extends Entry<I>,
+        T extends Store<I, E>>(TestContext<I, E, T>)> _getTests<I, E, T>(
     {Set<StoreTest> tests = _storeTests}) {
   return [
     if (tests.contains(StoreTest.addEntry)) _storeAddEntry,
@@ -462,11 +462,11 @@ List<
     if (tests.contains(StoreTest.size)) _storeSize,
     if (tests.contains(StoreTest.clear)) _storeClear,
     if (tests.contains(StoreTest.delete)) _storeDelete,
-    if (tests.contains(StoreTest.getStat)) _storeGetStat,
+    if (tests.contains(StoreTest.getInfo)) _storeGetInfo,
     if (tests.contains(StoreTest.changeEntry)) _storeChangeEntry,
     if (tests.contains(StoreTest.keys)) _storeKeys,
     if (tests.contains(StoreTest.getValues)) _storeValues,
-    if (tests.contains(StoreTest.stats)) _storeStats
+    if (tests.contains(StoreTest.infos)) _storeInfos
   ];
 }
 
@@ -478,10 +478,10 @@ List<
 /// * [ctx]: the test context
 /// * [tests]: The set of tests
 Future<void>
-    testStoreWith<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-        TestContext<S, E, T> ctx,
+    testStoreWith<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+        TestContext<I, E, T> ctx,
         {Set<StoreTest> tests = _storeTests}) async {
-  for (var test in _getTests<S, E, T>()) {
+  for (var test in _getTests<I, E, T>()) {
     await test(ctx).then(ctx.deleteStore);
   }
 }
@@ -491,13 +491,13 @@ Future<void>
 /// * [newTestContext]: The context builder
 /// * [types]: The type/generator map
 /// * [tests]: The test set
-void testStore<S extends Stat, E extends Entry<S>, T extends Store<S, E>>(
-    TestContextBuilder<S, E, T> newTestContext,
+void testStore<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+    TestContextBuilder<I, E, T> newTestContext,
     {Map<TypeTest, Function>? types,
     Set<StoreTest> tests = _storeTests}) {
   for (var entry in (types ?? _storeTypeTests).entries) {
     test('Store: ${EnumToString.convertToString(entry.key)}', () async {
-      await testStoreWith<S, E, T>(newTestContext(entry.value()), tests: tests);
+      await testStoreWith<I, E, T>(newTestContext(entry.value()), tests: tests);
     });
   }
 }

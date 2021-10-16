@@ -22,14 +22,14 @@ void main() async {
       cacheName: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>().listen(
+    ..on<CacheEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the first cache'));
   // Creates a third cache with a capacity of 10 from the previously created store
   final cache2 = store.cache<Task>(
       cacheName: 'cache2',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
-    ..on<CreatedEntryEvent>().listen(
+    ..on<CacheEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the second cache'));
 
   // Adds a task with key 'task1' to the first cache

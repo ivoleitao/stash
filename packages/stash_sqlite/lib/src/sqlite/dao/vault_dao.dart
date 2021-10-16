@@ -13,7 +13,7 @@ part 'vault_dao.g.dart';
 /// Dao that encapsulates operations over the database
 class VaultDao extends DatabaseAccessor<VaultDatabase>
     with _$VaultDaoMixin
-    implements DaoAdapter<VaultStat, VaultEntry> {
+    implements DaoAdapter<VaultInfo, VaultEntry> {
   /// Builds a [VaultDao]
   ///
   /// * [db]: The [VaultDatabase]
@@ -53,7 +53,7 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   }
 
   /// Builds and returns the query that retrieves header information from the vault
-  JoinedSelectStatement<$VaultTableTable, VaultData> _statQuery() {
+  JoinedSelectStatement<$VaultTableTable, VaultData> _infoQuery() {
     return selectOnly(vaultTable)
       ..addColumns([
         vaultTable.key,
@@ -63,12 +63,12 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
       ]);
   }
 
-  /// Converts from a [TypedResult] row to a [VaultStat]
+  /// Converts from a [TypedResult] row to a [VaultInfo]
   ///
   /// * [row]: The [TypedResult] row
   ///
-  /// Returns the [VaultStat] after conversion
-  VaultStat _statMapper(TypedResult row) {
+  /// Returns the [VaultInfo] after conversion
+  VaultInfo _infoMapper(TypedResult row) {
     final converter = const Iso8601Converter();
 
     final key = row.read(vaultTable.key);
@@ -76,7 +76,7 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
     var accessTime = converter.mapToDart(row.read(vaultTable.accessTime));
     var updateTime = converter.mapToDart(row.read(vaultTable.updateTime));
 
-    return VaultStat(key!, creationTime!,
+    return VaultInfo(key!, creationTime!,
         accessTime: accessTime, updateTime: updateTime);
   }
 
@@ -84,12 +84,12 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   ///
   /// * [name]: The name of the vault
   ///
-  /// Returns a [Iterable] over all [VaultStat]s
+  /// Returns a [Iterable] over all [VaultInfo]s
   @override
-  Future<Iterable<VaultStat>> stats(String name) {
-    var query = _statQuery()..where(vaultTable.name.equals(name));
+  Future<Iterable<VaultInfo>> infos(String name) {
+    var query = _infoQuery()..where(vaultTable.name.equals(name));
 
-    return query.map(_statMapper).get();
+    return query.map(_infoMapper).get();
   }
 
   /// Converts a [VaultData] to a [VaultEntry]
@@ -140,13 +140,13 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   /// * [name]: The name of the vault
   /// * [key]: The key on the vault
   ///
-  /// Returns the named vault key [VaultStat]
+  /// Returns the named vault key [VaultInfo]
   @override
-  Future<VaultStat> getStat(String name, String key) {
-    var query = _statQuery()
+  Future<VaultInfo> getInfo(String name, String key) {
+    var query = _infoQuery()
       ..where(vaultTable.name.equals(name) & vaultTable.key.equals(key));
 
-    return query.map(_statMapper).getSingle();
+    return query.map(_infoMapper).getSingle();
   }
 
   /// Returns the list of all vault headers on a named vault, filtered by the provided keys
@@ -154,30 +154,30 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   /// * [name]: The name of the vault
   /// * [keys]: The list of keys
   ///
-  /// Returns a [Iterable] over all [VaultStat]s retrieved
+  /// Returns a [Iterable] over all [VaultInfo]s retrieved
   @override
-  Future<Iterable<VaultStat>> getStats(String name, Iterable<String> keys) {
-    var query = _statQuery()
+  Future<Iterable<VaultInfo>> getInfos(String name, Iterable<String> keys) {
+    var query = _infoQuery()
       ..where(vaultTable.name.equals(name) & vaultTable.key.isIn(keys));
 
-    return query.map(_statMapper).get();
+    return query.map(_infoMapper).get();
   }
 
   /// Updates the header of a named vault
   ///
   /// * [name]: The name of the vault
-  /// * [stat]: The [VaultStat]
+  /// * [stat]: The [VaultInfo]
   ///
   /// Returns the number of updated enties
   @override
-  Future<int> updateStat(String name, VaultStat stat) {
+  Future<int> updateInfo(String name, VaultInfo info) {
     return (update(vaultTable)
           ..where(
-              (entry) => entry.name.equals(name) & entry.key.equals(stat.key)))
+              (entry) => entry.name.equals(name) & entry.key.equals(info.key)))
         .write(VaultTableCompanion(
-            creationTime: Value(stat.creationTime),
-            accessTime: Value(stat.accessTime),
-            updateTime: Value(stat.updateTime)));
+            creationTime: Value(info.creationTime),
+            accessTime: Value(info.accessTime),
+            updateTime: Value(info.updateTime)));
   }
 
   /// Returns a vault entry for a key on named vault

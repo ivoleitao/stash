@@ -1,8 +1,8 @@
 import 'entry.dart';
-import 'stat.dart';
+import 'info.dart';
 
 /// Store definition
-abstract class Store<S extends Stat, E extends Entry<S>> {
+abstract class Store<I extends Info, E extends Entry<I>> {
   /// The number of entries in the store
   ///
   /// * [name]: The store name
@@ -13,17 +13,17 @@ abstract class Store<S extends Stat, E extends Entry<S>> {
   /// * [name]: The store name
   Future<Iterable<String>> keys(String name);
 
-  /// Returns a [Iterable] over all the stats for a named store.
+  /// Returns a [Iterable] over all the infos for a named store.
   ///
   /// * [name]: The store name
-  Future<Iterable<S>> stats(String name);
+  Future<Iterable<I>> infos(String name);
 
-  /// Returns a [Iterable] over all the non nullable stats
+  /// Returns a [Iterable] over all the non nullable infos
   /// from the requested keys.
   ///
   /// * [name]: The store name
   /// * [keys]: The list of keys
-  Future<Iterable<S?>> getStats(String name, Iterable<String> keys);
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys);
 
   /// Returns a [Iterable] over all entre of a named store.
   ///
@@ -36,18 +36,18 @@ abstract class Store<S extends Stat, E extends Entry<S>> {
   /// * [key]: The store value key
   Future<bool> containsKey(String name, String key);
 
-  /// Returns the stat for the specified [key].
+  /// Returns the info for the specified [key].
   ///
   /// * [name]: The store name
   /// * [key]: The store value key
-  Future<S?> getStat(String name, String key);
+  Future<I?> getInfo(String name, String key);
 
-  /// Sets the store stat by [name] and [key].
+  /// Sets the store info by [name] and [key].
   ///
   /// * [name]: The store name
   /// * [key]: The store key
-  /// * [stat]: The stat
-  Future<void> setStat(String name, String key, S stat);
+  /// * [info]: The info
+  Future<void> setInfo(String name, String key, I info);
 
   /// Returns the entry for the named store value specified by the [key].
   ///

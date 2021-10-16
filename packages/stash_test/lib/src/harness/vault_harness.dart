@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:matcher/matcher.dart';
 import 'package:stash/stash_api.dart';
@@ -21,7 +22,10 @@ enum VaultTest {
   putIfAbsent,
   getAndPut,
   getAndRemove,
-  clear
+  clear,
+  createdEvent,
+  updatedEvent,
+  removedEvent
 }
 
 /// The set of vault tests
@@ -37,7 +41,10 @@ const _vaultTests = {
   VaultTest.putIfAbsent,
   VaultTest.getAndPut,
   VaultTest.getAndRemove,
-  VaultTest.clear
+  VaultTest.clear,
+  VaultTest.createdEvent,
+  VaultTest.updatedEvent,
+  VaultTest.removedEvent
 };
 
 /// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
@@ -45,7 +52,7 @@ const _vaultTests = {
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPut<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -63,7 +70,7 @@ Future<T> _vaultPut<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutRemove<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPutRemove<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -84,7 +91,7 @@ Future<T> _vaultPutRemove<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultSize<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultSize<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -121,7 +128,7 @@ Future<T> _vaultSize<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultContainsKey<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultContainsKey<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -141,7 +148,7 @@ Future<T> _vaultContainsKey<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultKeys<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultKeys<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -168,7 +175,7 @@ Future<T> _vaultKeys<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutGet<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPutGet<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -202,7 +209,7 @@ Future<T> _vaultPutGet<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutGetOperator<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPutGetOperator<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -223,7 +230,7 @@ Future<T> _vaultPutGetOperator<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutPut<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPutPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -251,7 +258,7 @@ Future<T> _vaultPutPut<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultPutIfAbsent<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultPutIfAbsent<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -280,7 +287,7 @@ Future<T> _vaultPutIfAbsent<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultGetAndPut<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultGetAndPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -306,7 +313,7 @@ Future<T> _vaultGetAndPut<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultGetAndRemove<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultGetAndRemove<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -331,7 +338,7 @@ Future<T> _vaultGetAndRemove<T extends Store<VaultStat, VaultEntry>>(
 /// * [ctx]: The test context
 ///
 /// Returns the created store
-Future<T> _vaultClear<T extends Store<VaultStat, VaultEntry>>(
+Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
   final vault = ctx.newVault(store);
@@ -349,11 +356,153 @@ Future<T> _vaultClear<T extends Store<VaultStat, VaultEntry>>(
   return store;
 }
 
+/// Builds a [Vault] backed by the provided [VaultStore] builder
+/// configured with a [VaultEntryCreatedEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultCreatedEvent<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final clock1 = Clock.fixed(now1);
+  var clock = clock1;
+  VaultEntryCreatedEvent? created;
+  final cache = ctx.newVault(store,
+      eventListenerMode: EventListenerMode.synchronous,
+      clock: Clock(() => clock.now()))
+    ..on<VaultEntryCreatedEvent>().listen((event) => created = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_vaultCreatedEvent_1');
+  check(ctx, created?.source, cache, '_vaultCreatedEvent_2');
+  check(ctx, created?.type, VaultEventType.created, '_vaultCreatedEvent_3');
+  check(ctx, created?.entry.key, key, '_vaultCreatedEvent_4');
+  check(ctx, created?.entry.value, value1, '_vaultCreatedEvent_5');
+  check(ctx, created?.entry.creationTime, clock.now(), '_vaultCreatedEvent_6');
+  check(ctx, created?.entry.accessTime, clock.now(), '_vaultCreatedEvent_7');
+  check(ctx, created?.entry.updateTime, clock.now(), '_vaultCreatedEvent_8');
+
+  return store;
+}
+
+/// Builds a [Vault] backed by the provided [Store] builder
+/// configured with a [VaultEntryUpdatedEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultUpdatedEvent<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now2 = Clock().minutesFromNow(1);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now2);
+  var clock = clock1;
+  VaultEntryCreatedEvent? created;
+  VaultEntryUpdatedEvent? updated;
+  final cache = ctx.newVault(store,
+      eventListenerMode: EventListenerMode.synchronous,
+      clock: Clock(() => clock.now()))
+    ..on<VaultEntryCreatedEvent>().listen((event) => created = event)
+    ..on<VaultEntryUpdatedEvent>().listen((event) => updated = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_vaultUpdatedEvent_1');
+  check(ctx, created?.source, cache, '_vaultUpdatedEvent_2');
+  check(ctx, created?.type, VaultEventType.created, '_vaultUpdatedEvent_3');
+  check(ctx, created?.entry.key, key, '_vaultUpdatedEvent_4');
+  check(ctx, created?.entry.value, value1, '_vaultUpdatedEvent_5');
+  check(ctx, created?.entry.creationTime, clock.now(), '_vaultUpdatedEvent_6');
+  check(ctx, created?.entry.accessTime, clock.now(), '_vaultUpdatedEvent_7');
+  check(ctx, created?.entry.updateTime, clock.now(), '_vaultUpdatedEvent_8');
+
+  clock = clock2;
+  final value2 = ctx.generator.nextValue(2);
+  await cache.put(key, value2);
+  check(ctx, updated, isNotNull, '_vaultUpdatedEvent_9');
+  check(ctx, updated?.source, cache, '_vaultUpdatedEvent_10');
+  check(ctx, updated?.type, VaultEventType.updated, '_vaultUpdatedEvent_11');
+  check(ctx, updated?.oldEntry.key, key, '_vaultUpdatedEvent_12');
+  check(ctx, updated?.oldEntry.value, value1, '_vaultUpdatedEvent_13');
+  check(ctx, updated?.oldEntry.creationTime, clock1.now(),
+      '_vaultUpdatedEvent_14');
+  check(
+      ctx, updated?.oldEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_15');
+  check(
+      ctx, updated?.oldEntry.updateTime, clock1.now(), '_vaultUpdatedEvent_16');
+  check(ctx, updated?.newEntry.key, key, '_vaultUpdatedEvent_17');
+  check(ctx, updated?.newEntry.value, value2, '_vaultUpdatedEvent_18');
+  check(ctx, updated?.newEntry.creationTime, clock1.now(),
+      '_vaultUpdatedEvent_19');
+  check(
+      ctx, updated?.newEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_20');
+  check(
+      ctx, updated?.newEntry.updateTime, clock2.now(), '_vaultUpdatedEvent_21');
+
+  return store;
+}
+
+/// Builds a [Vault] backed by the provided [VaultStore] builder
+/// configured with a [VaultEntryRemovedEvent]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultRemovedEvent<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final now1 = Clock().now();
+  final now3 = Clock().minutesFromNow(3);
+  final clock1 = Clock.fixed(now1);
+  final clock2 = Clock.fixed(now3);
+  var clock = clock1;
+  VaultEntryCreatedEvent? created;
+  VaultEntryRemovedEvent? removed;
+  final cache = ctx.newVault(store,
+      eventListenerMode: EventListenerMode.synchronous,
+      clock: Clock(() => clock.now()))
+    ..on<VaultEntryCreatedEvent>().listen((event) => created = event)
+    ..on<VaultEntryRemovedEvent>().listen((event) => removed = event);
+
+  final key = 'key_1';
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key, value1);
+  check(ctx, created, isNotNull, '_vaultRemovedEvent_1');
+  check(ctx, created?.source, cache, '_vaultRemovedEvent_2');
+  check(ctx, created?.type, VaultEventType.created, '_vaultRemovedEvent_3');
+  check(ctx, created?.entry.key, key, '_vaultRemovedEvent_4');
+  check(ctx, created?.entry.value, value1, '_vaultRemovedEvent_5');
+  check(ctx, created?.entry.creationTime, clock.now(), '_vaultRemovedEvent_6');
+  check(ctx, created?.entry.accessTime, clock.now(), '_vaultRemovedEvent_7');
+  check(ctx, created?.entry.updateTime, clock.now(), '_vaultRemovedEvent_8');
+
+  clock = clock2;
+  await cache.remove(key);
+  check(ctx, removed, isNotNull, '_vaultRemovedEvent_9');
+  check(ctx, removed?.source, cache, '_vaultRemovedEvent_10');
+  check(ctx, removed?.type, VaultEventType.removed, '_vaultRemovedEvent_11');
+  check(ctx, removed?.entry.key, key, '_vaultRemovedEvent_12');
+  check(ctx, removed?.entry.value, value1, '_vaultRemovedEvent_13');
+  check(
+      ctx, removed?.entry.creationTime, clock1.now(), '_vaultRemovedEvent_14');
+  check(ctx, removed?.entry.accessTime, clock1.now(), '_vaultRemovedEvent_15');
+  check(ctx, removed?.entry.updateTime, clock1.now(), '_vaultRemovedEvent_16');
+
+  return store;
+}
+
 /// Returns the list of tests to execute
 ///
 /// * [tests]: The set of tests
 List<Future<T> Function(VaultTestContext<T>)>
-    _getVaultTests<T extends Store<VaultStat, VaultEntry>>(
+    _getVaultTests<T extends Store<VaultInfo, VaultEntry>>(
         {Set<VaultTest> tests = _vaultTests}) {
   return [
     if (tests.contains(VaultTest.put)) _vaultPut,
@@ -367,7 +516,10 @@ List<Future<T> Function(VaultTestContext<T>)>
     if (tests.contains(VaultTest.putIfAbsent)) _vaultPutIfAbsent,
     if (tests.contains(VaultTest.getAndPut)) _vaultGetAndPut,
     if (tests.contains(VaultTest.getAndRemove)) _vaultGetAndRemove,
-    if (tests.contains(VaultTest.clear)) _vaultClear
+    if (tests.contains(VaultTest.clear)) _vaultClear,
+    if (tests.contains(VaultTest.createdEvent)) _vaultCreatedEvent,
+    if (tests.contains(VaultTest.updatedEvent)) _vaultUpdatedEvent,
+    if (tests.contains(VaultTest.removedEvent)) _vaultRemovedEvent
   ];
 }
 
@@ -378,7 +530,7 @@ List<Future<T> Function(VaultTestContext<T>)>
 ///
 /// * [ctx]: the test context
 /// * [tests]: The set of tests
-Future<void> testVaultWith<T extends Store<VaultStat, VaultEntry>>(
+Future<void> testVaultWith<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx,
     {Set<VaultTest> tests = _vaultTests}) async {
   for (var test in _getVaultTests<T>(tests: tests)) {
@@ -391,7 +543,7 @@ Future<void> testVaultWith<T extends Store<VaultStat, VaultEntry>>(
 /// * [newVaultTestContext]: The context builder
 /// * [types]: The type/generator map
 /// * [tests]: The test set
-void testVault<T extends Store<VaultStat, VaultEntry>>(
+void testVault<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContextBuilder<T> newVaultTestContext,
     {Map<TypeTest, Function>? types,
     Set<VaultTest> tests = _vaultTests}) {

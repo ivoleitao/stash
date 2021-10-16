@@ -7,20 +7,20 @@ import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 
 import 'sqlite_database.dart';
 
-typedef SqliteBuilder<S extends Stat, E extends Entry<S>> = SqliteDatabase<S, E>
+typedef SqliteBuilder<I extends Info, E extends Entry<I>> = SqliteDatabase<I, E>
     Function(QueryExecutor executor);
 
 /// The [SqliteAdapter] provides a bridge between the store and the
 /// Sqlite backend
-abstract class SqliteAdapter<S extends Stat, E extends Entry<S>> {
+abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
   /// The [SqliteDatabase] to use
-  late final SqliteDatabase<S, E> _db;
+  late final SqliteDatabase<I, E> _db;
 
   /// Builds a [SqliteAdapter].
   SqliteAdapter();
 
   /// Returns the [DaoAdapter] for the underlining [Store]
-  DaoAdapter<S, E> get dao => _db.dao;
+  DaoAdapter<I, E> get dao => _db.dao;
 
   /// Deletes a named store or the store itself
   ///
@@ -34,13 +34,13 @@ abstract class SqliteAdapter<S extends Stat, E extends Entry<S>> {
 
 /// The [SqliteMemoryAdapter] provides a bridge between the store and the
 /// Sqlite in-memory backend
-class SqliteMemoryAdapter<S extends Stat, E extends Entry<S>>
-    extends SqliteAdapter<S, E> {
+class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
+    extends SqliteAdapter<I, E> {
   /// Builds a [SqliteMemoryAdapter].
   ///
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteMemoryAdapter(SqliteBuilder<S, E> builder,
+  SqliteMemoryAdapter(SqliteBuilder<I, E> builder,
       {bool? logStatements, DatabaseSetup? setup}) {
     _db = builder(
         VmDatabase.memory(logStatements: logStatements ?? false, setup: setup));
@@ -59,8 +59,8 @@ class SqliteMemoryAdapter<S extends Stat, E extends Entry<S>>
 
 /// The [SqliteFileAdapter] provides a bridge between the store and the
 /// Sqlite backend
-class SqliteFileAdapter<S extends Stat, E extends Entry<S>>
-    extends SqliteAdapter<S, E> {
+class SqliteFileAdapter<I extends Info, E extends Entry<I>>
+    extends SqliteAdapter<I, E> {
   final File file;
 
   /// Builds a [SqliteMemoryAdapter].
@@ -68,7 +68,7 @@ class SqliteFileAdapter<S extends Stat, E extends Entry<S>>
   /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteFileAdapter(SqliteBuilder<S, E> builder, this.file,
+  SqliteFileAdapter(SqliteBuilder<I, E> builder, this.file,
       {bool? logStatements, DatabaseSetup? setup}) {
     _db = builder(
         VmDatabase(file, logStatements: logStatements ?? false, setup: setup));

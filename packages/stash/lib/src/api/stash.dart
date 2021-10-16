@@ -3,6 +3,9 @@ abstract class Stash<T> {
   /// The default constructor
   Stash();
 
+  /// The name of the cache
+  String get name;
+
   /// The number of entries on the stash
   Future<int> get size;
 
@@ -47,9 +50,6 @@ abstract class Stash<T> {
   /// Removes the mapping for a key from this stash if it is present.
   ///
   /// * [key]: key whose mapping is to be removed from the stash
-  ///
-  /// Returns `true` if this stash has a value with this [key], or `false`
-  /// if the stash contained no mapping for the [key].
   Future<void> remove(String key);
 
   /// Associates the specified [value] with the specified [key] in this stash,

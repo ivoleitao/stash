@@ -7,8 +7,8 @@ import 'package:stash/stash_api.dart';
 import 'sembast_adapter.dart';
 
 /// Sembast based implemention of a [Store]
-abstract class SembastStore<S extends Stat, E extends Entry<S>>
-    implements Store<S, E> {
+abstract class SembastStore<I extends Info, E extends Entry<I>>
+    implements Store<I, E> {
   /// The adapter
   final SembastAdapter _adapter;
 
@@ -47,13 +47,13 @@ abstract class SembastStore<S extends Stat, E extends Entry<S>>
     return value != null ? _readEntry(value) : null;
   }
 
-  /// Retrieves a [Stat] from a json map
+  /// Retrieves a [Info] from a json map
   ///
   /// * [value]: The json map
   ///
-  ///  Returns the corresponding [Stat]
-  S? _getStatFromValue(Map<String, dynamic> value) {
-    return _getEntryFromValue(value)?.stat;
+  ///  Returns the corresponding [Info]
+  I? _getInfoFromValue(Map<String, dynamic> value) {
+    return _getEntryFromValue(value)?.info;
   }
 
   /// Calls the [CacheDao] and retries a [Entry] by key
@@ -86,10 +86,10 @@ abstract class SembastStore<S extends Stat, E extends Entry<S>>
   }
 
   @override
-  Future<Iterable<S>> stats(String name) =>
+  Future<Iterable<I>> infos(String name) =>
       _getRecords(name).then((records) => records
-          .map((record) => _getStatFromValue(record.value))
-          .map((stat) => stat!)
+          .map((record) => _getInfoFromValue(record.value))
+          .map((info) => info!)
           .toList());
 
   @override
@@ -104,14 +104,14 @@ abstract class SembastStore<S extends Stat, E extends Entry<S>>
       _adapter.exists(name, key);
 
   @override
-  Future<S?> getStat(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.stat);
+  Future<I?> getInfo(String name, String key) {
+    return _getEntry(name, key).then((entry) => entry?.info);
   }
 
   @override
-  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) {
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
     return _adapter.getByKeys(name, keys).then((records) =>
-        records.map((record) => _getEntryFromValue(record)?.stat).toList());
+        records.map((record) => _getEntryFromValue(record)?.info).toList());
   }
 
   /// Checks if the [value] is one of the base datatypes supported by Sembast either returning that value if it is or
@@ -143,9 +143,9 @@ abstract class SembastStore<S extends Stat, E extends Entry<S>>
   Map<String, dynamic> _writeEntry(E entry);
 
   @override
-  Future<void> setStat(String name, String key, S stat) {
+  Future<void> setInfo(String name, String key, I info) {
     return _getEntryFromStore(name, key).then((entry) {
-      entry!.updateStat(stat);
+      entry!.updateInfo(info);
       _adapter.put(name, key, _writeEntry(entry));
     });
   }
@@ -181,7 +181,7 @@ abstract class SembastStore<S extends Stat, E extends Entry<S>>
   }
 }
 
-class SembastVaultStore extends SembastStore<VaultStat, VaultEntry> {
+class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
   /// Builds a [SembastVaultStore].
   ///
   /// * [_adapter]: The sembast store adapter
@@ -221,7 +221,7 @@ class SembastVaultStore extends SembastStore<VaultStat, VaultEntry> {
   }
 }
 
-class SembastCacheStore extends SembastStore<CacheStat, CacheEntry> {
+class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry> {
   /// Builds a [SembastCacheStore].
   ///
   /// * [_adapter]: The sembast store adapter

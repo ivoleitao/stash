@@ -13,7 +13,7 @@ part 'cache_dao.g.dart';
 /// Dao that encapsulates operations over the database
 class CacheDao extends DatabaseAccessor<CacheDatabase>
     with _$CacheDaoMixin
-    implements DaoAdapter<CacheStat, CacheEntry> {
+    implements DaoAdapter<CacheInfo, CacheEntry> {
   /// Builds a [CacheDao]
   ///
   /// * [db]: The [StoreDatabase]
@@ -53,7 +53,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   }
 
   /// Builds and returns the query that retrieves header information from the cache
-  JoinedSelectStatement<$CacheTableTable, CacheData> _statQuery() {
+  JoinedSelectStatement<$CacheTableTable, CacheData> _infoQuery() {
     return selectOnly(cacheTable)
       ..addColumns([
         cacheTable.key,
@@ -65,12 +65,12 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
       ]);
   }
 
-  /// Converts from a [TypedResult] row to a [CacheStat]
+  /// Converts from a [TypedResult] row to a [CacheInfo]
   ///
   /// * [row]: The [TypedResult] row
   ///
-  /// Returns the [CacheStat] after conversion
-  CacheStat _statMapper(TypedResult row) {
+  /// Returns the [CacheInfo] after conversion
+  CacheInfo _infoMapper(TypedResult row) {
     final converter = const Iso8601Converter();
 
     final key = row.read(cacheTable.key);
@@ -80,7 +80,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
     var updateTime = converter.mapToDart(row.read(cacheTable.updateTime));
     var hitCount = row.read(cacheTable.hitCount);
 
-    return CacheStat(key!, creationTime!, expiryTime!,
+    return CacheInfo(key!, creationTime!, expiryTime!,
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 
@@ -88,12 +88,12 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   ///
   /// * [name]: The name of the cache
   ///
-  /// Returns a [Iterable] over all [CacheStat]s
+  /// Returns a [Iterable] over all [CacheInfo]s
   @override
-  Future<Iterable<CacheStat>> stats(String name) {
-    var query = _statQuery()..where(cacheTable.name.equals(name));
+  Future<Iterable<CacheInfo>> infos(String name) {
+    var query = _infoQuery()..where(cacheTable.name.equals(name));
 
-    return query.map(_statMapper).get();
+    return query.map(_infoMapper).get();
   }
 
   /// Converts a [CacheData] to a [CacheEntry]
@@ -146,13 +146,13 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   /// * [name]: The name of the cache
   /// * [key]: The key on the cache
   ///
-  /// Returns the named cache key [CacheStat]
+  /// Returns the named cache key [CacheInfo]
   @override
-  Future<CacheStat> getStat(String name, String key) {
-    var query = _statQuery()
+  Future<CacheInfo> getInfo(String name, String key) {
+    var query = _infoQuery()
       ..where(cacheTable.name.equals(name) & cacheTable.key.equals(key));
 
-    return query.map(_statMapper).getSingle();
+    return query.map(_infoMapper).getSingle();
   }
 
   /// Returns the list of all cache headers on a named cache, filtered by the provided keys
@@ -160,32 +160,32 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   /// * [name]: The name of the cache
   /// * [keys]: The list of keys
   ///
-  /// Returns a [Iterable] over all [CacheStat]s retrieved
+  /// Returns a [Iterable] over all [CacheInfo]s retrieved
   @override
-  Future<Iterable<CacheStat>> getStats(String name, Iterable<String> keys) {
-    var query = _statQuery()
+  Future<Iterable<CacheInfo>> getInfos(String name, Iterable<String> keys) {
+    var query = _infoQuery()
       ..where(cacheTable.name.equals(name) & cacheTable.key.isIn(keys));
 
-    return query.map(_statMapper).get();
+    return query.map(_infoMapper).get();
   }
 
   /// Updates the header of a named cache
   ///
   /// * [name]: The name of the cache
-  /// * [stat]: The [CacheStat]
+  /// * [info]: The [CacheInfo]
   ///
   /// Returns the number of updated enties
   @override
-  Future<int> updateStat(String name, CacheStat stat) {
+  Future<int> updateInfo(String name, CacheInfo info) {
     return (update(cacheTable)
           ..where(
-              (entry) => entry.name.equals(name) & entry.key.equals(stat.key)))
+              (entry) => entry.name.equals(name) & entry.key.equals(info.key)))
         .write(CacheTableCompanion(
-            creationTime: Value(stat.creationTime),
-            expiryTime: Value(stat.expiryTime),
-            accessTime: Value(stat.accessTime),
-            updateTime: Value(stat.updateTime),
-            hitCount: Value(stat.hitCount)));
+            creationTime: Value(info.creationTime),
+            expiryTime: Value(info.expiryTime),
+            accessTime: Value(info.accessTime),
+            updateTime: Value(info.updateTime),
+            hitCount: Value(info.hitCount)));
   }
 
   /// Returns a cache entry for a key on named cache

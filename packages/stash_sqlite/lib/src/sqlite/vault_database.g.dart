@@ -137,14 +137,8 @@ class VaultData extends DataClass implements Insertable<VaultData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      name.hashCode,
-      $mrjc(
-          key.hashCode,
-          $mrjc(
-              creationTime.hashCode,
-              $mrjc(accessTime.hashCode,
-                  $mrjc(updateTime.hashCode, value.hashCode))))));
+  int get hashCode =>
+      Object.hash(name, key, creationTime, accessTime, updateTime, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

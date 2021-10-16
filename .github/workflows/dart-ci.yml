@@ -52,13 +52,14 @@ jobs:
 
       - name: Bootstrap
         run: |
+          dart pub cache clean
           melos bootstrap
           
       - name: Linter
         run: |
+          melos run dependency-validator
           melos run format
           melos run analyze
-          melos run dependency-validator
 
       - name: Test
         run: |

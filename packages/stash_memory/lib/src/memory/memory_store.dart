@@ -1,8 +1,8 @@
 import 'package:stash/stash_api.dart';
 
 /// In-memory [Map] backed implementation of a [Store]
-abstract class MemoryStore<S extends Stat, E extends Entry<S>>
-    implements Store<S, E> {
+abstract class MemoryStore<I extends Info, E extends Entry<I>>
+    implements Store<I, E> {
   /// In-memory [Map] to stores multiple entries.
   /// The value is a [Map] of key/[Entry]
   final Map<String, Map<String, E>> _store = <String, Map<String, E>>{};
@@ -18,8 +18,8 @@ abstract class MemoryStore<S extends Stat, E extends Entry<S>>
       Future.value(_memoryStore(name).keys);
 
   @override
-  Future<Iterable<S>> stats(String name) =>
-      Future.value(_memoryStore(name).values.map((value) => value.stat));
+  Future<Iterable<I>> infos(String name) =>
+      Future.value(_memoryStore(name).values.map((value) => value.info));
 
   @override
   Future<Iterable<E>> values(String name) =>
@@ -31,18 +31,18 @@ abstract class MemoryStore<S extends Stat, E extends Entry<S>>
   }
 
   @override
-  Future<S?> getStat(String name, String key) {
-    return Future.value(_memoryStore(name)[key]?.stat);
+  Future<I?> getInfo(String name, String key) {
+    return Future.value(_memoryStore(name)[key]?.info);
   }
 
   @override
-  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) {
-    return Future.value(keys.map((key) => _memoryStore(name)[key]?.stat));
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
+    return Future.value(keys.map((key) => _memoryStore(name)[key]?.info));
   }
 
   @override
-  Future<void> setStat(String name, String key, S stat) {
-    _store[name]![key]!.updateStat(stat);
+  Future<void> setInfo(String name, String key, I info) {
+    _store[name]![key]!.updateInfo(info);
     return Future.value();
   }
 
@@ -87,6 +87,6 @@ abstract class MemoryStore<S extends Stat, E extends Entry<S>>
   }
 }
 
-class MemoryVaultStore extends MemoryStore<VaultStat, VaultEntry> {}
+class MemoryVaultStore extends MemoryStore<VaultInfo, VaultEntry> {}
 
-class MemoryCacheStore extends MemoryStore<CacheStat, CacheEntry> {}
+class MemoryCacheStore extends MemoryStore<CacheInfo, CacheEntry> {}

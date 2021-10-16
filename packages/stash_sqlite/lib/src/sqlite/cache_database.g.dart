@@ -166,18 +166,8 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      name.hashCode,
-      $mrjc(
-          key.hashCode,
-          $mrjc(
-              creationTime.hashCode,
-              $mrjc(
-                  expiryTime.hashCode,
-                  $mrjc(
-                      accessTime.hashCode,
-                      $mrjc(updateTime.hashCode,
-                          $mrjc(hitCount.hashCode, value.hashCode))))))));
+  int get hashCode => Object.hash(name, key, creationTime, expiryTime,
+      accessTime, updateTime, hitCount, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

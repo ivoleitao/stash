@@ -9,8 +9,8 @@ import 'objectbox_entity.dart';
 import 'vault_entity.dart';
 
 /// Objectbox based implemention of a [Store]
-abstract class ObjectboxStore<O extends ObjectboxEntity, S extends Stat,
-    E extends Entry<S>> implements Store<S, E> {
+abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
+    E extends Entry<I>> implements Store<I, E> {
   /// The adapter
   final ObjectboxAdapter _adapter;
 
@@ -48,8 +48,8 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, S extends Stat,
       .then((box) => box.getAll().map((entity) => entity.key).toList());
 
   @override
-  Future<Iterable<S>> stats(String name) => _adapter.box<O>(name).then(
-      (box) => box.getAll().map((entity) => _toEntry(entity)!.stat).toList());
+  Future<Iterable<I>> infos(String name) => _adapter.box<O>(name).then(
+      (box) => box.getAll().map((entity) => _toEntry(entity)!.info).toList());
 
   @override
   Future<Iterable<E>> values(String name) => _adapter
@@ -61,28 +61,28 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, S extends Stat,
       _adapter.box<O>(name).then((box) => box.contains(key.hashCode));
 
   @override
-  Future<S?> getStat(String name, String key) {
+  Future<I?> getInfo(String name, String key) {
     return _adapter
         .box<O>(name)
-        .then((box) => _toEntry(box.get(key.hashCode))?.stat);
+        .then((box) => _toEntry(box.get(key.hashCode))?.info);
   }
 
   @override
-  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) =>
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) =>
       _adapter.box<O>(name).then((box) => box
           .getMany(keys.map((key) => key.hashCode).toList())
-          .map((entity) => _toEntry(entity)?.stat)
+          .map((entity) => _toEntry(entity)?.info)
           .toList());
 
   @protected
-  void _writeStat(O entity, S stat);
+  void _writeInfo(O entity, I info);
 
   @override
-  Future<void> setStat(String name, String key, S stat) {
+  Future<void> setInfo(String name, String key, I info) {
     return _adapter.box<O>(name).then((box) {
       final entity = box.get(key.hashCode);
       if (entity != null) {
-        _writeStat(entity, stat);
+        _writeInfo(entity, info);
         box.put(entity, mode: PutMode.update);
       }
     });
@@ -122,7 +122,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, S extends Stat,
 }
 
 class ObjectboxVaultStore
-    extends ObjectboxStore<VaultEntity, VaultStat, VaultEntry> {
+    extends ObjectboxStore<VaultEntity, VaultInfo, VaultEntry> {
   ObjectboxVaultStore(ObjectboxAdapter adapter,
       {StoreCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
@@ -163,14 +163,14 @@ class ObjectboxVaultStore
   }
 
   @override
-  void _writeStat(VaultEntity entity, VaultStat stat) {
-    entity.accessTime = stat.accessTime.toIso8601String();
-    entity.updateTime = stat.updateTime.toIso8601String();
+  void _writeInfo(VaultEntity entity, VaultInfo info) {
+    entity.accessTime = info.accessTime.toIso8601String();
+    entity.updateTime = info.updateTime.toIso8601String();
   }
 }
 
 class ObjectboxCacheStore
-    extends ObjectboxStore<CacheEntity, CacheStat, CacheEntry> {
+    extends ObjectboxStore<CacheEntity, CacheInfo, CacheEntry> {
   ObjectboxCacheStore(ObjectboxAdapter adapter,
       {StoreCodec? codec,
       dynamic Function(Map<String, dynamic>)? fromEncodable})
@@ -217,10 +217,10 @@ class ObjectboxCacheStore
   }
 
   @override
-  void _writeStat(CacheEntity entity, CacheStat stat) {
-    entity.expiryTime = stat.expiryTime.toIso8601String();
-    entity.accessTime = stat.accessTime.toIso8601String();
-    entity.updateTime = stat.updateTime.toIso8601String();
-    entity.hitCount = stat.hitCount;
+  void _writeInfo(CacheEntity entity, CacheInfo info) {
+    entity.expiryTime = info.expiryTime.toIso8601String();
+    entity.accessTime = info.accessTime.toIso8601String();
+    entity.updateTime = info.updateTime.toIso8601String();
+    entity.hitCount = info.hitCount;
   }
 }

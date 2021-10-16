@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:stash/stash_api.dart';
 
 /// The [DaoAdapter] provides a common API for the Dao
-abstract class DaoAdapter<S extends Stat, E extends Entry<S>> {
+abstract class DaoAdapter<I extends Info, E extends Entry<I>> {
   /// Counts the number of entries on a named store
   ///
   /// * [name]: The name of the store
@@ -22,8 +22,8 @@ abstract class DaoAdapter<S extends Stat, E extends Entry<S>> {
   ///
   /// * [name]: The name of the store
   ///
-  /// Returns a [Iterable] over all [Stat]s
-  Future<Iterable<S>> stats(String name);
+  /// Returns a [Iterable] over all [Info]s
+  Future<Iterable<I>> infos(String name);
 
   /// Returns the list of all store entries on a named store
   ///
@@ -46,24 +46,24 @@ abstract class DaoAdapter<S extends Stat, E extends Entry<S>> {
   /// * [name]: The name of the store
   /// * [key]: The key on the store
   ///
-  /// Returns the named store key [Stat]
-  Future<S> getStat(String name, String key);
+  /// Returns the named store key [Info]
+  Future<I> getInfo(String name, String key);
 
   /// Returns the list of all store headers on a named store, filtered by the provided keys
   ///
   /// * [name]: The name of the store
   /// * [keys]: The list of keys
   ///
-  /// Returns a [Iterable] over all [Stat]s retrieved
-  Future<Iterable<S>> getStats(String name, Iterable<String> keys);
+  /// Returns a [Iterable] over all [Info]s retrieved
+  Future<Iterable<I>> getInfos(String name, Iterable<String> keys);
 
   /// Updates the header of a named store
   ///
   /// * [name]: The name of the store
-  /// * [stat]: The [Stat]
+  /// * [info]: The [Info]
   ///
   /// Returns the number of updated enties
-  Future<int> updateStat(String name, S stat);
+  Future<int> updateInfo(String name, I info);
 
   /// Returns a cache entry for a key on named store
   ///

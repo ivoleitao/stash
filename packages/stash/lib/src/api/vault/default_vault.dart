@@ -1,22 +1,43 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
-import 'package:stash/src/api/vault.dart';
-import 'package:stash/src/api/vault_entry.dart';
-import 'package:stash/src/api/vault_stat.dart';
+import 'package:stash/src/api/vault/event/created_event.dart';
+import 'package:stash/src/api/vault/event/event.dart';
+import 'package:stash/src/api/vault/event/removed_event.dart';
+import 'package:stash/src/api/vault/event/updated_event.dart';
+import 'package:stash/src/api/vault/stats/default_stats.dart';
+import 'package:stash/src/api/vault/vault.dart';
+import 'package:stash/src/api/vault/vault_entry.dart';
+import 'package:stash/src/api/vault/vault_info.dart';
 import 'package:uuid/uuid.dart';
+
+import 'vault_stats.dart';
 
 /// Default implementation of the [Vault] interface
 class DefaultVault<T> implements Vault<T> {
   /// The name of this vault
+  @override
   final String name;
 
   /// The [Store] for this vault
-  final Store<VaultStat, VaultEntry> storage;
+  final Store<VaultInfo, VaultEntry> storage;
 
   /// The source of time to be used on this vault
   final Clock clock;
+
+  /// The [StreamController] for this vault events
+  final StreamController streamController;
+
+  /// The event publishing mode of this vault
+  final EventListenerMode eventPublishingMode;
+
+  // If the statistics should be collected
+  final bool statsEnabled;
+
+  // The statistics instance
+  final VaultStats stats;
 
   /// Builds a [DefaultVault] out of a mandatory [Store] and a set of
   /// optional configurations
@@ -24,11 +45,39 @@ class DefaultVault<T> implements Vault<T> {
   /// * [storage]: The [Store]
   /// * [name]: The name of the vault
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance, defaults to [DefaultVaultStats]
   ///
   /// Returns a [DefaultVault]
-  DefaultVault(this.storage, {String? name, Clock? clock})
+  DefaultVault(this.storage,
+      {String? name,
+      Clock? clock,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats})
       : name = name ?? Uuid().v1(),
-        clock = clock ?? Clock();
+        clock = clock ?? Clock(),
+        eventPublishingMode = eventListenerMode ?? EventListenerMode.disabled,
+        streamController = StreamController.broadcast(
+            sync: eventListenerMode == EventListenerMode.synchronous),
+        statsEnabled = statsEnabled ?? false,
+        stats = stats ?? DefaultVaultStats();
+
+  /// Fires a new event on the event bus with the specified [event].
+  void _fire(VaultEvent<T>? event) {
+    if (eventPublishingMode != EventListenerMode.disabled && event != null) {
+      streamController.add(event);
+    }
+  }
+
+  @override
+  Stream<E> on<E extends VaultEvent<T>>() {
+    if (E == dynamic) {
+      return streamController.stream as Stream<E>;
+    } else {
+      return streamController.stream.where((event) => event is E).cast<E>();
+    }
+  }
 
   /// Gets the vault storage size
   ///
@@ -51,11 +100,12 @@ class DefaultVault<T> implements Vault<T> {
   /// * [key]: The vault key
   /// * [entry]: The vault entry
   /// * [event]: An optional event
-  Future<void> _putStorageEntry(String key, VaultEntry entry) {
+  Future<void> _putStorageEntry(String key, VaultEntry entry,
+      {VaultEvent<T>? event}) {
     if (entry.valueChanged) {
-      return storage.putEntry(name, key, entry);
+      return storage.putEntry(name, key, entry).then((_) => _fire(event));
     } else {
-      return storage.setStat(name, key, entry.stat);
+      return storage.setInfo(name, key, entry.info);
     }
   }
 
@@ -63,8 +113,8 @@ class DefaultVault<T> implements Vault<T> {
   ///
   /// * [key]: The vault key
   /// * [event]: The event
-  Future<void> _removeStorageEntry(String key) {
-    return storage.remove(name, key);
+  Future<void> _removeStorageEntry(String key, VaultEvent<T> event) {
+    return storage.remove(name, key).then((_) => _fire(event));
   }
 
   /// Clear the vault storage
@@ -82,7 +132,9 @@ class DefaultVault<T> implements Vault<T> {
 
   @override
   Future<bool> containsKey(String key) {
-    return _getStorageEntry(key).then((entry) => entry != null);
+    return _getStorageEntry(key).then((entry) {
+      return entry != null;
+    });
   }
 
   /// Puts the value in the vault.
@@ -90,26 +142,27 @@ class DefaultVault<T> implements Vault<T> {
   /// * [key]: the vault key
   /// * [value]: the vault value
   /// * [now]: the current date/time
-  Future<bool> _putEntry(String key, T value, DateTime now) {
+  Future<void> _putEntry(String key, T value, DateTime now) {
     final entry = VaultEntry.newEntry(key, now, value);
 
-    return _putStorageEntry(key, entry).then((v) => true);
+    return _putStorageEntry(key, entry,
+        event: VaultEntryCreatedEvent<T>(this, entry));
   }
 
-  /// Returns the vault entry value updating the vault statistics i.e. updates
+  /// Returns the vault entry value updating the vault info i.e. updates
   /// [VaultEntry.accessTime] with the access time
   ///
   /// * [entry]: the [VaultEntry] holding the value
   /// * [now]: the current date/time
   Future<T> _getEntryValue(VaultEntry entry, DateTime now) {
     entry.accessTime = now;
-
     // Store the entry changes and return the value
-    return _putStorageEntry(entry.key, entry).then((v) => entry.value);
+    return _putStorageEntry(entry.key, entry).then((_) => entry.value);
   }
 
-  /// Updates the entry value and the vault statistics namely it updates the
+  /// Updates the entry value and the vault info: the
   /// [VaultEntry.updateTime] with the update time
+  /// in place for this vault entry
   ///
   /// * [entry]: the [VaultEntry] holding the value
   /// * [value]: the new value
@@ -117,38 +170,77 @@ class DefaultVault<T> implements Vault<T> {
   Future<T> _updateEntry(VaultEntry entry, T value, DateTime now) {
     final newEntry = entry.updateEntry(value, updateTime: now);
 
-    // Store the entry in the underlining storage
-    return _putStorageEntry(entry.key, newEntry).then((v) => entry.value);
+    // Finally store the entry in the underlining storage
+    return _putStorageEntry(entry.key, newEntry,
+            event: VaultEntryUpdatedEvent<T>(this, entry, newEntry))
+        .then((_) => entry.value);
   }
 
   @override
   Future<T?> get(String key) {
+    // Current time
+    final now = clock.now();
+    // #region Statistics
+    Stopwatch? watch;
+    Future<T?> Function(T? value) posGet = (T? value) => Future.value(value);
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posGet = (T? value) {
+        stats.increaseGets();
+        if (watch != null) {
+          stats.addGetTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future.value(value);
+      };
+    }
+    // #endregion
+
     // Gets the entry from the storage
     return _getStorageEntry(key).then((entry) {
-      if (entry != null) {
-        final now = clock.now();
+      // Does this entry exists ?
+      if (entry == null) {
+        return Future<T?>.value();
+      } else {
         return _getEntryValue(entry, now);
       }
-
-      return null;
-    });
+    }).then(posGet);
   }
 
   @override
-  Future<void> put(String key, T value, {Duration? expiryDuration}) {
+  Future<void> put(String key, T value) {
+    // Current time
+    final now = clock.now();
+    // #region Statistics
+    Stopwatch? watch;
+    Future<void> Function(dynamic) posPut = (_) => Future<void>.value();
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posPut = (_) {
+        stats.increasePuts();
+
+        if (watch != null) {
+          stats.addPutTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future<void>.value();
+      };
+    }
+    // #endregion
+
     // Try to get the entry from the vault
     return _getStorageEntry(key).then((entry) {
-      final now = clock.now();
-
       // If the entry does not exist
       if (entry == null) {
         // And finally we add it to the vault
-        return _putEntry(key, value, now).then((_) => null);
+        return _putEntry(key, value, now);
       } else {
         // Already present let's update the vault instead
-        return _updateEntry(entry, value, now).then((_) => null);
+        return _updateEntry(entry, value, now);
       }
-    });
+    }).then(posPut);
   }
 
   @override
@@ -157,16 +249,43 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration}) {
+  Future<bool> putIfAbsent(String key, T value) {
+    // Current time
+    final now = clock.now();
+    // #region Statistics
+    Stopwatch? watch;
+    Future<VaultEntry?> Function(VaultEntry? entry) posGet =
+        (VaultEntry? entry) => Future.value(entry);
+    Future<bool> Function(bool) posPut = (bool ok) => Future<bool>.value(ok);
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posGet = (VaultEntry? entry) {
+        stats.increaseGets();
+
+        return Future.value(entry);
+      };
+      posPut = (bool ok) {
+        if (ok) {
+          stats.increasePuts();
+        }
+        if (watch != null) {
+          stats.addPutTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future<bool>.value(ok);
+      };
+    }
+    // #endregion
+
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then((entry) {
-      // If the entry is non existent
+    return _getStorageEntry(key).then(posGet).then((entry) {
+      // If the entry does not exist
       if (entry == null) {
-        final now = clock.now();
-        return _putEntry(key, value, now);
+        return _putEntry(key, value, now).then((_) => posPut(true));
       }
 
-      return Future.value(false);
+      return posPut(false);
     });
   }
 
@@ -182,7 +301,8 @@ class DefaultVault<T> implements Vault<T> {
     // Try to get the entry from the vault
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {
-        return _removeStorageEntry(key);
+        // The entry exists on vault let's remove and send and removed event
+        return _removeStorageEntry(key, VaultEntryRemovedEvent<T>(this, entry));
       }
 
       // Do nothing the entry does not exist
@@ -192,33 +312,110 @@ class DefaultVault<T> implements Vault<T> {
 
   @override
   Future<void> remove(String key) {
-    return _removeEntryByKey(key);
+    // #region Statistics
+    Stopwatch? watch;
+    Future<void> Function(dynamic) posRemove = (_) => Future<void>.value();
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posRemove = (_) {
+        stats.increaseRemovals();
+        if (watch != null) {
+          stats.addRemoveTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future<void>.value();
+      };
+    }
+    // #endregion
+    return _removeEntryByKey(key).then(posRemove);
   }
 
   @override
   Future<T?> getAndPut(String key, T value) {
+    // Current time
+    final now = clock.now();
+    // #region Statistics
+    Stopwatch? watch;
+    Future<VaultEntry?> Function(VaultEntry? entry) posGet =
+        (VaultEntry? entry) => Future.value(entry);
+    Future<T?> Function(T? value) posPut =
+        (T? value) => Future<T?>.value(value);
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posGet = (VaultEntry? entry) {
+        stats.increaseGets();
+
+        if (watch != null) {
+          stats.addGetTime(watch.elapsedMilliseconds);
+        }
+
+        return Future.value(entry);
+      };
+      posPut = (T? value) {
+        stats.increasePuts();
+
+        if (watch != null) {
+          stats.addPutTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future<T?>.value();
+      };
+    }
+    // #endregion
+
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then((entry) {
-      final now = clock.now();
+    return _getStorageEntry(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
-        return _putEntry(key, value, now).then((v) => null);
+        return _putEntry(key, value, now).then((_) => posPut(null));
       } else {
-        return _updateEntry(entry, value, now);
+        return _updateEntry(entry, value, now).then(posPut);
       }
     });
   }
 
   @override
   Future<T?> getAndRemove(String key) {
+    // #region Statistics
+    Stopwatch? watch;
+    Future<VaultEntry?> Function(VaultEntry? entry) posGet =
+        (VaultEntry? entry) => Future.value(entry);
+    Future<T?> Function(VaultEntry entry) posRemove =
+        (VaultEntry entry) => Future<T?>.value(entry.value);
+    if (statsEnabled) {
+      watch = clock.stopwatch()..start();
+      posGet = (VaultEntry? entry) {
+        stats.increaseGets();
+
+        if (watch != null) {
+          stats.addGetTime(watch.elapsedMilliseconds);
+        }
+
+        return Future.value(entry);
+      };
+      posRemove = (VaultEntry entry) {
+        stats.increaseRemovals();
+        if (watch != null) {
+          stats.addRemoveTime(watch.elapsedMilliseconds);
+          watch.stop();
+        }
+
+        return Future<T?>.value(entry.value);
+      };
+    }
+    // #endregion
+
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then((entry) {
+    return _getStorageEntry(key).then(posGet).then((entry) {
       if (entry != null) {
         // The entry exists on vault
-        return _removeStorageEntry(key).then((value) => entry.value);
+        return _removeStorageEntry(key, VaultEntryRemovedEvent<T>(this, entry))
+            .then((_) => posRemove(entry));
       }
 
-      return Future.value();
+      return Future<T?>.value();
     });
   }
 }

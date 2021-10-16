@@ -13,7 +13,7 @@ part 'vault_database.g.dart';
 
 /// The vault database class
 class VaultDatabase extends _$VaultDatabase
-    implements SqliteDatabase<VaultStat, VaultEntry> {
+    implements SqliteDatabase<VaultInfo, VaultEntry> {
   /// The version if the schema
   static const int _schemaVersion = 1;
 
@@ -34,5 +34,5 @@ class VaultDatabase extends _$VaultDatabase
   }
 
   @override
-  DaoAdapter<VaultStat, VaultEntry> get dao => vaultDao;
+  DaoAdapter<VaultInfo, VaultEntry> get dao => vaultDao;
 }

@@ -80,7 +80,7 @@ void main() async {
     dioAdapterMock = _DioAdapterMock();
     dio.httpClientAdapter = dioAdapterMock;
 
-    registerFallbackValue<RequestOptions>(RequestOptionsFake());
+    registerFallbackValue(RequestOptionsFake());
   });
 
   test('CacheValue serialization/deserialization with no values', () async {

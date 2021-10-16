@@ -5,8 +5,8 @@ import 'package:stash/stash_api.dart';
 import 'hive_adapter.dart';
 
 /// Hive based implemention of a [Store]
-abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
-    E extends Entry<S>> implements Store<S, E> {
+abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
+    E extends Entry<I>> implements Store<I, E> {
   /// The adapter
   final HiveAdapter<T> _adapter;
 
@@ -61,33 +61,33 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
     return _adapter.store(name).then((store) => _getEntryFromStore(store, key));
   }
 
-  /// Returns the [Stat] for the named cache value specified [key].
+  /// Returns the [Info] for the named cache value specified [key].
   ///
   /// * [name]: The cache name
   /// * [key]: The cache key
   ///
-  /// Returns a [Stat]
-  Future<S?> _getStat(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.stat);
+  /// Returns a [Info]
+  Future<I?> _getInfo(String name, String key) {
+    return _getEntry(name, key).then((entry) => entry?.info);
   }
 
-  /// Returns a [Iterable] over all the [Store] [Stat]s keys requested
+  /// Returns a [Iterable] over all the [Store] [Info]s keys requested
   /// of a named cache.
   ///
   /// * [name]: The cache name
   /// * [keys]: The list of keys
   ///
-  /// Return a list of [CacheStat]s
-  Future<Iterable<S?>> _getStats(String name, Iterable<String> keys) {
+  /// Return a list of [CacheInfo]s
+  Future<Iterable<I?>> _getInfos(String name, Iterable<String> keys) {
     return Stream.fromIterable(keys)
-        .asyncMap((key) => _getStat(name, key))
+        .asyncMap((key) => _getInfo(name, key))
         .toList();
   }
 
   @override
-  Future<Iterable<S>> stats(String name) => _getKeys(name)
-      .then((keys) => _getStats(name, keys))
-      .then((stats) => stats.map((stat) => stat!));
+  Future<Iterable<I>> infos(String name) => _getKeys(name)
+      .then((keys) => _getInfos(name, keys))
+      .then((infos) => infos.map((info) => info!));
 
   /// Returns a [Iterable] over all the [Store] [Entry]s
   /// of a named cache.
@@ -98,7 +98,7 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
   Future<Iterable<E>> _getValues(String name) {
     return _getKeys(name).then((keys) => Stream.fromIterable(keys)
         .asyncMap((key) => _getEntry(name, key))
-        .map((stat) => stat!)
+        .map((info) => info!)
         .toList());
   }
 
@@ -110,13 +110,13 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
       _adapter.store(name).then((store) => store.containsKey(key));
 
   @override
-  Future<S?> getStat(String name, String key) {
-    return _getStat(name, key);
+  Future<I?> getInfo(String name, String key) {
+    return _getInfo(name, key);
   }
 
   @override
-  Future<Iterable<S?>> getStats(String name, Iterable<String> keys) {
-    return _getStats(name, keys);
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
+    return _getInfos(name, keys);
   }
 
   /// Checks if the [value] is one of the base datatypes supported by Hive either returning that value if it is or
@@ -148,10 +148,10 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
   Map<String, dynamic> _writeEntry(E entry);
 
   @override
-  Future<void> setStat(String name, String key, S stat) {
+  Future<void> setInfo(String name, String key, I info) {
     return _adapter.store(name).then((store) {
       return _getEntryFromStore(store, key).then((entry) {
-        entry!.updateStat(stat);
+        entry!.updateInfo(info);
         store.put(key, _writeEntry(entry));
       });
     });
@@ -192,7 +192,7 @@ abstract class HiveStore<T extends BoxBase<Map>, S extends Stat,
 
 /// The Hive vault store
 class HiveVaultStore<T extends BoxBase<Map>>
-    extends HiveStore<T, VaultStat, VaultEntry> {
+    extends HiveStore<T, VaultInfo, VaultEntry> {
   /// Builds a [HiveVaultStore].
   ///
   /// * [adapter]: The hive store adapter
@@ -234,7 +234,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
 
 /// The Hive cache store
 class HiveCacheStore<T extends BoxBase<Map>>
-    extends HiveStore<T, CacheStat, CacheEntry> {
+    extends HiveStore<T, CacheInfo, CacheEntry> {
   /// Builds a [HiveCacheStore].
   ///
   /// * [adapter]: The hive store adapter

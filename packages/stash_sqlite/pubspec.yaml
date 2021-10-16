@@ -11,16 +11,16 @@ environment:
 
 dependencies:
   meta: ^1.7.0
-  moor: ^4.5.0
+  moor: ^4.6.1
   #stash: ^4.0.0
   stash:
     path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.17.12
+  test: ^1.18.2
   build_runner: ^2.1.2
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
-  moor_generator: ^4.5.1
+  moor_generator: ^4.6.0
   dependency_validator: ^3.1.0

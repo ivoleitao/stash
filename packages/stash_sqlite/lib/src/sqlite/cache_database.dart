@@ -13,7 +13,7 @@ part 'cache_database.g.dart';
 
 /// The cache database class
 class CacheDatabase extends _$CacheDatabase
-    implements SqliteDatabase<CacheStat, CacheEntry> {
+    implements SqliteDatabase<CacheInfo, CacheEntry> {
   /// The version if the schema
   static const int _schemaVersion = 1;
 
@@ -34,5 +34,5 @@ class CacheDatabase extends _$CacheDatabase
   }
 
   @override
-  DaoAdapter<CacheStat, CacheEntry> get dao => cacheDao;
+  DaoAdapter<CacheInfo, CacheEntry> get dao => cacheDao;
 }
