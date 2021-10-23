@@ -21,26 +21,29 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
 ///
 /// * [pattern]: All the calls with a url matching this pattern will be cached
 /// * [cacheName]: The name of the cache
+/// * [manager]: An optional [CacheManager]
+/// * [store]: An existing store
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store
 ///
 /// Returns a [Interceptor]
 Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
-    {KeySampler? sampler,
+    {CacheManager? manager,
+    MemoryCacheStore? store,
+    KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader? cacheLoader,
-    EventListenerMode? eventListenerMode,
-    MemoryCacheStore? store}) {
+    EventListenerMode? eventListenerMode}) {
   return newCacheInterceptor(
       pattern,
       newMemoryCache(
+          manager: manager,
           cacheName: cacheName,
           evictionPolicy: evictionPolicy,
           sampler: sampler,
@@ -56,9 +59,14 @@ Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
 /// * [pattern]: All the calls with a url matching this pattern will be cached
 /// * [primary]: The primary cache
 /// * [secondary]: The secondary cache
+/// * [manager]: An optional [CacheManager]
 ///
 /// Returns a [Interceptor]
 Interceptor newTieredCacheInterceptor(
-    String pattern, Cache primary, Cache secondary) {
-  return newCacheInterceptor(pattern, newTieredCache(primary, secondary));
+    String pattern, Cache primary, Cache secondary,
+    {CacheManager? manager, String? cacheName}) {
+  return newCacheInterceptor(
+      pattern,
+      (manager ?? CacheManager.instance)
+          .newTieredCache(primary, secondary, name: cacheName));
 }

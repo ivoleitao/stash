@@ -13,6 +13,7 @@ import 'package:stash/src/api/vault/vault_entry.dart';
 import 'package:stash/src/api/vault/vault_info.dart';
 import 'package:uuid/uuid.dart';
 
+import 'vault_manager.dart';
 import 'vault_stats.dart';
 
 /// Default implementation of the [Vault] interface
@@ -20,6 +21,9 @@ class DefaultVault<T> implements Vault<T> {
   /// The name of this vault
   @override
   final String name;
+
+  @override
+  final VaultManager? manager;
 
   /// The [Store] for this vault
   final Store<VaultInfo, VaultEntry> storage;
@@ -43,6 +47,7 @@ class DefaultVault<T> implements Vault<T> {
   /// optional configurations
   ///
   /// * [storage]: The [Store]
+  /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [statsEnabled]: If statistics should be collected, defaults to false
@@ -50,7 +55,8 @@ class DefaultVault<T> implements Vault<T> {
   ///
   /// Returns a [DefaultVault]
   DefaultVault(this.storage,
-      {String? name,
+      {this.manager,
+      String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,

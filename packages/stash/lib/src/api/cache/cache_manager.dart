@@ -8,20 +8,23 @@ import 'package:stash/src/api/cache/manager/default_manager.dart';
 import 'package:stash/src/api/cache/sampler/full_sampler.dart';
 import 'package:stash/src/api/cache/sampler/sampler.dart';
 import 'package:stash/src/api/event.dart';
-import 'package:stash/src/api/manager.dart';
 import 'package:stash/src/api/store.dart';
 
 import 'cache.dart';
 import 'cache_entry.dart';
 import 'cache_info.dart';
 
-abstract class CacheManager extends StashManager {
+abstract class CacheManager {
   /// The default instance of the [CacheManager]
   static final CacheManager instance = DefaultCacheManager();
+
+  /// Returns a [Iterable] over all the [Cache] names
+  Iterable<String> get names;
 
   /// Builds a new Cache
   ///
   /// * [storage]: The [Store] that will back this [Cache]
+  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -35,7 +38,8 @@ abstract class CacheManager extends StashManager {
   ///
   /// Returns a new DefaultCache
   Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> storage,
-      {String? name,
+      {CacheManager? manager,
+      String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -50,14 +54,20 @@ abstract class CacheManager extends StashManager {
   ///
   /// * [primary]: The primary cache
   /// * [secondary]: The secondary cache
+  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   ///
   /// Returns a new [Cache]
   Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-      {String? name});
+      {CacheManager? manager, String? name});
 
   /// Gets an existing [Cache]
   ///
   /// * [name]: The name of the cache
-  Cache<T>? getCache<T>(String name);
+  Cache<T>? get<T>(String name);
+
+  /// Removes a [Cache] from this [CacheManager] if present
+  ///
+  /// * [name]: The name of the cache
+  void remove(String name);
 }

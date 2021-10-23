@@ -17,12 +17,14 @@ class DefaultVaultManager implements VaultManager {
 
   @override
   Vault<T> newVault<T>(Store<VaultInfo, VaultEntry> storage,
-      {String? name,
+      {VaultManager? manager,
+      String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     final vault = DefaultVault<T>(storage,
+        manager: manager,
         name: name,
         clock: clock,
         eventListenerMode: eventListenerMode,
@@ -34,7 +36,7 @@ class DefaultVaultManager implements VaultManager {
   }
 
   @override
-  Vault<T>? getVault<T>(String name) {
+  Vault<T>? get<T>(String name) {
     return _vaults[name] as Vault<T>?;
   }
 

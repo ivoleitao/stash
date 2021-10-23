@@ -103,151 +103,29 @@ SembastCacheStore newSembastLocalCacheStore(
 
 /// Creates a new [Vault] backed by a [SembastVaultStore]
 ///
-/// * [store]: An existing sembast store
+/// * [store]: An existing file store
+/// * [manager]: An optional [VaultManager]
 /// * [vaultName]: The name of the vault
-Vault<T> newSembastVault<T>(SembastVaultStore store, {String? vaultName}) {
-  return Vault<T>.newVault(store, name: vaultName);
-}
-
-/// Creates a new [Cache] backed by a [SembastCacheStore]
-///
-/// * [store]: An existing sembast store
-/// * [cacheName]: The name of the cache
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
-/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
-/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
-/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
-/// * [eventListenerMode]: The event listener mode of this cache
-Cache<T> newSembastCache<T>(SembastCacheStore store,
-    {String? cacheName,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    ExpiryPolicy? expiryPolicy,
-    CacheLoader<T>? cacheLoader,
-    EventListenerMode? eventListenerMode}) {
-  return Cache<T>.newCache(store,
-      name: cacheName,
-      expiryPolicy: expiryPolicy,
-      sampler: sampler,
-      evictionPolicy: evictionPolicy,
-      maxEntries: maxEntries,
-      cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
-}
-
-/// Creates a new [Vault] backed by a in-memory [SembastVaultStore]
-///
-/// * [vaultName]: The name of the vault
-/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [databaseVersion]: The expected version
-/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
-/// * [databaseMode]: The database mode
-/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-///
-/// Returns a new [Vault] backed by a [SembastVaultStore]
-Vault<T> newSembastMemoryVault<T>(
-    {String? vaultName,
-    SembastVaultStore? store,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
-    int? databaseVersion,
-    OnVersionChangedFunction? onVersionChanged,
-    DatabaseMode? databaseMode,
-    SembastCodec? sembastCodec}) {
-  return newSembastVault<T>(
-      newSembastMemoryVaultStore(
-          fromEncodable: fromEncodable,
-          databaseVersion: databaseVersion,
-          onVersionChanged: onVersionChanged,
-          databaseMode: databaseMode,
-          sembastCodec: sembastCodec),
-      vaultName: vaultName);
-}
-
-/// Creates a new [Cache] backed by a in-memory [SembastCacheStore]
-///
-/// * [cacheName]: The name of the cache
-/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
-/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
-/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
-/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
-/// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [databaseVersion]: The expected version
-/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
-/// * [databaseMode]: The database mode
-/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-///
-/// Returns a new [Cache] backed by a [SembastCacheStore]
-Cache<T> newSembastMemoryCache<T>(
-    {String? cacheName,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    ExpiryPolicy? expiryPolicy,
-    CacheLoader<T>? cacheLoader,
-    EventListenerMode? eventListenerMode,
-    SembastCacheStore? store,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
-    int? databaseVersion,
-    OnVersionChangedFunction? onVersionChanged,
-    DatabaseMode? databaseMode,
-    SembastCodec? sembastCodec}) {
-  return newSembastCache<T>(
-      newSembastMemoryCacheStore(
-          fromEncodable: fromEncodable,
-          databaseVersion: databaseVersion,
-          onVersionChanged: onVersionChanged,
-          databaseMode: databaseMode,
-          sembastCodec: sembastCodec),
-      cacheName: cacheName,
-      sampler: sampler,
-      evictionPolicy: evictionPolicy,
-      maxEntries: maxEntries,
-      expiryPolicy: expiryPolicy,
-      cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
-}
-
-/// Creates a new [Vault] backed by a [SembastVaultStore]
-///
-/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
-/// * [vaultName]: The name of the vault
-/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [databaseVersion]: The expected version
-/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
-/// * [databaseMode]: The database mode
-/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-///
-/// Returns a new [Vault] backed by a [SembastVaultStore]
-Vault<T> newSembastFileVault<T>(
-    {String? path,
+/// * [eventListenerMode]: The event listener mode of this vault
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Vault<T> newSembastVault<T>(SembastVaultStore store,
+    {VaultManager? manager,
     String? vaultName,
-    SembastVaultStore? store,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
-    int? databaseVersion,
-    OnVersionChangedFunction? onVersionChanged,
-    DatabaseMode? databaseMode,
-    SembastCodec? sembastCodec}) {
-  return newSembastVault<T>(
-      newSembastLocalVaultStore(
-          path: path,
-          fromEncodable: fromEncodable,
-          databaseVersion: databaseVersion,
-          onVersionChanged: onVersionChanged,
-          databaseMode: databaseMode,
-          sembastCodec: sembastCodec),
-      vaultName: vaultName);
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return (manager ?? VaultManager.instance).newVault<T>(store,
+      name: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Cache] backed by a [SembastCacheStore]
 ///
-/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
+/// * [store]: An existing sembast store
+/// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
@@ -255,16 +133,10 @@ Vault<T> newSembastFileVault<T>(
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [databaseVersion]: The expected version
-/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
-/// * [databaseMode]: The database mode
-/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-///
-/// Returns a new [Cache] backed by a [SembastCacheStore]
-Cache<T> newSembastFileCache<T>(
-    {String? path,
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Cache<T> newSembastCache<T>(SembastCacheStore store,
+    {CacheManager? manager,
     String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -272,55 +144,284 @@ Cache<T> newSembastFileCache<T>(
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    SembastCacheStore? store,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return (manager ?? CacheManager.instance).newCache<T>(store,
+      name: cacheName,
+      expiryPolicy: expiryPolicy,
+      sampler: sampler,
+      evictionPolicy: evictionPolicy,
+      maxEntries: maxEntries,
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [Vault] backed by a in-memory [SembastVaultStore]
+///
+/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
+/// * [vaultName]: The name of the vault
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+/// * [manager]: An optional [VaultManager]
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Vault] backed by a [SembastVaultStore]
+Vault<T> newSembastMemoryVault<T>(
+    {SembastVaultStore? store,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
-    SembastCodec? sembastCodec}) {
+    SembastCodec? sembastCodec,
+    VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return newSembastVault<T>(
+      store ??
+          newSembastMemoryVaultStore(
+              fromEncodable: fromEncodable,
+              databaseVersion: databaseVersion,
+              onVersionChanged: onVersionChanged,
+              databaseMode: databaseMode,
+              sembastCodec: sembastCodec),
+      manager: manager,
+      vaultName: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [Vault] backed by a [SembastVaultStore]
+///
+/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
+/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+/// * [manager]: An optional [VaultManager]
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Vault] backed by a [SembastVaultStore]
+Vault<T> newSembastLocalVault<T>(
+    {String? path,
+    SembastVaultStore? store,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
+    int? databaseVersion,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? databaseMode,
+    SembastCodec? sembastCodec,
+    VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return newSembastVault<T>(
+      store ??
+          newSembastLocalVaultStore(
+              path: path,
+              fromEncodable: fromEncodable,
+              databaseVersion: databaseVersion,
+              onVersionChanged: onVersionChanged,
+              databaseMode: databaseMode,
+              sembastCodec: sembastCodec),
+      manager: manager,
+      vaultName: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [Cache] backed by a in-memory [SembastCacheStore]
+///
+/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+/// * [cacheName]: The name of the cache
+/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Cache] backed by a [SembastCacheStore]
+Cache<T> newSembastMemoryCache<T>(
+    {SembastCacheStore? store,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
+    int? databaseVersion,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? databaseMode,
+    SembastCodec? sembastCodec,
+    CacheManager? manager,
+    String? cacheName,
+    KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    ExpiryPolicy? expiryPolicy,
+    CacheLoader<T>? cacheLoader,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
   return newSembastCache<T>(
-      newSembastLocalCacheStore(
-          path: path,
-          fromEncodable: fromEncodable,
-          databaseVersion: databaseVersion,
-          onVersionChanged: onVersionChanged,
-          databaseMode: databaseMode,
-          sembastCodec: sembastCodec),
+      store ??
+          newSembastMemoryCacheStore(
+              fromEncodable: fromEncodable,
+              databaseVersion: databaseVersion,
+              onVersionChanged: onVersionChanged,
+              databaseMode: databaseMode,
+              sembastCodec: sembastCodec),
+      manager: manager,
       cacheName: cacheName,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       expiryPolicy: expiryPolicy,
       cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [Cache] backed by a [SembastCacheStore]
+///
+/// * [store]: An existing store, note that [fromEncodable], [databaseVersion], [onVersionChanged], [databaseMode] and  [sembastCodec] will be all ignored is this parameter is provided
+/// * [path]: The location of this store, if not provided defaults to "stash_sembast.db"
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [databaseVersion]: The expected version
+/// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
+/// * [databaseMode]: The database mode
+/// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
+/// * [cacheName]: The name of the cache
+/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Cache] backed by a [SembastCacheStore]
+Cache<T> newSembastFileCache<T>(
+    {SembastCacheStore? store,
+    String? path,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
+    int? databaseVersion,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? databaseMode,
+    SembastCodec? sembastCodec,
+    CacheManager? manager,
+    String? cacheName,
+    KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    ExpiryPolicy? expiryPolicy,
+    CacheLoader<T>? cacheLoader,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return newSembastCache<T>(
+      store ??
+          newSembastLocalCacheStore(
+              path: path,
+              fromEncodable: fromEncodable,
+              databaseVersion: databaseVersion,
+              onVersionChanged: onVersionChanged,
+              databaseMode: databaseMode,
+              sembastCodec: sembastCodec),
+      manager: manager,
+      cacheName: cacheName,
+      sampler: sampler,
+      evictionPolicy: evictionPolicy,
+      maxEntries: maxEntries,
+      expiryPolicy: expiryPolicy,
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Extension over [SembastVaultStore] allowing the creation of multiple vaults from
 /// the same store
 extension SembastVaultStoreExtension on SembastVaultStore {
-  Vault<T> vault<T>({String? vaultName}) {
-    return newSembastVault<T>(this, vaultName: vaultName);
+  /// Creates a new [Vault] backed by a [SembastVaultStore]
+  ///
+  /// * [manager]: An optional [VaultManager]
+  /// * [vaultName]: The name of the vault
+  /// * [eventListenerMode]: The event listener mode of this vault
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  Vault<T> vault<T>(
+      {VaultManager? manager,
+      String? vaultName,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats}) {
+    return newSembastVault<T>(this,
+        manager: manager,
+        vaultName: vaultName,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }
 
 /// Extension over [SembastCacheStore] allowing the creation of multiple caches from
 /// the same store
 extension SembastCacheStoreExtension on SembastCacheStore {
+  /// Creates a new [Cache] backed by a [SembastCacheStore]
+  ///
+  /// * [manager]: An optional [CacheManager]
+  /// * [cacheName]: The name of the cache
+  /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+  /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+  /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+  /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
   Cache<T> cache<T>(
-      {String? cacheName,
+      {CacheManager? manager,
+      String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
       CacheLoader<T>? cacheLoader,
-      EventListenerMode? eventListenerMode}) {
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      CacheStats? stats}) {
     return newSembastCache<T>(this,
+        manager: manager,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,
         maxEntries: maxEntries,
         cacheLoader: cacheLoader,
-        eventListenerMode: eventListenerMode);
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }

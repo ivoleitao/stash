@@ -1,9 +1,10 @@
 /// The stash definition
 abstract class Stash<T> {
-  /// The default constructor
-  Stash();
+  // Map<K, V> getAll(Set<? extends K> keys);
+  // void putAll(java.util.Map<? extends K, ? extends V> map);
+  // void removeAll(Set<? extends K> keys);
 
-  /// The name of the cache
+  /// The name of the stash
   String get name;
 
   /// The number of entries on the stash

@@ -94,55 +94,86 @@ SqliteCacheStore newSqliteLocalCacheStore(
 
 /// Creates a new [Vault] backed by a [SqliteVaultStore]
 ///
-/// * [store]: An existing sqlite store
+/// * [store]: An existing file store
+/// * [manager]: An optional [VaultManager]
 /// * [vaultName]: The name of the vault
-Vault<T> _newSqliteVault<T>(SqliteVaultStore store, {String? vaultName}) {
-  return Vault<T>.newVault(store, name: vaultName);
+/// * [eventListenerMode]: The event listener mode of this vault
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Vault<T> _newSqliteVault<T>(SqliteVaultStore store,
+    {VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return (manager ?? VaultManager.instance).newVault<T>(store,
+      name: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Cache] backed by a [SqliteCacheStore]
 ///
-/// * [store]: An existing sqlite store
+/// * [store]: An existing file store
+/// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
 Cache<T> _newSqliteCache<T>(SqliteCacheStore store,
-    {String? cacheName,
+    {CacheManager? manager,
+    String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
-    EventListenerMode? eventListenerMode}) {
-  return Cache<T>.newCache(store,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return (manager ?? CacheManager.instance).newCache<T>(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Vault] backed by in memory [SqliteVaultStore]
 ///
-/// * [vaultName]: The name of the vault
 /// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be all ignored is this parameter is provided
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [manager]: An optional [VaultManager]
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Vault] backed by a [SqliteVaultStore]
 Vault<T> newSqliteMemoryVault<T>(
-    {String? vaultName,
-    SqliteVaultStore? store,
+    {SqliteVaultStore? store,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
-    DatabaseSetup? databaseSetup}) {
+    DatabaseSetup? databaseSetup,
+    VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
   return _newSqliteVault<T>(
       store ??
           newSqliteMemoryVaultStore(
@@ -150,69 +181,40 @@ Vault<T> newSqliteMemoryVault<T>(
               fromEncodable: fromEncodable,
               logStatements: logStatements,
               databaseSetup: databaseSetup),
-      vaultName: vaultName);
-}
-
-/// Creates a new [Cache] backed by in memory [SqliteCacheStore]
-///
-/// * [cacheName]: The name of the cache
-/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
-/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
-/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
-/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
-/// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be all ignored is this parameter is provided
-/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
-Cache<T> newSqliteMemoryCache<T>(
-    {String? cacheName,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    ExpiryPolicy? expiryPolicy,
-    CacheLoader<T>? cacheLoader,
-    EventListenerMode? eventListenerMode,
-    SqliteCacheStore? store,
-    StoreCodec? codec,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
-    bool? logStatements,
-    DatabaseSetup? databaseSetup}) {
-  return _newSqliteCache<T>(
-      store ??
-          newSqliteMemoryCacheStore(
-              codec: codec,
-              fromEncodable: fromEncodable,
-              logStatements: logStatements,
-              databaseSetup: databaseSetup),
-      cacheName: cacheName,
-      expiryPolicy: expiryPolicy,
-      sampler: sampler,
-      evictionPolicy: evictionPolicy,
-      maxEntries: maxEntries,
-      cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      manager: manager,
+      vaultName: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Vault] backed by a file based [SqliteVaultStore]
 ///
-/// * [vaultName]: The name of the vault
 /// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be ignored if this parameter is provided
 /// * [file]: The path to the database file
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [manager]: An optional [VaultManager]
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Vault] backed by a [SqliteVaultStore]
 Vault<T> newSqliteLocalVault<T>(
-    {String? vaultName,
-    SqliteVaultStore? store,
+    {SqliteVaultStore? store,
     File? file,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
-    DatabaseSetup? databaseSetup}) {
+    DatabaseSetup? databaseSetup,
+    VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
   return _newSqliteVault<T>(
       store ??
           newSqliteLocalVaultStore(
@@ -221,11 +223,21 @@ Vault<T> newSqliteLocalVault<T>(
               fromEncodable: fromEncodable,
               logStatements: logStatements,
               databaseSetup: databaseSetup),
-      vaultName: vaultName);
+      manager: manager,
+      vaultName: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
-/// Creates a new [Cache] backed by a file based [SqliteCacheStore]
+/// Creates a new [Cache] backed by in memory [SqliteCacheStore]
 ///
+/// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be all ignored is this parameter is provided
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
 /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
@@ -233,26 +245,82 @@ Vault<T> newSqliteLocalVault<T>(
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be ignored if this parameter is provided
-/// * [file]: The path to the database file
-/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-/// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
-Cache<T> newSqliteLocalCache<T>(
-    {String? cacheName,
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Cache] backed by a [SqliteCacheStore]
+Cache<T> newSqliteMemoryCache<T>(
+    {SqliteCacheStore? store,
+    StoreCodec? codec,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
+    bool? logStatements,
+    DatabaseSetup? databaseSetup,
+    CacheManager? manager,
+    String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    SqliteCacheStore? store,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return _newSqliteCache<T>(
+      store ??
+          newSqliteMemoryCacheStore(
+              codec: codec,
+              fromEncodable: fromEncodable,
+              logStatements: logStatements,
+              databaseSetup: databaseSetup),
+      manager: manager,
+      cacheName: cacheName,
+      expiryPolicy: expiryPolicy,
+      sampler: sampler,
+      evictionPolicy: evictionPolicy,
+      maxEntries: maxEntries,
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [Cache] backed by a file based [SqliteCacheStore]
+///
+/// * [store]: An existing store, note that [codec], [fromEncodable], [logStatements] and [databaseSetup] will be ignored if this parameter is provided
+/// * [file]: The path to the database file
+/// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
+/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
+/// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [manager]: An optional [CacheManager]
+/// * [cacheName]: The name of the cache
+/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a new [Cache] backed by a [SqliteCacheStore]
+Cache<T> newSqliteLocalCache<T>(
+    {SqliteCacheStore? store,
     File? file,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
-    DatabaseSetup? databaseSetup}) {
+    DatabaseSetup? databaseSetup,
+    CacheManager? manager,
+    String? cacheName,
+    KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    ExpiryPolicy? expiryPolicy,
+    CacheLoader<T>? cacheLoader,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
   return _newSqliteCache<T>(
       store ??
           newSqliteLocalCacheStore(
@@ -261,41 +329,79 @@ Cache<T> newSqliteLocalCache<T>(
               fromEncodable: fromEncodable,
               logStatements: logStatements,
               databaseSetup: databaseSetup),
+      manager: manager,
       cacheName: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Extension over [SqliteVaultStore] allowing the creation of multiple vaults from
 /// the same store
 extension SqliteVaultStoreExtension on SqliteVaultStore {
-  Vault<T> vault<T>({String? vaultName}) {
-    return _newSqliteVault<T>(this, vaultName: vaultName);
+  /// Creates a new [Vault] backed by a [SqliteVaultStore]
+  ///
+  /// * [manager]: An optional [VaultManager]
+  /// * [vaultName]: The name of the vault
+  /// * [eventListenerMode]: The event listener mode of this vault
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  Vault<T> vault<T>(
+      {VaultManager? manager,
+      String? vaultName,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats}) {
+    return _newSqliteVault<T>(this,
+        manager: manager,
+        vaultName: vaultName,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }
 
 /// Extension over [SqliteCacheStore] allowing the creation of multiple caches from
 /// the same store
 extension SqliteCacheStoreExtension on SqliteCacheStore {
+  /// Creates a new [Cache] backed by a [SqliteCacheStore]
+  ///
+  /// * [manager]: An optional [CacheManager]
+  /// * [cacheName]: The name of the cache
+  /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+  /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+  /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+  /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
   Cache<T> cache<T>(
-      {String? cacheName,
+      {CacheManager? manager,
+      String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
       CacheLoader<T>? cacheLoader,
-      EventListenerMode? eventListenerMode}) {
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      CacheStats? stats}) {
     return _newSqliteCache<T>(this,
+        manager: manager,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,
         maxEntries: maxEntries,
         cacheLoader: cacheLoader,
-        eventListenerMode: eventListenerMode);
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }

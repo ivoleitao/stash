@@ -3,13 +3,19 @@ import 'package:stash/src/api/cache/cache.dart';
 import 'package:stash/src/api/cache/event/event.dart';
 import 'package:uuid/uuid.dart';
 
+import 'cache_manager.dart';
+
 /// Tiered implementation of the [Cache] interface allowing the assignement
 /// of a primary and secondary caches. It was designed to be used with a primary
 /// [Cache] bound to a fast store and a secondary
 /// cache bound to a persistent store implementation
 class TieredCache<T> implements Cache<T> {
+  /// The name of this cache
   @override
   final String name;
+
+  @override
+  final CacheManager? manager;
 
   /// The primary cache
   final Cache<T> _primary;
@@ -21,10 +27,11 @@ class TieredCache<T> implements Cache<T> {
   ///
   /// * [_primary]: The primary [Cache]
   /// * [_secondary]: The secondary [Cache]
+  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   ///
   /// Returns a [TieredCache]
-  TieredCache(this._primary, this._secondary, {String? name})
+  TieredCache(this._primary, this._secondary, {this.manager, String? name})
       : name = name ?? Uuid().v1();
 
   /// Returns the set of discting keys across the [_primary] and [_secondary] caches configured

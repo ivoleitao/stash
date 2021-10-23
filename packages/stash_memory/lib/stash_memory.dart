@@ -19,14 +19,28 @@ MemoryCacheStore newMemoryCacheStore() {
 /// Creates a new [Vault] backed by a [MemoryVaultStore]
 ///
 /// * [store]: An existing sqlite store
+/// * [manager]: An optional [VaultManager]
 /// * [vaultName]: The name of the vault
-Vault<T> _newMemoryVault<T>(MemoryVaultStore store, {String? vaultName}) {
-  return Vault<T>.newVault(store, name: vaultName);
+/// * [eventListenerMode]: The event listener mode of this vault
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Vault<T> _newMemoryVault<T>(MemoryVaultStore store,
+    {VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return (manager ?? VaultManager.instance).newVault<T>(store,
+      name: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Cache] backed by a [MemoryCacheStore]
 ///
-/// * [store]: An existing sqlite store
+/// * [store]: An existing memory store
+/// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -34,37 +48,60 @@ Vault<T> _newMemoryVault<T>(MemoryVaultStore store, {String? vaultName}) {
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
 Cache<T> _newMemoryCache<T>(MemoryCacheStore store,
-    {String? cacheName,
+    {CacheManager? manager,
+    String? cacheName,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     ExpiryPolicy? expiryPolicy,
     CacheLoader<T>? cacheLoader,
-    EventListenerMode? eventListenerMode}) {
-  return Cache<T>.newCache(store,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return (manager ?? CacheManager.instance).newCache<T>(store,
       name: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Vault] backed by a [MemoryVaultStore]
 ///
-/// * [vaultName]: The name of the vault
+/// * [manager]: An optional [VaultManager]
 /// * [store]: An existing store
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
 ///
 /// Returns a [Vault] backed by a [MemoryVaultStore]
-Vault<T> newMemoryVault<T>({String? vaultName, MemoryVaultStore? store}) {
+Vault<T> newMemoryVault<T>(
+    {VaultManager? manager,
+    MemoryVaultStore? store,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
   return _newMemoryVault<T>(store ?? newMemoryVaultStore(),
-      vaultName: vaultName);
+      manager: manager,
+      vaultName: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Creates a new [Cache] backed by a [MemoryStore]
 ///
+/// * [manager]: An optional [CacheManager]
+/// * [store]: An existing store
 /// * [cacheName]: The name of the cache
 /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -72,48 +109,93 @@ Vault<T> newMemoryVault<T>({String? vaultName, MemoryVaultStore? store}) {
 /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
 /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
 /// * [eventListenerMode]: The event listener mode of this cache
-/// * [store]: An existing store
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
 ///
 /// Returns a [Cache] backed by a [MemoryCacheStore]
 Cache<T> newMemoryCache<T>(
-    {String? cacheName,
+    {CacheManager? manager,
+    MemoryCacheStore? store,
+    String? cacheName,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
     int? maxEntries,
     CacheLoader<T>? cacheLoader,
     EventListenerMode? eventListenerMode,
-    MemoryCacheStore? store}) {
+    bool? statsEnabled,
+    CacheStats? stats}) {
   return _newMemoryCache<T>(store ?? newMemoryCacheStore(),
+      manager: manager,
       cacheName: cacheName,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
       maxEntries: maxEntries,
       cacheLoader: cacheLoader,
-      eventListenerMode: eventListenerMode);
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
 }
 
 /// Extension over [MemoryVaultStore] allowing the creation of multiple vaults from
 /// the same store
 extension MemoryVaultStoreExtension on MemoryVaultStore {
-  Vault<T> vault<T>({String? vaultName}) {
-    return newMemoryVault<T>(store: this, vaultName: vaultName);
+  /// Creates a new [Vault] backed by a [MemoryVaultStore]
+  ///
+  /// * [manager]: An optional [VaultManager]
+  /// * [vaultName]: The name of the vault
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  ///
+  /// Returns a [Vault] backed by a [MemoryVaultStore]
+  Vault<T> vault<T>(
+      {VaultManager? manager,
+      String? vaultName,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats}) {
+    return newMemoryVault<T>(
+        manager: manager,
+        store: this,
+        vaultName: vaultName,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }
 
 /// Extension over [MemoryCacheStore] allowing the creation of multiple caches from
 /// the same store
 extension MemoryCacheStoreExtension on MemoryCacheStore {
+  /// Creates a new [Cache] backed by a [MemoryStore]
+  ///
+  /// * [manager]: An optional [CacheManager]
+  /// * [cacheName]: The name of the cache
+  /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
+  /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
+  /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
+  /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  ///
+  /// Returns a [Cache] backed by a [MemoryCacheStore]
   Cache<T> cache<T>(
-      {String? cacheName,
+      {CacheManager? manager,
+      String? cacheName,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
       ExpiryPolicy? expiryPolicy,
       CacheLoader<T>? cacheLoader,
-      EventListenerMode? eventListenerMode}) {
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      CacheStats? stats}) {
     return newMemoryCache<T>(
+        manager: manager,
         store: this,
         cacheName: cacheName,
         expiryPolicy: expiryPolicy,
@@ -121,6 +203,8 @@ extension MemoryCacheStoreExtension on MemoryCacheStore {
         evictionPolicy: evictionPolicy,
         maxEntries: maxEntries,
         cacheLoader: cacheLoader,
-        eventListenerMode: eventListenerMode);
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
   }
 }

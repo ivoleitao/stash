@@ -22,11 +22,16 @@ import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
 import 'package:uuid/uuid.dart';
 
+import 'cache_manager.dart';
+
 /// Default implementation of the [Cache] interface
 class DefaultCache<T> implements Cache<T> {
   /// The name of this cache
   @override
   final String name;
+
+  @override
+  final CacheManager? manager;
 
   /// The [Store] for this cache
   final Store<CacheInfo, CacheEntry> storage;
@@ -65,6 +70,7 @@ class DefaultCache<T> implements Cache<T> {
   /// Builds a [DefaultCache] out of a mandatory [Store] and a set of optional configurations
   ///
   /// * [storage]: The [Store]
+  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -78,7 +84,8 @@ class DefaultCache<T> implements Cache<T> {
   ///
   /// Returns a [DefaultCache]
   DefaultCache(this.storage,
-      {String? name,
+      {this.manager,
+      String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,

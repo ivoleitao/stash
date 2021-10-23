@@ -2,9 +2,6 @@
 /// access, update, and remove information from caches.
 library stash_api;
 
-import 'package:stash/src/api/cache/cache.dart';
-import 'package:stash/src/api/cache/tiered_cache.dart';
-
 export 'src/api/cache/cache.dart';
 export 'src/api/cache/cache_entry.dart';
 export 'src/api/cache/cache_info.dart';
@@ -41,7 +38,6 @@ export 'src/api/codec/store_codec.dart';
 export 'src/api/entry.dart';
 export 'src/api/event.dart';
 export 'src/api/info.dart';
-export 'src/api/manager.dart';
 export 'src/api/store.dart';
 export 'src/api/vault/default_vault.dart';
 export 'src/api/vault/event/created_event.dart';
@@ -54,15 +50,3 @@ export 'src/api/vault/vault_entry.dart';
 export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
-
-/// Creates a new [TieredCache] with a primary and secondary [Cache] instances
-///
-/// * [primary]: The primary cache
-/// * [secondary]: The secondary cache
-/// * [name]: The name of the cache
-///
-/// Returns a [Cache] backed by a [TieredCache]
-Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-    {String? name}) {
-  return Cache<T>.newTieredCache(primary, secondary, name: name);
-}
