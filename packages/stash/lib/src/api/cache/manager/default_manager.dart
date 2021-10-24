@@ -51,9 +51,17 @@ class DefaultCacheManager implements CacheManager {
 
   @override
   Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-      {CacheManager? manager, String? name}) {
-    final cache =
-        TieredCache<T>(primary, secondary, manager: manager, name: name);
+      {CacheManager? manager,
+      String? name,
+      Clock? clock,
+      bool? statsEnabled,
+      CacheStats? stats}) {
+    final cache = TieredCache<T>(primary, secondary,
+        manager: manager,
+        name: name,
+        clock: clock,
+        statsEnabled: statsEnabled,
+        stats: stats);
 
     _caches[cache.name] = cache;
 

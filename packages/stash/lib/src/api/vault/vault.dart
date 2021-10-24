@@ -7,9 +7,15 @@ import '../stash.dart';
 abstract class Vault<T> extends Stash<T> {
   // VaultManager getVaultManager();
 
-  /// Gets the [CacheManager] that owns and manages the [Vault].
+  /// Gets the [VaultManager] that owns and manages the [Vault].
   /// Returns the manager or `null` if the [Vault] is not managed
   VaultManager? get manager;
+
+  // If the statistics should be collected
+  bool get statsEnabled;
+
+  // Gets the vault stats
+  VaultStats get stats;
 
   /// Listens for events of Type `T` and its subtypes.
   ///

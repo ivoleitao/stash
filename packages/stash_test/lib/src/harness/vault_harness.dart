@@ -11,6 +11,7 @@ final _typeTests = Map.unmodifiable(defaultStashTypeTests);
 
 /// The supported vault tests
 enum VaultTest {
+  name,
   put,
   putRemove,
   size,
@@ -25,11 +26,13 @@ enum VaultTest {
   clear,
   createdEvent,
   updatedEvent,
-  removedEvent
+  removedEvent,
+  stats
 }
 
 /// The set of vault tests
 const _vaultTests = {
+  VaultTest.name,
   VaultTest.put,
   VaultTest.putRemove,
   VaultTest.size,
@@ -44,8 +47,25 @@ const _vaultTests = {
   VaultTest.clear,
   VaultTest.createdEvent,
   VaultTest.updatedEvent,
-  VaultTest.removedEvent
+  VaultTest.removedEvent,
+  VaultTest.stats
 };
+
+/// Calls [Vault.name] on a [Vault] backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultName<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newVault(store, name: 'test');
+
+  check(ctx, cache.name, isNotNull, '_vaultName_1');
+  check(ctx, cache.name, 'test', '_vaultName_2');
+
+  return store;
+}
 
 /// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
 ///
@@ -498,6 +518,25 @@ Future<T> _vaultRemovedEvent<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
+/// Builds a [Vault] backed by the provided [Store] builder
+/// configured with stats
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final vault = ctx.newVault(store, statsEnabled: true);
+
+  // Get a non existing entry
+  final value = await vault.get('miss');
+  check(ctx, value, isNull, '_vaultStats_01');
+  check(ctx, vault.stats.gets, 1, '_vaultStats_01');
+
+  return store;
+}
+
 /// Returns the list of tests to execute
 ///
 /// * [tests]: The set of tests
@@ -505,6 +544,7 @@ List<Future<T> Function(VaultTestContext<T>)>
     _getVaultTests<T extends Store<VaultInfo, VaultEntry>>(
         {Set<VaultTest> tests = _vaultTests}) {
   return [
+    if (tests.contains(VaultTest.name)) _vaultName,
     if (tests.contains(VaultTest.put)) _vaultPut,
     if (tests.contains(VaultTest.putRemove)) _vaultPutRemove,
     if (tests.contains(VaultTest.size)) _vaultSize,
@@ -519,7 +559,8 @@ List<Future<T> Function(VaultTestContext<T>)>
     if (tests.contains(VaultTest.clear)) _vaultClear,
     if (tests.contains(VaultTest.createdEvent)) _vaultCreatedEvent,
     if (tests.contains(VaultTest.updatedEvent)) _vaultUpdatedEvent,
-    if (tests.contains(VaultTest.removedEvent)) _vaultRemovedEvent
+    if (tests.contains(VaultTest.removedEvent)) _vaultRemovedEvent,
+    if (tests.contains(VaultTest.stats)) _vaultStats
   ];
 }
 

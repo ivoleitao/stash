@@ -37,10 +37,10 @@ class DefaultVault<T> implements Vault<T> {
   /// The event publishing mode of this vault
   final EventListenerMode eventPublishingMode;
 
-  // If the statistics should be collected
+  @override
   final bool statsEnabled;
 
-  // The statistics instance
+  @override
   final VaultStats stats;
 
   /// Builds a [DefaultVault] out of a mandatory [Store] and a set of

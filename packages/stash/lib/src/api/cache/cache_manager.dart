@@ -56,10 +56,17 @@ abstract class CacheManager {
   /// * [secondary]: The secondary cache
   /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
+  /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance, defaults to [DefaultCacheStats]
   ///
   /// Returns a new [Cache]
   Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-      {CacheManager? manager, String? name});
+      {CacheManager? manager,
+      String? name,
+      Clock? clock,
+      bool? statsEnabled,
+      CacheStats? stats});
 
   /// Gets an existing [Cache]
   ///

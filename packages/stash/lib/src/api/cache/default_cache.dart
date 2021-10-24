@@ -61,10 +61,10 @@ class DefaultCache<T> implements Cache<T> {
   /// The event publishing mode of this cache
   final EventListenerMode eventPublishingMode;
 
-  // If the statistics should be collected
+  @override
   final bool statsEnabled;
 
-  // The statistics instance
+  @override
   final CacheStats stats;
 
   /// Builds a [DefaultCache] out of a mandatory [Store] and a set of optional configurations

@@ -11,6 +11,7 @@ final _typeTests = Map.unmodifiable(defaultStashTypeTests);
 
 /// The supported cache tests
 enum CacheTest {
+  name,
   put,
   putRemove,
   size,
@@ -39,11 +40,13 @@ enum CacheTest {
   updatedEvent,
   removedEvent,
   expiredEvent,
-  evictedEvent
+  evictedEvent,
+  stats
 }
 
 /// The set of cache tests
 const _cacheTests = {
+  CacheTest.name,
   CacheTest.put,
   CacheTest.putRemove,
   CacheTest.size,
@@ -72,8 +75,25 @@ const _cacheTests = {
   CacheTest.updatedEvent,
   CacheTest.removedEvent,
   CacheTest.expiredEvent,
-  CacheTest.evictedEvent
+  CacheTest.evictedEvent,
+  CacheTest.stats
 };
+
+/// Calls [Cache.name] on a [Cache] backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheName<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newCache(store, name: 'test');
+
+  check(ctx, cache.name, isNotNull, '_cacheName_1');
+  check(ctx, cache.name, 'test', '_cacheName_2');
+
+  return store;
+}
 
 /// Calls [Cache.put] on a [Cache] backed by the provided [Store] builder
 ///
@@ -1011,7 +1031,7 @@ Future<T> _cacheExpiredEvent<T extends Store<CacheInfo, CacheEntry>>(
 }
 
 /// Builds a [Cache] backed by the provided [Store] builder
-/// configured with a [EvictdEntryEvent]
+/// configured with a [CacheEntryEvictedEvent]
 ///
 /// * [ctx]: The test context
 ///
@@ -1069,6 +1089,26 @@ Future<T> _cacheEvictedEvent<T extends Store<CacheInfo, CacheEntry>>(
   return store;
 }
 
+/// Builds a [Cache] backed by the provided [Store] builder
+/// configured with stats
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newCache(store, statsEnabled: true);
+
+  // Get a non existing entry
+  final value = await cache.get('miss');
+  check(ctx, value, isNull, '_cacheStats_01');
+  check(ctx, cache.stats.gets, 0, '_cacheStats_02');
+  check(ctx, cache.stats.misses, 1, '_cacheStats_03');
+
+  return store;
+}
+
 /// Returns the list of tests to execute
 ///
 /// * [tests]: The set of tests
@@ -1076,6 +1116,7 @@ List<Future<T> Function(CacheTestContext<T>)>
     _getCacheTests<T extends Store<CacheInfo, CacheEntry>>(
         {Set<CacheTest> tests = _cacheTests}) {
   return [
+    if (tests.contains(CacheTest.name)) _cacheName,
     if (tests.contains(CacheTest.put)) _cachePut,
     if (tests.contains(CacheTest.putRemove)) _cachePutRemove,
     if (tests.contains(CacheTest.size)) _cacheSize,
@@ -1104,7 +1145,8 @@ List<Future<T> Function(CacheTestContext<T>)>
     if (tests.contains(CacheTest.updatedEvent)) _cacheUpdatedEvent,
     if (tests.contains(CacheTest.removedEvent)) _cacheRemovedEvent,
     if (tests.contains(CacheTest.expiredEvent)) _cacheExpiredEvent,
-    if (tests.contains(CacheTest.evictedEvent)) _cacheEvictedEvent
+    if (tests.contains(CacheTest.evictedEvent)) _cacheEvictedEvent,
+    if (tests.contains(CacheTest.stats)) _cacheStats
   ];
 }
 

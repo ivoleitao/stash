@@ -1,4 +1,5 @@
 import 'package:stash/src/api/cache/cache_manager.dart';
+import 'package:stash/src/api/cache/cache_stats.dart';
 import 'package:stash/src/api/cache/event/event.dart';
 
 import '../stash.dart';
@@ -14,6 +15,12 @@ abstract class Cache<T> extends Stash<T> {
   /// Gets the [CacheManager] that owns and manages the [Cache].
   /// Returns the manager or `null` if the [Cache] is not managed
   CacheManager? get manager;
+
+  // If the statistics should be collected
+  bool get statsEnabled;
+
+  // Gets the cache stats
+  CacheStats get stats;
 
   /// Returns the cache value for the specified [key]. If [expiryDuration] is
   /// specified it uses it instead of the configured expiry policy duration
