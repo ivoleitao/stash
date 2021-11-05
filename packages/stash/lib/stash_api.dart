@@ -2,6 +2,18 @@
 /// access, update, and remove information from caches.
 library stash_api;
 
+import 'package:stash/src/api/cache/cache_entry.dart';
+
+import 'src/api/cache/cache.dart';
+import 'src/api/cache/cache_info.dart';
+import 'src/api/cache/cache_manager.dart';
+import 'src/api/cache/cache_stats.dart';
+import 'src/api/cache/eviction/eviction_policy.dart';
+import 'src/api/cache/expiry/expiry_policy.dart';
+import 'src/api/cache/sampler/sampler.dart';
+import 'src/api/event.dart';
+import 'src/api/store.dart';
+
 export 'src/api/cache/cache.dart';
 export 'src/api/cache/cache_entry.dart';
 export 'src/api/cache/cache_info.dart';
@@ -50,3 +62,79 @@ export 'src/api/vault/vault_entry.dart';
 export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
+
+/// Creates a new [Cache] backed by a [Store]
+///
+/// * [store]: An existing store
+/// * [manager]: An optional [CacheManager]
+/// * [cacheName]: The name of the cache
+/// * [expiryPolicy]: The expiry policy to use
+/// * [sampler]: The sampler to use upon eviction of a cache element
+/// * [evictionPolicy]: The eviction policy to use
+/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> store,
+    {CacheManager? manager,
+    String? cacheName,
+    KeySampler? sampler,
+    EvictionPolicy? evictionPolicy,
+    int? maxEntries,
+    ExpiryPolicy? expiryPolicy,
+    CacheLoader<T>? cacheLoader,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    CacheStats? stats}) {
+  return (manager ?? CacheManager.instance).newCache<T>(store,
+      name: cacheName,
+      expiryPolicy: expiryPolicy,
+      sampler: sampler,
+      evictionPolicy: evictionPolicy,
+      maxEntries: maxEntries,
+      cacheLoader: cacheLoader,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+extension CacheStoreExtension on Store<CacheInfo, CacheEntry> {
+  /// Creates a new [Cache] backed by a [Store]
+  ///
+  /// * [manager]: An optional [CacheManager]
+  /// * [cacheName]: The name of the cache
+  /// * [expiryPolicy]: The expiry policy to use
+  /// * [sampler]: The sampler to use upon eviction of a cache element
+  /// * [evictionPolicy]: The eviction policy to use
+  /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  ///
+  /// Returns a [Cache] backed by a [Store]
+  Cache<T> cache1<T>(
+      {CacheManager? manager,
+      String? cacheName,
+      KeySampler? sampler,
+      EvictionPolicy? evictionPolicy,
+      int? maxEntries,
+      ExpiryPolicy? expiryPolicy,
+      CacheLoader<T>? cacheLoader,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      CacheStats? stats}) {
+    return newCache<T>(this,
+        manager: manager,
+        cacheName: cacheName,
+        expiryPolicy: expiryPolicy,
+        sampler: sampler,
+        evictionPolicy: evictionPolicy,
+        maxEntries: maxEntries,
+        cacheLoader: cacheLoader,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
+  }
+}

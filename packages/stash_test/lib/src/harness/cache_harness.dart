@@ -1101,10 +1101,30 @@ Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
   final cache = ctx.newCache(store, statsEnabled: true);
 
   // Get a non existing entry
-  final value = await cache.get('miss');
+  final key1 = 'key_1';
+  var value = await cache.get(key1);
   check(ctx, value, isNull, '_cacheStats_01');
   check(ctx, cache.stats.gets, 0, '_cacheStats_02');
   check(ctx, cache.stats.misses, 1, '_cacheStats_03');
+  check(ctx, cache.stats.averageGetTime, greaterThan(0), '_cacheStats_04');
+
+  // Put a value
+  final value1 = ctx.generator.nextValue(1);
+  await cache.put(key1, value1);
+  value = await cache.get(key1);
+  check(ctx, value, isNotNull, '_cacheStats_05');
+  check(ctx, cache.stats.gets, 1, '_cacheStats_06');
+  check(ctx, cache.stats.misses, 1, '_cacheStats_07');
+  check(ctx, cache.stats.puts, 1, '_cacheStats_08');
+  check(ctx, cache.stats.averagePutTime, greaterThan(0), '_cacheStats_09');
+
+  // Remove a value
+  await cache.remove(key1);
+  check(ctx, cache.stats.gets, 1, '_cacheStats_10');
+  check(ctx, cache.stats.misses, 1, '_cacheStats_11');
+  check(ctx, cache.stats.puts, 1, '_cacheStats_12');
+  check(ctx, cache.stats.removals, 1, '_cacheStats_13');
+  check(ctx, cache.stats.averageRemoveTime, greaterThan(0), '_cacheStats_14');
 
   return store;
 }

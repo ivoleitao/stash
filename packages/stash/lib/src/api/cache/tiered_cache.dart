@@ -89,7 +89,7 @@ class TieredCache<T> implements Cache<T> {
       posGet = (T? value) {
         if (watch != null) {
           stats.increaseGets();
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -116,7 +116,7 @@ class TieredCache<T> implements Cache<T> {
       posPut = (_) {
         stats.increasePuts();
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -149,7 +149,7 @@ class TieredCache<T> implements Cache<T> {
           stats.increasePuts();
         }
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -180,7 +180,7 @@ class TieredCache<T> implements Cache<T> {
       posRemove = (_) {
         stats.increaseRemovals();
         if (watch != null) {
-          stats.addRemoveTime(watch.elapsedMilliseconds);
+          stats.addRemoveTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -209,7 +209,7 @@ class TieredCache<T> implements Cache<T> {
         }
         stats.increasePuts();
         if (watch != null) {
-          int elapsed = watch.elapsedMilliseconds;
+          int elapsed = watch.elapsedMicroseconds;
           stats.addGetTime(elapsed);
           stats.addPutTime(elapsed);
           watch.stop();
@@ -245,7 +245,7 @@ class TieredCache<T> implements Cache<T> {
         }
         stats.increaseRemovals();
         if (watch != null) {
-          int elapsed = watch.elapsedMilliseconds;
+          int elapsed = watch.elapsedMicroseconds;
           stats.addGetTime(elapsed);
           stats.addRemoveTime(elapsed);
           watch.stop();

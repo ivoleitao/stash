@@ -20,8 +20,8 @@ class CacheStoreContext extends CacheTestContext<MemoryCacheStore> {
 }
 
 void main() async {
-  testStore((generator) => VaultStoreContext(generator));
-  testStore((generator) => CacheStoreContext(generator));
-  testVault((generator) => VaultStoreContext(generator));
+  //testStore((generator) => VaultStoreContext(generator));
+  //testStore((generator) => CacheStoreContext(generator));
+  //testVault((generator) => VaultStoreContext(generator));
   testCache((generator) => CacheStoreContext(generator));
 }

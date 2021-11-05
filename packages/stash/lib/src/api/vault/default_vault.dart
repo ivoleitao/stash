@@ -194,7 +194,7 @@ class DefaultVault<T> implements Vault<T> {
       posGet = (T? value) {
         stats.increaseGets();
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -227,7 +227,7 @@ class DefaultVault<T> implements Vault<T> {
         stats.increasePuts();
 
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -275,7 +275,7 @@ class DefaultVault<T> implements Vault<T> {
           stats.increasePuts();
         }
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -326,7 +326,7 @@ class DefaultVault<T> implements Vault<T> {
       posRemove = (_) {
         stats.increaseRemovals();
         if (watch != null) {
-          stats.addRemoveTime(watch.elapsedMilliseconds);
+          stats.addRemoveTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -353,7 +353,7 @@ class DefaultVault<T> implements Vault<T> {
         stats.increaseGets();
 
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
         }
 
         return Future.value(entry);
@@ -362,7 +362,7 @@ class DefaultVault<T> implements Vault<T> {
         stats.increasePuts();
 
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -396,7 +396,7 @@ class DefaultVault<T> implements Vault<T> {
         stats.increaseGets();
 
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
         }
 
         return Future.value(entry);
@@ -404,7 +404,7 @@ class DefaultVault<T> implements Vault<T> {
       posRemove = (VaultEntry entry) {
         stats.increaseRemovals();
         if (watch != null) {
-          stats.addRemoveTime(watch.elapsedMilliseconds);
+          stats.addRemoveTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 

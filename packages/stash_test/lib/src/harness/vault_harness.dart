@@ -530,9 +530,27 @@ Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
   final vault = ctx.newVault(store, statsEnabled: true);
 
   // Get a non existing entry
-  final value = await vault.get('miss');
+  final key1 = 'key_1';
+  var value = await vault.get(key1);
   check(ctx, value, isNull, '_vaultStats_01');
-  check(ctx, vault.stats.gets, 1, '_vaultStats_01');
+  check(ctx, vault.stats.gets, 1, '_vaultStats_02');
+  check(ctx, vault.stats.averageGetTime, greaterThan(0), '_vaultStats_03');
+
+  // Put a value
+  final value1 = ctx.generator.nextValue(1);
+  await vault.put(key1, value1);
+  value = await vault.get(key1);
+  check(ctx, value, isNotNull, '_vaultStats_05');
+  check(ctx, vault.stats.gets, 2, '_vaultStats_06');
+  check(ctx, vault.stats.puts, 1, '_vaultStats_07');
+  check(ctx, vault.stats.averagePutTime, greaterThan(0), '_vaultStats_08');
+
+  // Remove a value
+  await vault.remove(key1);
+  check(ctx, vault.stats.gets, 2, '_vaultStats_09');
+  check(ctx, vault.stats.puts, 1, '_vaultStats_10');
+  check(ctx, vault.stats.removals, 1, '_vaultStats_11');
+  check(ctx, vault.stats.averageRemoveTime, greaterThan(0), '_vaultStats_12');
 
   return store;
 }

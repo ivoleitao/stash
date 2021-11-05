@@ -34,12 +34,12 @@ class DefaultVaultStats implements VaultStats {
 
   @override
   double get averageGetTime {
-    final millis = getTimeTaken;
-    if (gets == 0 || millis == 0) {
+    final timeTaken = getTimeTaken;
+    if (gets == 0 || timeTaken == 0) {
       return 0.0;
     }
 
-    return millis / gets;
+    return timeTaken / gets;
   }
 
   int putTimeTaken = 0;
@@ -51,12 +51,12 @@ class DefaultVaultStats implements VaultStats {
 
   @override
   double get averagePutTime {
-    final millis = putTimeTaken;
-    if (puts == 0 || millis == 0) {
+    final timeTaken = putTimeTaken;
+    if (puts == 0 || timeTaken == 0) {
       return 0.0;
     }
 
-    return millis / puts;
+    return timeTaken / puts;
   }
 
   int removeTimeTaken = 0;
@@ -68,12 +68,12 @@ class DefaultVaultStats implements VaultStats {
 
   @override
   double get averageRemoveTime {
-    final millis = removeTimeTaken;
-    if (removals == 0 || millis == 0) {
+    final timeTaken = removeTimeTaken;
+    if (removals == 0 || timeTaken == 0) {
       return 0.0;
     }
 
-    return millis / removals;
+    return timeTaken / removals;
   }
 
   @override

@@ -323,7 +323,7 @@ class DefaultCache<T> implements Cache<T> {
       };
       posGet2 = (T? value) {
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -372,7 +372,7 @@ class DefaultCache<T> implements Cache<T> {
           stats.increasePuts();
         }
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -433,7 +433,7 @@ class DefaultCache<T> implements Cache<T> {
           stats.increasePuts();
         }
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -511,7 +511,7 @@ class DefaultCache<T> implements Cache<T> {
       posRemove = (_) {
         stats.increaseRemovals();
         if (watch != null) {
-          stats.addRemoveTime(watch.elapsedMilliseconds);
+          stats.addRemoveTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -544,7 +544,7 @@ class DefaultCache<T> implements Cache<T> {
           stats.increaseGets();
         }
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
         }
 
         return Future.value(entry);
@@ -554,7 +554,7 @@ class DefaultCache<T> implements Cache<T> {
           stats.increasePuts();
         }
         if (watch != null) {
-          stats.addPutTime(watch.elapsedMilliseconds);
+          stats.addPutTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
@@ -606,7 +606,7 @@ class DefaultCache<T> implements Cache<T> {
           stats.increaseGets();
         }
         if (watch != null) {
-          stats.addGetTime(watch.elapsedMilliseconds);
+          stats.addGetTime(watch.elapsedMicroseconds);
         }
 
         return Future.value(entry);
@@ -614,7 +614,7 @@ class DefaultCache<T> implements Cache<T> {
       posRemove = (CacheEntry entry) {
         stats.increaseRemovals();
         if (watch != null) {
-          stats.addRemoveTime(watch.elapsedMilliseconds);
+          stats.addRemoveTime(watch.elapsedMicroseconds);
           watch.stop();
         }
 
