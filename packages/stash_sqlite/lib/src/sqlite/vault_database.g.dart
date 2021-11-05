@@ -3,7 +3,7 @@
 part of 'vault_database.dart';
 
 // **************************************************************************
-// MoorGenerator
+// DriftGenerator
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
@@ -32,8 +32,7 @@ class VaultData extends DataClass implements Insertable<VaultData> {
       required this.accessTime,
       required this.updateTime,
       required this.value});
-  factory VaultData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory VaultData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return VaultData(
       name: const StringType()
@@ -85,7 +84,7 @@ class VaultData extends DataClass implements Insertable<VaultData> {
 
   factory VaultData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return VaultData(
       name: serializer.fromJson<String>(json['name']),
       key: serializer.fromJson<String>(json['key']),
@@ -97,7 +96,7 @@ class VaultData extends DataClass implements Insertable<VaultData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'name': serializer.toJson<String>(name),
       'key': serializer.toJson<String>(key),
@@ -331,7 +330,7 @@ class $VaultTableTable extends VaultTable
   Set<GeneratedColumn> get $primaryKey => {name, key};
   @override
   VaultData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return VaultData.fromData(data, _db,
+    return VaultData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 

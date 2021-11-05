@@ -3,7 +3,7 @@
 part of 'cache_database.dart';
 
 // **************************************************************************
-// MoorGenerator
+// DriftGenerator
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
@@ -40,8 +40,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
       required this.updateTime,
       required this.hitCount,
       required this.value});
-  factory CacheData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+  factory CacheData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return CacheData(
       name: const StringType()
@@ -104,7 +103,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
 
   factory CacheData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return CacheData(
       name: serializer.fromJson<String>(json['name']),
       key: serializer.fromJson<String>(json['key']),
@@ -118,7 +117,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'name': serializer.toJson<String>(name),
       'key': serializer.toJson<String>(key),
@@ -412,7 +411,7 @@ class $CacheTableTable extends CacheTable
   Set<GeneratedColumn> get $primaryKey => {name, key};
   @override
   CacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CacheData.fromData(data, _db,
+    return CacheData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 

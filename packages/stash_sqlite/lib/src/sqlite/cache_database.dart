@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/dao/cache_dao.dart';
 import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
@@ -9,7 +9,7 @@ import 'sqlite_database.dart';
 
 part 'cache_database.g.dart';
 
-@UseMoor(tables: [CacheTable], daos: [CacheDao])
+@DriftDatabase(tables: [CacheTable], daos: [CacheDao])
 
 /// The cache database class
 class CacheDatabase extends _$CacheDatabase

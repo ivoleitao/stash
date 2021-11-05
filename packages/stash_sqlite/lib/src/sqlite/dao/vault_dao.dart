@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/table/iso8601_converter.dart';
 import 'package:stash_sqlite/src/sqlite/table/vault_table.dart';
@@ -8,7 +8,7 @@ import 'dao_adapter.dart';
 
 part 'vault_dao.g.dart';
 
-@UseDao(tables: [VaultTable])
+@DriftAccessor(tables: [VaultTable])
 
 /// Dao that encapsulates operations over the database
 class VaultDao extends DatabaseAccessor<VaultDatabase>

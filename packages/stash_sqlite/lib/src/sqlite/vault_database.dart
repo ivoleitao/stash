@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 import 'package:stash_sqlite/src/sqlite/dao/vault_dao.dart';
@@ -9,7 +9,7 @@ import 'sqlite_database.dart';
 
 part 'vault_database.g.dart';
 
-@UseMoor(tables: [VaultTable], daos: [VaultDao])
+@DriftDatabase(tables: [VaultTable], daos: [VaultDao])
 
 /// The vault database class
 class VaultDatabase extends _$VaultDatabase

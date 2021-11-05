@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/cache_database.dart';
 import 'package:stash_sqlite/src/sqlite/table/cache_table.dart';
@@ -8,7 +8,7 @@ import 'dao_adapter.dart';
 
 part 'cache_dao.g.dart';
 
-@UseDao(tables: [CacheTable])
+@DriftAccessor(tables: [CacheTable])
 
 /// Dao that encapsulates operations over the database
 class CacheDao extends DatabaseAccessor<CacheDatabase>

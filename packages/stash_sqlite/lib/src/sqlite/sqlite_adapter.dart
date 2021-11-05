@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/native.dart';
+import 'package:drift/drift.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 
@@ -43,7 +43,7 @@ class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
   SqliteMemoryAdapter(SqliteBuilder<I, E> builder,
       {bool? logStatements, DatabaseSetup? setup}) {
     _db = builder(
-        VmDatabase.memory(logStatements: logStatements ?? false, setup: setup));
+        NativeDatabase.memory(logStatements: logStatements ?? false, setup: setup));
   }
 
   @override
@@ -71,7 +71,7 @@ class SqliteFileAdapter<I extends Info, E extends Entry<I>>
   SqliteFileAdapter(SqliteBuilder<I, E> builder, this.file,
       {bool? logStatements, DatabaseSetup? setup}) {
     _db = builder(
-        VmDatabase(file, logStatements: logStatements ?? false, setup: setup));
+        NativeDatabase(file, logStatements: logStatements ?? false, setup: setup));
   }
 
   @override

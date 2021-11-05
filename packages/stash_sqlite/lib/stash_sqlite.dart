@@ -3,8 +3,8 @@ library stash_sqlite;
 
 import 'dart:io';
 
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/cache_database.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
@@ -19,7 +19,7 @@ export 'src/sqlite/sqlite_store.dart';
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 SqliteVaultStore newSqliteMemoryVaultStore(
     {StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
@@ -37,7 +37,7 @@ SqliteVaultStore newSqliteMemoryVaultStore(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 SqliteCacheStore newSqliteMemoryCacheStore(
     {StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
@@ -56,7 +56,7 @@ SqliteCacheStore newSqliteMemoryCacheStore(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 SqliteVaultStore newSqliteLocalVaultStore(
     {File? file,
     StoreCodec? codec,
@@ -77,7 +77,7 @@ SqliteVaultStore newSqliteLocalVaultStore(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 SqliteCacheStore newSqliteLocalCacheStore(
     {File? file,
     StoreCodec? codec,
@@ -155,7 +155,7 @@ Cache<T> _newSqliteCache<T>(SqliteCacheStore store,
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 /// * [manager]: An optional [VaultManager]
 /// * [vaultName]: The name of the vault
 /// * [eventListenerMode]: The event listener mode of this cache
@@ -195,7 +195,7 @@ Vault<T> newSqliteMemoryVault<T>(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 /// * [manager]: An optional [VaultManager]
 /// * [vaultName]: The name of the vault
 /// * [eventListenerMode]: The event listener mode of this cache
@@ -236,7 +236,7 @@ Vault<T> newSqliteLocalVault<T>(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 /// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -291,7 +291,7 @@ Cache<T> newSqliteMemoryCache<T>(
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
-/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before moor is fully ready
+/// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
 /// * [manager]: An optional [CacheManager]
 /// * [cacheName]: The name of the cache
 /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided

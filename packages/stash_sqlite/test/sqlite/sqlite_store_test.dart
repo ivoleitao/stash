@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 import 'package:stash_test/stash_test.dart';
@@ -28,7 +28,7 @@ class CacheStoreContext extends CacheTestContext<SqliteCacheStore> {
 }
 
 void main() async {
-  moorRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   testStore((generator) => VaultStoreContext(generator));
   testStore((generator) => CacheStoreContext(generator));

@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   meta: ^1.7.0
-  moor: ^4.6.1+1
+  drift: ^1.0.1
   #stash: ^4.0.0
   stash:
     path: ../stash
@@ -22,5 +22,5 @@ dev_dependencies:
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
-  moor_generator: ^4.6.0+1
+  drift_dev: ^1.0.2
   dependency_validator: ^3.1.0

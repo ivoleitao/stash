@@ -1,5 +1,5 @@
 # stash_sqlite
-A [stash](https://github.com/ivoleitao/stash) storage extension for sqlite using the [moor](https://pub.dev/packages/moor) package
+A [stash](https://github.com/ivoleitao/stash) storage extension for sqlite using the [drift](https://pub.dev/packages/drift) package
 
 [![Pub Package](https://img.shields.io/pub/v/stash_sqlite.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sqlite)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_sqlite)](https://codecov.io/gh/ivoleitao/stash)
@@ -8,7 +8,7 @@ A [stash](https://github.com/ivoleitao/stash) storage extension for sqlite using
 
 ## Overview
 
-This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a storage layer through the [moor](https://pub.dev/packages/moor) persistent library and relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `stash` features, like expiration and eviction which are highly dependent on the update of control fields on the cache entries upon user operations. On this storage backend the update of those fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast) since they are stored in specific columns on the relational database model.
+This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides a storage layer through the [drift](https://pub.dev/packages/drift) persistent library and relies on a highly performing binary serialization of the cache items through the use of [msgpack](https://msgpack.org) serialization format. This storage backend is particularly optimized to support `stash` features, like expiration and eviction which are highly dependent on the update of control fields on the cache entries upon user operations. On this storage backend the update of those fields does not cause the update of the whole cache entry as some of the other storage implementations like [stash_hive](https://pub.dartlang.org/packages/stash_hive) or [stash_sembast](https://pub.dartlang.org/packages/stash_sembast) since they are stored in specific columns on the relational database model.
 
 ## Getting Started
 
