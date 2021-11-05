@@ -13,6 +13,11 @@ import 'src/api/cache/expiry/expiry_policy.dart';
 import 'src/api/cache/sampler/sampler.dart';
 import 'src/api/event.dart';
 import 'src/api/store.dart';
+import 'src/api/vault/vault.dart';
+import 'src/api/vault/vault_entry.dart';
+import 'src/api/vault/vault_info.dart';
+import 'src/api/vault/vault_manager.dart';
+import 'src/api/vault/vault_stats.dart';
 
 export 'src/api/cache/cache.dart';
 export 'src/api/cache/cache_entry.dart';
@@ -63,6 +68,29 @@ export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
 
+/// Creates a new [Vault] backed by a [Store]
+///
+/// * [manager]: An optional [VaultManager]
+/// * [store]: An existing store
+/// * [vaultName]: The name of the vault
+/// * [eventListenerMode]: The event listener mode of this cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+///
+/// Returns a [Vault] backed by a [Store]
+Vault<T> newVault<T>(Store<VaultInfo, VaultEntry> store,
+    {VaultManager? manager,
+    String? vaultName,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return (manager ?? VaultManager.instance).newVault<T>(store,
+      name: vaultName,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
 /// Creates a new [Cache] backed by a [Store]
 ///
 /// * [store]: An existing store
@@ -99,6 +127,35 @@ Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> store,
       stats: stats);
 }
 
+/// Extension over [MemoryVaultStore] allowing the creation of multiple vaults from
+/// the same store
+extension MemoryVaultStoreExtension on Store<VaultInfo, VaultEntry> {
+  /// Creates a new [Vault] backed by a [MemoryVaultStore]
+  ///
+  /// * [manager]: An optional [VaultManager]
+  /// * [vaultName]: The name of the vault
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  ///
+  /// Returns a [Vault] backed by a [Store]
+  Vault<T> vault<T>(
+      {VaultManager? manager,
+      String? vaultName,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats}) {
+    return newVault<T>(this,
+        manager: manager,
+        vaultName: vaultName,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
+  }
+}
+
+/// Extension over [Store] allowing the creation of multiple caches from
+/// the same store
 extension CacheStoreExtension on Store<CacheInfo, CacheEntry> {
   /// Creates a new [Cache] backed by a [Store]
   ///
@@ -114,7 +171,7 @@ extension CacheStoreExtension on Store<CacheInfo, CacheEntry> {
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Cache] backed by a [Store]
-  Cache<T> cache1<T>(
+  Cache<T> cache<T>(
       {CacheManager? manager,
       String? cacheName,
       KeySampler? sampler,
