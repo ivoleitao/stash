@@ -527,14 +527,19 @@ Future<T> _vaultRemovedEvent<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store, statsEnabled: true);
+  var systemTime = Clock().now();
+  final clock = Clock(() {
+    systemTime = systemTime.add(Duration(milliseconds: 10));
+    return systemTime;
+  });
+  final vault = ctx.newVault(store, clock: clock, statsEnabled: true);
 
   // Get a non existing entry
   final key1 = 'key_1';
   var value = await vault.get(key1);
   check(ctx, value, isNull, '_vaultStats_01');
   check(ctx, vault.stats.gets, 1, '_vaultStats_02');
-  check(ctx, vault.stats.averageGetTime, greaterThan(0), '_vaultStats_03');
+  check(ctx, vault.stats.averageGetTime, 10.0, '_vaultStats_03');
 
   // Put a value
   final value1 = ctx.generator.nextValue(1);
@@ -543,14 +548,14 @@ Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
   check(ctx, value, isNotNull, '_vaultStats_05');
   check(ctx, vault.stats.gets, 2, '_vaultStats_06');
   check(ctx, vault.stats.puts, 1, '_vaultStats_07');
-  check(ctx, vault.stats.averagePutTime, greaterThan(0), '_vaultStats_08');
+  check(ctx, vault.stats.averagePutTime, 10.0, '_vaultStats_08');
 
   // Remove a value
   await vault.remove(key1);
   check(ctx, vault.stats.gets, 2, '_vaultStats_09');
   check(ctx, vault.stats.puts, 1, '_vaultStats_10');
   check(ctx, vault.stats.removals, 1, '_vaultStats_11');
-  check(ctx, vault.stats.averageRemoveTime, greaterThan(0), '_vaultStats_12');
+  check(ctx, vault.stats.averageRemoveTime, 10.0, '_vaultStats_12');
 
   return store;
 }

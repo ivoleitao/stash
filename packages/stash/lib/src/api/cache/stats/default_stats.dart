@@ -84,7 +84,7 @@ class DefaultCacheStats implements CacheStats {
       return 0.0;
     }
 
-    return timeTaken / requests;
+    return (timeTaken / requests) / 1000.0;
   }
 
   int putTimeTaken = 0;
@@ -101,7 +101,7 @@ class DefaultCacheStats implements CacheStats {
       return 0.0;
     }
 
-    return timeTaken / puts;
+    return (timeTaken / puts) / 1000.0;
   }
 
   int removeTimeTaken = 0;
@@ -118,7 +118,7 @@ class DefaultCacheStats implements CacheStats {
       return 0.0;
     }
 
-    return timeTaken / removals;
+    return (timeTaken / removals) / 1000.0;
   }
 
   @override

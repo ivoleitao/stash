@@ -153,21 +153,11 @@ class DefaultCache<T> implements Cache<T> {
   ///
   /// * [key]: The cache key
   /// * [entry]: The cache entry
+  /// * [now]: The current date/time
   /// * [event]: An optional event
-  Future<void> _putStorageEntry(String key, CacheEntry entry,
+  Future<void> _putStorageEntry(String key, CacheEntry entry, DateTime now,
       {CacheEvent<T>? event}) {
     if (entry.valueChanged) {
-      // #region Statistics
-      Future<void> Function(dynamic) posEvict = (_) => Future<void>.value();
-      if (statsEnabled) {
-        posEvict = (_) {
-          stats.increaseEvictions();
-
-          return Future<void>.value();
-        };
-      }
-      // #endregion
-
       return storage
           .putEntry(name, key, entry)
           .then((_) => _fire(event))
@@ -178,8 +168,7 @@ class DefaultCache<T> implements Cache<T> {
               (ks) => storage.getInfos(name, sampler.sample(ks)).then((infos) {
                     final info = evictionPolicy.select(infos, entry.info);
                     if (info != null) {
-                      return _removeEntryByKey(info.key, evicted: true)
-                          .then(posEvict);
+                      return _removeEntryByKey(info.key, now, evicted: true);
                     }
 
                     return Future<void>.value();
@@ -198,7 +187,18 @@ class DefaultCache<T> implements Cache<T> {
   /// * [key]: The cache key
   /// * [event]: The event
   Future<void> _removeStorageEntry(String key, CacheEvent<T> event) {
-    return storage.remove(name, key).then((_) => _fire(event));
+    return storage.remove(name, key).then((_) {
+      _fire(event);
+      // #region Statistics
+      if (statsEnabled) {
+        if (event.type == CacheEventType.expired) {
+          stats.increaseExpiries();
+        } else if (event.type == CacheEventType.evicted) {
+          stats.increaseEvictions();
+        }
+      }
+      // #endregion
+    });
   }
 
   /// Clear the cache storage
@@ -242,7 +242,7 @@ class DefaultCache<T> implements Cache<T> {
     // Check if the entry is expired before adding it to the cache
     if (!entry.isExpired(now)) {
       // Nope, it's not expired let's store it then and return
-      return _putStorageEntry(key, entry,
+      return _putStorageEntry(key, entry, now,
               event: CacheEntryCreatedEvent<T>(this, entry))
           .then((_) => true);
     }
@@ -269,7 +269,7 @@ class DefaultCache<T> implements Cache<T> {
     }
 
     // Store the entry changes and return the value
-    return _putStorageEntry(entry.key, entry).then((_) => entry.value);
+    return _putStorageEntry(entry.key, entry, now).then((_) => entry.value);
   }
 
   /// Updates the entry value and the cache info: the
@@ -293,7 +293,7 @@ class DefaultCache<T> implements Cache<T> {
         hitCount: entry.hitCount + 1);
 
     // Finally store the entry in the underlining storage
-    return _putStorageEntry(entry.key, newEntry,
+    return _putStorageEntry(entry.key, newEntry, now,
             event: CacheEntryUpdatedEvent<T>(this, entry, newEntry))
         .then((_) => entry.value);
   }
@@ -312,9 +312,6 @@ class DefaultCache<T> implements Cache<T> {
       posGet1 = (CacheEntry? entry) {
         if (entry == null || entry.isExpired(now)) {
           stats.increaseMisses();
-          if (entry != null) {
-            stats.increaseExpiries();
-          }
         } else {
           stats.increaseGets();
         }
@@ -349,9 +346,8 @@ class DefaultCache<T> implements Cache<T> {
             return Future<T?>.value();
           }
 
-          return _putEntry(key, value, now, expiryDuration)
-              .then((_) => posGet2(value));
-        });
+          return _putEntry(key, value, now, expiryDuration).then((_) => value);
+        }).then(posGet2);
       } else {
         return _getEntryValue(entry, now, expiryDuration).then(posGet2);
       }
@@ -470,13 +466,12 @@ class DefaultCache<T> implements Cache<T> {
   /// Removes a entry from storage by [key]
   ///
   /// * [key]: key whose mapping is to be removed from the cache
+  /// * [now]: the current date/time
   /// * [evicted]: If the reason for removal was eviction
   ///
   /// Returns true if the entry was removed, false otherwise
-  Future<void> _removeEntryByKey(String key, {bool evicted = false}) {
-    // Current time
-    final now = clock.now();
-
+  Future<void> _removeEntryByKey(String key, DateTime now,
+      {bool evicted = false}) {
     // Try to get the entry from the cache
     return _getStorageEntry(key).then((entry) {
       if (entry != null) {
@@ -503,6 +498,8 @@ class DefaultCache<T> implements Cache<T> {
 
   @override
   Future<void> remove(String key) {
+    // Current time
+    final now = clock.now();
     // #region Statistics
     Stopwatch? watch;
     Future<void> Function(dynamic) posRemove = (_) => Future<void>.value();
@@ -519,7 +516,7 @@ class DefaultCache<T> implements Cache<T> {
       };
     }
     // #endregion
-    return _removeEntryByKey(key).then(posRemove);
+    return _removeEntryByKey(key, now).then(posRemove);
   }
 
   @override
@@ -537,9 +534,6 @@ class DefaultCache<T> implements Cache<T> {
       posGet = (CacheEntry? entry) {
         if (entry == null || entry.isExpired(now)) {
           stats.increaseMisses();
-          if (entry != null) {
-            stats.increaseExpiries();
-          }
         } else {
           stats.increaseGets();
         }
@@ -599,9 +593,6 @@ class DefaultCache<T> implements Cache<T> {
       posGet = (CacheEntry? entry) {
         if (entry == null || entry.isExpired(now)) {
           stats.increaseMisses();
-          if (entry != null) {
-            stats.increaseExpiries();
-          }
         } else {
           stats.increaseGets();
         }

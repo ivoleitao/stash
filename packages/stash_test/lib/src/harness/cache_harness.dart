@@ -1098,7 +1098,17 @@ Future<T> _cacheEvictedEvent<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store, statsEnabled: true);
+  var now = Clock().now();
+  final clock = Clock(() {
+    now = now.add(Duration(milliseconds: 10));
+    return now;
+  });
+  final cache = ctx.newCache(store,
+      expiryPolicy: const AccessedExpiryPolicy(Duration(minutes: 1)),
+      maxEntries: 2,
+      evictionPolicy: const FifoEvictionPolicy(),
+      clock: clock,
+      statsEnabled: true);
 
   // Get a non existing entry
   final key1 = 'key_1';
@@ -1106,7 +1116,7 @@ Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, value, isNull, '_cacheStats_01');
   check(ctx, cache.stats.gets, 0, '_cacheStats_02');
   check(ctx, cache.stats.misses, 1, '_cacheStats_03');
-  check(ctx, cache.stats.averageGetTime, greaterThan(0), '_cacheStats_04');
+  check(ctx, cache.stats.averageGetTime, 10.0, '_cacheStats_04');
 
   // Put a value
   final value1 = ctx.generator.nextValue(1);
@@ -1116,7 +1126,7 @@ Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, cache.stats.gets, 1, '_cacheStats_06');
   check(ctx, cache.stats.misses, 1, '_cacheStats_07');
   check(ctx, cache.stats.puts, 1, '_cacheStats_08');
-  check(ctx, cache.stats.averagePutTime, greaterThan(0), '_cacheStats_09');
+  check(ctx, cache.stats.averagePutTime, 10.0, '_cacheStats_09');
 
   // Remove a value
   await cache.remove(key1);
@@ -1124,7 +1134,34 @@ Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, cache.stats.misses, 1, '_cacheStats_11');
   check(ctx, cache.stats.puts, 1, '_cacheStats_12');
   check(ctx, cache.stats.removals, 1, '_cacheStats_13');
-  check(ctx, cache.stats.averageRemoveTime, greaterThan(0), '_cacheStats_14');
+  check(ctx, cache.stats.averageRemoveTime, 10.0, '_cacheStats_14');
+
+  // Expire a value
+  await cache.put(key1, value1);
+  value = await cache.get(key1);
+  check(ctx, value, isNotNull, '_cacheStats_15');
+  now = Clock().fromNow(minutes: 2);
+  value = await cache.get(key1);
+  check(ctx, value, isNull, '_cacheStats_16');
+  check(ctx, cache.stats.expiries, 1, '_cacheStats_17');
+
+  // Expire a value
+  final key2 = 'key_2';
+  final value2 = ctx.generator.nextValue(2);
+  var size = await cache.size;
+  check(ctx, size, 0, '_cacheStats_18');
+  await cache.put(key1, value1);
+  await cache.put(key2, value2);
+  size = await cache.size;
+  check(ctx, size, 2, '_cacheStats_19');
+  final key3 = 'key_3';
+  final value3 = ctx.generator.nextValue(3);
+  await cache.put(key3, value3);
+  size = await cache.size;
+  check(ctx, size, 2, '_cacheStats_20');
+  value = await cache.get(key1);
+  check(ctx, value, isNull, '_cacheStats_21');
+  check(ctx, cache.stats.evictions, 1, '_cacheStats_22');
 
   return store;
 }

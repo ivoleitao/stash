@@ -39,7 +39,7 @@ class DefaultVaultStats implements VaultStats {
       return 0.0;
     }
 
-    return timeTaken / gets;
+    return (timeTaken / gets) / 1000.0;
   }
 
   int putTimeTaken = 0;
@@ -56,7 +56,7 @@ class DefaultVaultStats implements VaultStats {
       return 0.0;
     }
 
-    return timeTaken / puts;
+    return (timeTaken / puts) / 1000.0;
   }
 
   int removeTimeTaken = 0;
@@ -73,7 +73,7 @@ class DefaultVaultStats implements VaultStats {
       return 0.0;
     }
 
-    return timeTaken / removals;
+    return (timeTaken / removals) / 1000.0;
   }
 
   @override
