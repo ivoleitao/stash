@@ -20,6 +20,7 @@ import 'package:stash/src/api/cache/sampler/sampler.dart';
 import 'package:stash/src/api/cache/stats/default_stats.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
+import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 import 'cache_manager.dart';
@@ -141,14 +142,6 @@ class DefaultCache<T> implements Cache<T> {
     return storage.getEntry(name, key);
   }
 
-  /// Method used to check if the configured capacity of this cache i.e. was
-  /// exceeded after the inserting [entry]
-  ///
-  /// * [entry]: The added entry
-  Future<bool> _isCapacityExceeded(CacheEntry entry) => maxEntries == 0
-      ? Future.value(false)
-      : size.then((entries) => entries > maxEntries);
-
   /// Puts a cache entry identified by [key] on the configured [Store]
   ///
   /// * [key]: The cache key
@@ -157,29 +150,38 @@ class DefaultCache<T> implements Cache<T> {
   /// * [event]: An optional event
   Future<void> _putStorageEntry(String key, CacheEntry entry, DateTime now,
       {CacheEvent<T>? event}) {
-    if (entry.valueChanged) {
-      return storage
-          .putEntry(name, key, entry)
-          .then((_) => _fire(event))
-          .then((_) => _isCapacityExceeded(entry))
-          .then((capacityExceeded) {
-        if (capacityExceeded) {
-          return storage.keys(name).then(
-              (ks) => storage.getInfos(name, sampler.sample(ks)).then((infos) {
-                    final info = evictionPolicy.select(infos, entry.info);
-                    if (info != null) {
-                      return _removeEntryByKey(info.key, now, evicted: true);
-                    }
+    if (entry.state == EntryState.added ||
+        entry.state == EntryState.updatedValue) {
+      var prePut = () => Future<void>.value();
+      if (entry.state == EntryState.added && maxEntries > 0) {
+        // There's a number of max entries configured
+        prePut = () => storage.size(name).then((currentSize) {
+              if ((currentSize + 1) > maxEntries) {
+                //print(
+                //    'Triggering eviction because ${currentSize + 1} > $maxEntries');
+                return storage.keys(name).then((ks) =>
+                    storage.getInfos(name, sampler.sample(ks)).then((infos) {
+                      final info = evictionPolicy.select(infos, now);
+                      if (info != null) {
+                        return _removeEntryByKey(info.key, now, evicted: true);
+                      }
 
-                    return Future<void>.value();
-                  }));
-        }
+                      return Future<void>.value();
+                    }));
+              }
 
-        return Future<void>.value();
-      });
-    } else {
+              return Future<void>.value();
+            });
+      }
+
+      return prePut()
+          .then((value) => storage.putEntry(name, key, entry))
+          .then((_) => _fire(event));
+    } else if (entry.state == EntryState.updatedInfo) {
       return storage.setInfo(name, key, entry.info);
     }
+
+    return Future<void>.value();
   }
 
   /// Removes the stored [CacheEntry] for the specified [key].
@@ -230,14 +232,14 @@ class DefaultCache<T> implements Cache<T> {
   /// * [value]: the cache value
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache to expire.
-  Future<bool> _putEntry(
+  Future<bool> _newEntry(
       String key, T value, DateTime now, Duration? expiryDuration) {
     // How much time till the expiration of this cache entry
     final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
     // We want to create a new entry, let's update it according with the semantics
     // of the configured expiry policy and store it
     final expiryTime = now.add(duration);
-    final entry = CacheEntry.newEntry(key, now, expiryTime, value);
+    final entry = CacheEntry.addEntry(key, now, expiryTime, value);
 
     // Check if the entry is expired before adding it to the cache
     if (!entry.isExpired(now)) {
@@ -259,14 +261,15 @@ class DefaultCache<T> implements Cache<T> {
   /// * [now]: the current date/time
   Future<T?> _getEntryValue(
       CacheEntry entry, DateTime now, Duration? expiryDuration) {
-    entry.accessTime = now;
-    entry.hitCount++;
     final duration = expiryPolicy.getExpiryForAccess();
-    if (duration != null) {
-      // We just need to update the expiry time on the entry
-      // according with the expiry policy in place or if provided the expiry duration
-      entry.expiryTime = now.add(expiryDuration ?? duration);
-    }
+
+    // We just need to update the expiry time on the entry
+    // according with the expiry policy in place or if provided the expiry duration
+    entry.updateInfoFields(
+        expiryTime:
+            duration != null ? now.add(expiryDuration ?? duration) : null,
+        accessTime: now,
+        hitCount: entry.hitCount + 1);
 
     // Store the entry changes and return the value
     return _putStorageEntry(entry.key, entry, now).then((_) => entry.value);
@@ -286,11 +289,11 @@ class DefaultCache<T> implements Cache<T> {
     final duration = expiryPolicy.getExpiryForUpdate();
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
-    final newEntry = entry.updateEntry(value,
-        expiryTime:
-            duration != null ? now.add(expiryDuration ?? duration) : null,
-        updateTime: now,
-        hitCount: entry.hitCount + 1);
+    final expiryTime =
+        duration != null ? now.add(expiryDuration ?? duration) : null;
+    final hitCount = entry.hitCount + 1;
+    final newEntry =
+        entry.updateValue(value, now, hitCount, expiryTime: expiryTime);
 
     // Finally store the entry in the underlining storage
     return _putStorageEntry(entry.key, newEntry, now,
@@ -346,7 +349,7 @@ class DefaultCache<T> implements Cache<T> {
             return Future<T?>.value();
           }
 
-          return _putEntry(key, value, now, expiryDuration).then((_) => value);
+          return _newEntry(key, value, now, expiryDuration).then((_) => value);
         }).then(posGet2);
       } else {
         return _getEntryValue(entry, now, expiryDuration).then(posGet2);
@@ -389,7 +392,7 @@ class DefaultCache<T> implements Cache<T> {
 
         // And finally we add it to the cache
         return prePut
-            .then((_) => _putEntry(key, value, now, expiryDuration))
+            .then((_) => _newEntry(key, value, now, expiryDuration))
             .then(posPut);
       } else {
         // Already present let's update the cache instead
@@ -450,7 +453,7 @@ class DefaultCache<T> implements Cache<T> {
       // If the entry is expired or non existent
       if (entry == null || expired) {
         return pre
-            .then((_) => _putEntry(key, value, now, expiryDuration))
+            .then((_) => _newEntry(key, value, now, expiryDuration))
             .then(posPut);
       }
 
@@ -568,7 +571,7 @@ class DefaultCache<T> implements Cache<T> {
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return pre.then((_) => _putEntry(key, value, now, expiryDuration)
+        return pre.then((_) => _newEntry(key, value, now, expiryDuration)
             .then((bool ok) => posPut(ok, null)));
       } else {
         return pre

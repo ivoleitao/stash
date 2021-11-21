@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:stash/src/api/cache/sampler/base_sampler.dart';
 
-/// A sampler that picks random elements from the list
-class RandomSampler extends BaseSampler {
+/// An implementation of the reservoir sampling algorithm
+class ReservoirSampler extends BaseSampler {
   /// The random generator
   final Random _random;
 
@@ -11,7 +11,7 @@ class RandomSampler extends BaseSampler {
   ///
   /// * [factor]: The sampling factor
   /// * [random]: The random generator
-  RandomSampler(double factor, {Random? random})
+  ReservoirSampler(double factor, {Random? random})
       : _random = random ?? Random(),
         super(factor: factor);
 
@@ -19,9 +19,18 @@ class RandomSampler extends BaseSampler {
   Iterable<String> sampleEntries(Iterable<String> entries, int sampleSize) {
     final elements = List<String>.from(entries);
     final sample = <String>[];
-    while (sample.length < sampleSize) {
-      int index = _random.nextInt(elements.length);
-      sample.add(elements[index]);
+
+    var count = 0;
+    for (var e in elements) {
+      count++;
+      if (sample.length <= sampleSize) {
+        sample.add(e);
+      } else {
+        int index = _random.nextInt(count);
+        if (index < sampleSize) {
+          sample[index] = e;
+        }
+      }
     }
 
     return sample;

@@ -149,7 +149,7 @@ class ObjectboxVaultStore
           _codec.decoder(entity.value, fromEncodable: _fromEncodable);
       final value = reader.read();
 
-      return VaultEntry.newEntry(
+      return VaultEntry.loadEntry(
           entity.key, DateTime.parse(entity.creationTime), value,
           accessTime: entity.accessTime != null
               ? DateTime.parse(entity.accessTime!)
@@ -199,7 +199,7 @@ class ObjectboxCacheStore
           _codec.decoder(entity.value, fromEncodable: _fromEncodable);
       final value = reader.read();
 
-      return CacheEntry.newEntry(
+      return CacheEntry.loadEntry(
           entity.key,
           DateTime.parse(entity.creationTime),
           DateTime.parse(entity.expiryTime),

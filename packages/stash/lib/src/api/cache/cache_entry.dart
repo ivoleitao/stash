@@ -7,30 +7,27 @@ class CacheEntry extends Entry<CacheInfo> {
   /// The expiry time getter
   DateTime get expiryTime => info.expiryTime;
 
-  /// The expiry time setter
-  ///
-  /// * [expiryTime]: The expiry time
-  set expiryTime(DateTime expiryTime) {
-    info.expiryTime = expiryTime;
-  }
-
   /// The hit count getter
   int get hitCount => info.hitCount;
-
-  /// The hit count setter
-  ///
-  /// * [hitCount]: The hit count
-  set hitCount(int hitCount) {
-    info.hitCount = hitCount;
-  }
 
   /// Creates a [CacheEntry]
   ///
   /// * [info]: The cache info
   /// * [value]: The cache value
-  /// * [valueChanged]: If this value was changed
-  CacheEntry._(CacheInfo info, dynamic value, bool? valueChanged)
-      : super(info, value, valueChanged);
+  /// * [state]: The entry state
+  CacheEntry._(CacheInfo info, dynamic value, EntryState state)
+      : super(info, value, state);
+
+  /// Creates a new [CacheEntry]
+  ///
+  /// * [key]: The cache key
+  /// * [creationTime]: The cache creation time
+  /// * [expiryTime]: The cache expiry time
+  /// * [value]: The cache value
+  CacheEntry.addEntry(
+      String key, DateTime creationTime, DateTime expiryTime, dynamic value)
+      : this._(
+            CacheInfo(key, creationTime, expiryTime), value, EntryState.added);
 
   /// Creates a new [CacheEntry]
   ///
@@ -41,7 +38,7 @@ class CacheEntry extends Entry<CacheInfo> {
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
-  CacheEntry.newEntry(
+  CacheEntry.loadEntry(
       String key, DateTime creationTime, DateTime expiryTime, dynamic value,
       {DateTime? accessTime, DateTime? updateTime, int? hitCount})
       : this._(
@@ -50,37 +47,51 @@ class CacheEntry extends Entry<CacheInfo> {
                 updateTime: updateTime,
                 hitCount: hitCount),
             value,
-            null);
+            EntryState.loaded);
+
+  /// Copy the current [CacheEntry] and updates it
+  ///
+  /// * [value]: The cache value
+  /// * [updateTime]: The cache update time
+  /// * [hitCount]: The cache hit count
+  /// * [expiryTime]: The cache expiry time
+  CacheEntry updateValue(dynamic value, DateTime updateTime, int hitCount,
+      {DateTime? expiryTime}) {
+    return CacheEntry._(
+        CacheInfo(key, creationTime, expiryTime ?? this.expiryTime,
+            accessTime: accessTime, updateTime: updateTime, hitCount: hitCount),
+        value,
+        EntryState.updatedValue);
+  }
+
+  /// Updates the [Info] fields
+  ///
+  /// * [expiryTime]: The cache expiry time
+  /// * [accessTime]: The cache access time
+  /// * [updateTime]: The cache update time
+  /// * [hitCount]: The cache hit count
+  @override
+  void updateInfoFields(
+      {DateTime? expiryTime,
+      DateTime? accessTime,
+      DateTime? updateTime,
+      int? hitCount}) {
+    super.updateInfoFields(accessTime: accessTime, updateTime: updateTime);
+    info.expiryTime = expiryTime ?? info.expiryTime;
+    info.hitCount = hitCount ?? info.hitCount;
+  }
 
   /// Updates a [CacheEntry] info
   ///
   /// * [info]: The updated info
   @override
   void updateInfo(CacheInfo info) {
-    super.updateInfo(info);
-    this.info.expiryTime = info.expiryTime;
-    this.info.hitCount = info.hitCount;
+    updateInfoFields(
+        expiryTime: info.expiryTime,
+        accessTime: info.accessTime,
+        updateTime: info.updateTime,
+        hitCount: info.hitCount);
   }
-
-  /// Updates a [CacheEntry]
-  ///
-  /// * [value]: The value
-  /// * [expiryTime]: The cache expiry time
-  /// * [accessTime]: The cache access time
-  /// * [updateTime]: The cache update time
-  /// * [hitCount]: The cache hit count
-  CacheEntry updateEntry(dynamic value,
-          {DateTime? expiryTime,
-          DateTime? accessTime,
-          DateTime? updateTime,
-          int? hitCount}) =>
-      CacheEntry._(
-          CacheInfo(key, creationTime, expiryTime ?? this.expiryTime,
-              accessTime: accessTime,
-              updateTime: updateTime ?? this.updateTime,
-              hitCount: hitCount ?? this.hitCount),
-          value,
-          true);
 
   /// Checks if the cache entry is expired
   ///
@@ -88,6 +99,6 @@ class CacheEntry extends Entry<CacheInfo> {
   ///
   /// Return true if expired, false if not
   bool isExpired([DateTime? now]) {
-    return info.expiryTime.isBefore(now ?? DateTime.now());
+    return info.isExpired(now);
   }
 }

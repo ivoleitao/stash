@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.19.3
-  build_runner: ^2.1.4
+  build_runner: ^2.1.5
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test

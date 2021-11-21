@@ -105,7 +105,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   CacheEntry? _toCacheEntry(
       CacheData? data, dynamic Function(Uint8List) valueDecoder) {
     return data != null
-        ? CacheEntry.newEntry(data.key, data.creationTime, data.expiryTime,
+        ? CacheEntry.loadEntry(data.key, data.creationTime, data.expiryTime,
             valueDecoder(data.value),
             accessTime: data.accessTime,
             updateTime: data.updateTime,

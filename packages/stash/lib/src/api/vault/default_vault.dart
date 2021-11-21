@@ -11,6 +11,7 @@ import 'package:stash/src/api/vault/stats/default_stats.dart';
 import 'package:stash/src/api/vault/vault.dart';
 import 'package:stash/src/api/vault/vault_entry.dart';
 import 'package:stash/src/api/vault/vault_info.dart';
+import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 import 'vault_manager.dart';
@@ -108,11 +109,14 @@ class DefaultVault<T> implements Vault<T> {
   /// * [event]: An optional event
   Future<void> _putStorageEntry(String key, VaultEntry entry,
       {VaultEvent<T>? event}) {
-    if (entry.valueChanged) {
+    if (entry.state == EntryState.added ||
+        entry.state == EntryState.updatedValue) {
       return storage.putEntry(name, key, entry).then((_) => _fire(event));
-    } else {
+    } else if (entry.state == EntryState.updatedInfo) {
       return storage.setInfo(name, key, entry.info);
     }
+
+    return Future<void>.value();
   }
 
   /// Removes the stored [VaultEntry] for the specified [key].
@@ -148,8 +152,8 @@ class DefaultVault<T> implements Vault<T> {
   /// * [key]: the vault key
   /// * [value]: the vault value
   /// * [now]: the current date/time
-  Future<void> _putEntry(String key, T value, DateTime now) {
-    final entry = VaultEntry.newEntry(key, now, value);
+  Future<void> _newEntry(String key, T value, DateTime now) {
+    final entry = VaultEntry.addEntry(key, now, value);
 
     return _putStorageEntry(key, entry,
         event: VaultEntryCreatedEvent<T>(this, entry));
@@ -161,7 +165,8 @@ class DefaultVault<T> implements Vault<T> {
   /// * [entry]: the [VaultEntry] holding the value
   /// * [now]: the current date/time
   Future<T> _getEntryValue(VaultEntry entry, DateTime now) {
-    entry.accessTime = now;
+    // Store the updated info
+    entry.updateInfoFields(accessTime: now);
     // Store the entry changes and return the value
     return _putStorageEntry(entry.key, entry).then((_) => entry.value);
   }
@@ -174,7 +179,7 @@ class DefaultVault<T> implements Vault<T> {
   /// * [value]: the new value
   /// * [now]: the current date/time
   Future<T> _updateEntry(VaultEntry entry, T value, DateTime now) {
-    final newEntry = entry.updateEntry(value, updateTime: now);
+    final newEntry = entry.updateValue(value, now);
 
     // Finally store the entry in the underlining storage
     return _putStorageEntry(entry.key, newEntry,
@@ -241,7 +246,7 @@ class DefaultVault<T> implements Vault<T> {
       // If the entry does not exist
       if (entry == null) {
         // And finally we add it to the vault
-        return _putEntry(key, value, now);
+        return _newEntry(key, value, now);
       } else {
         // Already present let's update the vault instead
         return _updateEntry(entry, value, now);
@@ -288,7 +293,7 @@ class DefaultVault<T> implements Vault<T> {
     return _getStorageEntry(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
-        return _putEntry(key, value, now).then((_) => posPut(true));
+        return _newEntry(key, value, now).then((_) => posPut(true));
       }
 
       return posPut(false);
@@ -375,7 +380,7 @@ class DefaultVault<T> implements Vault<T> {
     return _getStorageEntry(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
-        return _putEntry(key, value, now).then((_) => posPut(null));
+        return _newEntry(key, value, now).then((_) => posPut(null));
       } else {
         return _updateEntry(entry, value, now).then(posPut);
       }

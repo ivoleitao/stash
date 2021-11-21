@@ -192,7 +192,7 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
 
   @override
   VaultEntry _readEntry(Map<String, dynamic> json) {
-    return VaultEntry.newEntry(
+    return VaultEntry.loadEntry(
         json['key'] as String,
         DateTime.parse(json['creationTime'] as String),
         json['value'] == null
@@ -232,7 +232,7 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry> {
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> json) {
-    return CacheEntry.newEntry(
+    return CacheEntry.loadEntry(
         json['key'] as String,
         DateTime.parse(json['creationTime'] as String),
         DateTime.parse(json['expiryTime'] as String),

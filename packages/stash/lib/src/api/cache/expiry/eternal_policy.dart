@@ -4,7 +4,7 @@ import 'package:stash/src/api/cache/expiry/expiry_policy.dart';
 /// won't expire.  This however doesn't mean they won't be evicted if an
 /// underlying implementation needs to free-up resources where by it may
 /// choose to evict entries that are not due to expire.
-class EternalExpiryPolicy extends ExpiryPolicy {
+class EternalExpiryPolicy implements ExpiryPolicy {
   /// Builds a [EternalExpiryPolicy]
   const EternalExpiryPolicy();
 

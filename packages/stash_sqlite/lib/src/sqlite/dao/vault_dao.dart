@@ -101,7 +101,7 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   VaultEntry? _toVaultEntry(
       VaultData? data, dynamic Function(Uint8List) valueDecoder) {
     return data != null
-        ? VaultEntry.newEntry(
+        ? VaultEntry.loadEntry(
             data.key, data.creationTime, valueDecoder(data.value),
             accessTime: data.accessTime, updateTime: data.updateTime)
         : null;

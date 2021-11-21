@@ -3,7 +3,7 @@ import 'package:stash/src/api/cache/expiry/expiry_policy.dart';
 /// An [ExpiryPolicy] that defines the expiry [Duration]
 /// of a Cache Entry based on the last time it was accessed. Accessed
 /// does not include a cache update.
-class AccessedExpiryPolicy extends ExpiryPolicy {
+class AccessedExpiryPolicy implements ExpiryPolicy {
   /// The [Duration] a Cache Entry should be available before it expires.
   final Duration _expiryDuration;
 

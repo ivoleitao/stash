@@ -12,9 +12,9 @@ abstract class EvictionPolicy {
   /// expected that implementations will take advantage of that metadata.
   ///
   /// * [entries]: A list of non nullable sample entries to consider
-  /// * [justAdded]: The entry added, provided so that it can be ignored if selected.
+  /// * [now]: The current time
   ///
   /// Returns the [CacheInfo] of the entry that should be evicted or null if the
   /// entry list is empty
-  CacheInfo? select(Iterable<CacheInfo?> entries, CacheInfo justAdded);
+  CacheInfo? select(Iterable<CacheInfo?> entries, DateTime now);
 }

@@ -23,6 +23,15 @@ class CacheInfo extends Info {
         super(key, creationTime,
             accessTime: accessTime, updateTime: updateTime);
 
+  /// Checks if the cache info is expired
+  ///
+  /// * [now]: An optional value for the current time
+  ///
+  /// Return true if expired, false if not
+  bool isExpired([DateTime? now]) {
+    return expiryTime.isBefore(now ?? DateTime.now());
+  }
+
   @override
   List<Object?> get props => [...super.props, expiryTime, hitCount];
 }

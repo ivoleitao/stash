@@ -1,6 +1,21 @@
 import 'package:equatable/equatable.dart';
 import 'package:stash/src/api/info.dart';
 
+/// The state of the [Entry]
+enum EntryState {
+  /// The [Entry] was not changed since it's retrieval from storage
+  loaded,
+
+  /// The [Entry] is new and was not yet committed to the storage
+  added,
+
+  /// The [Entry] inf was changed since it's retrieval from storage
+  updatedInfo,
+
+  /// The [Entry] value and/or info was changed since it's retrievale from storage
+  updatedValue
+}
+
 abstract class Entry<T extends Info> with EquatableMixin {
   /// The info
   final T info;
@@ -8,8 +23,8 @@ abstract class Entry<T extends Info> with EquatableMixin {
   /// The value
   final dynamic value;
 
-  /// Tracks any changes to the [Entry] after obtaining it from the store
-  final bool? _valueChanged;
+  /// The state
+  EntryState _state;
 
   /// The key getter
   String get key => info.key;
@@ -20,42 +35,36 @@ abstract class Entry<T extends Info> with EquatableMixin {
   /// The access time getter
   DateTime get accessTime => info.accessTime;
 
-  /// The access time setter
-  ///
-  /// * [accessTime]: The access time
-  set accessTime(DateTime accessTime) {
-    info.accessTime = accessTime;
-  }
-
   /// The update time getter
   DateTime get updateTime => info.updateTime;
 
-  /// The update time setter
-  ///
-  /// * [updateTime]: The update time
-  set updateTime(DateTime updateTime) {
-    info.updateTime = updateTime;
-  }
-
-  /// Returns true if the value was changed after retrieval from the store or if it was newly created
-  bool get valueChanged => _valueChanged ?? true;
+  /// The state getter
+  EntryState get state => _state;
 
   /// Builds a [Entry]
   ///
+  /// * [info]: The entry info
   /// * [value]: The entry value
-  /// * [valueChanged]: If this value was changed
-  Entry(this.info, this.value, this._valueChanged);
+  /// * [state]: The entry state
+  Entry(this.info, this.value, this._state);
+
+  /// Updates the [Info] fields
+  ///
+  /// * [accessTime]: The cache access time
+  /// * [updateTime]: The cache update time
+  void updateInfoFields({DateTime? accessTime, DateTime? updateTime}) {
+    info.accessTime = accessTime ?? info.accessTime;
+    info.updateTime = updateTime ?? info.updateTime;
+    _state = EntryState.updatedInfo;
+  }
 
   /// Updates a [Entry] info
   ///
   /// * [info]: The updated info
   void updateInfo(T info) {
-    //expiryTime = info.expiryTime;
-    //hitCount = info.hitCount;
-    this.info.accessTime = info.accessTime;
-    this.info.updateTime = info.updateTime;
+    updateInfoFields(accessTime: info.accessTime, updateTime: info.updateTime);
   }
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [info, value];
 }

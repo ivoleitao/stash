@@ -8,36 +8,42 @@ class VaultEntry extends Entry<VaultInfo> {
   ///
   /// * [info]: The entry info
   /// * [value]: The entry value
-  /// * [valueChanged]: If this value was changed
-  VaultEntry._(VaultInfo info, dynamic value, bool? valueChanged)
-      : super(info, value, valueChanged);
+  /// * [state]: The entry state
+  VaultEntry._(VaultInfo info, dynamic value, EntryState state)
+      : super(info, value, state);
 
   /// Creates a new [VaultEntry]
   ///
   /// * [key]: The cache key
   /// * [creationTime]: The cache creation time
   /// * [value]: The cache value
+  VaultEntry.addEntry(String key, DateTime creationTime, dynamic value)
+      : this._(VaultInfo(key, creationTime), value, EntryState.added);
+
+  /// Loads a new [VaultEntry]
+  ///
+  /// * [key]: The cache key
+  /// * [creationTime]: The cache creation time
+  /// * [value]: The cache value
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
-  VaultEntry.newEntry(String key, DateTime creationTime, dynamic value,
+  VaultEntry.loadEntry(String key, DateTime creationTime, dynamic value,
       {DateTime? accessTime, DateTime? updateTime})
       : this._(
             VaultInfo(key, creationTime,
                 accessTime: accessTime, updateTime: updateTime),
             value,
-            null);
+            EntryState.loaded);
 
-  /// Updates a [VaultEntry]
+  /// Updates the [VaultEntry] value
   ///
-  /// * [value]: The value
-  /// * [accessTime]: The cache access time
+  /// * [value]: The cache value
   /// * [updateTime]: The cache update time
-  VaultEntry updateEntry(dynamic value,
-          {DateTime? accessTime, DateTime? updateTime}) =>
-      VaultEntry._(
-          VaultInfo(key, creationTime,
-              accessTime: accessTime,
-              updateTime: updateTime ?? this.updateTime),
-          value,
-          true);
+  VaultEntry updateValue(dynamic value, DateTime updateTime) {
+    return VaultEntry._(
+        VaultInfo(key, creationTime,
+            accessTime: accessTime, updateTime: updateTime),
+        value,
+        EntryState.updatedValue);
+  }
 }

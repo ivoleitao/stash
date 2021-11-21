@@ -1,12 +1,12 @@
-import 'package:stash/src/api/cache/sampler/sampler.dart';
+import 'package:stash/src/api/cache/sampler/base_sampler.dart';
 
-/// A [KeySampler] that doesn't perform any sampling
-class FullSampler extends KeySampler {
+/// A sampler that doesn't perform any sampling
+class FullSampler extends BaseSampler {
   /// Builds a new [FullSampler]
   const FullSampler();
 
   @override
-  Iterable<String> sample(Iterable<String> items) {
-    return items;
+  Iterable<String> sampleEntries(Iterable<String> entries, int sampleSize) {
+    return entries;
   }
 }

@@ -501,15 +501,9 @@ abstract class EntryBuilder<I extends Info, E extends Entry<I>> {
   /// * [seed]: The seed for the [ValueGenerator]
   /// * [key]: The entry key
   /// * [creationTime]: The entry creation time
-  /// * [accessTime]: The entry accessTime
-  /// * [updateTime]: The entry update time
   ///
   /// Returns a fully initialized [Entry]
-  E newEntry(int seed,
-      {String? key,
-      DateTime? creationTime,
-      DateTime? accessTime,
-      DateTime? updateTime});
+  E newEntry(int seed, {String? key, DateTime? creationTime});
 }
 
 /// Base class for all the test contexts.
@@ -576,19 +570,12 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   /// * [seed]: The seed for the [ValueGenerator]
   /// * [key]: The cache key
   /// * [creationTime]: The cache creation time
-  /// * [accessTime]: The cache accessTime
-  /// * [updateTime]: The cache update time
   ///
   /// Returns a fully initialized [VaultEntry]
   @override
-  VaultEntry newEntry(int seed,
-      {String? key,
-      DateTime? creationTime,
-      DateTime? accessTime,
-      DateTime? updateTime}) {
-    return VaultEntry.newEntry(key ?? 'vault_key_$seed',
-        creationTime ?? DateTime.now(), generator.nextValue(seed),
-        accessTime: accessTime, updateTime: updateTime);
+  VaultEntry newEntry(int seed, {String? key, DateTime? creationTime}) {
+    return VaultEntry.addEntry(key ?? 'vault_key_$seed',
+        creationTime ?? DateTime.now(), generator.nextValue(seed));
   }
 }
 
@@ -647,26 +634,15 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
   /// * [key]: The cache key
   /// * [expiryTime]: The cache expiry time
   /// * [creationTime]: The cache creation time
-  /// * [accessTime]: The cache accessTime
-  /// * [updateTime]: The cache update time
-  /// * [hitCount]: The cache hit count
   ///
   /// Returns a fully initialized [CacheEntry]
   @override
   CacheEntry newEntry(int seed,
-      {String? key,
-      DateTime? expiryTime,
-      DateTime? creationTime,
-      DateTime? accessTime,
-      DateTime? updateTime,
-      int? hitCount}) {
-    return CacheEntry.newEntry(
+      {String? key, DateTime? expiryTime, DateTime? creationTime}) {
+    return CacheEntry.addEntry(
         key ?? 'cache_key_$seed',
         creationTime ?? DateTime.now(),
         expiryTime ?? seed.minutes.fromNow,
-        generator.nextValue(seed),
-        accessTime: accessTime,
-        updateTime: updateTime,
-        hitCount: hitCount);
+        generator.nextValue(seed));
   }
 }

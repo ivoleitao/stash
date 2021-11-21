@@ -203,7 +203,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
 
   @override
   VaultEntry _readEntry(Map<String, dynamic> json) {
-    return VaultEntry.newEntry(
+    return VaultEntry.loadEntry(
         json['key'] as String,
         DateTime.parse(json['creationTime'] as String),
         json['value'] == null
@@ -245,7 +245,7 @@ class HiveCacheStore<T extends BoxBase<Map>>
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> json) {
-    return CacheEntry.newEntry(
+    return CacheEntry.loadEntry(
         json['key'] as String,
         DateTime.parse(json['creationTime'] as String),
         DateTime.parse(json['expiryTime'] as String),

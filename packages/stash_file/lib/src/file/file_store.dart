@@ -397,7 +397,7 @@ class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
     final updateTime = DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
     final value = reader.read();
 
-    return VaultEntry.newEntry(key, creationTime, value,
+    return VaultEntry.loadEntry(key, creationTime, value,
         accessTime: accessTime, updateTime: updateTime);
   }
 }
@@ -461,7 +461,7 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
     final hitCount = reader.readUInt64();
     final value = reader.read();
 
-    return CacheEntry.newEntry(key, creationTime, expiryTime, value,
+    return CacheEntry.loadEntry(key, creationTime, expiryTime, value,
         accessTime: accessTime, updateTime: updateTime, hitCount: hitCount);
   }
 }

@@ -118,16 +118,8 @@ Future<void> _putEntry<I extends Info, E extends Entry<I>>(
 /// Returns the created [Entry]
 Future<E> _putGetEntry<I extends Info, E extends Entry<I>>(
     Store<I, E> store, EntryBuilder<I, E> builder, int seed,
-    {String name = _defaultStore,
-    String? key,
-    DateTime? creationTime,
-    DateTime? accessTime,
-    DateTime? updateTime}) async {
-  final entry = builder.newEntry(seed,
-      key: key,
-      creationTime: creationTime,
-      accessTime: accessTime,
-      updateTime: updateTime);
+    {String name = _defaultStore, String? key, DateTime? creationTime}) async {
+  final entry = builder.newEntry(seed, key: key, creationTime: creationTime);
   return _putEntry<I, E>(store, entry.key, entry, name: name)
       .then((v) => entry);
 }
@@ -376,7 +368,7 @@ Future<T> _storeChangeEntry<I extends Info, E extends Entry<I>,
   final entry1 = await _putGetEntry(store, ctx, 1);
 
   final oldAccessTime = entry1.accessTime;
-  entry1.accessTime = 1.minutes.fromNow;
+  entry1.updateInfoFields(accessTime: 1.minutes.fromNow);
   await _putEntry(store, entry1.key, entry1);
 
   final entry2 = await _getEntry(store, entry1.key);

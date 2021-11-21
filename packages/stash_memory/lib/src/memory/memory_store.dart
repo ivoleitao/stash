@@ -42,7 +42,15 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    _store[name]![key]!.updateInfo(info);
+    final store = _store[name];
+
+    if (store != null) {
+      final entry = store[key];
+
+      if (entry != null) {
+        entry.updateInfo(info);
+      }
+    }
     return Future.value();
   }
 
