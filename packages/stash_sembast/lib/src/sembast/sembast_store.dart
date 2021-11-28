@@ -145,8 +145,13 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   @override
   Future<void> setInfo(String name, String key, I info) {
     return _getEntryFromStore(name, key).then((entry) {
-      entry!.updateInfo(info);
-      _adapter.put(name, key, _writeEntry(entry));
+      if (entry != null) {
+        entry.updateInfo(info);
+        return _adapter
+            .put(name, key, _writeEntry(entry))
+            .then((value) => null);
+      }
+      return Future<void>.value();
     });
   }
 

@@ -157,8 +157,6 @@ class DefaultCache<T> implements Cache<T> {
         // There's a number of max entries configured
         prePut = () => storage.size(name).then((currentSize) {
               if ((currentSize + 1) > maxEntries) {
-                //print(
-                //    'Triggering eviction because ${currentSize + 1} > $maxEntries');
                 return storage.keys(name).then((ks) =>
                     storage.getInfos(name, sampler.sample(ks)).then((infos) {
                       final info = evictionPolicy.select(infos, now);

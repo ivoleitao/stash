@@ -151,8 +151,12 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   Future<void> setInfo(String name, String key, I info) {
     return _adapter.store(name).then((store) {
       return _getEntryFromStore(store, key).then((entry) {
-        entry!.updateInfo(info);
-        store.put(key, _writeEntry(entry));
+        if (entry != null) {
+          entry.updateInfo(info);
+          return store.put(key, _writeEntry(entry));
+        }
+
+        return Future<void>.value();
       });
     });
   }
