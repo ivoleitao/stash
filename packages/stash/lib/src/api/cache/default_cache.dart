@@ -230,8 +230,8 @@ class DefaultCache<T> implements Cache<T> {
   /// * [value]: the cache value
   /// * [now]: the current date/time
   /// * [expiryDuration]: how much time for this cache to expire.
-  Future<bool> _newEntry(
-      String key, T value, DateTime now, Duration? expiryDuration) {
+  Future<bool> _newEntry(String key, T value, DateTime now,
+      {Duration? expiryDuration}) {
     // How much time till the expiration of this cache entry
     final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
     final entry = CacheEntryBuilder(key, value, now, duration).build();
@@ -254,15 +254,13 @@ class DefaultCache<T> implements Cache<T> {
   ///
   /// * [entry]: the [CacheEntry] holding the value
   /// * [now]: the current date/time
-  Future<T?> _getEntryValue(
-      CacheEntry entry, DateTime now, Duration? expiryDuration) {
+  Future<T?> _getEntryValue(CacheEntry entry, DateTime now) {
     final duration = expiryPolicy.getExpiryForAccess();
 
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
     entry.updateInfoFields(
-        expiryTime:
-            duration != null ? now.add(expiryDuration ?? duration) : null,
+        expiryTime: duration != null ? now.add(duration) : null,
         accessTime: now,
         hitCount: entry.hitCount + 1);
 
@@ -297,7 +295,7 @@ class DefaultCache<T> implements Cache<T> {
   }
 
   @override
-  Future<T?> get(String key, {Duration? expiryDuration}) {
+  Future<T?> get(String key) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -344,10 +342,10 @@ class DefaultCache<T> implements Cache<T> {
             return Future<T?>.value();
           }
 
-          return _newEntry(key, value, now, expiryDuration).then((_) => value);
+          return _newEntry(key, value, now).then((_) => value);
         }).then(posGet2);
       } else {
-        return _getEntryValue(entry, now, expiryDuration).then(posGet2);
+        return _getEntryValue(entry, now).then(posGet2);
       }
     });
   }
@@ -387,7 +385,8 @@ class DefaultCache<T> implements Cache<T> {
 
         // And finally we add it to the cache
         return prePut
-            .then((_) => _newEntry(key, value, now, expiryDuration))
+            .then((_) =>
+                _newEntry(key, value, now, expiryDuration: expiryDuration))
             .then(posPut);
       } else {
         // Already present let's update the cache instead
@@ -448,7 +447,8 @@ class DefaultCache<T> implements Cache<T> {
       // If the entry is expired or non existent
       if (entry == null || expired) {
         return pre
-            .then((_) => _newEntry(key, value, now, expiryDuration))
+            .then((_) =>
+                _newEntry(key, value, now, expiryDuration: expiryDuration))
             .then(posPut);
       }
 
@@ -566,8 +566,9 @@ class DefaultCache<T> implements Cache<T> {
 
       // If the entry is expired or non existent
       if (entry == null || expired) {
-        return pre.then((_) => _newEntry(key, value, now, expiryDuration)
-            .then((bool ok) => posPut(ok, null)));
+        return pre.then((_) =>
+            _newEntry(key, value, now, expiryDuration: expiryDuration)
+                .then((bool ok) => posPut(ok, null)));
       } else {
         return pre
             .then((_) => _updateEntry(entry, value, now, expiryDuration))

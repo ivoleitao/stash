@@ -28,7 +28,7 @@ abstract class Cache<T> extends Stash<T> {
   /// * [key]: the key
   /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
   @override
-  Future<T?> get(String key, {Duration? expiryDuration});
+  Future<T?> get(String key);
 
   /// Add / Replace the cache [value] for the specified [key]. If [expiryDuration]
   /// is specified ir uses it instead of the configured expiry policy duration

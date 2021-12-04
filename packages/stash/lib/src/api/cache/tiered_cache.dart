@@ -80,7 +80,7 @@ class TieredCache<T> implements Cache<T> {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<T?> get(String key, {Duration? expiryDuration}) {
+  Future<T?> get(String key) {
     // #region Statistics
     Stopwatch? watch;
     Future<T?> Function(T? value) posGet = (T? value) => Future.value(value);
@@ -99,10 +99,9 @@ class TieredCache<T> implements Cache<T> {
     // #endregion
 
     return _primary
-        .get(key, expiryDuration: expiryDuration)
-        .then((T? value) => value != null
-            ? Future.value(value)
-            : _secondary.get(key, expiryDuration: expiryDuration))
+        .get(key)
+        .then((T? value) =>
+            value != null ? Future.value(value) : _secondary.get(key))
         .then(posGet);
   }
 
