@@ -8,6 +8,9 @@ class Info with EquatableMixin {
   /// Info creation time
   final DateTime creationTime;
 
+  /// The type
+  final int type;
+
   /// Info access time
   DateTime accessTime;
 
@@ -16,15 +19,17 @@ class Info with EquatableMixin {
 
   /// Builds a [Info]
   ///
-  /// * [key]: The cache key
-  /// * [creationTime]: The cache creation time
-  /// * [accessTime]: The cache access time
-  /// * [updateTime]: The cache update time
+  /// * [key]: The key
+  /// * [creationTime]: The creation time
+  /// * [type]: The type
+  /// * [accessTime]: The access time
+  /// * [updateTime]: The update time
   Info(this.key, this.creationTime,
-      {DateTime? accessTime, DateTime? updateTime})
-      : accessTime = accessTime ?? creationTime,
+      {int? type, DateTime? accessTime, DateTime? updateTime})
+      : type = type ?? 0,
+        accessTime = accessTime ?? creationTime,
         updateTime = updateTime ?? creationTime;
 
   @override
-  List<Object?> get props => [key, creationTime, accessTime, updateTime];
+  List<Object?> get props => [key, creationTime, type, accessTime, updateTime];
 }

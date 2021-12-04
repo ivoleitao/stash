@@ -153,7 +153,7 @@ class DefaultVault<T> implements Vault<T> {
   /// * [value]: the vault value
   /// * [now]: the current date/time
   Future<void> _newEntry(String key, T value, DateTime now) {
-    final entry = VaultEntry.addEntry(key, now, value);
+    final entry = VaultEntryBuilder(key, value, now).build();
 
     return _putStorageEntry(key, entry,
         event: VaultEntryCreatedEvent<T>(this, entry));

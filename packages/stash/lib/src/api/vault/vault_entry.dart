@@ -12,21 +12,20 @@ class VaultEntry extends Entry<VaultInfo> {
   VaultEntry._(VaultInfo info, dynamic value, EntryState state)
       : super(info, value, state);
 
-  /// Creates a new [VaultEntry]
+  /// Builds a new [VaultEntry]
   ///
-  /// * [key]: The cache key
-  /// * [creationTime]: The cache creation time
-  /// * [value]: The cache value
-  VaultEntry.addEntry(String key, DateTime creationTime, dynamic value)
-      : this._(VaultInfo(key, creationTime), value, EntryState.added);
+  /// * [builder]: The [VaultEntry] builder
+  VaultEntry._builder(VaultEntryBuilder builder)
+      : this._(VaultInfo(builder.key, builder.creationTime, type: builder.type),
+            builder.value, builder.state);
 
   /// Loads a new [VaultEntry]
   ///
-  /// * [key]: The cache key
-  /// * [creationTime]: The cache creation time
-  /// * [value]: The cache value
-  /// * [accessTime]: The cache access time
-  /// * [updateTime]: The cache update time
+  /// * [key]: The vault key
+  /// * [creationTime]: The vault creation time
+  /// * [value]: The vault value
+  /// * [accessTime]: The vault access time
+  /// * [updateTime]: The vault update time
   VaultEntry.loadEntry(String key, DateTime creationTime, dynamic value,
       {DateTime? accessTime, DateTime? updateTime})
       : this._(
@@ -37,13 +36,30 @@ class VaultEntry extends Entry<VaultInfo> {
 
   /// Updates the [VaultEntry] value
   ///
-  /// * [value]: The cache value
-  /// * [updateTime]: The cache update time
+  /// * [value]: The vault value
+  /// * [updateTime]: The vault update time
   VaultEntry updateValue(dynamic value, DateTime updateTime) {
     return VaultEntry._(
         VaultInfo(key, creationTime,
             accessTime: accessTime, updateTime: updateTime),
         value,
         EntryState.updatedValue);
+  }
+}
+
+/// The [VaultEntry] builder
+class VaultEntryBuilder extends EntryBuilder<VaultInfo, VaultEntry> {
+  /// Builds a [VaultEntryBuilder]
+  ///
+  /// * [key]: The entry key
+  /// * [value]: The entry value
+  /// * [creationTime]: The entry creation time
+  /// * [type]: The entry type
+  VaultEntryBuilder(String key, value, DateTime creationTime, {int? type})
+      : super(key, value, creationTime, type: type);
+
+  @override
+  VaultEntry build() {
+    return VaultEntry._builder(this);
   }
 }

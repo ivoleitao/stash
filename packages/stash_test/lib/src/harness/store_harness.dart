@@ -117,7 +117,7 @@ Future<void> _putEntry<I extends Info, E extends Entry<I>>(
 ///
 /// Returns the created [Entry]
 Future<E> _putGetEntry<I extends Info, E extends Entry<I>>(
-    Store<I, E> store, EntryBuilder<I, E> builder, int seed,
+    Store<I, E> store, EntryGenerator<I, E> builder, int seed,
     {String name = _defaultStore, String? key, DateTime? creationTime}) async {
   final entry = builder.newEntry(seed, key: key, creationTime: creationTime);
   return _putEntry<I, E>(store, entry.key, entry, name: name)

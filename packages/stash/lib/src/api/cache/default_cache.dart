@@ -234,10 +234,7 @@ class DefaultCache<T> implements Cache<T> {
       String key, T value, DateTime now, Duration? expiryDuration) {
     // How much time till the expiration of this cache entry
     final duration = expiryDuration ?? expiryPolicy.getExpiryForCreation();
-    // We want to create a new entry, let's update it according with the semantics
-    // of the configured expiry policy and store it
-    final expiryTime = now.add(duration);
-    final entry = CacheEntry.addEntry(key, now, expiryTime, value);
+    final entry = CacheEntryBuilder(key, value, now, duration).build();
 
     // Check if the entry is expired before adding it to the cache
     if (!entry.isExpired(now)) {

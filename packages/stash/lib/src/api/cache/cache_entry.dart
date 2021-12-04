@@ -18,16 +18,16 @@ class CacheEntry extends Entry<CacheInfo> {
   CacheEntry._(CacheInfo info, dynamic value, EntryState state)
       : super(info, value, state);
 
-  /// Creates a new [CacheEntry]
+  /// Builds a new [CacheEntry]
   ///
-  /// * [key]: The cache key
-  /// * [creationTime]: The cache creation time
-  /// * [expiryTime]: The cache expiry time
-  /// * [value]: The cache value
-  CacheEntry.addEntry(
-      String key, DateTime creationTime, DateTime expiryTime, dynamic value)
+  /// * [builder]: The [CacheEntry] builder
+  CacheEntry._builder(CacheEntryBuilder builder)
       : this._(
-            CacheInfo(key, creationTime, expiryTime), value, EntryState.added);
+            CacheInfo(builder.key, builder.creationTime,
+                builder.creationTime.add(builder.expiryDuration),
+                type: builder.type, hitCount: builder.hitCount),
+            builder.value,
+            builder.state);
 
   /// Creates a new [CacheEntry]
   ///
@@ -100,5 +100,32 @@ class CacheEntry extends Entry<CacheInfo> {
   /// Return true if expired, false if not
   bool isExpired([DateTime? now]) {
     return info.isExpired(now);
+  }
+}
+
+/// The [CacheEntry] builder
+class CacheEntryBuilder extends EntryBuilder<CacheInfo, CacheEntry> {
+  /// The expiry duration
+  Duration expiryDuration;
+
+  // The hit count
+  int? hitCount;
+
+  /// Builds a [CacheEntryBuilder]
+  ///
+  /// * [key]: The entry key
+  /// * [value]: The entry value
+  /// * [creationTime]: The entry creation time
+  /// * [expiryDuration]: The entry expiry duration
+  /// * [type]: The entry type
+  /// * [hitCount]: The entry hit count
+  CacheEntryBuilder(
+      String key, dynamic value, DateTime creationTime, this.expiryDuration,
+      {int? type, this.hitCount})
+      : super(key, value, creationTime, type: type);
+
+  @override
+  CacheEntry build() {
+    return CacheEntry._builder(this);
   }
 }

@@ -492,7 +492,7 @@ class SampleClassGenerator extends ValueGenerator {
       (Map<String, dynamic> json) => SampleClass.fromJson(json);
 }
 
-abstract class EntryBuilder<I extends Info, E extends Entry<I>> {
+abstract class EntryGenerator<I extends Info, E extends Entry<I>> {
   /// A value generator
   ValueGenerator get generator;
 
@@ -508,7 +508,7 @@ abstract class EntryBuilder<I extends Info, E extends Entry<I>> {
 
 /// Base class for all the test contexts.
 abstract class TestContext<I extends Info, E extends Entry<I>,
-    T extends Store<I, E>> implements EntryBuilder<I, E> {
+    T extends Store<I, E>> implements EntryGenerator<I, E> {
   @override
   final ValueGenerator generator;
 
@@ -574,8 +574,9 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   /// Returns a fully initialized [VaultEntry]
   @override
   VaultEntry newEntry(int seed, {String? key, DateTime? creationTime}) {
-    return VaultEntry.addEntry(key ?? 'vault_key_$seed',
-        creationTime ?? DateTime.now(), generator.nextValue(seed));
+    return VaultEntryBuilder(key ?? 'vault_key_$seed',
+            generator.nextValue(seed), creationTime ?? DateTime.now())
+        .build();
   }
 }
 
@@ -629,20 +630,20 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
 
   /// Creates a new [CacheEntry] with the provided [ValueGenerator] and [seed]
   ///
-  /// * [generator]: The [ValueGenerator] to use
   /// * [seed]: The seed for the [ValueGenerator]
   /// * [key]: The cache key
-  /// * [expiryTime]: The cache expiry time
+  /// * [expiryDuration]: The cache expiry duration
   /// * [creationTime]: The cache creation time
   ///
   /// Returns a fully initialized [CacheEntry]
   @override
   CacheEntry newEntry(int seed,
-      {String? key, DateTime? expiryTime, DateTime? creationTime}) {
-    return CacheEntry.addEntry(
-        key ?? 'cache_key_$seed',
-        creationTime ?? DateTime.now(),
-        expiryTime ?? seed.minutes.fromNow,
-        generator.nextValue(seed));
+      {String? key, Duration? expiryDuration, DateTime? creationTime}) {
+    return CacheEntryBuilder(
+      key ?? 'cache_key_$seed',
+      generator.nextValue(seed),
+      creationTime ?? DateTime.now(),
+      expiryDuration ?? seed.minutes,
+    ).build();
   }
 }
