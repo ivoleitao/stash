@@ -21,8 +21,7 @@ class DefaultCacheManager implements CacheManager {
 
   @override
   Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> storage,
-      {CacheManager? manager,
-      String? name,
+      {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -33,7 +32,7 @@ class DefaultCacheManager implements CacheManager {
       bool? statsEnabled,
       CacheStats? stats}) {
     final cache = DefaultCache<T>(storage,
-        manager: manager,
+        manager: this,
         name: name,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
@@ -51,13 +50,9 @@ class DefaultCacheManager implements CacheManager {
 
   @override
   Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-      {CacheManager? manager,
-      String? name,
-      Clock? clock,
-      bool? statsEnabled,
-      CacheStats? stats}) {
+      {String? name, Clock? clock, bool? statsEnabled, CacheStats? stats}) {
     final cache = TieredCache<T>(primary, secondary,
-        manager: manager,
+        manager: this,
         name: name,
         clock: clock,
         statsEnabled: statsEnabled,

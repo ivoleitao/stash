@@ -17,14 +17,13 @@ class DefaultVaultManager implements VaultManager {
 
   @override
   Vault<T> newVault<T>(Store<VaultInfo, VaultEntry> storage,
-      {VaultManager? manager,
-      String? name,
+      {String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     final vault = DefaultVault<T>(storage,
-        manager: manager,
+        manager: this,
         name: name,
         clock: clock,
         eventListenerMode: eventListenerMode,

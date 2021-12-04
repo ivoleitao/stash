@@ -38,8 +38,7 @@ abstract class CacheManager {
   ///
   /// Returns a new DefaultCache
   Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> storage,
-      {CacheManager? manager,
-      String? name,
+      {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -62,11 +61,7 @@ abstract class CacheManager {
   ///
   /// Returns a new [Cache]
   Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
-      {CacheManager? manager,
-      String? name,
-      Clock? clock,
-      bool? statsEnabled,
-      CacheStats? stats});
+      {String? name, Clock? clock, bool? statsEnabled, CacheStats? stats});
 
   /// Gets an existing [Cache]
   ///

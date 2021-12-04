@@ -27,8 +27,7 @@ abstract class VaultManager {
   ///
   /// Returns a new [DefaultVault]
   Vault<T> newVault<T>(Store<VaultInfo, VaultEntry> storage,
-      {VaultManager manager,
-      String? name,
+      {String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
