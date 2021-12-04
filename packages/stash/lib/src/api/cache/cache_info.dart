@@ -13,16 +13,15 @@ class CacheInfo extends Info {
   /// * [key]: The cache key
   /// * [creationTime]: The cache creation time
   /// * [expiryTime]: The cache expiry time
-  /// * [type]: The cache type
+  /// * [hitCount]: The cache hit count
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
-  /// * [hitCount]: The cache hit count
   CacheInfo(String key, DateTime creationTime, this.expiryTime,
-      {int? type, DateTime? accessTime, DateTime? updateTime, int? hitCount})
+      {int? hitCount, DateTime? accessTime, DateTime? updateTime})
       : assert(hitCount == null || hitCount >= 0),
         hitCount = hitCount ?? 0,
         super(key, creationTime,
-            type: type, accessTime: accessTime, updateTime: updateTime);
+            accessTime: accessTime, updateTime: updateTime);
 
   /// Checks if the cache info is expired
   ///

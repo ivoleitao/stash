@@ -25,7 +25,9 @@ class CacheEntry extends Entry<CacheInfo> {
       : this._(
             CacheInfo(builder.key, builder.creationTime,
                 builder.creationTime.add(builder.expiryDuration),
-                type: builder.type, hitCount: builder.hitCount),
+                hitCount: builder.hitCount,
+                accessTime: builder.accessTime,
+                updateTime: builder.updateTime),
             builder.value,
             builder.state);
 
@@ -43,9 +45,9 @@ class CacheEntry extends Entry<CacheInfo> {
       {DateTime? accessTime, DateTime? updateTime, int? hitCount})
       : this._(
             CacheInfo(key, creationTime, expiryTime,
+                hitCount: hitCount,
                 accessTime: accessTime,
-                updateTime: updateTime,
-                hitCount: hitCount),
+                updateTime: updateTime),
             value,
             EntryState.loaded);
 
@@ -59,7 +61,7 @@ class CacheEntry extends Entry<CacheInfo> {
       {DateTime? expiryTime}) {
     return CacheEntry._(
         CacheInfo(key, creationTime, expiryTime ?? this.expiryTime,
-            accessTime: accessTime, updateTime: updateTime, hitCount: hitCount),
+            hitCount: hitCount, accessTime: accessTime, updateTime: updateTime),
         value,
         EntryState.updatedValue);
   }
@@ -67,15 +69,16 @@ class CacheEntry extends Entry<CacheInfo> {
   /// Updates the [Info] fields
   ///
   /// * [expiryTime]: The cache expiry time
+  /// * [hitCount]: The cache hit count
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
-  /// * [hitCount]: The cache hit count
   @override
-  void updateInfoFields(
-      {DateTime? expiryTime,
-      DateTime? accessTime,
-      DateTime? updateTime,
-      int? hitCount}) {
+  void updateInfoFields({
+    DateTime? expiryTime,
+    int? hitCount,
+    DateTime? accessTime,
+    DateTime? updateTime,
+  }) {
     super.updateInfoFields(accessTime: accessTime, updateTime: updateTime);
     info.expiryTime = expiryTime ?? info.expiryTime;
     info.hitCount = hitCount ?? info.hitCount;
@@ -87,10 +90,11 @@ class CacheEntry extends Entry<CacheInfo> {
   @override
   void updateInfo(CacheInfo info) {
     updateInfoFields(
-        expiryTime: info.expiryTime,
-        accessTime: info.accessTime,
-        updateTime: info.updateTime,
-        hitCount: info.hitCount);
+      hitCount: info.hitCount,
+      expiryTime: info.expiryTime,
+      accessTime: info.accessTime,
+      updateTime: info.updateTime,
+    );
   }
 
   /// Checks if the cache entry is expired
@@ -104,7 +108,7 @@ class CacheEntry extends Entry<CacheInfo> {
 }
 
 /// The [CacheEntry] builder
-class CacheEntryBuilder extends EntryBuilder<CacheInfo, CacheEntry> {
+class CacheEntryBuilder<T> extends EntryBuilder<T, CacheInfo, CacheEntry> {
   /// The expiry duration
   Duration expiryDuration;
 
@@ -117,12 +121,14 @@ class CacheEntryBuilder extends EntryBuilder<CacheInfo, CacheEntry> {
   /// * [value]: The entry value
   /// * [creationTime]: The entry creation time
   /// * [expiryDuration]: The entry expiry duration
-  /// * [type]: The entry type
   /// * [hitCount]: The entry hit count
+  /// * [accessTime]: The access time
+  /// * [updateTime]: The update time
   CacheEntryBuilder(
-      String key, dynamic value, DateTime creationTime, this.expiryDuration,
-      {int? type, this.hitCount})
-      : super(key, value, creationTime, type: type);
+      String key, T value, DateTime creationTime, this.expiryDuration,
+      {this.hitCount, DateTime? accessTime, DateTime? updateTime})
+      : super(key, value, creationTime,
+            accessTime: accessTime, updateTime: updateTime);
 
   @override
   CacheEntry build() {

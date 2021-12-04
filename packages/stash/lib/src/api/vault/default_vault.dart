@@ -149,13 +149,11 @@ class DefaultVault<T> implements Vault<T> {
 
   /// Puts the value in the vault.
   ///
-  /// * [key]: the vault key
-  /// * [value]: the vault value
-  /// * [now]: the current date/time
-  Future<void> _newEntry(String key, T value, DateTime now) {
-    final entry = VaultEntryBuilder(key, value, now).build();
+  /// * [builder]: the entry builder
+  Future<void> _newEntry(VaultEntryBuilder<T> builder) {
+    final entry = builder.build();
 
-    return _putStorageEntry(key, entry,
+    return _putStorageEntry(entry.key, entry,
         event: VaultEntryCreatedEvent<T>(this, entry));
   }
 
@@ -185,6 +183,19 @@ class DefaultVault<T> implements Vault<T> {
     return _putStorageEntry(entry.key, newEntry,
             event: VaultEntryUpdatedEvent<T>(this, entry, newEntry))
         .then((_) => entry.value);
+  }
+
+  /// Provides a new builder
+  ///
+  /// * [key]: the vault key
+  /// * [value]: the vault value
+  /// * [now]: the current date/time
+  /// * [delegate]: Allows the caller to change entry values
+  VaultEntryBuilder<T> _entryBuilder(String key, T value, DateTime now,
+      {VaultEntryBuilderDelegate<T>? delegate}) {
+    delegate ??= (VaultEntryBuilder<T> delegate) => delegate;
+
+    return delegate(VaultEntryBuilder(key, value, now));
   }
 
   @override
@@ -220,7 +231,8 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<void> put(String key, T value) {
+  Future<void> put(String key, T value,
+      {VaultEntryBuilderDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -246,7 +258,7 @@ class DefaultVault<T> implements Vault<T> {
       // If the entry does not exist
       if (entry == null) {
         // And finally we add it to the vault
-        return _newEntry(key, value, now);
+        return _newEntry(_entryBuilder(key, value, now));
       } else {
         // Already present let's update the vault instead
         return _updateEntry(entry, value, now);
@@ -260,7 +272,8 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<bool> putIfAbsent(String key, T value) {
+  Future<bool> putIfAbsent(String key, T value,
+      {VaultEntryBuilderDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -293,7 +306,8 @@ class DefaultVault<T> implements Vault<T> {
     return _getStorageEntry(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
-        return _newEntry(key, value, now).then((_) => posPut(true));
+        return _newEntry(_entryBuilder(key, value, now))
+            .then((_) => posPut(true));
       }
 
       return posPut(false);
@@ -343,7 +357,8 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<T?> getAndPut(String key, T value) {
+  Future<T?> getAndPut(String key, T value,
+      {VaultEntryBuilderDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -380,7 +395,8 @@ class DefaultVault<T> implements Vault<T> {
     return _getStorageEntry(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
-        return _newEntry(key, value, now).then((_) => posPut(null));
+        return _newEntry(_entryBuilder(key, value, now))
+            .then((_) => posPut(null));
       } else {
         return _updateEntry(entry, value, now).then(posPut);
       }

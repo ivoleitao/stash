@@ -16,8 +16,11 @@ class VaultEntry extends Entry<VaultInfo> {
   ///
   /// * [builder]: The [VaultEntry] builder
   VaultEntry._builder(VaultEntryBuilder builder)
-      : this._(VaultInfo(builder.key, builder.creationTime, type: builder.type),
-            builder.value, builder.state);
+      : this._(
+            VaultInfo(builder.key, builder.creationTime,
+                accessTime: builder.accessTime, updateTime: builder.updateTime),
+            builder.value,
+            builder.state);
 
   /// Loads a new [VaultEntry]
   ///
@@ -48,15 +51,16 @@ class VaultEntry extends Entry<VaultInfo> {
 }
 
 /// The [VaultEntry] builder
-class VaultEntryBuilder extends EntryBuilder<VaultInfo, VaultEntry> {
+class VaultEntryBuilder<T> extends EntryBuilder<T, VaultInfo, VaultEntry> {
   /// Builds a [VaultEntryBuilder]
   ///
   /// * [key]: The entry key
   /// * [value]: The entry value
   /// * [creationTime]: The entry creation time
-  /// * [type]: The entry type
-  VaultEntryBuilder(String key, value, DateTime creationTime, {int? type})
-      : super(key, value, creationTime, type: type);
+  /// * [accessTime]: The access time
+  /// * [updateTime]: The update time
+  VaultEntryBuilder(String key, T value, DateTime creationTime)
+      : super(key, value, creationTime);
 
   @override
   VaultEntry build() {

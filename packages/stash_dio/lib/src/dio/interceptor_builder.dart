@@ -224,8 +224,13 @@ class CacheInterceptorBuilder {
                 statusCode: response.statusCode,
                 headers: utf8.encode(jsonEncode(response.headers.map)),
                 staleDate: staleDate,
-                data: data),
-            expiryDuration: maxAge);
+                data: data), delegate: (CacheEntryBuilder builder) {
+          if (maxAge != null) {
+            builder.expiryDuration = maxAge!;
+          }
+
+          return builder;
+        });
       }
     }
 

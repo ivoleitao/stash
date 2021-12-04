@@ -32,9 +32,6 @@ abstract class Entry<T extends Info> with EquatableMixin {
   /// The creation time getter
   DateTime get creationTime => info.creationTime;
 
-  /// The type getter
-  int get type => info.type;
-
   /// The access time getter
   DateTime get accessTime => info.accessTime;
 
@@ -73,21 +70,24 @@ abstract class Entry<T extends Info> with EquatableMixin {
 }
 
 /// The [Entry] builder
-abstract class EntryBuilder<T extends Info, E extends Entry<T>> {
+abstract class EntryBuilder<T, I extends Info, E extends Entry<I>> {
   /// The key
   final String key;
 
   /// The value
-  final dynamic value;
-
-  /// The creation time
-  final DateTime creationTime;
+  final T value;
 
   /// The state
   final EntryState state;
 
-  /// The type
-  int type;
+  /// The creation time
+  final DateTime creationTime;
+
+  /// Info access time
+  DateTime accessTime;
+
+  /// Info update time
+  DateTime updateTime;
 
   /// Builds a [EntryBuilder]
   ///
@@ -95,10 +95,13 @@ abstract class EntryBuilder<T extends Info, E extends Entry<T>> {
   /// * [value]: The entry value
   /// * [creationTime]: The entry creation time
   /// * [state]: The entry state
-  /// * [type]: The entry type
-  EntryBuilder(this.key, this.value, this.creationTime, {int? type})
+  /// * [accessTime]: The access time
+  /// * [updateTime]: The update time
+  EntryBuilder(this.key, this.value, this.creationTime,
+      {DateTime? accessTime, DateTime? updateTime})
       : state = EntryState.added,
-        type = type ?? 0;
+        accessTime = accessTime ?? creationTime,
+        updateTime = updateTime ?? creationTime;
 
   /// Builds an [Entry]
   E build();

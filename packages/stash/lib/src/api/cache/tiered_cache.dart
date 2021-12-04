@@ -80,7 +80,7 @@ class TieredCache<T> implements Cache<T> {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<T?> get(String key) {
+  Future<T?> get(String key, {CacheEntryBuilderDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<T?> Function(T? value) posGet = (T? value) => Future.value(value);
@@ -99,14 +99,16 @@ class TieredCache<T> implements Cache<T> {
     // #endregion
 
     return _primary
-        .get(key)
-        .then((T? value) =>
-            value != null ? Future.value(value) : _secondary.get(key))
+        .get(key, delegate: delegate)
+        .then((T? value) => value != null
+            ? Future.value(value)
+            : _secondary.get(key, delegate: delegate))
         .then(posGet);
   }
 
   @override
-  Future<void> put(String key, T value, {Duration? expiryDuration}) {
+  Future<void> put(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<void> Function(void) posPut = (_) => Future<void>.value();
@@ -125,8 +127,8 @@ class TieredCache<T> implements Cache<T> {
     // #endregion
 
     return _secondary
-        .put(key, value, expiryDuration: expiryDuration)
-        .then((_) => _primary.put(key, value, expiryDuration: expiryDuration))
+        .put(key, value, delegate: delegate)
+        .then((_) => _primary.put(key, value, delegate: delegate))
         .then(posPut);
   }
 
@@ -137,7 +139,8 @@ class TieredCache<T> implements Cache<T> {
   }
 
   @override
-  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration}) {
+  Future<bool> putIfAbsent(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<bool> Function(bool ok) posPut = (bool ok) => Future<bool>.value(ok);
@@ -158,9 +161,8 @@ class TieredCache<T> implements Cache<T> {
     // #endregion
 
     return _secondary
-        .putIfAbsent(key, value, expiryDuration: expiryDuration)
-        .then((_) =>
-            _primary.putIfAbsent(key, value, expiryDuration: expiryDuration))
+        .putIfAbsent(key, value, delegate: delegate)
+        .then((_) => _primary.putIfAbsent(key, value, delegate: delegate))
         .then(posPut);
   }
 
@@ -194,7 +196,8 @@ class TieredCache<T> implements Cache<T> {
   }
 
   @override
-  Future<T?> getAndPut(String key, T value, {Duration? expiryDuration}) {
+  Future<T?> getAndPut(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<T?> Function(T? value) posGetPut = (T? value) => Future.value(value);

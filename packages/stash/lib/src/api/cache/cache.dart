@@ -1,3 +1,4 @@
+import 'package:stash/src/api/cache/cache_entry.dart';
 import 'package:stash/src/api/cache/cache_manager.dart';
 import 'package:stash/src/api/cache/cache_stats.dart';
 import 'package:stash/src/api/cache/event/event.dart';
@@ -6,6 +7,10 @@ import '../stash.dart';
 
 /// Cache loader function
 typedef CacheLoader<T> = Future<T> Function(String key);
+
+/// Cache entry builder delegate
+typedef CacheEntryBuilderDelegate<T> = CacheEntryBuilder<T> Function(
+    CacheEntryBuilder<T> delegate);
 
 /// The cache definition and the hub for the creation of caches
 abstract class Cache<T> extends Stash<T> {
@@ -22,49 +27,47 @@ abstract class Cache<T> extends Stash<T> {
   // Gets the cache stats
   CacheStats get stats;
 
-  /// Returns the cache value for the specified [key]. If [expiryDuration] is
-  /// specified it uses it instead of the configured expiry policy duration
+  /// Returns the cache value for the specified [key].
   ///
   /// * [key]: the key
-  /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
+  /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   @override
-  Future<T?> get(String key);
+  Future<T?> get(String key, {CacheEntryBuilderDelegate<T>? delegate});
 
-  /// Add / Replace the cache [value] for the specified [key]. If [expiryDuration]
-  /// is specified ir uses it instead of the configured expiry policy duration
+  /// Add / Replace the cache [value] for the specified [key].
   ///
   /// * [key]: the key
   /// * [value]: the value
-  /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
+  /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   @override
-  Future<void> put(String key, T value, {Duration? expiryDuration});
+  Future<void> put(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate});
 
   /// Associates the specified [key] with the given [value]
-  /// if not already associated with a value. If [expiryDuration]
-  /// is specified ir uses it instead of the configured expiry policy duration
+  /// if not already associated with a value.
   ///
   /// * [key]: key with which the specified value is to be associated
   /// * [value]: value to be associated with the specified key
-  /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
+  /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   ///
   /// Returns `true` if a value was set.
   @override
-  Future<bool> putIfAbsent(String key, T value, {Duration? expiryDuration});
+  Future<bool> putIfAbsent(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate});
 
   /// Associates the specified [value] with the specified [key] in this cache,
   /// returning an existing value if one existed. If the cache previously contained
   /// a mapping for the [key], the old value is replaced by the specified value.
-  /// If [expiryDuration] is specified ir uses it instead of the configured
-  /// expiry policy duration
   ///
   /// * [key]: key with which the specified value is to be associated
   /// * [value]: value to be associated with the specified key
-  /// * [expiryDuration]: Expiry duration to be used in place of the configured expiry policy duration
+  /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   ///
   /// The previous value is returned, or `null` if there was no value
   /// associated with the [key] previously.
   @override
-  Future<T?> getAndPut(String key, T value, {Duration? expiryDuration});
+  Future<T?> getAndPut(String key, T value,
+      {CacheEntryBuilderDelegate<T>? delegate});
 
   /// Listens for events of Type `T` and its subtypes.
   ///
