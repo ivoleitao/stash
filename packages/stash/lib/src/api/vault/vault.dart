@@ -3,8 +3,8 @@ import 'package:stash/stash_api.dart';
 
 import '../stash.dart';
 
-/// Vault entry builder delegate
-typedef VaultEntryBuilderDelegate<T> = VaultEntryBuilder<T> Function(
+/// Vault entry delegate
+typedef VaultEntryDelegate<T> = VaultEntryBuilder<T> Function(
     VaultEntryBuilder<T> delegate);
 
 /// The vault definition and the hub for the creation of Vaults
@@ -27,8 +27,7 @@ abstract class Vault<T> extends Stash<T> {
   /// * [value]: the value
   /// * [delegate]: provides the caller a way of changing the [VaultEntry] before persistence
   @override
-  Future<void> put(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate});
+  Future<void> put(String key, T value, {VaultEntryDelegate<T>? delegate});
 
   /// Associates the specified [key] with the given [value]
   ///
@@ -39,7 +38,7 @@ abstract class Vault<T> extends Stash<T> {
   /// Returns `true` if a value was set.
   @override
   Future<bool> putIfAbsent(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate});
+      {VaultEntryDelegate<T>? delegate});
 
   /// Associates the specified [value] with the specified [key] in this cache,
   /// returning an existing value if one existed. If the cache previously contained
@@ -52,8 +51,7 @@ abstract class Vault<T> extends Stash<T> {
   /// The previous value is returned, or `null` if there was no value
   /// associated with the [key] previously.
   @override
-  Future<T?> getAndPut(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate});
+  Future<T?> getAndPut(String key, T value, {VaultEntryDelegate<T>? delegate});
 
   /// Listens for events of Type `T` and its subtypes.
   ///

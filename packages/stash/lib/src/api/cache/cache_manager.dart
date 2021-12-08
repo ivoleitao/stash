@@ -9,6 +9,7 @@ import 'package:stash/src/api/cache/sampler/full_sampler.dart';
 import 'package:stash/src/api/cache/sampler/sampler.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
+import 'package:stash/stash_api.dart';
 
 import 'cache.dart';
 import 'cache_entry.dart';
@@ -37,7 +38,7 @@ abstract class CacheManager {
   /// * [stats]: The statistics instance
   ///
   /// Returns a new DefaultCache
-  Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> storage,
+  Cache<T> newGenericCache<T>(Store<CacheInfo, CacheEntry> storage,
       {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
@@ -60,13 +61,27 @@ abstract class CacheManager {
   /// * [stats]: The statistics instance, defaults to [DefaultCacheStats]
   ///
   /// Returns a new [Cache]
-  Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
+  TieredCache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
       {String? name, Clock? clock, bool? statsEnabled, CacheStats? stats});
 
   /// Gets an existing [Cache]
   ///
   /// * [name]: The name of the cache
-  Cache<T>? get<T>(String name);
+  V? get<T, V extends Cache<T>>(String name);
+
+  /// Gets an existing [Cache]
+  ///
+  /// * [name]: The name of the cache
+  Cache<T>? getCache<T>(String name) {
+    return get<T, Cache<T>>(name);
+  }
+
+  /// Gets an existing [TieredCache]
+  ///
+  /// * [name]: The name of the tiered cache
+  TieredCache<T>? getTieredCache<T>(String name) {
+    return get<T, TieredCache<T>>(name);
+  }
 
   /// Removes a [Cache] from this [CacheManager] if present
   ///

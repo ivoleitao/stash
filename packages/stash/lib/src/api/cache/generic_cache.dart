@@ -25,8 +25,8 @@ import 'package:uuid/uuid.dart';
 
 import 'cache_manager.dart';
 
-/// Default implementation of the [Cache] interface
-class DefaultCache<T> implements Cache<T> {
+/// Generic implementation of the [Cache] interface
+class GenericCache<T> implements Cache<T> {
   /// The name of this cache
   @override
   final String name;
@@ -68,7 +68,7 @@ class DefaultCache<T> implements Cache<T> {
   @override
   final CacheStats stats;
 
-  /// Builds a [DefaultCache] out of a mandatory [Store] and a set of optional configurations
+  /// Builds a [GenericCache] out of a mandatory [Store] and a set of optional configurations
   ///
   /// * [storage]: The [Store]
   /// * [manager]: An optional [CacheManager]
@@ -83,8 +83,8 @@ class DefaultCache<T> implements Cache<T> {
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance, defaults to [DefaultCacheStats]
   ///
-  /// Returns a [DefaultCache]
-  DefaultCache(this.storage,
+  /// Returns a [GenericCache]
+  GenericCache(this.storage,
       {this.manager,
       String? name,
       ExpiryPolicy? expiryPolicy,
@@ -292,7 +292,7 @@ class DefaultCache<T> implements Cache<T> {
   /// * [now]: the current date/time
   /// * [delegate]: Allows the caller to change entry values
   CacheEntryBuilder<T> _entryBuilder(String key, T value, DateTime now,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+      {CacheEntryDelegate<T>? delegate}) {
     delegate ??= (CacheEntryBuilder<T> delegate) => delegate;
 
     return delegate(CacheEntryBuilder(
@@ -300,7 +300,7 @@ class DefaultCache<T> implements Cache<T> {
   }
 
   @override
-  Future<T?> get(String key, {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<T?> get(String key, {CacheEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -357,8 +357,7 @@ class DefaultCache<T> implements Cache<T> {
   }
 
   @override
-  Future<void> put(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<void> put(String key, T value, {CacheEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -409,7 +408,7 @@ class DefaultCache<T> implements Cache<T> {
 
   @override
   Future<bool> putIfAbsent(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+      {CacheEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -525,8 +524,7 @@ class DefaultCache<T> implements Cache<T> {
   }
 
   @override
-  Future<T?> getAndPut(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<T?> getAndPut(String key, T value, {CacheEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics

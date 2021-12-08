@@ -2,9 +2,10 @@ name: stash
 version: 4.0.0
 publish_to: none
 description: >-
-  Standard caching API for Dart. Defines a common mechanism to create, 
-  access, update, and remove information from caches. Provides a in memory
-  reference implementation
+  Stash supports the creation of key/value storages through well defined
+  abstractions which provide plain or cache driven semantics. Supports a wide
+  array of storage backends and integrates with some well known packages in the 
+  dart ecosystem.
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash
 
 environment:

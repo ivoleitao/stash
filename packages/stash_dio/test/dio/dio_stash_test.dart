@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_dio/src/dio/cache_value.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
 import 'package:stash_file/stash_file.dart';
@@ -128,8 +129,8 @@ void main() async {
   });
 
   test('With cache setting two different responses', () async {
-    withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
+    withInterceptor(dio,
+        (builder) => builder..cache('/posts/1', newMemoryCacheStore().cache()));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 
@@ -142,8 +143,8 @@ void main() async {
   });
 
   test('With cache but not matching the request', () async {
-    withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
+    withInterceptor(dio,
+        (builder) => builder..cache('/posts/1', newMemoryCacheStore().cache()));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/2');
 
@@ -156,8 +157,8 @@ void main() async {
   });
 
   test('With cache but with status code out of the allowed range', () async {
-    withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
+    withInterceptor(dio,
+        (builder) => builder..cache('/posts/1', newMemoryCacheStore().cache()));
     _withAnswer(dioAdapterMock, Post._a(), statusCode: 404);
     expect(
         _getResponse(dio, '/posts/1'), throwsA(const TypeMatcher<DioError>()));
@@ -165,7 +166,9 @@ void main() async {
 
   test('With a file cache', () async {
     withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newFileMemoryCache()));
+        dio,
+        (builder) =>
+            builder..cache('/posts/1', newFileLocalCacheStore().cache()));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
     var receivedResponse1 = await _getResponse(dio, '/posts/1');
 
@@ -178,8 +181,8 @@ void main() async {
   }, testOn: '!js');
 
   test('stash-dio #14', () async {
-    withInterceptor(
-        dio, (builder) => builder..cache('/posts/1', newMemoryCache()));
+    withInterceptor(dio,
+        (builder) => builder..cache('/posts/1', newMemoryCacheStore().cache()));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a(), headers: {
       'cache-control': ['no-cache', 'no-store']
     });

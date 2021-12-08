@@ -17,8 +17,8 @@ import 'package:uuid/uuid.dart';
 import 'vault_manager.dart';
 import 'vault_stats.dart';
 
-/// Default implementation of the [Vault] interface
-class DefaultVault<T> implements Vault<T> {
+/// Generic implementation of the [Vault] interface
+class GenericVault<T> implements Vault<T> {
   /// The name of this vault
   @override
   final String name;
@@ -44,7 +44,7 @@ class DefaultVault<T> implements Vault<T> {
   @override
   final VaultStats stats;
 
-  /// Builds a [DefaultVault] out of a mandatory [Store] and a set of
+  /// Builds a [GenericVault] out of a mandatory [Store] and a set of
   /// optional configurations
   ///
   /// * [storage]: The [Store]
@@ -54,8 +54,8 @@ class DefaultVault<T> implements Vault<T> {
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance, defaults to [DefaultVaultStats]
   ///
-  /// Returns a [DefaultVault]
-  DefaultVault(this.storage,
+  /// Returns a [GenericVault]
+  GenericVault(this.storage,
       {this.manager,
       String? name,
       Clock? clock,
@@ -192,7 +192,7 @@ class DefaultVault<T> implements Vault<T> {
   /// * [now]: the current date/time
   /// * [delegate]: Allows the caller to change entry values
   VaultEntryBuilder<T> _entryBuilder(String key, T value, DateTime now,
-      {VaultEntryBuilderDelegate<T>? delegate}) {
+      {VaultEntryDelegate<T>? delegate}) {
     delegate ??= (VaultEntryBuilder<T> delegate) => delegate;
 
     return delegate(VaultEntryBuilder(key, value, now));
@@ -231,8 +231,7 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<void> put(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate}) {
+  Future<void> put(String key, T value, {VaultEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -273,7 +272,7 @@ class DefaultVault<T> implements Vault<T> {
 
   @override
   Future<bool> putIfAbsent(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate}) {
+      {VaultEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -357,8 +356,7 @@ class DefaultVault<T> implements Vault<T> {
   }
 
   @override
-  Future<T?> getAndPut(String key, T value,
-      {VaultEntryBuilderDelegate<T>? delegate}) {
+  Future<T?> getAndPut(String key, T value, {VaultEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics

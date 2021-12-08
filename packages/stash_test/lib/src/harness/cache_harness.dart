@@ -1213,11 +1213,11 @@ List<Future<T> Function(CacheTestContext<T>)>
 /// (with a provided [ValueGenerator] instance). They are encapsulated in provided [CacheTestContext] object
 ///
 /// * [ctx]: the test context
-/// * [tests]: The set of tests
+/// * [cacheTests]: The set of tests
 Future<void> testCacheWith<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx,
-    {Set<CacheTest> tests = _cacheTests}) async {
-  for (var test in _getCacheTests<T>(tests: tests)) {
+    {Set<CacheTest> cacheTests = _cacheTests}) async {
+  for (var test in _getCacheTests<T>(tests: cacheTests)) {
     await test(ctx).then(ctx.deleteStore);
   }
 }
@@ -1226,14 +1226,15 @@ Future<void> testCacheWith<T extends Store<CacheInfo, CacheEntry>>(
 ///
 /// * [newCacheTestContext]: The context builder
 /// * [types]: The type/generator map
-/// * [tests]: The test set
+/// * [cacheTests]: The test set
 void testCache<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContextBuilder<T> newCacheTestContext,
     {Map<TypeTest, Function>? types,
-    Set<CacheTest> tests = _cacheTests}) {
+    Set<CacheTest> cacheTests = _cacheTests}) {
   for (var entry in (types ?? _typeTests).entries) {
     test('Cache: ${EnumToString.convertToString(entry.key)}', () async {
-      await testCacheWith<T>(newCacheTestContext(entry.value()), tests: tests);
+      await testCacheWith<T>(newCacheTestContext(entry.value()),
+          cacheTests: cacheTests);
     });
   }
 }

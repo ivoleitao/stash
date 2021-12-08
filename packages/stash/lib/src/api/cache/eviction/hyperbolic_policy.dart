@@ -13,11 +13,10 @@ class HyperbolicEvictionPolicy extends BaseEvictionPolicy {
     int selectedEntryTicks =
         (now.microsecond - selectedEntry.creationTime.microsecond);
     if (entryTicks > 0 && selectedEntryTicks > 0) {
-      double entryFactor =
-          entry.hitCount / (now.microsecond - entry.creationTime.microsecond);
-      double selectedEntryTicks = selectedEntry.hitCount /
-          (now.microsecond - selectedEntry.creationTime.microsecond);
-      return entryFactor < selectedEntryTicks;
+      double entryFactor = entry.hitCount / entryTicks;
+      double selectedEntryFactor = selectedEntry.hitCount / selectedEntryTicks;
+
+      return entryFactor < selectedEntryFactor;
     }
 
     return false;

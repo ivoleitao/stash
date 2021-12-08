@@ -8,8 +8,8 @@ import '../stash.dart';
 /// Cache loader function
 typedef CacheLoader<T> = Future<T> Function(String key);
 
-/// Cache entry builder delegate
-typedef CacheEntryBuilderDelegate<T> = CacheEntryBuilder<T> Function(
+/// Cache entry delegate
+typedef CacheEntryDelegate<T> = CacheEntryBuilder<T> Function(
     CacheEntryBuilder<T> delegate);
 
 /// The cache definition and the hub for the creation of caches
@@ -32,7 +32,7 @@ abstract class Cache<T> extends Stash<T> {
   /// * [key]: the key
   /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   @override
-  Future<T?> get(String key, {CacheEntryBuilderDelegate<T>? delegate});
+  Future<T?> get(String key, {CacheEntryDelegate<T>? delegate});
 
   /// Add / Replace the cache [value] for the specified [key].
   ///
@@ -40,8 +40,7 @@ abstract class Cache<T> extends Stash<T> {
   /// * [value]: the value
   /// * [delegate]: provides the caller a way of changing the [CacheEntry] before persistence
   @override
-  Future<void> put(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate});
+  Future<void> put(String key, T value, {CacheEntryDelegate<T>? delegate});
 
   /// Associates the specified [key] with the given [value]
   /// if not already associated with a value.
@@ -53,7 +52,7 @@ abstract class Cache<T> extends Stash<T> {
   /// Returns `true` if a value was set.
   @override
   Future<bool> putIfAbsent(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate});
+      {CacheEntryDelegate<T>? delegate});
 
   /// Associates the specified [value] with the specified [key] in this cache,
   /// returning an existing value if one existed. If the cache previously contained
@@ -66,8 +65,7 @@ abstract class Cache<T> extends Stash<T> {
   /// The previous value is returned, or `null` if there was no value
   /// associated with the [key] previously.
   @override
-  Future<T?> getAndPut(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate});
+  Future<T?> getAndPut(String key, T value, {CacheEntryDelegate<T>? delegate});
 
   /// Listens for events of Type `T` and its subtypes.
   ///

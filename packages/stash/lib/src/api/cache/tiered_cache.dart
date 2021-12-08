@@ -80,7 +80,7 @@ class TieredCache<T> implements Cache<T> {
           contains ? Future.value(true) : _secondary.containsKey(key));
 
   @override
-  Future<T?> get(String key, {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<T?> get(String key, {CacheEntryDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<T?> Function(T? value) posGet = (T? value) => Future.value(value);
@@ -107,8 +107,7 @@ class TieredCache<T> implements Cache<T> {
   }
 
   @override
-  Future<void> put(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<void> put(String key, T value, {CacheEntryDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<void> Function(void) posPut = (_) => Future<void>.value();
@@ -140,7 +139,7 @@ class TieredCache<T> implements Cache<T> {
 
   @override
   Future<bool> putIfAbsent(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+      {CacheEntryDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<bool> Function(bool ok) posPut = (bool ok) => Future<bool>.value(ok);
@@ -196,8 +195,7 @@ class TieredCache<T> implements Cache<T> {
   }
 
   @override
-  Future<T?> getAndPut(String key, T value,
-      {CacheEntryBuilderDelegate<T>? delegate}) {
+  Future<T?> getAndPut(String key, T value, {CacheEntryDelegate<T>? delegate}) {
     // #region Statistics
     Stopwatch? watch;
     Future<T?> Function(T? value) posGetPut = (T? value) => Future.value(value);

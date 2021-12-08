@@ -4,15 +4,15 @@ import 'package:stash/src/api/cache/cache_entry.dart';
 import 'package:stash/src/api/cache/cache_info.dart';
 import 'package:stash/src/api/cache/cache_manager.dart';
 import 'package:stash/src/api/cache/cache_stats.dart';
-import 'package:stash/src/api/cache/default_cache.dart';
 import 'package:stash/src/api/cache/eviction/eviction_policy.dart';
 import 'package:stash/src/api/cache/expiry/expiry_policy.dart';
+import 'package:stash/src/api/cache/generic_cache.dart';
 import 'package:stash/src/api/cache/sampler/sampler.dart';
 import 'package:stash/src/api/cache/tiered_cache.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
 
-class DefaultCacheManager implements CacheManager {
+class DefaultCacheManager extends CacheManager {
   /// The list of caches
   final _caches = <String, Cache>{};
 
@@ -20,7 +20,7 @@ class DefaultCacheManager implements CacheManager {
   Iterable<String> get names => _caches.keys;
 
   @override
-  Cache<T> newCache<T>(Store<CacheInfo, CacheEntry> storage,
+  Cache<T> newGenericCache<T>(Store<CacheInfo, CacheEntry> storage,
       {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
@@ -31,7 +31,7 @@ class DefaultCacheManager implements CacheManager {
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       CacheStats? stats}) {
-    final cache = DefaultCache<T>(storage,
+    final cache = GenericCache<T>(storage,
         manager: this,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -49,7 +49,7 @@ class DefaultCacheManager implements CacheManager {
   }
 
   @override
-  Cache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
+  TieredCache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,
       {String? name, Clock? clock, bool? statsEnabled, CacheStats? stats}) {
     final cache = TieredCache<T>(primary, secondary,
         manager: this,
@@ -64,8 +64,8 @@ class DefaultCacheManager implements CacheManager {
   }
 
   @override
-  Cache<T>? get<T>(String name) {
-    return _caches[name] as Cache<T>?;
+  V? get<T, V extends Cache<T>>(String name) {
+    return _caches[name] as V?;
   }
 
   @override

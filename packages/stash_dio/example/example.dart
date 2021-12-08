@@ -31,7 +31,7 @@ void main() async {
   // Configures a a dio client
   final dio = Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'))
     ..interceptors.addAll([
-      newMemoryCacheInterceptor('/todos/1', 'task', store: store),
+      store.interceptor('/todos/1', 'task'),
       LogInterceptor(
           requestHeader: false,
           requestBody: false,

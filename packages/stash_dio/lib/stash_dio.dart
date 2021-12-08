@@ -4,7 +4,6 @@ library stash_dio;
 import 'package:dio/dio.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
-import 'package:stash_memory/stash_memory.dart';
 
 export 'src/dio/cache_interceptor.dart';
 
@@ -17,56 +16,43 @@ Interceptor newCacheInterceptor(String pattern, Cache cache) {
   return (CacheInterceptorBuilder()..cache(pattern, cache)).build();
 }
 
-/// Creates a new [Interceptor] backed by a [Cache] with [MemoryCacheStore] storage
-///
-/// * [pattern]: All the calls with a url matching this pattern will be cached
-/// * [cacheName]: The name of the cache
-/// * [manager]: An optional [CacheManager]
-/// * [store]: An existing store
-/// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
-/// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
-/// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-/// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
-/// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
-/// * [eventListenerMode]: The event listener mode of this cache
-///
-/// Returns a [Interceptor]
-Interceptor newMemoryCacheInterceptor(String pattern, String cacheName,
-    {CacheManager? manager,
-    MemoryCacheStore? store,
-    KeySampler? sampler,
-    EvictionPolicy? evictionPolicy,
-    int? maxEntries,
-    ExpiryPolicy? expiryPolicy,
-    CacheLoader? cacheLoader,
-    EventListenerMode? eventListenerMode}) {
-  return newCacheInterceptor(
-      pattern,
-      newMemoryCache(
-          manager: manager,
-          cacheName: cacheName,
-          evictionPolicy: evictionPolicy,
-          sampler: sampler,
-          expiryPolicy: expiryPolicy,
-          maxEntries: maxEntries,
-          cacheLoader: cacheLoader,
-          eventListenerMode: eventListenerMode,
-          store: store));
-}
-
-/// Creates a new [Interceptor] backed by a primary and a secondary [Cache]
-///
-/// * [pattern]: All the calls with a url matching this pattern will be cached
-/// * [primary]: The primary cache
-/// * [secondary]: The secondary cache
-/// * [manager]: An optional [CacheManager]
-///
-/// Returns a [Interceptor]
-Interceptor newTieredCacheInterceptor(
-    String pattern, Cache primary, Cache secondary,
-    {CacheManager? manager, String? cacheName}) {
-  return newCacheInterceptor(
-      pattern,
-      (manager ?? CacheManager.instance)
-          .newTieredCache(primary, secondary, name: cacheName));
+extension InterceptorExtension on Store<CacheInfo, CacheEntry> {
+  /// Creates a new [Interceptor] backed by a [Store]
+  ///
+  /// * [manager]: An optional [CacheManager]
+  /// * [cacheName]: The name of the cache
+  /// * [expiryPolicy]: The expiry policy to use
+  /// * [sampler]: The sampler to use upon eviction of a cache element
+  /// * [evictionPolicy]: The eviction policy to use
+  /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  ///
+  /// Returns a [Cache] backed by a [Store]
+  Interceptor interceptor<T>(String pattern, String cacheName,
+      {CacheManager? manager,
+      KeySampler? sampler,
+      EvictionPolicy? evictionPolicy,
+      int? maxEntries,
+      ExpiryPolicy? expiryPolicy,
+      CacheLoader<T>? cacheLoader,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      CacheStats? stats}) {
+    return newCacheInterceptor(
+        pattern,
+        cache(
+            manager: manager,
+            cacheName: cacheName,
+            evictionPolicy: evictionPolicy,
+            sampler: sampler,
+            expiryPolicy: expiryPolicy,
+            maxEntries: maxEntries,
+            cacheLoader: cacheLoader,
+            eventListenerMode: eventListenerMode,
+            statsEnabled: statsEnabled,
+            stats: stats));
+  }
 }

@@ -1,6 +1,6 @@
 # 4.0.0
 
-- TODO
+- BREAKING: Major revamp adding support for generics, vaults and statistics
 
 # 3.2.2
 

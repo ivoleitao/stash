@@ -23,7 +23,7 @@ typedef StoreBuilder<I extends Info, E extends Entry<I>, T extends Store<I, E>>
 
 /// Cache builder function
 typedef CacheBuilder<T extends Store<CacheInfo, CacheEntry>>
-    = DefaultCache Function(T store,
+    = GenericCache Function(T store,
         {String name,
         ExpiryPolicy expiryPolicy,
         KeySampler sampler,
@@ -289,20 +289,20 @@ void check<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
   expect(actual, matcher, reason: 'Reason: $reason');
 }
 
-/// Creates a new [DefaultVault] bound to an implementation of the [Store] interface
+/// Creates a [Vault] bound to an implementation of the [Store] interface
 ///
 /// * [store]: The store implementation
 /// * [name]: The name of the vault
 /// * [eventListenerMode]: The event listener mode of this vault
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
-Vault<V> newDefaultVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
+Vault<V> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
     {String? name,
     Clock? clock,
     EventListenerMode? eventListenerMode,
     bool? statsEnabled,
     VaultStats? stats}) {
-  return DefaultVaultManager().newVault(store,
+  return DefaultVaultManager().newGenericVault(store,
       name: name,
       clock: clock,
       eventListenerMode: eventListenerMode,
@@ -310,7 +310,28 @@ Vault<V> newDefaultVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
       stats: stats);
 }
 
-/// Creates a new [DefaultCache] bound to an implementation of the [Store] interface
+/// Creates a [Preferences] bound to an implementation of the [Store] interface
+///
+/// * [store]: The store implementation
+/// * [name]: The name of the preferences vault
+/// * [eventListenerMode]: The event listener mode of this vault
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Preferences newPreferencesVault<T extends Store<VaultInfo, VaultEntry>>(T store,
+    {String? name,
+    Clock? clock,
+    EventListenerMode? eventListenerMode,
+    bool? statsEnabled,
+    VaultStats? stats}) {
+  return DefaultVaultManager().newPreferencesVault(store,
+      name: name,
+      clock: clock,
+      eventListenerMode: eventListenerMode,
+      statsEnabled: statsEnabled,
+      stats: stats);
+}
+
+/// Creates a new [GenericCache] bound to an implementation of the [Store] interface
 ///
 /// * [store]: The store implementation
 /// * [name]: The name of the cache
@@ -323,7 +344,7 @@ Vault<V> newDefaultVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
-Cache<V> newDefaultCache<V, T extends Store<CacheInfo, CacheEntry>>(T store,
+Cache<V> newGenericCache<V, T extends Store<CacheInfo, CacheEntry>>(T store,
     {String? name,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
@@ -334,7 +355,7 @@ Cache<V> newDefaultCache<V, T extends Store<CacheInfo, CacheEntry>>(T store,
     EventListenerMode? eventListenerMode,
     bool? statsEnabled,
     CacheStats? stats}) {
-  return DefaultCacheManager().newCache(store,
+  return DefaultCacheManager().newGenericCache(store,
       name: name,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
@@ -355,6 +376,25 @@ abstract class ValueGenerator {
   ///
   /// Returns a new value generated from the provided [seed]
   dynamic nextValue(int seed);
+
+  /// Returns a new value out of a provided [seed] and casts it to [T]
+  ///
+  /// * [seed]: The seed used to generate a new value
+  ///
+  /// Returns a new value generated from the provided [seed] as [T]
+  T nextValueAs<T>(int seed) {
+    return nextValue(seed) as T;
+  }
+
+  /// Returns a new value out of a provided [seed] as a list and casts the list
+  /// type to [T]
+  ///
+  /// * [seed]: The seed used to generate a new value
+  ///
+  /// Returns a new list generated from the provided [seed] as a List<[T]>
+  List<T> nextListOf<T>(int seed) {
+    return (nextValueAs(seed) as List).cast<T>();
+  }
 
   /// Returns the encoder for the generated class
   dynamic Function(Map<String, dynamic> json)? get fromEncodable => null;
@@ -557,7 +597,29 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
-    return newDefaultVault<V, T>(store,
+    return newGenericVault<V, T>(store,
+        name: name,
+        clock: clock,
+        eventListenerMode: eventListenerMode,
+        statsEnabled: statsEnabled,
+        stats: stats);
+  }
+
+  /// Creates a new preferences vault
+  ///
+  /// * [store]: The [Store]
+  /// * [name]: The name of the preferences
+  /// * [clock]: The source of time to be used on this
+  /// * [eventListenerMode]: The event listener mode of this cache
+  /// * [statsEnabled]: If statistics should be collected, defaults to false
+  /// * [stats]: The statistics instance
+  Preferences newPreferences(T store,
+      {String? name,
+      Clock? clock,
+      EventListenerMode? eventListenerMode,
+      bool? statsEnabled,
+      VaultStats? stats}) {
+    return newPreferencesVault(store,
         name: name,
         clock: clock,
         eventListenerMode: eventListenerMode,
@@ -615,7 +677,7 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       CacheStats? stats}) {
-    return newDefaultCache<V, T>(store,
+    return newGenericCache<V, T>(store,
         name: name,
         expiryPolicy: expiryPolicy,
         sampler: sampler,

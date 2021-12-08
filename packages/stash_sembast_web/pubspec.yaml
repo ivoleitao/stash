@@ -12,15 +12,15 @@ environment:
 dependencies:
   sembast: ^3.1.1
   sembast_web: ^2.0.1+1
-  #stash: ^3.2.2
-  stash:
-    path: ../stash
   #stash_sembast: ^4.0.0
   stash_sembast:
     path: ../stash_sembast
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.19.3
+  #stash: ^3.2.2
+  stash:
+    path: ../stash
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test

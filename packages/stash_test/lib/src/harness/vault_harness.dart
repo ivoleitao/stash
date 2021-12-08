@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:matcher/matcher.dart';
 import 'package:stash/stash_api.dart';
+import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
 
 import 'harness.dart';
@@ -51,6 +52,30 @@ const _vaultTests = {
   VaultTest.stats
 };
 
+/// The supported preferences tests
+enum PreferencesTest {
+  setGetBool,
+  setGetInt,
+  setGetDouble,
+  setGetString,
+  setGetBoolList,
+  setGetIntList,
+  setGetDoubleList,
+  setGetStringList
+}
+
+/// The set of preferences vault tests
+const _preferencesTests = {
+  PreferencesTest.setGetBool,
+  PreferencesTest.setGetInt,
+  PreferencesTest.setGetDouble,
+  PreferencesTest.setGetString,
+  PreferencesTest.setGetBoolList,
+  PreferencesTest.setGetIntList,
+  PreferencesTest.setGetDoubleList,
+  PreferencesTest.setGetStringList
+};
+
 /// Calls [Vault.name] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
@@ -67,7 +92,7 @@ Future<T> _vaultName<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.put] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -84,7 +109,7 @@ Future<T> _vaultPut<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.put] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.put] on a [Vault] backed by the provided [Store] builder
 /// and removes the value through [Vault.remove]
 ///
 /// * [ctx]: The test context
@@ -106,7 +131,7 @@ Future<T> _vaultPutRemove<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.size] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.size] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -143,7 +168,7 @@ Future<T> _vaultSize<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.containsKey] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.containsKey] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -163,7 +188,7 @@ Future<T> _vaultContainsKey<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.keys] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.keys] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -224,7 +249,7 @@ Future<T> _vaultPutGet<T extends Store<VaultInfo, VaultEntry>>(
 }
 
 /// Calls [Vault.put] followed by a operator call on
-/// a [Vault] backed by the provided [VaultStore] builder
+/// a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -273,7 +298,7 @@ Future<T> _vaultPutPut<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.putIfAbsent] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.putIfAbsent] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -302,7 +327,7 @@ Future<T> _vaultPutIfAbsent<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.getAndPut] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.getAndPut] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -328,7 +353,7 @@ Future<T> _vaultGetAndPut<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.getAndRemove] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.getAndRemove] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -376,7 +401,7 @@ Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Builds a [Vault] backed by the provided [VaultStore] builder
+/// Builds a [Vault] backed by the provided [Store] builder
 /// configured with a [VaultEntryCreatedEvent]
 ///
 /// * [ctx]: The test context
@@ -469,7 +494,7 @@ Future<T> _vaultUpdatedEvent<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Builds a [Vault] backed by the provided [VaultStore] builder
+/// Builds a [Vault] backed by the provided [Store] builder
 /// configured with a [VaultEntryRemovedEvent]
 ///
 /// * [ctx]: The test context
@@ -560,7 +585,7 @@ Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Returns the list of tests to execute
+/// Returns the list of vault tests to execute
 ///
 /// * [tests]: The set of tests
 List<Future<T> Function(VaultTestContext<T>)>
@@ -587,6 +612,352 @@ List<Future<T> Function(VaultTestContext<T>)>
   ];
 }
 
+/// Calls [Preferences.setBool] and [Preferences.getBool] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetBool<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextValueAs<bool>(1);
+  await preferences.setBool(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getBool(key1);
+  check(ctx, value2, value1, '_preferencesSetGetBool_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getBool(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetBool_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextValueAs<bool>(2);
+  final value4 = await preferences.getBool(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetBool_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextValueAs<bool>(3);
+  await preferences.setBool(key2, value5);
+  final value6 = await preferences.getBool(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetBool_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setInt] and [Preferences.getInt] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetInt<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextValueAs<int>(1);
+  await preferences.setInt(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getInt(key1);
+  check(ctx, value2, value1, '_preferencesSetGetInt_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getInt(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetInt_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextValueAs<int>(2);
+  final value4 = await preferences.getInt(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetInt_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextValueAs<int>(3);
+  await preferences.setInt(key2, value5);
+  final value6 = await preferences.getInt(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetInt_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setDouble] and [Preferences.getDouble] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetDouble<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextValueAs<double>(1);
+  await preferences.setDouble(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getDouble(key1);
+  check(ctx, value2, value1, '_preferencesSetGetDouble_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getDouble(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetDouble_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextValueAs<double>(2);
+  final value4 = await preferences.getDouble(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetDouble_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextValueAs<double>(3);
+  await preferences.setDouble(key2, value5);
+  final value6 = await preferences.getDouble(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetDouble_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setString] and [Preferences.getString] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetString<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextValueAs<String>(1);
+  await preferences.setString(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getString(key1);
+  check(ctx, value2, value1, '_preferencesSetGetString_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getString(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetString_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextValueAs<String>(2);
+  final value4 = await preferences.getString(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetString_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextValueAs<String>(3);
+  await preferences.setString(key2, value5);
+  final value6 = await preferences.getString(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetString_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setBoolList] and [Preferences.getBoolList] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetBoolList<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextListOf<bool>(1);
+  await preferences.setBoolList(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getBoolList(key1);
+  check(ctx, value2, value1, '_preferencesSetGetBoolList_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getBoolList(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetBoolList_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextListOf<bool>(2);
+  final value4 = await preferences.getBoolList(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetBoolList_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextListOf<bool>(3);
+  await preferences.setBoolList(key2, value5);
+  final value6 = await preferences.getBoolList(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetBoolList_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setIntList] and [Preferences.getIntList] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetIntList<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextListOf<int>(1);
+  await preferences.setIntList(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getIntList(key1);
+  check(ctx, value2, value1, '_preferencesSetGetIntList_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getIntList(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetIntList_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextListOf<int>(2);
+  final value4 = await preferences.getIntList(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetIntList_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextListOf<int>(3);
+  await preferences.setIntList(key2, value5);
+  final value6 = await preferences.getIntList(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetIntList_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setDoubleList] and [Preferences.getDoubleList] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetDoubleList<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextListOf<double>(1);
+  await preferences.setDoubleList(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getDoubleList(key1);
+  check(ctx, value2, value1, '_preferencesSetGetDoubleList_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getDoubleList(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetDoubleList_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextListOf<double>(2);
+  final value4 = await preferences.getDoubleList(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetDoubleList_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextListOf<double>(3);
+  await preferences.setDoubleList(key2, value5);
+  final value6 = await preferences.getDoubleList(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetDoubleList_4');
+
+  return store;
+}
+
+/// Calls [Preferences.setStringList] and [Preferences.getStringList] on a [Preferences]
+/// backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _preferencesSetGetStringList<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final preferences = ctx.newPreferences(store);
+
+  // Set the value
+  final key1 = 'key_1';
+  final value1 = ctx.generator.nextListOf<String>(1);
+  await preferences.setStringList(key1, value1);
+
+  // Get the value
+  final value2 = await preferences.getStringList(key1);
+  check(ctx, value2, value1, '_preferencesSetGetStringList_1');
+
+  // Get a non existing value
+  final key2 = 'key_2';
+  final value3 = await preferences.getStringList(key2);
+  check(ctx, value3, isNull, '_preferencesSetGetStringList_2');
+
+  // Get it again but this time with a default
+  final def1 = ctx.generator.nextListOf<String>(2);
+  final value4 = await preferences.getStringList(key2, def: def1);
+  check(ctx, value4, def1, '_preferencesSetGetStringList_3');
+
+  // Set the same key and get it again, default should not be used
+  final value5 = ctx.generator.nextListOf<String>(3);
+  await preferences.setStringList(key2, value5);
+  final value6 = await preferences.getStringList(key2, def: def1);
+  check(ctx, value6, value5, '_preferencesSetGetStringList_4');
+
+  return store;
+}
+
+/// Returns the list of preferences tests to execute
+///
+/// * [newVaultTestContext]: The context builder
+/// * [tests]: The set of tests
+Map<VaultTestContext<T>, Future<T> Function(VaultTestContext<T>)>
+    _getPreferencesTests<T extends Store<VaultInfo, VaultEntry>>(
+        VaultTestContextBuilder<T> newVaultTestContext,
+        {Set<PreferencesTest> tests = _preferencesTests}) {
+  return {
+    if (tests.contains(PreferencesTest.setGetBool))
+      newVaultTestContext(TypeTest.bool.generator()): _preferencesSetGetBool,
+    if (tests.contains(PreferencesTest.setGetInt))
+      newVaultTestContext(TypeTest.int.generator()): _preferencesSetGetInt,
+    if (tests.contains(PreferencesTest.setGetDouble))
+      newVaultTestContext(TypeTest.double.generator()):
+          _preferencesSetGetDouble,
+    if (tests.contains(PreferencesTest.setGetString))
+      newVaultTestContext(TypeTest.string.generator()):
+          _preferencesSetGetString,
+    if (tests.contains(PreferencesTest.setGetBoolList))
+      newVaultTestContext(TypeTest.listOfBool.generator()):
+          _preferencesSetGetBoolList,
+    if (tests.contains(PreferencesTest.setGetIntList))
+      newVaultTestContext(TypeTest.listOfInt.generator()):
+          _preferencesSetGetIntList,
+    if (tests.contains(PreferencesTest.setGetDoubleList))
+      newVaultTestContext(TypeTest.listOfDouble.generator()):
+          _preferencesSetGetDoubleList,
+    if (tests.contains(PreferencesTest.setGetStringList))
+      newVaultTestContext(TypeTest.listOfString.generator()):
+          _preferencesSetGetStringList
+  };
+}
+
 /// Entry point for the vault testing harness. It delegates most of the
 /// construction to user provided functions that are responsible for the [Store] creation,
 /// the [Vault] creation and by the generation of testing values
@@ -596,8 +967,27 @@ List<Future<T> Function(VaultTestContext<T>)>
 /// * [tests]: The set of tests
 Future<void> testVaultWith<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx,
-    {Set<VaultTest> tests = _vaultTests}) async {
-  for (var test in _getVaultTests<T>(tests: tests)) {
+    {Set<VaultTest> vaultTests = _vaultTests}) async {
+  for (var test in _getVaultTests<T>(tests: vaultTests)) {
+    await test(ctx).then(ctx.deleteStore);
+  }
+}
+
+/// Entry point for the preferences testing harness. It delegates most of the
+/// construction to user provided functions that are responsible for the [Store] creation,
+/// the [Preferences] creation.
+///
+/// * [newVaultTestContext]: The context builder
+/// * [preferencesTests]: The set of tests
+Future<void> testPreferencesWith<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContextBuilder<T> newVaultTestContext,
+    {Set<PreferencesTest> preferencesTests = _preferencesTests}) async {
+  for (var entry
+      in _getPreferencesTests<T>(newVaultTestContext, tests: preferencesTests)
+          .entries) {
+    final ctx = entry.key;
+    final test = entry.value;
+
     await test(ctx).then(ctx.deleteStore);
   }
 }
@@ -606,14 +996,22 @@ Future<void> testVaultWith<T extends Store<VaultInfo, VaultEntry>>(
 ///
 /// * [newVaultTestContext]: The context builder
 /// * [types]: The type/generator map
-/// * [tests]: The test set
+/// * [vaultTests]: The vault test set
+/// * [preferencesTests]: The preferences test set
 void testVault<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContextBuilder<T> newVaultTestContext,
     {Map<TypeTest, Function>? types,
-    Set<VaultTest> tests = _vaultTests}) {
+    Set<VaultTest> vaultTests = _vaultTests,
+    Set<PreferencesTest> preferencesTests = _preferencesTests}) {
   for (var entry in (types ?? _typeTests).entries) {
     test('Vault: ${EnumToString.convertToString(entry.key)}', () async {
-      await testVaultWith<T>(newVaultTestContext(entry.value()), tests: tests);
+      await testVaultWith<T>(newVaultTestContext(entry.value()),
+          vaultTests: vaultTests);
     });
   }
+
+  test('Preferences', () async {
+    await testPreferencesWith<T>(newVaultTestContext,
+        preferencesTests: preferencesTests);
+  });
 }
