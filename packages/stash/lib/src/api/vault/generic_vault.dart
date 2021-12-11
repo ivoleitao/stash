@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:stash/src/api/entry.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
 import 'package:stash/src/api/vault/event/created_event.dart';
@@ -11,7 +12,6 @@ import 'package:stash/src/api/vault/stats/default_stats.dart';
 import 'package:stash/src/api/vault/vault.dart';
 import 'package:stash/src/api/vault/vault_entry.dart';
 import 'package:stash/src/api/vault/vault_info.dart';
-import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 import 'vault_manager.dart';

@@ -3,7 +3,7 @@
 part of 'cache_database.dart';
 
 // **************************************************************************
-// DriftGenerator
+// MoorGenerator
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this

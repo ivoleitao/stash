@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 import 'package:stash_test/stash_test.dart';
 

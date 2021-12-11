@@ -7,9 +7,9 @@ import 'package:stash/src/api/cache/expiry/expiry_policy.dart';
 import 'package:stash/src/api/cache/manager/default_manager.dart';
 import 'package:stash/src/api/cache/sampler/full_sampler.dart';
 import 'package:stash/src/api/cache/sampler/sampler.dart';
+import 'package:stash/src/api/cache/tiered_cache.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
-import 'package:stash/stash_api.dart';
 
 import 'cache.dart';
 import 'cache_entry.dart';

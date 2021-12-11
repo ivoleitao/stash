@@ -18,9 +18,9 @@ import 'package:stash/src/api/cache/expiry/expiry_policy.dart';
 import 'package:stash/src/api/cache/sampler/full_sampler.dart';
 import 'package:stash/src/api/cache/sampler/sampler.dart';
 import 'package:stash/src/api/cache/stats/default_stats.dart';
+import 'package:stash/src/api/entry.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
-import 'package:stash/stash_api.dart';
 import 'package:uuid/uuid.dart';
 
 import 'cache_manager.dart';

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart' as p;
 
 import '../../objectbox.g.dart';

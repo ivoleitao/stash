@@ -1,6 +1,5 @@
 import 'package:clock/clock.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:matcher/matcher.dart';
 import 'package:stash/stash_api.dart';
 import 'package:test/test.dart';
 

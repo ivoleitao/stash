@@ -1,5 +1,7 @@
 import 'package:stash/src/api/vault/event/event.dart';
-import 'package:stash/stash_api.dart';
+import 'package:stash/src/api/vault/vault_entry.dart';
+import 'package:stash/src/api/vault/vault_manager.dart';
+import 'package:stash/src/api/vault/vault_stats.dart';
 
 import '../stash.dart';
 
