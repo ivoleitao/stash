@@ -8,7 +8,8 @@ import 'harness.dart';
 const _defaultStore = 'test';
 
 /// The default type tests perfomed over a store
-final _storeTypeTests = Map.unmodifiable(defaultStoreTypeTests);
+final _storeTypeTests = Map<TypeTest, ValueGenerator Function()>.unmodifiable(
+    defaultStoreTypeTests);
 
 /// The supported store tests
 enum StoreTest {

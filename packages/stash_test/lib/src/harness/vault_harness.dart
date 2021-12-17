@@ -6,7 +6,8 @@ import 'package:test/test.dart';
 import 'harness.dart';
 
 /// The default type tests perfomed over a vault
-final _typeTests = Map.unmodifiable(defaultStashTypeTests);
+final _typeTests = Map<TypeTest, ValueGenerator Function()>.unmodifiable(
+    defaultStashTypeTests);
 
 /// The supported vault tests
 enum VaultTest {
