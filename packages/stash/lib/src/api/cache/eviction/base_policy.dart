@@ -8,7 +8,7 @@ abstract class BaseEvictionPolicy implements EvictionPolicy {
   /// Builds a [BaseEvictionPolicy]
   const BaseEvictionPolicy();
 
-  /// Returns [true] if [entry] is a better candidate for eviction than the
+  /// Returns `true` if [entry] is a better candidate for eviction than the
   /// current [selectedEntry]
   ///
   /// * [entry]: The current entry

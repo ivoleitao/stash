@@ -19,7 +19,6 @@ abstract class VaultManager {
   /// Builds a new Vault
   ///
   /// * [storage]: The [Store] that will back this [Vault]
-  /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [eventListenerMode]: The event listener mode of this vault
@@ -37,7 +36,6 @@ abstract class VaultManager {
   /// Builds a new preferences vault
   ///
   /// * [storage]: The [Store] that will back this [Vault]
-  /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [eventListenerMode]: The event listener mode of this vault

@@ -1,5 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_test/stash_test.dart';
 import 'package:test/test.dart';
@@ -963,7 +962,7 @@ Map<VaultTestContext<T>, Future<T> Function(VaultTestContext<T>)>
 /// (with a provided [ValueGenerator] instance). They are encapsulated in provided [VaultTestContext] object
 ///
 /// * [ctx]: the test context
-/// * [tests]: The set of tests
+/// * [vaultTests]: The set of tests
 Future<void> testVaultWith<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx,
     {Set<VaultTest> vaultTests = _vaultTests}) async {
@@ -1003,7 +1002,7 @@ void testVault<T extends Store<VaultInfo, VaultEntry>>(
     Set<VaultTest> vaultTests = _vaultTests,
     Set<PreferencesTest> preferencesTests = _preferencesTests}) {
   for (var entry in (types ?? _typeTests).entries) {
-    test('Vault: ${EnumToString.convertToString(entry.key)}', () async {
+    test('Vault: ${entry.key.name}', () async {
       await testVaultWith<T>(newVaultTestContext(entry.value()),
           vaultTests: vaultTests);
     });

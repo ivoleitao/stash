@@ -320,42 +320,50 @@ class $CacheTableTable extends CacheTable
   final String? _alias;
   $CacheTableTable(this._db, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
   late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
       'key', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> creationTime =
       GeneratedColumn<String?>('creation_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter0);
   final VerificationMeta _expiryTimeMeta = const VerificationMeta('expiryTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> expiryTime =
       GeneratedColumn<String?>('expiry_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter1);
   final VerificationMeta _accessTimeMeta = const VerificationMeta('accessTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> accessTime =
       GeneratedColumn<String?>('access_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter2);
   final VerificationMeta _updateTimeMeta = const VerificationMeta('updateTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> updateTime =
       GeneratedColumn<String?>('update_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter3);
   final VerificationMeta _hitCountMeta = const VerificationMeta('hitCount');
+  @override
   late final GeneratedColumn<int?> hitCount = GeneratedColumn<int?>(
       'hit_count', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
   late final GeneratedColumn<Uint8List?> value = GeneratedColumn<Uint8List?>(
       'value', aliasedName, false,
-      typeName: 'BLOB', requiredDuringInsert: true);
+      type: const BlobType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         name,

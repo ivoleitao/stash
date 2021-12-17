@@ -337,7 +337,7 @@ class GenericCache<T> implements Cache<T> {
       if (entry == null || expired) {
         // If expired we need to remove the value from the storage
         final pre = expired
-            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry!))
+            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
             : Future<void>.value();
 
         // Invoke the cache loader
@@ -386,7 +386,7 @@ class GenericCache<T> implements Cache<T> {
       if (entry == null || expired) {
         // If expired we remove it
         final prePut = expired
-            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry!))
+            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
             : Future<void>.value();
 
         // And finally we add it to the cache
@@ -447,7 +447,7 @@ class GenericCache<T> implements Cache<T> {
 
       // If the entry exists on cache but is already expired we remove it first
       final pre = expired
-          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry!))
+          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
           : Future<void>.value();
 
       // If the entry is expired or non existent
@@ -567,7 +567,7 @@ class GenericCache<T> implements Cache<T> {
 
       // If the entry exists on cache but is already expired we remove it first
       final pre = expired
-          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry!))
+          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
           : Future.value();
 
       // If the entry is expired or non existent

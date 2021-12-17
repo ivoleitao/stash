@@ -142,7 +142,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
         stats: stats);
   }
 
-  /// Creates a new [Preferences] backed by a [MemoryVaultStore]
+  /// Creates a new [Preferences] backed by a [Store]
   ///
   /// * [manager]: An optional [VaultManager]
   /// * [vaultName]: The name of the vault

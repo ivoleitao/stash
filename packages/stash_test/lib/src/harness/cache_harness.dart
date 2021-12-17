@@ -1,5 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:stash/stash_api.dart';
 import 'package:test/test.dart';
 
@@ -1231,7 +1230,7 @@ void testCache<T extends Store<CacheInfo, CacheEntry>>(
     {Map<TypeTest, Function>? types,
     Set<CacheTest> cacheTests = _cacheTests}) {
   for (var entry in (types ?? _typeTests).entries) {
-    test('Cache: ${EnumToString.convertToString(entry.key)}', () async {
+    test('Cache: ${entry.key.name}', () async {
       await testCacheWith<T>(newCacheTestContext(entry.value()),
           cacheTests: cacheTests);
     });

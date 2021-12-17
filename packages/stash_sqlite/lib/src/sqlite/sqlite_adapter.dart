@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:drift/native.dart';
 import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 
@@ -42,8 +42,8 @@ class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
   SqliteMemoryAdapter(SqliteBuilder<I, E> builder,
       {bool? logStatements, DatabaseSetup? setup}) {
-    _db = builder(
-        NativeDatabase.memory(logStatements: logStatements ?? false, setup: setup));
+    _db = builder(NativeDatabase.memory(
+        logStatements: logStatements ?? false, setup: setup));
   }
 
   @override
@@ -70,8 +70,8 @@ class SqliteFileAdapter<I extends Info, E extends Entry<I>>
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
   SqliteFileAdapter(SqliteBuilder<I, E> builder, this.file,
       {bool? logStatements, DatabaseSetup? setup}) {
-    _db = builder(
-        NativeDatabase(file, logStatements: logStatements ?? false, setup: setup));
+    _db = builder(NativeDatabase(file,
+        logStatements: logStatements ?? false, setup: setup));
   }
 
   @override

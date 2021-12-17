@@ -1,4 +1,3 @@
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:stash/stash_api.dart';
 import 'package:test/test.dart';
 import 'package:time/time.dart';
@@ -487,7 +486,7 @@ void testStore<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
     {Map<TypeTest, Function>? types,
     Set<StoreTest> tests = _storeTests}) {
   for (var entry in (types ?? _storeTypeTests).entries) {
-    test('Store: ${EnumToString.convertToString(entry.key)}', () async {
+    test('Store: ${entry.key.name}', () async {
       await testStoreWith<I, E, T>(newTestContext(entry.value()), tests: tests);
     });
   }

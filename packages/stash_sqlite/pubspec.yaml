@@ -7,19 +7,19 @@ description: >-
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
 
 dependencies:
-  drift: ^1.0.1
+  drift: ^1.1.0
   #stash: ^4.0.0
   stash:
     path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.19.3
-  build_runner: ^2.1.5
+  test: ^1.20.0
+  build_runner: ^2.1.7
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
-  drift_dev: ^1.0.2
-  dependency_validator: ^3.1.0
+  drift_dev: ^1.1.0
+  dependency_validator: ^3.1.2

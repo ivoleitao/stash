@@ -25,7 +25,6 @@ abstract class CacheManager {
   /// Builds a new Cache
   ///
   /// * [storage]: The [Store] that will back this [Cache]
-  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -54,11 +53,10 @@ abstract class CacheManager {
   ///
   /// * [primary]: The primary cache
   /// * [secondary]: The secondary cache
-  /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [statsEnabled]: If statistics should be collected, defaults to false
-  /// * [stats]: The statistics instance, defaults to [DefaultCacheStats]
+  /// * [stats]: The statistics instance
   ///
   /// Returns a new [Cache]
   TieredCache<T> newTieredCache<T>(Cache<T> primary, Cache<T> secondary,

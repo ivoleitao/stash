@@ -7,11 +7,11 @@ description: >-
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_file
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
 
 dependencies:
   meta: ^1.7.0
-  path: ^1.8.0
+  path: ^1.8.1
   file: ^6.1.2
   stream_transform: ^2.0.0
   #stash: ^4.0.0
@@ -19,8 +19,8 @@ dependencies:
     path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.19.3
+  test: ^1.20.0
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
-  dependency_validator: ^3.1.0
+  dependency_validator: ^3.1.2

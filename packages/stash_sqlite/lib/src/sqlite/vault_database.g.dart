@@ -263,33 +263,39 @@ class $VaultTableTable extends VaultTable
   final String? _alias;
   $VaultTableTable(this._db, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
   late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
       'key', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> creationTime =
       GeneratedColumn<String?>('creation_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($VaultTableTable.$converter0);
   final VerificationMeta _accessTimeMeta = const VerificationMeta('accessTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> accessTime =
       GeneratedColumn<String?>('access_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($VaultTableTable.$converter1);
   final VerificationMeta _updateTimeMeta = const VerificationMeta('updateTime');
+  @override
   late final GeneratedColumnWithTypeConverter<DateTime, String?> updateTime =
       GeneratedColumn<String?>('update_time', aliasedName, false,
-              typeName: 'TEXT', requiredDuringInsert: true)
+              type: const StringType(), requiredDuringInsert: true)
           .withConverter<DateTime>($VaultTableTable.$converter2);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
   late final GeneratedColumn<Uint8List?> value = GeneratedColumn<Uint8List?>(
       'value', aliasedName, false,
-      typeName: 'BLOB', requiredDuringInsert: true);
+      type: const BlobType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [name, key, creationTime, accessTime, updateTime, value];
