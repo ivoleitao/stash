@@ -1,9 +1,9 @@
 import 'package:clock/clock.dart';
 import 'package:stash/src/api/event.dart';
 import 'package:stash/src/api/store.dart';
+import 'package:stash/src/api/vault/generic_preferences.dart';
 import 'package:stash/src/api/vault/generic_vault.dart';
 import 'package:stash/src/api/vault/preferences.dart';
-import 'package:stash/src/api/vault/preferences_vault.dart';
 import 'package:stash/src/api/vault/vault.dart';
 import 'package:stash/src/api/vault/vault_entry.dart';
 import 'package:stash/src/api/vault/vault_info.dart';
@@ -43,7 +43,7 @@ class DefaultVaultManager extends VaultManager {
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
-    final vault = PreferencesVault(storage,
+    final vault = GenericPreferences(storage,
         manager: this,
         name: name,
         clock: clock,

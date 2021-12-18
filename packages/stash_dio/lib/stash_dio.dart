@@ -20,7 +20,7 @@ extension InterceptorExtension on Store<CacheInfo, CacheEntry> {
   /// Creates a new [Interceptor] backed by a [Store]
   ///
   /// * [manager]: An optional [CacheManager]
-  /// * [cacheName]: The name of the cache
+  /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -31,7 +31,7 @@ extension InterceptorExtension on Store<CacheInfo, CacheEntry> {
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Cache] backed by a [Store]
-  Interceptor interceptor<T>(String pattern, String cacheName,
+  Interceptor interceptor<T>(String pattern, String name,
       {CacheManager? manager,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -45,7 +45,7 @@ extension InterceptorExtension on Store<CacheInfo, CacheEntry> {
         pattern,
         cache(
             manager: manager,
-            cacheName: cacheName,
+            name: name,
             evictionPolicy: evictionPolicy,
             sampler: sampler,
             expiryPolicy: expiryPolicy,

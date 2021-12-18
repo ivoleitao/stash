@@ -9,8 +9,8 @@ import 'package:stash/src/api/vault/vault_manager.dart';
 import 'package:stash/src/api/vault/vault_stats.dart';
 
 /// Default implementation of the [Preferences] interface
-class PreferencesVault extends GenericVault implements Preferences {
-  /// Builds a [PreferencesVault] out of a mandatory [Store] and a set of
+class GenericPreferences extends GenericVault implements Preferences {
+  /// Builds a [GenericPreferences] out of a mandatory [Store] and a set of
   /// optional configurations
   ///
   /// * [storage]: The [Store]
@@ -20,8 +20,8 @@ class PreferencesVault extends GenericVault implements Preferences {
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
   ///
-  /// Returns a [PreferencesVault]
-  PreferencesVault(Store<VaultInfo, VaultEntry> storage,
+  /// Returns a [GenericPreferences]
+  GenericPreferences(Store<VaultInfo, VaultEntry> storage,
       {VaultManager? manager,
       String? name,
       Clock? clock,

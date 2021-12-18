@@ -177,12 +177,12 @@ Then, it's just a matter of instanciating caches from the store, as presented be
 ```dart
   // Creates a cache from the previously created store with a capacity of 10 and name 'cache1'
   final cache1 = store.cache(
-      cacheName: 'cache1',
+      name: 'cache1',
       maxEntries: 10);
 
   // Creates a second cache from the previously created store with a capacity of 10 and name 'cache2'
   final cache1 = store.cache(
-      cacheName: 'cache2',
+      name: 'cache2',
       maxEntries: 10);
 ```
 
@@ -206,7 +206,7 @@ A more common use case is to have the primary cache using a memory storage and t
 ```dart
   final cache = newTieredCache(
       newMemoryCache(maxEntries: 10),
-      newFileCache(cacheName: 'diskCache', maxEntries: 1000));
+      newFileCache(name: 'diskCache', maxEntries: 1000));
 ```
 
 ## Cache Operations

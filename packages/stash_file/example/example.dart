@@ -35,14 +35,14 @@ void main() async {
       path: path, fromEncodable: (json) => Task.fromJson(json));
   // Creates a cache with a capacity of 10 from the previously created store
   final cache1 = store.cache<Task>(
-      cacheName: 'cache1',
+      name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the first cache'));
   // Creates a second cache with a capacity of 10 from the previously created store
   final cache2 = store.cache<Task>(
-      cacheName: 'cache2',
+      name: 'cache2',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

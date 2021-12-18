@@ -120,8 +120,8 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   /// Returns a [Iterable] over all [CacheEntry]s
   @override
   Future<Iterable<CacheEntry>> entries(
-      String cacheName, dynamic Function(Uint8List) valueDecoder) {
-    return (select(cacheTable)..where((entry) => entry.name.equals(cacheName)))
+      String name, dynamic Function(Uint8List) valueDecoder) {
+    return (select(cacheTable)..where((entry) => entry.name.equals(name)))
         .get()
         .then((entries) =>
             entries.map((entry) => _toCacheEntry(entry, valueDecoder)!));

@@ -31,7 +31,7 @@ abstract class DaoAdapter<I extends Info, E extends Entry<I>> {
   ///
   /// Returns a [Iterable] over all [Entry]s
   Future<Iterable<E>> entries(
-      String cacheName, dynamic Function(Uint8List) valueDecoder);
+      String name, dynamic Function(Uint8List) valueDecoder);
 
   /// Checks if a key exists on a named store
   ///

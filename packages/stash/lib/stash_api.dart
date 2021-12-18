@@ -77,7 +77,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   ///
   /// * [manager]: An optional [VaultManager]
   /// * [store]: An existing store
-  /// * [vaultName]: The name of the vault
+  /// * [name]: The name of the vault
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -85,12 +85,12 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Returns a [Vault] backed by a [Store]
   Vault<T> _newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {VaultManager? manager,
-      String? vaultName,
+      String? name,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return (manager ?? VaultManager.instance).newGenericVault<T>(store,
-        name: vaultName,
+        name: name,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -99,7 +99,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Creates a new [Vault] backed by a [Store]
   ///
   /// * [manager]: An optional [VaultManager]
-  /// * [vaultName]: The name of the vault
+  /// * [name]: The name of the vault
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -107,13 +107,13 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Returns a [Vault] backed by a [Store]
   Vault<T> vault<T>(
       {VaultManager? manager,
-      String? vaultName,
+      String? name,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return _newGenericVault<T>(this,
         manager: manager,
-        vaultName: vaultName,
+        name: name,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -123,20 +123,20 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   ///
   /// * [manager]: An optional [VaultManager]
   /// * [store]: An existing store
-  /// * [vaultName]: The name of the vault
+  /// * [name]: The name of the vault
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Vault] backed by a [Store]
-  Preferences _newPreferencesVault(Store<VaultInfo, VaultEntry> store,
+  Preferences _newGenericPreferences(Store<VaultInfo, VaultEntry> store,
       {VaultManager? manager,
-      String? vaultName,
+      String? name,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return (manager ?? VaultManager.instance).newPreferencesVault(store,
-        name: vaultName,
+        name: name,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -145,7 +145,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Creates a new [Preferences] backed by a [Store]
   ///
   /// * [manager]: An optional [VaultManager]
-  /// * [vaultName]: The name of the vault
+  /// * [name]: The name of the vault
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -153,13 +153,13 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Returns a [Preferences] backed by a [Store]
   Preferences preferences(
       {VaultManager? manager,
-      String? vaultName,
+      String? name,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
-    return _newPreferencesVault(this,
+    return _newGenericPreferences(this,
         manager: manager,
-        vaultName: vaultName,
+        name: name,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -173,7 +173,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   ///
   /// * [store]: An existing store
   /// * [manager]: An optional [CacheManager]
-  /// * [cacheName]: The name of the cache
+  /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -184,7 +184,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [stats]: The statistics instance
   Cache<T> _newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {CacheManager? manager,
-      String? cacheName,
+      String? name,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
@@ -194,7 +194,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
       bool? statsEnabled,
       CacheStats? stats}) {
     return (manager ?? CacheManager.instance).newGenericCache<T>(store,
-        name: cacheName,
+        name: name,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,
@@ -208,7 +208,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// Creates a new [Cache] backed by a [Store]
   ///
   /// * [manager]: An optional [CacheManager]
-  /// * [cacheName]: The name of the cache
+  /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -221,7 +221,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// Returns a [Cache] backed by a [Store]
   Cache<T> cache<T>(
       {CacheManager? manager,
-      String? cacheName,
+      String? name,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
@@ -232,7 +232,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
       CacheStats? stats}) {
     return _newGenericCache<T>(this,
         manager: manager,
-        cacheName: cacheName,
+        name: name,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,
