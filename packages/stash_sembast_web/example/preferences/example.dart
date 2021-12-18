@@ -1,8 +1,8 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'package:stash_sembast_web/stash_sembast_web.dart';
 
 void main() async {
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = newSembastWebVaultStore();
 
   // Creates a preferences from the previously created store
   final preferences = store.preferences(

@@ -1,4 +1,4 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'package:stash_sembast_web/stash_sembast_web.dart';
 
 class Task {
   final int id;
@@ -6,6 +6,16 @@ class Task {
   final bool completed;
 
   Task({required this.id, required this.title, this.completed = false});
+
+  /// Creates a [Task] from json map
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      completed: json['completed'] as bool);
+
+  /// Creates a json map from a [Task]
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'id': id, 'title': title, 'completed': completed};
 
   @override
   String toString() {
@@ -15,7 +25,8 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryCacheStore();
+  final store =
+      newSembastWebCacheStore(fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = store.cache<Task>(

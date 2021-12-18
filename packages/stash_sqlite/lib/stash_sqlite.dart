@@ -11,6 +11,8 @@ import 'package:stash_sqlite/src/sqlite/sqlite_adapter.dart';
 import 'package:stash_sqlite/src/sqlite/sqlite_store.dart';
 import 'package:stash_sqlite/src/sqlite/vault_database.dart';
 
+export 'package:stash/stash_api.dart';
+
 export 'src/sqlite/sqlite_adapter.dart';
 export 'src/sqlite/sqlite_store.dart';
 

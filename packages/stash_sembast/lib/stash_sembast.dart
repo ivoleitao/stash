@@ -5,6 +5,8 @@ import 'package:sembast/sembast.dart';
 import 'package:stash_sembast/src/sembast/sembast_adapter.dart';
 import 'package:stash_sembast/src/sembast/sembast_store.dart';
 
+export 'package:stash/stash_api.dart';
+
 export 'src/sembast/sembast_adapter.dart';
 export 'src/sembast/sembast_store.dart';
 

@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Memory",
-            "program": "packages/stash_memory/example/example.dart",
+            "program": "packages/stash_memory/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -11,7 +11,7 @@
         },
         {
             "name": "File",
-            "program": "packages/stash_file/example/example.dart",
+            "program": "packages/stash_file/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -19,7 +19,7 @@
         },
         {
             "name": "Hive",
-            "program": "packages/stash_hive/example/example.dart",
+            "program": "packages/stash_hive/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -27,7 +27,7 @@
         },
         {
             "name": "Sembast",
-            "program": "packages/stash_sembast/example/example.dart",
+            "program": "packages/stash_sembast/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -35,7 +35,7 @@
         },
         {
             "name": "Sqlite",
-            "program": "packages/stash_sqlite/example/example.dart",
+            "program": "packages/stash_sqlite/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -43,7 +43,7 @@
         },
         {
             "name": "Objectbox",
-            "program": "packages/stash_objectbox/example/example.dart",
+            "program": "packages/stash_objectbox/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",
@@ -51,7 +51,7 @@
         },
         {
             "name": "Dio",
-            "program": "packages/stash_dio/example/example.dart",
+            "program": "packages/stash_dio/example/cache/example.dart",
             "args": [],
             "request": "launch",
             "type": "dart",

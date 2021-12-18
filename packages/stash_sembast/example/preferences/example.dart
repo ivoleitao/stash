@@ -1,8 +1,15 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'dart:io';
+
+import 'package:stash_sembast/stash_sembast.dart';
 
 void main() async {
+  // Temporary path
+  final dir = Directory.systemTemp;
+  // Temporary database file for a shared store
+  final path = '${dir.path}/stash_sembast.sdb';
+
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = newSembastLocalVaultStore(path: path);
 
   // Creates a preferences from the previously created store
   final preferences = store.preferences(

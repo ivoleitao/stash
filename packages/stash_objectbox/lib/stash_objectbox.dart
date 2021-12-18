@@ -7,6 +7,8 @@ import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_adapter.dart';
 import 'package:stash_objectbox/src/objectbox/objectbox_store.dart';
 
+export 'package:stash/stash_api.dart';
+
 export 'src/objectbox/objectbox_adapter.dart';
 export 'src/objectbox/objectbox_store.dart';
 

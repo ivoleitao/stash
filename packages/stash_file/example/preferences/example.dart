@@ -1,8 +1,13 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'dart:io';
+
+import 'package:stash_file/stash_file.dart';
 
 void main() async {
+  // Temporary directory
+  final path = Directory.systemTemp.path;
+
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = newFileLocalVaultStore(path: path);
 
   // Creates a preferences from the previously created store
   final preferences = store.preferences(

@@ -1,4 +1,6 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'dart:io';
+
+import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
   final int id;
@@ -7,6 +9,16 @@ class Task {
 
   Task({required this.id, required this.title, this.completed = false});
 
+  /// Creates a [Task] from json map
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      completed: json['completed'] as bool);
+
+  /// Creates a json map from a [Task]
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'id': id, 'title': title, 'completed': completed};
+
   @override
   String toString() {
     return 'Task $id, "$title" is ${completed ? "completed" : "not completed"}';
@@ -14,8 +26,12 @@ class Task {
 }
 
 void main() async {
+  // Temporary directory
+  final path = Directory.systemTemp.path;
+
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = newObjectboxLocalVaultStore(
+      path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store
   final vault = store.vault<Task>(

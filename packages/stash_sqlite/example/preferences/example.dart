@@ -1,8 +1,15 @@
-import 'package:stash_memory/stash_memory.dart';
+import 'dart:io';
+
+import 'package:stash_sqlite/stash_sqlite.dart';
 
 void main() async {
+  // Temporary directory
+  final dirPath = Directory.systemTemp;
+  // Temporary database file for a shared store
+  final file = File('${dirPath.path}/stash_sqlite.sdb');
+
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = newSqliteLocalVaultStore(file: file);
 
   // Creates a preferences from the previously created store
   final preferences = store.preferences(

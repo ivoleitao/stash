@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:stash/stash_api.dart';
 import 'package:stash_hive/stash_hive.dart';
 
 class Task {
