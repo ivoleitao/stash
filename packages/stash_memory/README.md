@@ -71,9 +71,9 @@ void main() async {
 }
 ```
 
-### Vault
+### Preferences
 
-The example bellow creates preferences vault with a in-memory storage backend. 
+The example bellow creates preferences with a in-memory storage backend. 
 
 ```dart
 import 'package:stash_memory/stash_memory.dart';
@@ -91,12 +91,12 @@ void main() async {
   // Adds a int value to the preferences
   await preferences.setInt('int', 10);
   // Retrieves the value from the preferences
-  print(await preferences.get('int'));
+  print(await preferences.getInt('int'));
 
   // Adds a string value to the preferences
   await preferences.setString('string', 'ten');
   // Retrieves the value from the preferences
-  print(await preferences.get('string'));
+  print(await preferences.getString('string'));
 }
 ```
 
