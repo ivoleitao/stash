@@ -3,7 +3,6 @@
 library stash_api;
 
 import 'package:stash/src/api/cache/cache_entry.dart';
-import 'package:stash/src/api/vault/preferences.dart';
 
 import 'src/api/cache/cache.dart';
 import 'src/api/cache/cache_info.dart';
@@ -63,7 +62,6 @@ export 'src/api/vault/event/removed_event.dart';
 export 'src/api/vault/event/updated_event.dart';
 export 'src/api/vault/generic_vault.dart';
 export 'src/api/vault/manager/default_manager.dart';
-export 'src/api/vault/preferences.dart';
 export 'src/api/vault/vault.dart';
 export 'src/api/vault/vault_entry.dart';
 export 'src/api/vault/vault_info.dart';
@@ -112,52 +110,6 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
       bool? statsEnabled,
       VaultStats? stats}) {
     return _newGenericVault<T>(this,
-        manager: manager,
-        name: name,
-        eventListenerMode: eventListenerMode,
-        statsEnabled: statsEnabled,
-        stats: stats);
-  }
-
-  /// Creates a new [Preferences] backed by a [Store]
-  ///
-  /// * [manager]: An optional [VaultManager]
-  /// * [store]: An existing store
-  /// * [name]: The name of the vault
-  /// * [eventListenerMode]: The event listener mode of this cache
-  /// * [statsEnabled]: If statistics should be collected, defaults to false
-  /// * [stats]: The statistics instance
-  ///
-  /// Returns a [Vault] backed by a [Store]
-  Preferences _newGenericPreferences(Store<VaultInfo, VaultEntry> store,
-      {VaultManager? manager,
-      String? name,
-      EventListenerMode? eventListenerMode,
-      bool? statsEnabled,
-      VaultStats? stats}) {
-    return (manager ?? VaultManager.instance).newPreferencesVault(store,
-        name: name,
-        eventListenerMode: eventListenerMode,
-        statsEnabled: statsEnabled,
-        stats: stats);
-  }
-
-  /// Creates a new [Preferences] backed by a [Store]
-  ///
-  /// * [manager]: An optional [VaultManager]
-  /// * [name]: The name of the vault
-  /// * [eventListenerMode]: The event listener mode of this cache
-  /// * [statsEnabled]: If statistics should be collected, defaults to false
-  /// * [stats]: The statistics instance
-  ///
-  /// Returns a [Preferences] backed by a [Store]
-  Preferences preferences(
-      {VaultManager? manager,
-      String? name,
-      EventListenerMode? eventListenerMode,
-      bool? statsEnabled,
-      VaultStats? stats}) {
-    return _newGenericPreferences(this,
         manager: manager,
         name: name,
         eventListenerMode: eventListenerMode,

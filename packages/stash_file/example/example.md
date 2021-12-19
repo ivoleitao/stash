@@ -1,19 +1,13 @@
 # Examples
 
-## Cache
-
-And example of building a cache with a file storage
-
-[Jump to Source](https://github.com/ivoleitao/stash/blob/develop/packages/stash_file/example/cache)
-
 ## Vault
 
 And example of building a vault with a file storage
 
 [Jump to Source](https://github.com/ivoleitao/stash/blob/develop/packages/stash_file/example/vault)
 
-## Preferences
+## Cache
 
-And example of building preferences with a file storage
+And example of building a cache with a file storage
 
-[Jump to Source](https://github.com/ivoleitao/stash/blob/develop/packages/stash_file/example/preferences)
+[Jump to Source](https://github.com/ivoleitao/stash/blob/develop/packages/stash_file/example/cache)

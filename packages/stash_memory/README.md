@@ -71,35 +71,6 @@ void main() async {
 }
 ```
 
-### Preferences
-
-The example bellow creates preferences with a in-memory storage backend. 
-
-```dart
-import 'package:stash_memory/stash_memory.dart';
-
-void main() async {
-  // Creates a store
-  final store = newMemoryVaultStore();
-
-  // Creates a preferences from the previously created store
-  final preferences = store.preferences(
-      name: 'preferences', eventListenerMode: EventListenerMode.synchronous)
-    ..on<VaultEntryCreatedEvent>().listen((event) => print(
-        'Key "${event.entry.key}" with value "${event.entry.value}" added to preferences'));
-
-  // Adds a int value to the preferences
-  await preferences.setInt('int', 10);
-  // Retrieves the value from the preferences
-  print(await preferences.getInt('int'));
-
-  // Adds a string value to the preferences
-  await preferences.setString('string', 'ten');
-  // Retrieves the value from the preferences
-  print(await preferences.getString('string'));
-}
-```
-
 ### Cache
 
 The example bellow creates a cache with a in-memory storage backend. 
@@ -139,6 +110,8 @@ void main() async {
   print(await cache.get('task1'));
 }
 ```
+
+### Additional features
 
 Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 

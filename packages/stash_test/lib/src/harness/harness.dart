@@ -310,27 +310,6 @@ Vault<V> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
       stats: stats);
 }
 
-/// Creates a [Preferences] bound to an implementation of the [Store] interface
-///
-/// * [store]: The store implementation
-/// * [name]: The name of the preferences vault
-/// * [eventListenerMode]: The event listener mode of this vault
-/// * [statsEnabled]: If statistics should be collected, defaults to false
-/// * [stats]: The statistics instance
-Preferences newPreferencesVault<T extends Store<VaultInfo, VaultEntry>>(T store,
-    {String? name,
-    Clock? clock,
-    EventListenerMode? eventListenerMode,
-    bool? statsEnabled,
-    VaultStats? stats}) {
-  return DefaultVaultManager().newPreferencesVault(store,
-      name: name,
-      clock: clock,
-      eventListenerMode: eventListenerMode,
-      statsEnabled: statsEnabled,
-      stats: stats);
-}
-
 /// Creates a new [GenericCache] bound to an implementation of the [Store] interface
 ///
 /// * [store]: The store implementation
@@ -598,28 +577,6 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
       bool? statsEnabled,
       VaultStats? stats}) {
     return newGenericVault<V, T>(store,
-        name: name,
-        clock: clock,
-        eventListenerMode: eventListenerMode,
-        statsEnabled: statsEnabled,
-        stats: stats);
-  }
-
-  /// Creates a new preferences vault
-  ///
-  /// * [store]: The [Store]
-  /// * [name]: The name of the preferences
-  /// * [clock]: The source of time to be used on this
-  /// * [eventListenerMode]: The event listener mode of this cache
-  /// * [statsEnabled]: If statistics should be collected, defaults to false
-  /// * [stats]: The statistics instance
-  Preferences newPreferences(T store,
-      {String? name,
-      Clock? clock,
-      EventListenerMode? eventListenerMode,
-      bool? statsEnabled,
-      VaultStats? stats}) {
-    return newPreferencesVault(store,
         name: name,
         clock: clock,
         eventListenerMode: eventListenerMode,
