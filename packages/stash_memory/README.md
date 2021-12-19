@@ -111,7 +111,7 @@ void main() async {
 }
 ```
 
-### Additional features
+### Additional Features
 
 Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 
