@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_dio/src/dio/cache_value.dart';
 import 'package:stash_dio/src/dio/interceptor_builder.dart';
 import 'package:stash_file/stash_file.dart';

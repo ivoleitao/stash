@@ -1,3 +1,4 @@
+import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
 
 class Task {

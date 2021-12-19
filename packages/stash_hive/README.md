@@ -28,6 +28,7 @@ dart pub get
 Finally, to start developing import the library:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/stash_hive.dart';
 ```
 
@@ -40,6 +41,7 @@ The example bellow creates a vault with a hive storage backend. In this rather s
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/stash_hive.dart';
 
 class Task {
@@ -92,9 +94,9 @@ void main() async {
 The example bellow creates a cache with a hive storage backend. In this rather simple example the serialization and deserialization of the object is coded by hand but it's more usual to rely on libraries like [json_serializable](https://pub.dev/packages/json_serializable). 
 
 ```dart
-
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_hive/stash_hive.dart';
 
 class Task {

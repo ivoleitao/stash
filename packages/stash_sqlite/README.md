@@ -28,6 +28,7 @@ dart pub get
 Finally, to start developing import the library:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 ```
 
@@ -41,6 +42,7 @@ The example bellow creates a vault with a shared sqlite storage backend. In this
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 
 class Task {
@@ -97,6 +99,7 @@ The example bellow creates a cache with a shared sqlite storage backend. In this
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sqlite/stash_sqlite.dart';
 
 class Task {

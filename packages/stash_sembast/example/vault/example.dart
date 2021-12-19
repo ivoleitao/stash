@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 
 class Task {

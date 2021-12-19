@@ -29,6 +29,7 @@ dart pub get
 Finally, to start developing import the library:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 ```
 
@@ -41,6 +42,7 @@ The example bellow creates a vault with a sembast storage backend. In this rathe
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 
 class Task {
@@ -97,6 +99,7 @@ The example bellow creates a caches with a sembast storage backend. In this rath
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 
 class Task {

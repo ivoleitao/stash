@@ -5,8 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:stash_hive/src/hive/hive_adapter.dart';
 import 'package:stash_hive/src/hive/hive_store.dart';
 
-export 'package:stash/stash_api.dart';
-
 export 'src/hive/hive_adapter.dart';
 export 'src/hive/hive_store.dart';
 

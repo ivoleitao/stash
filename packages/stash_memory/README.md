@@ -25,9 +25,10 @@ Run the following command to install dependencies:
 dart pub get
 ```
 
-Finally, to start developing import the library:
+Finally, to start developing import the following libraries:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
 ```
 
@@ -38,6 +39,7 @@ import 'package:stash_memory/stash_memory.dart';
 The example bellow creates a vault with a in-memory storage backend. 
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
 
 class Task {
@@ -76,6 +78,7 @@ void main() async {
 The example bellow creates a cache with a in-memory storage backend. 
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
 
 class Task {

@@ -28,6 +28,7 @@ dart pub get
 Finally, to start developing import the library:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 ```
 
@@ -41,6 +42,7 @@ The example bellow creates a vault with a objectbox storage backend. In this rat
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
@@ -96,6 +98,7 @@ The example bellow creates a cache with a objectbox storage backend. In this rat
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_objectbox/stash_objectbox.dart';
 
 class Task {
@@ -143,7 +146,6 @@ void main() async {
   // Retrieves the value from the cache
   print(await cache.get('task1'));
 }
-
 ```
 
 ### Additional Features

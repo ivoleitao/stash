@@ -7,8 +7,6 @@ import 'package:file/memory.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_file/src/file/file_store.dart';
 
-export 'package:stash/stash_api.dart';
-
 export 'src/file/file_store.dart';
 
 /// Creates a new in-memory [FileVaultStore]
