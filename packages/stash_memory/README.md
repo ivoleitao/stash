@@ -1,5 +1,5 @@
 # stash_memory
-A [stash](https://github.com/ivoleitao/stash) in-memory storage extension for 
+A [stash](https://github.com/ivoleitao/stash) in-memory storage extension 
 
 [![Pub Package](https://img.shields.io/pub/v/stash_memory.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_memory)
 [![Coverage Status](https://codecov.io/gh/ivoleitao/stash/graph/badge.svg?flag=stash_memory)](https://codecov.io/gh/ivoleitao/stash_memory)
@@ -8,7 +8,7 @@ A [stash](https://github.com/ivoleitao/stash) in-memory storage extension for
 
 ## Overview
 
-This storage extension for [stash](https://pub.dartlang.org/packages/stash) provides in-memory based storage.
+Storage extension for [stash](https://pub.dartlang.org/packages/stash) which provides in-memory based storage.
 
 ## Getting Started
 
@@ -28,45 +28,119 @@ dart pub get
 Finally, to start developing import the library:
 
 ```dart
-import 'package:stash/stash_api.dart';
 import 'package:stash_memory/stash_memory.dart';
 ```
 
 ## Usage
 
-The example bellow creates two caches with a shared in-memory storage backend. Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
+### Vault
+
+The example bellow creates a vault with a in-memory storage backend. 
 
 ```dart
+import 'package:stash_memory/stash_memory.dart';
+
+class Task {
+  final int id;
+  final String title;
+  final bool completed;
+
+  Task({required this.id, required this.title, this.completed = false});
+
+  @override
+  String toString() {
+    return 'Task $id, "$title" is ${completed ? "completed" : "not completed"}';
+  }
+}
+
+void main() async {
+  // Creates a store
+  final store = newMemoryVaultStore();
+
+  // Creates a vault from the previously created store
+  final vault = store.vault<Task>(
+      name: 'vault', eventListenerMode: EventListenerMode.synchronous)
+    ..on<VaultEntryCreatedEvent<Task>>().listen(
+        (event) => print('Key "${event.entry.key}" added to the vault'));
+
+  // Adds a task with key 'task1' to the vault
+  await vault.put(
+      'task1', Task(id: 1, title: 'Run vault store example', completed: true));
+  // Retrieves the value from the vault
+  print(await vault.get('task1'));
+}
+```
+
+### Vault
+
+The example bellow creates preferences vault with a in-memory storage backend. 
+
+```dart
+import 'package:stash_memory/stash_memory.dart';
+
+void main() async {
+  // Creates a store
+  final store = newMemoryVaultStore();
+
+  // Creates a preferences from the previously created store
+  final preferences = store.preferences(
+      name: 'preferences', eventListenerMode: EventListenerMode.synchronous)
+    ..on<VaultEntryCreatedEvent>().listen((event) => print(
+        'Key "${event.entry.key}" with value "${event.entry.value}" added to preferences'));
+
+  // Adds a int value to the preferences
+  await preferences.setInt('int', 10);
+  // Retrieves the value from the preferences
+  print(await preferences.get('int'));
+
+  // Adds a string value to the preferences
+  await preferences.setString('string', 'ten');
+  // Retrieves the value from the preferences
+  print(await preferences.get('string'));
+}
+```
+
+### Cache
+
+The example bellow creates a cache with a in-memory storage backend. 
+
+```dart
+import 'package:stash_memory/stash_memory.dart';
+
+class Task {
+  final int id;
+  final String title;
+  final bool completed;
+
+  Task({required this.id, required this.title, this.completed = false});
+
+  @override
+  String toString() {
+    return 'Task $id, "$title" is ${completed ? "completed" : "not completed"}';
+  }
+}
+
+void main() async {
   // Creates a store
   final store = newMemoryCacheStore();
+
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache1 = store.cache<Task>(
+  final cache = store.cache<Task>(
       name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(
-        (event) => print('Key "${event.entry.key}" added to the first cache'));
-  // Creates a second cache with a capacity of 10 from the previously created store
-  final cache2 = store.cache<Task>(
-      name: 'cache2',
-      maxEntries: 10,
-      eventListenerMode: EventListenerMode.synchronous)
-    ..on<CacheEntryCreatedEvent<Task>>().listen(
-        (event) => print('Key "${event.entry.key}" added to the second cache'));
+        (event) => print('Key "${event.entry.key}" added to the cache'));
 
-  // Adds a task with key 'task1' to the first cache
-  await cache1.put('task1',
-      Task(id: 1, title: 'Run shared store example (1)', completed: true));
-  // Retrieves the value from the first cache
-  print(await cache1.get('task1'));
-
-  // Adds a task with key 'task1' to the second cache
-  await cache2.put('task1',
-      Task(id: 2, title: 'Run shared store example (2)', completed: true));
-  // Retrieves the value from the second cache
-  print(await cache2.get('task1'));
-
+  // Adds a task with key 'task1' to the cache
+  await cache.put(
+      'task1', Task(id: 1, title: 'Run cache store example', completed: true));
+  // Retrieves the value from the cache
+  print(await cache.get('task1'));
+}
 ```
+
+Please take a look at the documentation of [stash](https://pub.dartlang.org/packages/stash) to gather additional information and to explore the full range of capabilities of the `stash` library
 
 ## Features and Bugs
 

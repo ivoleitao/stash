@@ -13,10 +13,10 @@ void main() async {
   // Adds a int value to the preferences
   await preferences.setInt('int', 10);
   // Retrieves the value from the preferences
-  print(await preferences.get('int'));
+  print(await preferences.getInt('int'));
 
   // Adds a string value to the preferences
   await preferences.setString('string', 'ten');
   // Retrieves the value from the preferences
-  print(await preferences.get('string'));
+  print(await preferences.getInt('string'));
 }
