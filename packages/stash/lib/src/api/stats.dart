@@ -63,6 +63,6 @@ abstract class Stats {
   /// Returns the time in milliseconds
   double get averageRemoveTime;
 
-  /// Clears the statistics counters to 0 for the associated Cache.
+  /// Clears the statistics counters to 0 for the associated stash.
   void clear();
 }

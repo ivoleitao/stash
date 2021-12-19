@@ -68,6 +68,21 @@ export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
 
+/// Builds a new Tiered [Cache]
+///
+/// * [manager]: An optional [CacheManager]
+/// * [primary]: The primary cache
+/// * [secondary]: The secondary cache
+/// * [name]: The name of the cache
+/// * [statsEnabled]: If statistics should be collected, defaults to false
+/// * [stats]: The statistics instance
+Cache<T> newTieredCache<T>(
+    CacheManager? manager, Cache<T> primary, Cache<T> secondary,
+    {String? name, bool? statsEnabled, CacheStats? stats}) {
+  return (manager ?? CacheManager.instance).newTieredCache(primary, secondary,
+      name: name, statsEnabled: statsEnabled, stats: stats);
+}
+
 /// Extension over [Store] allowing the creation of multiple vaults from
 /// the same store
 extension VaultExtension on Store<VaultInfo, VaultEntry> {
