@@ -5,8 +5,6 @@ import 'package:sembast/sembast.dart';
 import 'package:stash_sembast/stash_sembast.dart';
 import 'package:stash_sembast_web/src/sembast/sembast_web_adapter.dart';
 
-export 'package:stash_sembast/stash_sembast.dart';
-
 export 'src/sembast/sembast_web_adapter.dart';
 
 /// Creates a new web [SembastVaultStore]

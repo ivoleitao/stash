@@ -45,6 +45,7 @@ jobs:
 
       - name: Install packages
         run: |
+          dart pub global activate dartdoc
           dart pub global activate melos
 
       - name: Checkout sources
