@@ -24,4 +24,3 @@ dev_dependencies:
   stash_test:
     path: ../stash_test
   objectbox_generator: ^1.3.0
-  dependency_validator: ^3.1.2

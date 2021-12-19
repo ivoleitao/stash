@@ -22,4 +22,3 @@ dev_dependencies:
   #stash_test: ^4.0.0
   stash_test:
     path: ../stash_test
-  dependency_validator: ^3.1.2

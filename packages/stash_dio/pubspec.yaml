@@ -27,4 +27,3 @@ dev_dependencies:
   #stash_file: ^3.2.1
   stash_file:
     path: ../stash_file
-  dependency_validator: ^3.1.2

@@ -22,4 +22,3 @@ dev_dependencies:
   stash_test:
     path: ../stash_test
   drift_dev: ^1.1.0
-  dependency_validator: ^3.1.2

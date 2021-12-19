@@ -56,13 +56,6 @@ scripts:
     description: |
       Run `dart format` in all packages.
   
-  dependency-validator:
-    run: |
-      melos exec -c 1 -- \
-        "dart run dependency_validator"
-    description: |
-      Run `dart run dependency_validator` in all packages.
-
   doc:
     run: |
       melos exec -- \
