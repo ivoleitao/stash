@@ -46,26 +46,26 @@
 - Updated dependencies
 - Added support for events
 
-## 2.0.4
+# 2.0.4
 
 - Fixed issue [stash_dio crash when reading from hive cache](https://github.com/ivoleitao/stash/issues/9)
 - Merged pull request [Fix cache control value separator](https://github.com/ivoleitao/stash/pull/10)
 
-## 2.0.3
+# 2.0.3
 
 - Updated dependencies
 - Fixed issue [stash_dio: Null check operator used on a null value](https://github.com/ivoleitao/stash/issues/8)
 
-## 2.0.2
+# 2.0.2
 
 - Updated dependencies
 
-## 2.0.1
+# 2.0.1
 
 - Updated documentation
 - Updated dependencies
 
-## 2.0.0
+# 2.0.0
 
 - Removed prerelease github action
 - Updated dependencies
@@ -73,7 +73,7 @@
 - Restructured github actions
 - Removed derry support and adopted melos
 
-## 2.0.0-nullsafety.2
+# 2.0.0-nullsafety.2
 
 - Some smaller fixes
 - Updated dependencies
@@ -81,38 +81,38 @@
 - derry support
 - Migrated to new interceptor API
 
-## 2.0.0-nullsafety.1
+# 2.0.0-nullsafety.1
 
 - Null safety support
 
-## 1.0.3
+# 1.0.3
 
 - Updated to the most recent version of stash
 
-## 1.0.2
+# 1.0.2
 
 - Updated dependencies
 
-## 1.0.1
+# 1.0.1
 
 - Wrongly removed the Equatable dependency, now restored
 
-## 1.0.0
+# 1.0.0
 
 - First official release of this package
 - Updated to 2.10.0 sdk version
 - Updated dependencies
 
-## 1.0.0-dev.3
+# 1.0.0-dev.3
 
 - Updated to 2.9.0 sdk version
 - Updated dependencies
 
-## 1.0.0-dev.2
+# 1.0.0-dev.2
 
 - Removed unsecure link from the README file
 - Updated dependencies
 
-## 1.0.0-dev.1
+# 1.0.0-dev.1
 
 - Initial version
