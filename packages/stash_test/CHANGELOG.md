@@ -2,6 +2,7 @@
 
 - build: Release version
 - chore: Fixed the example
+- feat: Added Hyperbolic eviction test
 
 # 4.0.0-dev.2
 

@@ -33,6 +33,7 @@ export 'src/api/cache/event/updated_event.dart';
 export 'src/api/cache/eviction/eviction_policy.dart';
 export 'src/api/cache/eviction/fifo_policy.dart';
 export 'src/api/cache/eviction/filo_policy.dart';
+export 'src/api/cache/eviction/hyperbolic_policy.dart';
 export 'src/api/cache/eviction/lfu_policy.dart';
 export 'src/api/cache/eviction/lru_policy.dart';
 export 'src/api/cache/eviction/mfu_policy.dart';

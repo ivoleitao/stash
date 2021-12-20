@@ -35,6 +35,7 @@ enum CacheTest {
   mruEviction,
   lfuEviction,
   mfuEviction,
+  hyperbolicEviction,
   createdEvent,
   updatedEvent,
   removedEvent,
@@ -691,6 +692,10 @@ Future<T> _cacheLruEviction<T extends Store<CacheInfo, CacheEntry>>(
   var size = await cache.size;
   check(ctx, size, 3, '_cacheLruEviction_1');
 
+  // Accessing the key multiple times does not influence the result
+  await cache.get('key_2');
+  await cache.get('key_2');
+
   now = Clock().fromNow(minutes: 1);
   await cache.get('key_1');
   now = Clock().fromNow(minutes: 2);
@@ -808,6 +813,45 @@ Future<T> _cacheMfuEviction<T extends Store<CacheInfo, CacheEntry>>(
 
   final present = await cache.containsKey('key_1');
   check(ctx, present, isFalse, '_cacheMfuEviction_3');
+
+  return store;
+}
+
+/// Builds a [Cache] backed by the provided [Store] builder
+/// configured with a [HyperbolicEvictionPolicy]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheHyperbolicEviction<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  var now = Clock().now();
+  final cache = ctx.newCache(store,
+      maxEntries: 3,
+      evictionPolicy: const HyperbolicEvictionPolicy(),
+      clock: Clock(() => now));
+
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
+  var size = await cache.size;
+  check(ctx, size, 3, '_cacheHyperbolicEviction_1');
+
+  // Accessing the cache key affects the selected entry
+  await cache.get('key_2');
+
+  now = Clock().fromNow(minutes: 1);
+  await cache.get('key_1');
+  now = Clock().fromNow(minutes: 2);
+  await cache.get('key_3');
+
+  await cache.put('key_4', ctx.generator.nextValue(4));
+  size = await cache.size;
+  check(ctx, size, 3, '_cacheHyperbolicEviction_2');
+
+  final present = await cache.containsKey('key_1');
+  check(ctx, present, isFalse, '_cacheHyperbolicEviction_3');
 
   return store;
 }
@@ -1197,6 +1241,7 @@ List<Future<T> Function(CacheTestContext<T>)>
     if (tests.contains(CacheTest.mruEviction)) _cacheMruEviction,
     if (tests.contains(CacheTest.lfuEviction)) _cacheLfuEviction,
     if (tests.contains(CacheTest.mfuEviction)) _cacheMfuEviction,
+    if (tests.contains(CacheTest.hyperbolicEviction)) _cacheHyperbolicEviction,
     if (tests.contains(CacheTest.createdEvent)) _cacheCreatedEvent,
     if (tests.contains(CacheTest.updatedEvent)) _cacheUpdatedEvent,
     if (tests.contains(CacheTest.removedEvent)) _cacheRemovedEvent,
