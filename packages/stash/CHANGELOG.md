@@ -50,8 +50,8 @@
 
 # 3.0.0-dev.2
 
-First development version of the 3.x.x version
-BREAKING: This version removes the harness and the stash memory storage extension from stash
+ - First development version of the 3.x.x version
+ - BREAKING: This version removes the harness and the stash memory storage extension from stash
 
 ## 2.0.2
 
