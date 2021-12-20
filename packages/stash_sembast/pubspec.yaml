@@ -1,5 +1,5 @@
 name: stash_sembast
-version: 4.0.0.dev.1
+version: 4.0.0-dev.1
 publish_to: none
 description: >-
   Sembast storage extension for the stash caching API. Provides support to store caches

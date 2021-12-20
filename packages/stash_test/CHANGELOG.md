@@ -1,4 +1,4 @@
-# 4.0.0.dev.1
+# 4.0.0-dev.1
 
 - BREAKING: First version after major revamp adding support for generics, vaults and statistics
 

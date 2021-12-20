@@ -1,6 +1,5 @@
 name: stash
-version: 4.0.0.dev.1
-publish_to: none
+version: 4.0.0-dev.1
 description: >-
   Stash supports the creation of key/value storages through well defined
   abstractions which provide plain or cache driven semantics. Supports a wide
