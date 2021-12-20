@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:stash/stash_api.dart';
 import 'package:stash_dio/stash_dio.dart';
 import 'package:stash_memory/stash_memory.dart';
 
@@ -28,10 +29,15 @@ class Task {
 void main() async {
   // Creates a store
   final store = newMemoryCacheStore();
+  // Creates a cache
+  final cache = store.cache(eventListenerMode: EventListenerMode.synchronous)
+    ..on<CacheEntryCreatedEvent>().listen(
+        (event) => print('Key "${event.entry.key}" added to the cache'));
+
   // Configures a a dio client
   final dio = Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com'))
     ..interceptors.addAll([
-      store.interceptor('/todos/1', 'task'),
+      cache.interceptor('/todos/1'),
       LogInterceptor(
           requestHeader: false,
           requestBody: false,

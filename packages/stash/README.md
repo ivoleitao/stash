@@ -76,9 +76,10 @@ Run the following command to install dependencies:
 dart pub get
 ```
 
-Finally, to start developing import the corresponding implementation. In the example bellow the in-memory storage provider which you can start using if you import the `stash_memory` library:
+Finally, to start developing import the corresponding implementation. In the example bellow the in-memory storage provider which you can start using if you import the `stash_api`and the `stash_memory` libraries:
 
 ```dart
+import 'package:stash/stash_api.dart';
 import 'package:stash/stash_memory.dart';
 // In a more general sense 'package:stash/stash_xxx.dart' where xxx is the name of the
 // storage provider, memory, hive and so on
@@ -151,6 +152,7 @@ Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stas
 ```dart
 import 'dart:io';
 
+import 'package:stash/stash_api.dart';
 import 'package:stash_file/stash_file.dart';
 
 class Task {
