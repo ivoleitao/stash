@@ -1,6 +1,11 @@
+# 4.0.0-dev.2
+
+- chore: Changelog fixes and example linking to the main stash package
+- feat: Adapted the dio API to better handle the creation of interceptors
+
 # 4.0.0-dev.1
 
-- BREAKING: First version after major revamp adding support for generics, vaults and statistics
+- BREAKING CHANGE: First version after major revamp adding support for generics, vaults and statistics
 
 # 3.2.3
 

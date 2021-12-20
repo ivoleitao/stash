@@ -1,6 +1,14 @@
+# 4.0.0-dev.2
+
+- chore: Changelog fixes and example linking to the main stash package
+
 # 4.0.0-dev.1
 
-- BREAKING: First version after major revamp adding support for generics, vaults and statistics
+- BREAKING CHANGE: First version after major revamp adding support for generics, vaults and statistics
+
+# 4.0.0-dev.1
+
+- BREAKING CHANGE: First version after major revamp adding support for generics, vaults and statistics
 
 # 3.2.3
 
@@ -23,8 +31,8 @@
 # 3.1.0
 
 - Switched from `pedantic` to lints
-- BREAKING: Due to new lint rules the EventListenerMode enum now uses camel case constants
-- BREAKING: Due to new lint rules the EntryEventType enum now uses camel case constants
+- BREAKING CHANGE: Due to new lint rules the EventListenerMode enum now uses camel case constants
+- BREAKING CHANGE: Due to new lint rules the EntryEventType enum now uses camel case constants
 - Updated dependencies
 
 # 3.0.1
@@ -45,13 +53,13 @@
 - Updated dependencies
 - Added support for events
 - Some dynamic add ? and the new analyser flags it as a warning, fixed
-- BREAKING: Msgpack was removed into a separate library, `stash_msgpack`, inside stash.
-- BREAKING: CacheEntry does not allow to set the value directly anymore a copyForUpdate operation is now needed
+- BREAKING CHANGE: Msgpack was removed into a separate library, `stash_msgpack`, inside stash.
+- BREAKING CHANGE: CacheEntry does not allow to set the value directly anymore a copyForUpdate operation is now needed
 
 # 3.0.0-dev.2
 
  - First development version of the 3.x.x version
- - BREAKING: This version removes the harness and the stash memory storage extension from stash
+ - BREAKING CHANGE: This version removes the harness and the stash memory storage extension from stash
 
 # 2.0.2
 
