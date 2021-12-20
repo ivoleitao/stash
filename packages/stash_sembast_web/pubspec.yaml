@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   lints: ^1.0.1
   test: ^1.20.0
-  stash: ^4.0.0-dev.1
+  stash: ^4.0.0-dev.2
   #stash:
   #  path: ../stash
   stash_test: ^4.0.0-dev.1

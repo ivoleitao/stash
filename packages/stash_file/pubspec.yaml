@@ -14,7 +14,7 @@ dependencies:
   path: ^1.8.1
   file: ^6.1.2
   stream_transform: ^2.0.0
-  stash: ^4.0.0-dev.1
+  stash: ^4.0.0-dev.2
   #stash:
   #  path: ../stash
 dev_dependencies:

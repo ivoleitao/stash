@@ -10,7 +10,7 @@ environment:
   sdk: '>=2.15.0 <3.0.0'
 
 dependencies:
-  stash: ^4.0.0-dev.1
+  stash: ^4.0.0-dev.2
   #stash:
   #  path: ../stash
 dev_dependencies:
