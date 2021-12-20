@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 4.0.0-dev.2
+version: 4.0.0
 description: >-
    storage extension for the stash caching API. Provides support to store caches
    in a sqlite database in binary format using the msgpack json format
