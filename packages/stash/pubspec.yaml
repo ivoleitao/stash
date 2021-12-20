@@ -1,5 +1,5 @@
 name: stash
-version: 4.0.0
+version: 4.0.0.dev.1
 publish_to: none
 description: >-
   Stash supports the creation of key/value storages through well defined

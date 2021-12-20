@@ -1,6 +1,7 @@
-# 4.0.0
+# 4.0.0.dev.1
 
-- TODO
+- BREAKING: First version after major revamp adding support for generics, vaults and statistics
+
 # 3.3.1
 
 - Updated SDK
