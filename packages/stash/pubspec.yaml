@@ -1,10 +1,8 @@
 name: stash
 version: 4.0.0-dev.1
 description: >-
-  Stash supports the creation of key/value storages through well defined
-  abstractions which provide plain or cache driven semantics. Supports a wide
-  array of storage backends and integrates with some well known packages in the 
-  dart ecosystem.
+  Stash is a key-value store abstraction with plain and cache driven semantics 
+  and support for a pluggable backend architecture.
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash
 
 environment:
