@@ -1,3 +1,7 @@
+# 4.0.0
+
+- build: Release version
+
 # 4.0.0-dev.2
 
 - chore: Changelog fixes and example linking to the main stash package
