@@ -1,5 +1,5 @@
 name: stash_sembast_web
-version: 4.0.0-dev.1
+version: 4.0.0-dev.2
 publish_to: none
 description: >-
   Sembast Web storage extension for the stash caching API. Provides support to store caches
@@ -21,6 +21,6 @@ dev_dependencies:
   stash: ^4.0.0-dev.2
   #stash:
   #  path: ../stash
-  stash_test: ^4.0.0-dev.1
+  stash_test: ^4.0.0-dev.2
   #stash_test:
   #  path: ../stash_test
