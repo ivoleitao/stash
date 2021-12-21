@@ -1,6 +1,5 @@
 name: stash_objectbox
 version: 4.0.0
-publish_to: none
 description: >-
   Objectbox storage extension for the stash caching API. Provides support to store caches
   in the Objectbox database
