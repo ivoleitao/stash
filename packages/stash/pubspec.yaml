@@ -1,5 +1,6 @@
 name: stash
-version: 4.0.0
+version: 4.0.1
+publish_to: none
 description: >-
   Stash is a key-value store abstraction with plain and cache driven semantics 
   and support for a pluggable backend architecture.
@@ -13,7 +14,6 @@ dependencies:
   equatable: ^2.0.3
   uuid: ^3.0.5
   clock: ^1.1.0
-  async: ^2.8.2
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.20.0
+  test: ^1.20.1

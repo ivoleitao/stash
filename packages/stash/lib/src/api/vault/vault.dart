@@ -11,8 +11,6 @@ typedef VaultEntryDelegate<T> = VaultEntryBuilder<T> Function(
 
 /// The vault definition and the hub for the creation of Vaults
 abstract class Vault<T> extends Stash<T> {
-  // VaultManager getVaultManager();
-
   /// Gets the [VaultManager] that owns and manages the [Vault].
   /// Returns the manager or `null` if the [Vault] is not managed
   VaultManager? get manager;

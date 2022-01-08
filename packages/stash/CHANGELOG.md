@@ -1,3 +1,7 @@
+# 4.0.1
+
+- feat: Updated dependencies
+
 # 4.0.0
 
 - build: Release version

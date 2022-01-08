@@ -1,3 +1,9 @@
+# 4.0.1
+
+- feat: Updated dependencies
+- chore: Updated package description
+- fix: melos script does not run tests in parallel anymore 
+
 # 4.0.0
 
 - build: Release version

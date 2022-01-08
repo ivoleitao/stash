@@ -1,3 +1,8 @@
+# 4.0.1
+
+- feat: Updated dependencies
+- chore: Updated package description
+
 # 4.0.0
 
 - build: Release version
