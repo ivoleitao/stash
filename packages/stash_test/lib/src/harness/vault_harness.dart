@@ -201,24 +201,26 @@ Future<T> _vaultPutGet<T extends Store<VaultInfo, VaultEntry>>(
   final vault = ctx.newVault(store);
 
   final key1 = 'key_1';
-  var value1 = ctx.generator.nextValue(1);
+  var value1 = await vault.get(key1);
+  check(ctx, value1, isNull, '_vaultPutGet_1');
+
+  value1 = ctx.generator.nextValue(1);
   await vault.put(key1, value1);
   var value2 = await vault.get(key1);
-
-  check(ctx, value2, value1, '_vaultPutGet_1');
+  check(ctx, value2, value1, '_vaultPutGet_2');
 
   value1 = null;
   await vault.put(key1, value1);
   value2 = await vault.get(key1);
 
-  check(ctx, value2, value1, '_vaultPutGet_2');
+  check(ctx, value2, value1, '_vaultPutGet_3');
 
   final key2 = 'key_2';
   final value3 = null;
   await vault.put(key2, value3);
   final value4 = await vault.get(key2);
 
-  check(ctx, value4, value3, '_vaultPutGet_3');
+  check(ctx, value4, value3, '_vaultPutGet_4');
 
   return store;
 }

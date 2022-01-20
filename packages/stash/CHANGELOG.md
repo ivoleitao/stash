@@ -1,6 +1,7 @@
 # 4.0.1
 
 - feat: Updated dependencies
+- fix: Fixed a bug when fetching a non existing key (see https://github.com/ivoleitao/stash/issues/24)
 
 # 4.0.0
 

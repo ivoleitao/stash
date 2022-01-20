@@ -51,7 +51,7 @@ class GenericCache<T> implements Cache<T> {
 
   /// The [CacheLoader] for this cache. When set is used
   /// when the cache is expired to fetch a new value
-  final CacheLoader<T> cacheLoader;
+  final CacheLoader<T?> cacheLoader;
 
   /// The source of time to be used on this cache
   final Clock clock;
@@ -102,7 +102,7 @@ class GenericCache<T> implements Cache<T> {
         evictionPolicy = evictionPolicy ?? const LfuEvictionPolicy(),
         assert(maxEntries == null || maxEntries >= 0),
         maxEntries = maxEntries ?? 0,
-        cacheLoader = cacheLoader ?? ((key) => Future.value()),
+        cacheLoader = cacheLoader ?? ((key) => Future<T?>.value()),
         clock = clock ?? Clock(),
         eventPublishingMode = eventListenerMode ?? EventListenerMode.disabled,
         streamController = StreamController.broadcast(

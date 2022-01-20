@@ -239,24 +239,27 @@ Future<T> _cachePutGet<T extends Store<CacheInfo, CacheEntry>>(
         ..on<CacheEntryUpdatedEvent>().listen((event) => updatedEntries++);
 
   final key1 = 'key_1';
-  var value1 = ctx.generator.nextValue(1);
+  var value1 = await cache.get(key1);
+  check(ctx, value1, isNull, '_cachePutGet_1');
+
+  value1 = ctx.generator.nextValue(1);
   await cache.put(key1, value1);
   var value2 = await cache.get(key1);
 
-  check(ctx, value2, value1, '_cachePutGet_1');
+  check(ctx, value2, value1, '_cachePutGet_2');
 
   value1 = null;
   await cache.put(key1, value1);
   value2 = await cache.get(key1);
 
-  check(ctx, value2, value1, '_cachePutGet_2');
+  check(ctx, value2, value1, '_cachePutGet_3');
 
   final key2 = 'key_2';
   final value3 = null;
   await cache.put(key2, value3);
   final value4 = await cache.get(key2);
 
-  check(ctx, value4, value3, '_cachePutGet_3');
+  check(ctx, value4, value3, '_cachePutGet_4');
 
   return store;
 }

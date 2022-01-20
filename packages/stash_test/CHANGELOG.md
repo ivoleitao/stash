@@ -3,6 +3,7 @@
 - feat: Updated dependencies
 - chore: Updated package description
 - fix: melos script does not run tests in parallel anymore 
+- feat: Added test case to get an inexisting key on both cache and vault
 
 # 4.0.0
 
