@@ -11,24 +11,24 @@
 
 ## Overview
 
-The `stash` library is a key-value store abstraction with a pluggable backend architecture. It provides support for vault and cache objects and while the vault simply provides key value storage for primitives and objects, the cache goes one step further and adds caching semantics. The cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
+The `stash` library is a key-value store abstraction with a pluggable backend architecture. It provides support for vault and cache objects and while a vault simply provides key value storage for primitives and objects, the cache goes one step further and adds caching semantics. The cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
 
-3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the implementers of novel storage backend to test their implementations against the same baseline tests that were used by the main library.
+3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the implementers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
 
 ## History
 
-The `stash` library started it's life as a pure cache library however,  with the multiple versions, it become clear that the pluggable storage backend architecture could be reused to provide a key value abstraction that can be leveraged in other scenarios raging from the storage of preferences or assets or as a general purpose key value database. With version 4.0.0, comes the first major revision and most of the breaking changes since it's inception. 
+The `stash` library started it's life as a pure cache library,  however with the multiple versions, it become clear that the pluggable storage backend architecture could be reused to provide a key value abstraction that can be leveraged in other scenarios raging from the storage of preferences or assets or as a general purpose key value database. With version 4.0.0, comes the first major revision and most of the breaking changes since it's inception. 
 
 ## Features
 
 * :rocket: **Binary serialization** - Provides out-of-box highly performant binary serialization using and implementation of [msgpack](https://msgpack.org) inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library .
-* :sparkles: **Events** - Subscribable events for vault and cache instances, which provide notifications on creation, update or removal of an entry for both a vault and cache and also expiry and eviction for cache.
+* :sparkles: **Events** - Subscribable events for vault and cache instances, providing notifications on creation, update or removal of an entry and also expiry and eviction notifications for caches.
 * :bar_chart: **Statistics** - Supports the capture of vault and cache statistics
 * :alarm_clock: **Cache Expiry policies** - out-of-box support for `Eternal`,`Created`, `Accessed`, `Modified` and `Touched` policies.
 * :outbox_tray: **Cache Eviction policies** - out-of-box support for `FIFO`(first-in, first-out), `FILO` (first-in, last-out), `LRU` (least-recently used), `MRU` (most-recently used), `LFU` (least-frequently used, the default),  `MFU` (most frequently used) and `Hyperbolic`
 * :game_die: **Cache entry sampling** - Sampling of eviction candidates randomly or via reservoir sampling
 * :hamburger: **Tiered cache** - Allows the configuration of a primary highly performing cache (in-memory for example) and a secondary second-level cache
-* :loop: **Extensible** - Pluggable implementation of custom encoding/decoding, storage, stats, expiry, eviction and sampling strategies.
+* :loop: **Extensible** - Pluggable implementations of custom encoding/decoding, storage, stats, expiry, eviction and sampling strategies.
 * :wrench: **Testable** - Storage, vault and cache harness for 3d party support of novel storage backend strategies
 
 ## Storage Implementations
