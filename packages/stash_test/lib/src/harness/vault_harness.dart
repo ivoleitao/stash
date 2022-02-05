@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 import 'harness.dart';
 
-/// The default type tests perfomed over a vault
+/// The default type tests performed over a vault
 final _typeTests = Map<TypeTest, ValueGenerator Function()>.unmodifiable(
     defaultStashTypeTests);
 
