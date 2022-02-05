@@ -1,12 +1,12 @@
 name: stash_objectbox
-version: 4.0.1
+version: 4.0.2
 description: >-
   Objectbox storage extension for the stash API. Provides support to store vaults 
   and caches in a Objectbox database
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_objectbox
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=2.16.0 <3.0.0'
 
 dependencies:
   meta: ^1.7.0

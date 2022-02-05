@@ -1,12 +1,12 @@
 name: stash
-version: 4.0.1
+version: 4.0.2
 description: >-
   Stash is a key-value store abstraction with plain and cache driven semantics 
   and support for a pluggable backend architecture.
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=2.16.0 <3.0.0'
 
 dependencies:
   meta: ^1.7.0

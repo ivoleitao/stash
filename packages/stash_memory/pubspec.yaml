@@ -1,12 +1,12 @@
 name: stash_memory
-version: 4.0.1
+version: 4.0.2
 description: >-
   Memory storage extension for the stash API. Provides support to store vaults 
   and caches in-memory
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=2.16.0 <3.0.0'
 
 dependencies:
   stash: ^4.0.1

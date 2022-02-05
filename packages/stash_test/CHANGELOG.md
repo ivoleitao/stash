@@ -1,3 +1,8 @@
+# 4.0.2
+
+- BREAKING CHANGE: Changed minimum sdk version
+- feat: Updated dependencies
+
 # 4.0.1
 
 - feat: Updated dependencies

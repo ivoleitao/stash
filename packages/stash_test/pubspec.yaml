@@ -1,12 +1,12 @@
 name: stash_test
-version: 4.0.1
+version: 4.0.2
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
 homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_test
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=2.16.0 <3.0.0'
 
 dependencies:
   equatable: ^2.0.3
