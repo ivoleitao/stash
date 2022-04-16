@@ -259,9 +259,10 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
 
 class $VaultTableTable extends VaultTable
     with TableInfo<$VaultTableTable, VaultData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $VaultTableTable(this._db, [this._alias]);
+  $VaultTableTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
@@ -342,7 +343,7 @@ class $VaultTableTable extends VaultTable
 
   @override
   $VaultTableTable createAlias(String alias) {
-    return $VaultTableTable(_db, alias);
+    return $VaultTableTable(attachedDatabase, alias);
   }
 
   static TypeConverter<DateTime, String> $converter0 = const Iso8601Converter();

@@ -11,9 +11,9 @@ environment:
 dependencies:
   meta: ^1.7.0
   equatable: ^2.0.3
-  uuid: ^3.0.5
+  uuid: ^3.0.6
   clock: ^1.1.0
   async: ^2.8.2
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.20.1
+  test: ^1.21.0

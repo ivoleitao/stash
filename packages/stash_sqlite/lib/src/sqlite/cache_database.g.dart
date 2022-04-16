@@ -316,9 +316,10 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
 
 class $CacheTableTable extends CacheTable
     with TableInfo<$CacheTableTable, CacheData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CacheTableTable(this._db, [this._alias]);
+  $CacheTableTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
@@ -425,7 +426,7 @@ class $CacheTableTable extends CacheTable
 
   @override
   $CacheTableTable createAlias(String alias) {
-    return $CacheTableTable(_db, alias);
+    return $CacheTableTable(attachedDatabase, alias);
   }
 
   static TypeConverter<DateTime, String> $converter0 = const Iso8601Converter();

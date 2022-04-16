@@ -10,13 +10,13 @@ environment:
 
 dependencies:
   meta: ^1.7.0
-  sembast: ^3.1.2
+  sembast: ^3.2.0
   stash: ^4.0.1
   #stash:
   #  path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.20.1
+  test: ^1.21.0
   stash_test: ^4.0.1
   #stash_test:
   #  path: ../stash_test
