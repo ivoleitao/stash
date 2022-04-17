@@ -62,7 +62,7 @@ scripts:
       melos exec -- \
         rm -Rf "doc"
       melos exec -c 1 -- \
-        "dart doc ."
+        "dart pub global run dartdoc ."
     description: |
       Generate documentation for all packages.
 
