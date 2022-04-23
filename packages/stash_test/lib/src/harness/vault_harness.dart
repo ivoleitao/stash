@@ -24,6 +24,8 @@ enum VaultTest {
   getAndPut,
   getAndRemove,
   clear,
+  remove,
+  removeAll,
   createdEvent,
   updatedEvent,
   removedEvent,
@@ -45,6 +47,8 @@ const _vaultTests = {
   VaultTest.getAndPut,
   VaultTest.getAndRemove,
   VaultTest.clear,
+  VaultTest.remove,
+  VaultTest.removeAll,
   VaultTest.createdEvent,
   VaultTest.updatedEvent,
   VaultTest.removedEvent,
@@ -378,6 +382,60 @@ Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
+/// Calls [Vault.remove] on a [Vault] backed by the provided [VaultStore] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultRemove<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final vault = ctx.newVault(store);
+
+  await vault.put('key_1', ctx.generator.nextValue(1));
+  await vault.put('key_2', ctx.generator.nextValue(2));
+  await vault.put('key_3', ctx.generator.nextValue(3));
+  var size = await vault.size;
+  check(ctx, size, 3, '_vaultRemove_1');
+
+  final key = 'key_2';
+  await vault.remove(key);
+  size = await vault.size;
+  check(ctx, size, 2, '_vaultRemove_2');
+
+  final hasKey = await vault.containsKey(key);
+  check(ctx, hasKey, isFalse, '_vaultRemove_3');
+
+  return store;
+}
+
+/// Calls [Vault.removeAll] on a [Vault] backed by the provided [VaultStore] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultRemoveAll<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final vault = ctx.newVault(store);
+
+  await vault.put('key_1', ctx.generator.nextValue(1));
+  await vault.put('key_2', ctx.generator.nextValue(2));
+  await vault.put('key_3', ctx.generator.nextValue(3));
+  var size = await vault.size;
+  check(ctx, size, 3, '_vaultRemoveAll_1');
+
+  final keys = {'key_1', 'key_2'};
+  await vault.removeAll(keys);
+  size = await vault.size;
+  check(ctx, size, 1, '_vaultRemoveAll_2');
+
+  final hasKey = await vault.containsKey('key_3');
+  check(ctx, hasKey, isTrue, '_vaultRemoveAll_3');
+
+  return store;
+}
+
 /// Builds a [Vault] backed by the provided [Store] builder
 /// configured with a [VaultEntryCreatedEvent]
 ///
@@ -582,6 +640,8 @@ List<Future<T> Function(VaultTestContext<T>)>
     if (tests.contains(VaultTest.getAndPut)) _vaultGetAndPut,
     if (tests.contains(VaultTest.getAndRemove)) _vaultGetAndRemove,
     if (tests.contains(VaultTest.clear)) _vaultClear,
+    if (tests.contains(VaultTest.remove)) _vaultRemove,
+    if (tests.contains(VaultTest.removeAll)) _vaultRemoveAll,
     if (tests.contains(VaultTest.createdEvent)) _vaultCreatedEvent,
     if (tests.contains(VaultTest.updatedEvent)) _vaultUpdatedEvent,
     if (tests.contains(VaultTest.removedEvent)) _vaultRemovedEvent,

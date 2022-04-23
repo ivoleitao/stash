@@ -44,10 +44,15 @@ abstract class Stash<T> {
   /// Clears the contents of the stash
   Future<void> clear();
 
-  /// Removes the mapping for a key from this stash if it is present.
+  /// Removes the value stored under a key from this stash if present.
   ///
   /// * [key]: key whose mapping is to be removed from the stash
   Future<void> remove(String key);
+
+  /// Removes the values stored under a set of keys from this stash
+  ///
+  /// * [keys]: the set of keys to remove
+  Future<void> removeAll(Set<String> keys);
 
   /// Associates the specified [value] with the specified [key] in this stash,
   /// and returns any existing value. If the stash previously contained

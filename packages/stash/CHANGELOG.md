@@ -2,6 +2,8 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - feat: Updated dependencies
+- feat: Added support for `removeAll`
+- chore: Updated README
 
 # 4.0.1
 

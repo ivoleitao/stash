@@ -1,5 +1,6 @@
 name: stash_hive
 version: 4.0.2
+publish_to: none
 description: >-
   Hive storage extension for the stash caching API. Provides support to store vaults 
   and caches in the Hive database
@@ -12,12 +13,12 @@ dependencies:
   meta: ^1.7.0
   hive: ^2.1.0
   universal_platform: ^1.0.0+1
-  stash: ^4.0.1
-  #stash:
-  #  path: ../stash
+  #stash: ^4.0.1
+  stash:
+    path: ../stash
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.21.0
-  stash_test: ^4.0.1
-  #stash_test:
-  #  path: ../stash_test
+  test: ^1.21.1
+  #stash_test: ^4.0.1
+  stash_test:
+    path: ../stash_test

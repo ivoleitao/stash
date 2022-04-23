@@ -1,5 +1,6 @@
 name: stash_sembast_web
 version: 4.0.2
+publish_to: none
 description: >-
   Sembast Web storage extension for the stash API. Provides support to store vaults 
   and caches in a IndexedDB in binary format using the msgpack json format
@@ -11,15 +12,15 @@ environment:
 dependencies:
   sembast: ^3.2.0
   sembast_web: ^2.0.1+1
-  stash_sembast: ^4.0.1
-  #stash_sembast:
-  #  path: ../stash_sembast
+  #stash_sembast: ^4.0.1
+  stash_sembast:
+    path: ../stash_sembast
 dev_dependencies:
   lints: ^1.0.1
-  test: ^1.21.0
-  stash: ^4.0.1
-  #stash:
-  #  path: ../stash
-  stash_test: ^4.0.0
-  #stash_test:
-  #  path: ../stash_test
+  test: ^1.21.1
+  #stash: ^4.0.1
+  stash:
+    path: ../stash
+  #stash_test: ^4.0.0
+  stash_test:
+    path: ../stash_test

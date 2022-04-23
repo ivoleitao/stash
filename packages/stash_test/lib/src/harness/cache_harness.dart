@@ -23,6 +23,8 @@ enum CacheTest {
   getAndPut,
   getAndRemove,
   clear,
+  remove,
+  removeAll,
   createdExpiry,
   accessedExpiry,
   modifiedExpiry,
@@ -59,6 +61,8 @@ const _cacheTests = {
   CacheTest.getAndPut,
   CacheTest.getAndRemove,
   CacheTest.clear,
+  CacheTest.remove,
+  CacheTest.removeAll,
   CacheTest.createdExpiry,
   CacheTest.accessedExpiry,
   CacheTest.modifiedExpiry,
@@ -413,6 +417,60 @@ Future<T> _cacheClear<T extends Store<CacheInfo, CacheEntry>>(
   await cache.clear();
   size = await cache.size;
   check(ctx, size, 0, '_cacheClear_2');
+
+  return store;
+}
+
+/// Calls [Cache.remove] on a [Cache] backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheRemove<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newCache(store);
+
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
+  var size = await cache.size;
+  check(ctx, size, 3, '_cacheRemove_1');
+
+  final key = 'key_2';
+  await cache.remove(key);
+  size = await cache.size;
+  check(ctx, size, 2, '_cacheRemove_2');
+
+  final hasKey = await cache.containsKey(key);
+  check(ctx, hasKey, isFalse, '_cacheRemove_3');
+
+  return store;
+}
+
+/// Calls [Cache.removeAll] on a [Cache] backed by the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cacheRemoveAll<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newCache(store);
+
+  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_2', ctx.generator.nextValue(2));
+  await cache.put('key_3', ctx.generator.nextValue(3));
+  var size = await cache.size;
+  check(ctx, size, 3, '_cacheRemoveAll_1');
+
+  final keys = {'key_1', 'key_2'};
+  await cache.removeAll(keys);
+  size = await cache.size;
+  check(ctx, size, 1, '_cacheRemoveAll_2');
+
+  final hasKey = await cache.containsKey('key_3');
+  check(ctx, hasKey, isTrue, '_cacheRemoveAll_3');
 
   return store;
 }
@@ -1232,6 +1290,8 @@ List<Future<T> Function(CacheTestContext<T>)>
     if (tests.contains(CacheTest.getAndPut)) _cacheGetAndPut,
     if (tests.contains(CacheTest.getAndRemove)) _cacheGetAndRemove,
     if (tests.contains(CacheTest.clear)) _cacheClear,
+    if (tests.contains(CacheTest.remove)) _cacheRemove,
+    if (tests.contains(CacheTest.removeAll)) _cacheRemoveAll,
     if (tests.contains(CacheTest.createdExpiry)) _cacheCreatedExpiry,
     if (tests.contains(CacheTest.accessedExpiry)) _cacheAccessedExpiry,
     if (tests.contains(CacheTest.modifiedExpiry)) _cacheModifiedExpiry,

@@ -1,5 +1,6 @@
 name: stash_test
 version: 4.0.2
+publish_to: none
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
@@ -12,9 +13,9 @@ dependencies:
   equatable: ^2.0.3
   clock: ^1.1.0
   time: ^2.1.0
-  test: ^1.21.0
-  stash: ^4.0.1
-  # stash:
-  #  path: ../stash
+  test: ^1.21.1
+  #stash: ^4.0.1
+  stash:
+    path: ../stash
 dev_dependencies:
   lints: ^1.0.1

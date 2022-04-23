@@ -11,13 +11,13 @@
 
 ## Overview
 
-The `stash` library is a key-value store abstraction with a pluggable backend architecture. It provides support for vault and cache objects and while a vault simply provides key value storage for primitives and objects, the cache goes one step further and adds caching semantics. The cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
+The `stash` library is a key-value store abstraction with a pluggable backend architecture. It provides support for vault and cache objects.The vault simply provides a key value storage for primitives and objects, however the cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
 
-3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the implementers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
+3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the developers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
 
 ## History
 
-The `stash` library started it's life as a pure cache library,  however with the multiple versions, it become clear that the pluggable storage backend architecture could be reused to provide a key value abstraction that can be leveraged in other scenarios raging from the storage of preferences or assets or as a general purpose key value database. With version 4.0.0, comes the first major revision and most of the breaking changes since it's inception. 
+The `stash` library started it's life as a pure cache library,  however with the multiple versions, it become clear that the pluggable storage backend architecture could be reused to provide a key value abstraction that can be leveraged in other scenarios like the storage of preferences or assets or as a general purpose key value database. With version 4.0.0, comes the first major revision and most of the breaking changes since it's inception. 
 
 ## Features
 
@@ -55,7 +55,7 @@ There's also some integrations with well know dart libraries
 
 ## Test Support
 
-Finally a testing library is provided to aid in the development of third party extensions
+Finally a testing library is provided to aid in the development of third party storage backend extensions
 
 |Package|Pub|Description|
 |-------|---|-----------|
@@ -76,7 +76,7 @@ Run the following command to install dependencies:
 dart pub get
 ```
 
-Finally, to start developing import the corresponding implementation. In the example bellow the in-memory storage provider which you can start using if you import the `stash_api`and the `stash_memory` libraries:
+Finally, to start developing import the corresponding implementation. In the example bellow it's the in-memory storage provider which you can start using if you import the `stash_api`and the `stash_memory` libraries:
 
 ```dart
 import 'package:stash/stash_api.dart';
@@ -87,7 +87,7 @@ import 'package:stash/stash_memory.dart';
 
 ## Usage
 
-Start by creating an instance of the storage backend. For example on the in-memory implementation four vaults you will be using the `newMemoryVaultStore` function exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
+Start by creating an instance of the storage backend. For example, on the in-memory implementation for vaults you will be using the `newMemoryVaultStore` function exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
 
 ```dart
   // Create a in-memory store
@@ -121,7 +121,7 @@ Let's create a untyped vault and add two values to it
 
 On both cases if the name of the vault is not provided a uuid is automatically assigned as the name. By using different names you can reuse the same storage and partition your data accordingly
 
-Now let's create a cache. In this case a new type store is needed as the cache needs additional fields to support expiry and eviction. In the example bellow a store is created followed by a cache with a max capacity of 10. Note that the eviction policy is only applied if `maxEntries` is specified
+Now let's create a cache. In this case a new type of store is needed as the cache needs additional fields to support expiry and eviction. In the example bellow a store is created followed by a cache with a max capacity of 10. *Note:* that the eviction policy is only applied if `maxEntries` is specified
 
 ```dart
   // Creates a in-memory store
@@ -145,9 +145,9 @@ Finally, retrieve that element:
   final value = await cache.get('key1');
 ```
 
-The in-memory example is the simplest one, on this case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that on those cases additional configuration is needed to allow the serilization/deserialization to happen.
+The in-memory example is the simplest one, on that case there is no persistence so encoding/decoding of elements is not needed. Conversely when the storage mechanism uses persistence and we need to add custom objects they need to be json serializable and the appropriate configuration provided to allow the serialization/deserialization of those objects. This means that on those cases additional configuration is needed to allow the serilization/deserialization to happen.
 
-Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) as the storage implementation. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
+Find bellow and example that uses [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) as the storage implementation. In this case an object is stored, so in order to deserialize it the user needs to provide a way to decode it, like so: `fromEncodable: (json) => Task.fromJson(json)`. The lambda should make a call to a user provided function that deserializes the object. Conversly, the serialization happens by convention i.e. by calling the `toJson` method on the object. Note that this example is sufficiently simple to warrant the usage of manual coded functions to serialize/deserialize the objects but it could be paired with the [json_serializable](https://pub.dev/packages/json_serializable) package or similar for the automatic generation of the Json serialization / deserialization code.  
 
 ```dart
 import 'dart:io';
@@ -219,6 +219,7 @@ The `Vault` frontend provides a number of operations which are presented in the 
 | `putIfAbsent` | Replaces the specified `key` with the provided `value` if not already set |
 | `clear` | Clears the contents of the vault |
 | `remove` | Removes the specified `key` value |
+| `removeAll`| Removes the specified `keys` values |
 | `getAndPut` | Returns the specified `key` vault value and replaces it with `value` |
 | `getAndRemove` | Gets the specified `key` vault value and removes it |
 | `manager` | Returns the vault manager |
@@ -280,6 +281,7 @@ The `Cache` frontend provides a number of operations which are presented in the 
 | `putIfAbsent` | Replaces the specified `key` with the provided `value` if not already set |
 | `clear` | Clears the contents of the cache |
 | `remove` | Removes the specified `key` value |
+| `removeAll`| Removes the specified `keys` values |
 | `getAndPut` | Returns the specified `key` cache value and replaces it with `value` |
 | `getAndRemove` | Gets the specified `key` cache value and removes it |
 | `manager` | Returns the cache manager |

@@ -2,6 +2,8 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - feat: Updated dependencies
+- feat: Added `removeAll` tests
+- feat: Added `remove` tests
 
 # 4.0.1
 
