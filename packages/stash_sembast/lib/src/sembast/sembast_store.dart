@@ -191,9 +191,9 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
   ///
   /// * [_adapter]: The sembast store adapter
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastVaultStore(SembastAdapter _adapter,
+  SembastVaultStore(SembastAdapter adapter,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(_adapter, fromEncodable: fromEncodable);
+      : super(adapter, fromEncodable: fromEncodable);
 
   @override
   VaultEntry _readEntry(Map<String, dynamic> json) {
@@ -231,9 +231,9 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry> {
   ///
   /// * [_adapter]: The sembast store adapter
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastCacheStore(SembastAdapter _adapter,
+  SembastCacheStore(SembastAdapter adapter,
       {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(_adapter, fromEncodable: fromEncodable);
+      : super(adapter, fromEncodable: fromEncodable);
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> json) {

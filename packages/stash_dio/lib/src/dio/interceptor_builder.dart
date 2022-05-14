@@ -204,10 +204,9 @@ class CacheInterceptorBuilder {
         Duration? maxAge;
         DateTime? staleDate;
         if (maxAge == null) {
-          _tryParseHead(response, (_maxAge, _staleTime) {
-            maxAge = _maxAge;
-            staleDate =
-                _staleTime != null ? DateTime.now().add(_staleTime) : null;
+          _tryParseHead(response, (ma, st) {
+            maxAge = ma;
+            staleDate = st != null ? DateTime.now().add(st) : null;
           });
         }
 

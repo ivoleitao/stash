@@ -6,7 +6,7 @@ part of 'cache_database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class CacheData extends DataClass implements Insertable<CacheData> {
   /// Returns a [TextColumn] for the name
   final String name;
