@@ -49,11 +49,6 @@ abstract class Stash<T> {
   /// * [key]: key whose mapping is to be removed from the stash
   Future<void> remove(String key);
 
-  /// Removes the values stored under a set of keys from this stash
-  ///
-  /// * [keys]: the set of keys to remove
-  Future<void> removeAll(Set<String> keys);
-
   /// Associates the specified [value] with the specified [key] in this stash,
   /// and returns any existing value. If the stash previously contained
   /// a mapping for the [key], the old value is replaced by the specified value
@@ -71,4 +66,14 @@ abstract class Stash<T> {
   ///
   /// Returns the value if exists or `null` if no mapping existed for this [key]
   Future<T?> getAndRemove(String key);
+}
+
+/// Extension over [Stash] to add some helper methods
+extension StashExtension<T> on Stash<T> {
+  /// Removes the values stored under a set of keys from this stash
+  ///
+  /// * [keys]: the set of keys to remove
+  Future<void> removeAll(Set<String> keys) {
+    return Future.wait(keys.map((key) => remove(key))).then((value) => null);
+  }
 }

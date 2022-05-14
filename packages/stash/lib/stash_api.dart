@@ -2,9 +2,8 @@
 /// access, update, and remove information from caches.
 library stash_api;
 
-import 'package:stash/src/api/cache/cache_entry.dart';
-
 import 'src/api/cache/cache.dart';
+import 'src/api/cache/cache_entry.dart';
 import 'src/api/cache/cache_info.dart';
 import 'src/api/cache/cache_manager.dart';
 import 'src/api/cache/cache_stats.dart';
@@ -56,6 +55,7 @@ export 'src/api/codec/store_codec.dart';
 export 'src/api/entry.dart';
 export 'src/api/event.dart';
 export 'src/api/info.dart';
+export 'src/api/stash.dart';
 export 'src/api/store.dart';
 export 'src/api/vault/event/created_event.dart';
 export 'src/api/vault/event/event.dart';

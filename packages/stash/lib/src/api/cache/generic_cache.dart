@@ -500,10 +500,8 @@ class GenericCache<T> implements Cache<T> {
     });
   }
 
-  /// Removes the value stored under a key from this cache if present.
-  ///
-  /// * [key]: key whose mapping is to be removed from the stash
-  Future<void> _remove(String key) {
+  @override
+  Future<void> remove(String key) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -523,16 +521,6 @@ class GenericCache<T> implements Cache<T> {
     }
     // #endregion
     return _removeEntryByKey(key, now).then(posRemove);
-  }
-
-  @override
-  Future<void> remove(String key) {
-    return _remove(key);
-  }
-
-  @override
-  Future<void> removeAll(Set<String> keys) {
-    return Future.wait(keys.map((key) => _remove(key))).then((value) => null);
   }
 
   @override

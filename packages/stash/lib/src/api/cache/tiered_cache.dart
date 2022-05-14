@@ -170,10 +170,8 @@ class TieredCache<T> implements Cache<T> {
     return _primary.clear().then((any) => _secondary.clear());
   }
 
-  /// Removes the value stored under a key from this cache if present.
-  ///
-  /// * [key]: key whose mapping is to be removed from the stash
-  Future<void> _remove(String key) {
+  @override
+  Future<void> remove(String key) {
     // #region Statistics
     Stopwatch? watch;
     Future<void> Function(dynamic) posRemove = (_) => Future<void>.value();
@@ -194,16 +192,6 @@ class TieredCache<T> implements Cache<T> {
         .remove(key)
         .then((_) => _secondary.remove(key))
         .then(posRemove);
-  }
-
-  @override
-  Future<void> remove(String key) {
-    return remove(key);
-  }
-
-  @override
-  Future<void> removeAll(Set<String> keys) {
-    return Future.wait(keys.map((key) => _remove(key))).then((value) => null);
   }
 
   @override

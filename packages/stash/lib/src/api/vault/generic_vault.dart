@@ -334,10 +334,8 @@ class GenericVault<T> implements Vault<T> {
     });
   }
 
-  /// Removes the value stored under a key from this vault if present.
-  ///
-  /// * [key]: key whose mapping is to be removed from the stash
-  Future<void> _remove(String key) {
+  @override
+  Future<void> remove(String key) {
     // #region Statistics
     Stopwatch? watch;
     Future<void> Function(dynamic) posRemove = (_) => Future<void>.value();
@@ -355,16 +353,6 @@ class GenericVault<T> implements Vault<T> {
     }
     // #endregion
     return _removeEntryByKey(key).then(posRemove);
-  }
-
-  @override
-  Future<void> remove(String key) {
-    return _remove(key);
-  }
-
-  @override
-  Future<void> removeAll(Set<String> keys) {
-    return Future.wait(keys.map((key) => _remove(key))).then((value) => null);
   }
 
   @override
