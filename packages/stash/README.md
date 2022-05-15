@@ -215,7 +215,9 @@ The `Vault` frontend provides a number of operations which are presented in the 
 | `keys` | Returns all the vault keys |
 | `containsKey` | Checks if the vault contains an entry for the specified `key` |
 | `get` | Gets the vault value for the specified `key` |
+| `getAll` | Gets the vault values of the specified set of `keys` |
 | `put` | Adds / Replace the vault value of the specified `key` |
+| `putAll` | Adds / Replaces the vault values with the specified map of key / values  | 
 | `putIfAbsent` | Replaces the specified `key` with the provided `value` if not already set |
 | `clear` | Clears the contents of the vault |
 | `remove` | Removes the specified `key` value |
@@ -277,7 +279,9 @@ The `Cache` frontend provides a number of operations which are presented in the 
 | `keys` | Returns all the cache keys |
 | `containsKey` | Checks if the cache contains an entry for the specified `key` |
 | `get` | Gets the cache value for the specified `key` |
+| `getAll` | Gets the cache values of the specified set of `keys` |
 | `put` | Adds / Replace the cache value of the specified `key` |
+| `putAll` | Adds / Replaces the cache values with the specified map of key / values  | 
 | `putIfAbsent` | Replaces the specified `key` with the provided `value` if not already set |
 | `clear` | Clears the contents of the cache |
 | `remove` | Removes the specified `key` value |

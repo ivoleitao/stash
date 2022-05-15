@@ -70,6 +70,25 @@ abstract class Stash<T> {
 
 /// Extension over [Stash] to add some helper methods
 extension StashExtension<T> on Stash<T> {
+  /// Gets the stash values for the specified set of [keys]
+  ///
+  /// * [keys]: the set of keys to get
+  ///
+  /// Returns a map of key / value pairs
+  Future<Map<String, T?>> getAll(Set<String> keys) {
+    return Future.wait(keys.map((key) {
+      return get(key).then((value) => MapEntry(key, value));
+    })).then((value) => Map.fromEntries(value));
+  }
+
+  /// Add / Replace the stash values with the specified [map] of entries.
+  ///
+  /// * [map]: the map of entries to add / replace
+  Future<void> putAll(Map<String, T> map) {
+    return Future.wait(map.entries.map((entry) => put(entry.key, entry.value)))
+        .then((value) => null);
+  }
+
   /// Removes the values stored under a set of keys from this stash
   ///
   /// * [keys]: the set of keys to remove
