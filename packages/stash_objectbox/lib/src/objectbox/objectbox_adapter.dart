@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -14,8 +15,8 @@ class ObjectboxAdapter {
   final int? maxReaders;
   final bool? queriesCaseSensitiveDefault;
 
-  /// List of stores per cache name
-  final Map<String, Store> _cacheStore = {};
+  /// List of stores per name
+  final Map<String, Store> _stores = {};
 
   /// Builds a [ObjectboxAdapter].
   ///
@@ -30,67 +31,76 @@ class ObjectboxAdapter {
       this.maxReaders,
       this.queriesCaseSensitiveDefault});
 
-  /// Returns the cache [Directory]
+  /// Returns the store [Directory]
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The name of the store
   ///
-  /// Returns the cache [Directory]
-  Directory _cacheDirectory(String name) {
+  /// Returns the store [Directory]
+  Directory _directory(String name) {
     return Directory(p.join(path, name));
   }
 
-  /// Returns the cache [Store] or opens a new store it under the base path
+  /// Returns the [Store] or opens a new store it under the base path
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The name of the store
   ///
-  /// Returns the [Store] of the cache
+  /// Returns the [Store] of the store
   Future<Store> _store(String name) {
-    if (_cacheStore.containsKey(name)) {
-      return Future.value(_cacheStore[name]);
+    if (_stores.containsKey(name)) {
+      return Future.value(_stores[name]);
     }
 
-    return _cacheDirectory(name).create().then((dir) {
-      return _cacheStore[name] = Store(getObjectBoxModel(),
+    return _directory(name).create().then((dir) {
+      final store = Store(getObjectBoxModel(),
           directory: dir.path,
           maxDBSizeInKB: maxDBSizeInKB,
           fileMode: fileMode,
           maxReaders: maxReaders,
           queriesCaseSensitiveDefault: queriesCaseSensitiveDefault ?? true);
+
+      _stores[name] = store;
+
+      return Future.value(store);
     });
   }
 
-  /// Returns the [Box] where a cache is stored
+  /// Returns the [Box]
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The name of the store
   ///
-  /// Returns the [Box] where the cache is stored
+  /// Returns the [Box]
   Future<Box<O>> box<O>(String name) {
     return _store(name).then((store) => store.box<O>());
   }
 
-  /// Deletes a named cache from a store or the store itself if a named cache is
+  /// Deletes a named store or the store itself if is
   /// stored individually
   ///
-  /// * [name]: The cache name
-  Future<void> delete(String name) {
-    if (_cacheStore.containsKey(name)) {
-      _cacheStore[name]?.close();
-      return _cacheDirectory(name)
+  /// * [name]: The store name
+  Future<void> _deleteStore(String name) {
+    if (_stores.containsKey(name)) {
+      _stores[name]?.close();
+      return _directory(name)
           .delete(recursive: true)
-          .then((_) => _cacheStore.remove(name));
+          .then((_) => _stores.remove(name));
     }
 
     return Future.value();
   }
 
+  /// Deletes a named store or the store itself if is
+  /// stored individually
+  ///
+  /// * [name]: The store name
+  Future<void> delete(String name) {
+    return _deleteStore(name);
+  }
+
   /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named caches in one storage, or stores(s) if multiple storages are used
+  /// named stores in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll() {
-    return Future.wait(_cacheStore.keys.map((name) {
-      _cacheStore[name]?.close();
-      return _cacheDirectory(name)
-          .delete(recursive: true)
-          .then((_) => _cacheStore.remove(name));
+    return Future.wait(_stores.keys.map((name) {
+      return _deleteStore(name);
     }));
   }
 }

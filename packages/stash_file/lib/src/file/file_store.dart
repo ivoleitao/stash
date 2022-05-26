@@ -20,15 +20,15 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   /// If locks are obtained before performing read/write operations
   final bool lock;
 
-  /// The cache codec to use
+  /// The store codec to use
   final StoreCodec _codec;
 
   /// The function that converts between the Map representation to the
-  /// object stored in the cache
+  /// object stored
   final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
-  /// List of cache directories per cache name
-  final Map<String, Directory> _cacheDirectoryMap = {};
+  /// List of store directories per store name
+  final Map<String, Directory> _storeDirectoryMap = {};
 
   /// Builds a [FileStore].
   /// * [_fs]: The [FileSystem]
@@ -42,58 +42,58 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
       : _codec = codec ?? const MsgpackCodec(),
         _fromEncodable = fromEncodable;
 
-  /// Returns the [Directory] where a cache is stored or creates it under the base path
+  /// Returns the [Directory] where a store is stored or creates it under the base path
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The name of the store
   ///
-  /// Returns the [Directory] where the cache is stored
-  Future<Directory> _cacheDirectory(String name) {
-    if (_cacheDirectoryMap.containsKey(name)) {
-      return Future.value(_cacheDirectoryMap[name]);
+  /// Returns the [Directory] where the store is stored
+  Future<Directory> _storeDirectory(String name) {
+    if (_storeDirectoryMap.containsKey(name)) {
+      return Future.value(_storeDirectoryMap[name]);
     } else {
       return _fs
           .directory(p.join(_path, name))
           .create(recursive: true)
-          .then((cacheDirectory) {
-        _cacheDirectoryMap[name] = cacheDirectory;
+          .then((storeDirectory) {
+        _storeDirectoryMap[name] = storeDirectory;
 
-        return cacheDirectory;
+        return storeDirectory;
       });
     }
   }
 
-  /// Returns the cache [File]
+  /// Returns the store [File]
   ///
-  /// * [name]: The name of the cache
-  /// * [key]: The named cache key
+  /// * [name]: The name of the store
+  /// * [key]: The named store key
   ///
-  /// Returns the [File] that stores the named cache key
-  File _cacheFile(String name, String key) {
+  /// Returns the [File] that stores the named store key
+  File _storeFile(String name, String key) {
     return _fs.file(p.join(_path, name, key));
   }
 
-  /// Returns the [File] that stores a cache key under the provided cache directory
+  /// Returns the [File] that stores a store key under the provided directory
   ///
-  /// * [cacheDirectory]: The cache [Directory]
-  /// * [key]: The cache key
+  /// * [storeDirectory]: The store [Directory]
+  /// * [key]: The store key
   ///
-  /// Returns the [File] that stores the cache key under the provided cache directory
-  File _cacheDirectoryFile(Directory cacheDirectory, String key) {
-    return _fs.file(p.join(cacheDirectory.path, key));
+  /// Returns the [File] that stores the store key under the provided directory
+  File _storeDirectoryFile(Directory storeDirectory, String key) {
+    return _fs.file(p.join(storeDirectory.path, key));
   }
 
-  /// Returns the full list of cache files under a named directory
+  /// Returns the full list of store files under a named directory
   ///
-  /// * [name]: The name of the cache
-  /// * [convert]: Converts the cache file to the requested value
-  /// * [predicate]: Predicate that filters the returned cache files
+  /// * [name]: The name of the store
+  /// * [convert]: Converts the store file to the requested value
+  /// * [predicate]: Predicate that filters the returned store files
   ///
-  /// Returns a list of cache files filtered and converted according with the provided parameters
-  Future<List<T>> _cacheFiles<T>(
+  /// Returns a list of store files filtered and converted according with the provided parameters
+  Future<List<T>> _storeFiles<T>(
       String name, FutureOr<T> Function(File) convert,
       {bool Function(FileSystemEntity fse)? predicate}) {
     final filter = predicate ?? ((fse) => true);
-    return _cacheDirectory(name).then((cacheDirectory) => cacheDirectory
+    return _storeDirectory(name).then((storeDirectory) => storeDirectory
         .list()
         .asyncWhere((fse) => fse.stat().then((FileStat stat) =>
             stat.type == FileSystemEntityType.file && filter(fse)))
@@ -102,13 +102,13 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
         .toList());
   }
 
-  /// Returns a list of the named cache
+  /// Returns a list of the named store
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The name of the store
   ///
-  /// Returns the list of keys of the provided cache
+  /// Returns the list of keys of the provided store
   Future<Iterable<String>> _getKeys(String name) =>
-      _cacheFiles(name, (fse) => p.basename(fse.path));
+      _storeFiles(name, (fse) => p.basename(fse.path));
 
   @override
   Future<int> size(String name) => _getKeys(name).then((it) => it.length);
@@ -117,26 +117,26 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
   @override
-  Future<Iterable<I>> infos(String name) => _cacheFiles(
+  Future<Iterable<I>> infos(String name) => _storeFiles(
       name, (FileSystemEntity fse) => _readFileInfo(_fs.file(fse.path)));
 
   @override
-  Future<Iterable<E>> values(String name) => _cacheFiles(
+  Future<Iterable<E>> values(String name) => _storeFiles(
       name, (FileSystemEntity fse) => _readFileEntry(_fs.file(fse.path)));
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) =>
-      _cacheFiles(name, (FileSystemEntity fse) => _getInfo(_fs.file(fse.path)),
+      _storeFiles(name, (FileSystemEntity fse) => _getInfo(_fs.file(fse.path)),
           predicate: (fse) => keys.contains(p.basename(fse.path)));
 
   @override
   Future<void> clear(String name) {
-    return _cacheFiles(name, (FileSystemEntity fse) => fse.delete());
+    return _storeFiles(name, (FileSystemEntity fse) => fse.delete());
   }
 
   @override
   Future<bool> containsKey(String name, String key) {
-    return _cacheFile(name, key).exists();
+    return _storeFile(name, key).exists();
   }
 
   /// The size of the [Info] header
@@ -145,8 +145,8 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Creates a [Info] from the provided byte list
   ///
-  /// * [key]: The cache key
-  /// * [bytes]: A [Uint8List] with the cache value
+  /// * [key]: The store key
+  /// * [bytes]: A [Uint8List] with the store value
   ///
   /// Returns a [Info]
   @protected
@@ -174,7 +174,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Creates a [Info] from the provided [File]
   ///
-  /// * [file]: The cache [File]
+  /// * [file]: The store [File]
   /// * [checkFile]: If the existence of the file should be checked, defaults to false
   ///
   /// Returns a [Info]
@@ -187,10 +187,10 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<I?> getInfo(String name, String key) {
-    return _getInfo(_cacheFile(name, key), checkFile: true);
+    return _getInfo(_storeFile(name, key), checkFile: true);
   }
 
-  /// Updates only the information of a cache not the full cache
+  /// Updates only the information of a store not the full store
   ///
   /// * [info]: The [Info] to write
   /// * [writer]: An optional instance of the [BytesWriter] in case it was already instanciated.
@@ -201,7 +201,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    return _cacheFile(name, key).open(mode: FileMode.append).then((raf) {
+    return _storeFile(name, key).open(mode: FileMode.append).then((raf) {
       final pre = lock
           ? (RandomAccessFile f) => f.lock(FileLock.blockingExclusive)
           : (RandomAccessFile f) => Future.value(f);
@@ -218,7 +218,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Reads a [Entry] from a [Uint8List]
   ///
-  /// * [key]: The cache key
+  /// * [key]: The store key
   /// * [bytes]: The list of bytes from where the [Entry] should be read
   ///
   /// Returns a [Entry]
@@ -226,7 +226,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Reads a [Entry] from the provided [File]
   ///
-  /// * [file]: The cache [File]
+  /// * [file]: The store [File]
   ///
   /// Returns a [Entry]
   Future<E> _readFileEntry(File file) {
@@ -251,7 +251,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Gets a [Entry] from the provided [File]
   ///
-  /// * [file]: The cache [File]
+  /// * [file]: The store [File]
   /// * [checkFile]: If the existence of the [File] should be checked
   ///
   /// Returns a [Entry]
@@ -264,12 +264,12 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<E?> getEntry(String name, String key) {
-    return _getEntry(_cacheFile(name, key), checkFile: true);
+    return _getEntry(_storeFile(name, key), checkFile: true);
   }
 
   /// Writes a value to a optionally provided [BytesWriter] or creates a new one
   ///
-  /// * [value]: The value to write to the cache
+  /// * [value]: The value to write to the store
   /// * [writer]: The optionally provided [BytesWriter]
   ///
   /// Returns the provided [BytesWriter] or a new one after writing [value] into it
@@ -302,15 +302,27 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    return _cacheDirectory(name).then((cacheDirectory) {
-      return _putFileEntry(_cacheDirectoryFile(cacheDirectory, key), entry);
+    return _storeDirectory(name).then((storeDirectory) {
+      return _putFileEntry(_storeDirectoryFile(storeDirectory, key), entry);
     });
   }
 
   @override
   Future<void> remove(String name, String key) {
-    if (_cacheDirectoryMap.containsKey(name)) {
-      return _cacheFile(name, key).delete();
+    if (_storeDirectoryMap.containsKey(name)) {
+      return _storeFile(name, key).delete();
+    }
+
+    return Future.value();
+  }
+
+  Future<void> _deleteStore(String name) {
+    if (_storeDirectoryMap.containsKey(name)) {
+      final storeDirectory = _storeDirectoryMap[name]!;
+
+      return storeDirectory
+          .delete(recursive: true)
+          .then((_) => _storeDirectoryMap.remove(name));
     }
 
     return Future.value();
@@ -318,40 +330,26 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> delete(String name) {
-    if (_cacheDirectoryMap.containsKey(name)) {
-      final cacheDirectory = _cacheDirectoryMap[name]!;
-
-      return cacheDirectory
-          .delete(recursive: true)
-          .then((_) => _cacheDirectoryMap.remove(name));
-    }
-
-    return Future.value();
+    return _deleteStore(name);
   }
 
   @override
   Future<void> deleteAll() {
-    return Future.wait(_cacheDirectoryMap.keys.map((name) {
-      final cacheDirectory = _cacheDirectoryMap[name];
-      if (cacheDirectory != null) {
-        return cacheDirectory
-            .delete(recursive: true)
-            .then((_) => _cacheDirectoryMap.remove(name));
-      }
-
-      return Future.value();
+    return Future.wait(_storeDirectoryMap.keys.map((name) {
+      return _deleteStore(name);
     }));
   }
 }
 
 class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
-  /// The size in bytes of the cache entry header
-  static const int _cacheHeaderSize = uint64Size * 3;
+  /// The size in bytes of the store entry header
+  static const int _vaultHeaderSize = uint64Size * 3;
 
   @override
-  int get _headerSize => _cacheHeaderSize;
+  int get _headerSize => _vaultHeaderSize;
 
-  /// Builds a [FileCacheStore].
+  /// Builds a [FileVaultStore].
+  ///
   /// * [fs]: The [FileSystem]
   /// * [path]: The base location of the file storage
   /// * [lock]: If locks are obtained before doing read/write operations

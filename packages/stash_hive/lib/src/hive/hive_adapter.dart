@@ -18,11 +18,13 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends StoreAdapter {
   final bool? crashRecovery;
 
   /// List of vault/caches
-  final Map<String, T> _store = {};
+  final Map<String, T> _stores = {};
 
   /// Builds a [HiveAdapter].
   ///
   /// * [path]: The base location of the Hive storage
+  /// * [encryptionCipher]: The encryption cypher
+  /// * [crashRecovery]: If it supports crash recovery
   HiveAdapter({this.path, this.encryptionCipher, this.crashRecovery});
 
   /// Opens the box
@@ -39,53 +41,51 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends StoreAdapter {
   Future<Map?> boxValue(T store, String key);
 
   Future<T> store(String name) {
-    if (_store.containsKey(name)) {
-      return Future.value(_store[name]);
+    if (_stores.containsKey(name)) {
+      return Future.value(_stores[name]);
     }
 
     return openBox(name).then((store) {
-      _store[name] = store;
+      _stores[name] = store;
 
       return store;
     });
   }
 
-  Future<void> _delete(String name) {
-    if (UniversalPlatform.isWeb) {
-      // https://github.com/hivedb/hive/issues/344
-      return _store[name]!.clear().then((_) => _store.remove(name));
-    } else {
-      return Hive.deleteBoxFromDisk(name).then((_) => _store.remove(name));
-    }
-  }
-
-  /// Deletes a vault/cache from a store or the store itself
+  /// Deletes a named store
   ///
-  /// * [name]: The vault/cache name
-  Future<void> delete(String name) {
-    if (_store.containsKey(name)) {
-      return _delete(name);
+  /// [name]: The store name
+  Future<void> _deleteStore(String name) {
+    if (_stores.containsKey(name)) {
+      if (UniversalPlatform.isWeb) {
+        // https://github.com/hivedb/hive/issues/344
+        return _stores[name]!.clear().then((_) => _stores.remove(name));
+      } else {
+        return Hive.deleteBoxFromDisk(name).then((_) => _stores.remove(name));
+      }
     }
 
     return Future.value();
   }
 
+  /// Deletes a vault/cache from a store or the store itself
+  ///
+  /// * [name]: The store name
+  Future<void> delete(String name) {
+    return _deleteStore(name);
+  }
+
   /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named vault/cache in one storage, or stores(s) if multiple storages are used
+  /// stashes in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll() {
-    return Future.wait(_store.keys.map((name) {
-      return _delete(name);
+    return Future.wait(_stores.keys.map((name) {
+      return _deleteStore(name);
     }));
   }
 }
 
 class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
-  HiveDefaultAdapter(
-      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(
-            path: path,
-            encryptionCipher: encryptionCipher,
-            crashRecovery: crashRecovery);
+  HiveDefaultAdapter({super.path, super.encryptionCipher, super.crashRecovery});
 
   @override
   Future<Box<Map>> openBox(String name) {
@@ -102,12 +102,7 @@ class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
 }
 
 class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
-  HiveLazyAdapter(String path,
-      {HiveCipher? encryptionCipher, bool? crashRecovery})
-      : super(
-            path: path,
-            encryptionCipher: encryptionCipher,
-            crashRecovery: crashRecovery);
+  HiveLazyAdapter({super.path, super.encryptionCipher, super.crashRecovery});
 
   @override
   Future<LazyBox<Map>> openBox(String name) {

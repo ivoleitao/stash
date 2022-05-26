@@ -18,6 +18,7 @@ enum CacheTest {
   keys,
   putGet,
   putGetOperator,
+  putAllGetAll,
   putPut,
   putIfAbsent,
   getAndPut,
@@ -56,6 +57,7 @@ const _cacheTests = {
   CacheTest.keys,
   CacheTest.putGet,
   CacheTest.putGetOperator,
+  CacheTest.putAllGetAll,
   CacheTest.putPut,
   CacheTest.putIfAbsent,
   CacheTest.getAndPut,
@@ -235,12 +237,7 @@ Future<T> _cacheKeys<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutGet<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  var createdEntries = 0;
-  var updatedEntries = 0;
-  final cache =
-      ctx.newCache(store, eventListenerMode: EventListenerMode.synchronous)
-        ..on<CacheEntryCreatedEvent>().listen((event) => createdEntries++)
-        ..on<CacheEntryUpdatedEvent>().listen((event) => updatedEntries++);
+  final cache = ctx.newCache(store);
 
   final key1 = 'key_1';
   var value1 = await cache.get(key1);
@@ -285,6 +282,34 @@ Future<T> _cachePutGetOperator<T extends Store<CacheInfo, CacheEntry>>(
   final value2 = await cache[key];
 
   check(ctx, value2, value1, '_cachePutGetOperator_1');
+
+  return store;
+}
+
+/// Calls [Cache.putAll] followed by a [Cache.getAll] on a [Cache] backed by
+/// the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _cachePutAllGetAll<T extends Store<CacheInfo, CacheEntry>>(
+    CacheTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final cache = ctx.newCache(store);
+
+  final key1 = 'key_1';
+  final key2 = 'key_2';
+  var values1 = await cache.getAll({key1, key2});
+  check(ctx, values1[key1], isNull, '_cachePutAllGetAll_1');
+  check(ctx, values1[key2], isNull, '_cachePutAllGetAll_2');
+
+  var value1 = ctx.generator.nextValue(1);
+  var value2 = ctx.generator.nextValue(2);
+  await cache.putAll({key1: value1, key2: value2});
+
+  var values2 = await cache.getAll({key1, key2});
+  check(ctx, values2[key1], value1, '_cachePutAllGetAll_3');
+  check(ctx, values2[key2], value2, '_cachePutAllGetAll_4');
 
   return store;
 }
@@ -1285,6 +1310,7 @@ List<Future<T> Function(CacheTestContext<T>)>
     if (tests.contains(CacheTest.keys)) _cacheKeys,
     if (tests.contains(CacheTest.putGet)) _cachePutGet,
     if (tests.contains(CacheTest.putGetOperator)) _cachePutGetOperator,
+    if (tests.contains(CacheTest.putAllGetAll)) _cachePutAllGetAll,
     if (tests.contains(CacheTest.putPut)) _cachePutPut,
     if (tests.contains(CacheTest.putIfAbsent)) _cachePutIfAbsent,
     if (tests.contains(CacheTest.getAndPut)) _cacheGetAndPut,

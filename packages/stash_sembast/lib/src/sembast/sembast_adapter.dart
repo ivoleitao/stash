@@ -14,7 +14,7 @@ abstract class SembastAdapter {
   Database? _db;
 
   /// List of stores per cache name
-  final Map<String, StoreRef<String, Map<String, dynamic>>> _cacheStore = {};
+  final Map<String, StoreRef<String, Map<String, dynamic>>> _stores = {};
 
   /// Builds a [SembastAdapter].
   ///
@@ -35,14 +35,13 @@ abstract class SembastAdapter {
   }
 
   StoreRef<String, Map<String, dynamic>> _store(String name) {
-    if (_cacheStore.containsKey(name)) {
-      return _cacheStore[name]!;
+    if (_stores.containsKey(name)) {
+      return _stores[name]!;
     }
 
-    final cacheStore =
-        _cacheStore[name] = StoreRef<String, Map<String, dynamic>>(name);
+    final store = _stores[name] = StoreRef<String, Map<String, dynamic>>(name);
 
-    return cacheStore;
+    return store;
   }
 
   /// Checks if a entry exists
@@ -159,28 +158,38 @@ abstract class SembastAdapter {
     });
   }
 
+  Future<void> _deleteStore(String name) {
+    if (_stores.containsKey(name)) {
+      return _database().then((db) {
+        return _store(name).delete(db);
+      }).then((_) => null);
+    }
+
+    return Future.value();
+  }
+
   /// Deletes a named cache from a store or the store itself if a named cache is
   /// stored individually
   ///
   /// * [name]: The cache name
   Future<void> delete(String name) {
-    return _database().then((db) {
-      return _store(name).delete(db);
-    }).then((_) => null);
+    return _deleteStore(name);
   }
 
   Future<void> deleteDatabase(String path);
 
-  /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named caches in one storage, or stores(s) if multiple storages are used
+  /// Deletes the store if a store is implemented in a way that puts all the
+  /// named stashes in one storage, or stores(s) if multiple storages are used
   Future<void> deleteAll() {
-    return Future.wait(_cacheStore.keys.map((name) {
+    return Future.wait(_stores.keys.map((name) {
+      //return synchronized(() async {
       return _database().then((db) {
         return db
             .close()
             .then((_) => deleteDatabase(db.path))
-            .then((_) => _cacheStore.remove(name));
+            .then((_) => _stores.remove(name));
       });
+      // });
     }));
   }
 }

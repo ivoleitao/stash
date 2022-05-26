@@ -58,8 +58,10 @@ HiveLazyVaultStore newHiveLazyVaultStore(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return HiveLazyVaultStore(
-      HiveLazyAdapter(path ?? '.',
-          encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
+      HiveLazyAdapter(
+          path: path ?? '.',
+          encryptionCipher: encryptionCipher,
+          crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }
 
@@ -75,7 +77,9 @@ HiveLazyCacheStore newHiveLazyCacheStore(
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
   return HiveLazyCacheStore(
-      HiveLazyAdapter(path ?? '.',
-          encryptionCipher: encryptionCipher, crashRecovery: crashRecovery),
+      HiveLazyAdapter(
+          path: path ?? '.',
+          encryptionCipher: encryptionCipher,
+          crashRecovery: crashRecovery),
       fromEncodable: fromEncodable);
 }

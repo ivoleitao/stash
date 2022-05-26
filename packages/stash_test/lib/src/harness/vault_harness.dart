@@ -19,6 +19,7 @@ enum VaultTest {
   keys,
   putGet,
   putGetOperator,
+  putAllGetAll,
   putPut,
   putIfAbsent,
   getAndPut,
@@ -42,6 +43,7 @@ const _vaultTests = {
   VaultTest.keys,
   VaultTest.putGet,
   VaultTest.putGetOperator,
+  VaultTest.putAllGetAll,
   VaultTest.putPut,
   VaultTest.putIfAbsent,
   VaultTest.getAndPut,
@@ -194,7 +196,7 @@ Future<T> _vaultKeys<T extends Store<VaultInfo, VaultEntry>>(
 }
 
 /// Calls [Vault.put] followed by a [Vault.get] on a [Vault] backed by
-/// the provided [VaultStore] builder
+/// the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -250,8 +252,36 @@ Future<T> _vaultPutGetOperator<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
+/// Calls [Vault.putAll] followed by a [Vault.getAll] on a [Vault] backed by
+/// the provided [Store] builder
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultPutAllGetAll<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+  final vault = ctx.newVault(store);
+
+  final key1 = 'key_1';
+  final key2 = 'key_2';
+  var values1 = await vault.getAll({key1, key2});
+  check(ctx, values1[key1], isNull, '_vaultPutAllGetAll_1');
+  check(ctx, values1[key2], isNull, '_vaultPutAllGetAll_2');
+
+  var value1 = ctx.generator.nextValue(1);
+  var value2 = ctx.generator.nextValue(2);
+  await vault.putAll({key1: value1, key2: value2});
+
+  var values2 = await vault.getAll({key1, key2});
+  check(ctx, values2[key1], value1, '_vaultPutAllGetAll_3');
+  check(ctx, values2[key2], value2, '_vaultPutAllGetAll_4');
+
+  return store;
+}
+
 /// Calls [Vault.put] followed by a second [Vault.put] on a [Vault] backed by
-/// the provided [VaultStore] builder
+/// the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -359,7 +389,7 @@ Future<T> _vaultGetAndRemove<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.clear] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.clear] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -382,7 +412,7 @@ Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.remove] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.remove] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -409,7 +439,7 @@ Future<T> _vaultRemove<T extends Store<VaultInfo, VaultEntry>>(
   return store;
 }
 
-/// Calls [Vault.removeAll] on a [Vault] backed by the provided [VaultStore] builder
+/// Calls [Vault.removeAll] on a [Vault] backed by the provided [Store] builder
 ///
 /// * [ctx]: The test context
 ///
@@ -635,6 +665,7 @@ List<Future<T> Function(VaultTestContext<T>)>
     if (tests.contains(VaultTest.keys)) _vaultKeys,
     if (tests.contains(VaultTest.putGet)) _vaultPutGet,
     if (tests.contains(VaultTest.putGetOperator)) _vaultPutGetOperator,
+    if (tests.contains(VaultTest.putAllGetAll)) _vaultPutAllGetAll,
     if (tests.contains(VaultTest.putPut)) _vaultPutPut,
     if (tests.contains(VaultTest.putIfAbsent)) _vaultPutIfAbsent,
     if (tests.contains(VaultTest.getAndPut)) _vaultGetAndPut,

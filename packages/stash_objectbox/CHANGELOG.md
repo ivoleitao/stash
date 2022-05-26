@@ -2,6 +2,7 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - feat: Updated dependencies
+- fix: Concurrency problem on the creation / removal of stores
 
 # 4.0.1
 
