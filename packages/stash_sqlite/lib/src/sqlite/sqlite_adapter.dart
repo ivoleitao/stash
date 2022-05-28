@@ -22,6 +22,11 @@ abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
   /// Returns the [DaoAdapter] for the underlining [Store]
   DaoAdapter<I, E> get dao => _db.dao;
 
+  /// Creates a store
+  ///
+  /// * [name]: The store name
+  Future<void> create(String name) => Future.value();
+
   /// Deletes a named store or the store itself
   ///
   /// * [name]: The vault/cache name

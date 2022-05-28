@@ -30,7 +30,8 @@ void main() async {
   // Creates a store
   final store = newMemoryCacheStore();
   // Creates a cache
-  final cache = store.cache(eventListenerMode: EventListenerMode.synchronous)
+  final cache = await store.cache(
+      eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent>().listen(
         (event) => print('Key "${event.entry.key}" added to the cache'));
 

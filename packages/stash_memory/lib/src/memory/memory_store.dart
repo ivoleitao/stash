@@ -5,89 +5,113 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
     implements Store<I, E> {
   /// In-memory [Map] to stores multiple entries.
   /// The value is a [Map] of key/[Entry]
-  final Map<String, Map<String, E>> _stores = <String, Map<String, E>>{};
+  final Map<String, Map<String, E>> _slots = <String, Map<String, E>>{};
 
-  /// Returns a specific record identified by [name] or a empty [Map] of key/[Entry]
-  Future<Map<String, E>> _store(String name) {
-    if (_stores.containsKey(name)) {
-      return Future.value(_stores[name]);
+  @override
+  Future<void> create(String name) {
+    if (!_slots.containsKey(name)) {
+      _slots[name] = <String, E>{};
     }
 
-    final store = <String, E>{};
+    return Future.value();
+  }
 
-    _stores[name] = store;
-
-    return Future.value(store);
+  /// Returns a specific slot identified by [name]
+  ///
+  /// * [name]: The slot name
+  Map<String, E>? _slot(String name) {
+    return _slots[name];
   }
 
   @override
-  Future<int> size(String name) => _store(name).then((store) => store.length);
+  Future<int> size(String name) => Future.value(_slot(name)?.length ?? 0);
 
   @override
   Future<Iterable<String>> keys(String name) =>
-      _store(name).then((store) => store.keys);
+      Future.value(_slot(name)?.keys ?? const <String>[]);
 
   @override
   Future<Iterable<I>> infos(String name) =>
-      _store(name).then((store) => store.values.map((value) => value.info));
+      Future.value((_slot(name)?.values ?? <E>[]).map((value) => value.info));
 
   @override
   Future<Iterable<E>> values(String name) =>
-      _store(name).then((store) => store.values);
+      Future.value(_slot(name)?.values ?? <E>[]);
 
   @override
   Future<bool> containsKey(String name, String key) {
-    return _store(name).then((store) => store.containsKey(key));
+    return Future.value(_slot(name)?.containsKey(key) ?? false);
   }
 
   @override
   Future<I?> getInfo(String name, String key) {
-    return _store(name).then((store) => store[key]?.info);
+    return Future.value(_slot(name)?[key]?.info);
   }
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _store(name).then((store) => keys.map((key) => store[key]?.info));
+    final slot = _slot(name);
+
+    return Future.value(keys.map((key) => slot?[key]?.info));
   }
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    final store = _stores[name];
+    final slot = _slot(name);
 
-    if (store != null) {
-      final entry = store[key];
+    if (slot != null) {
+      final entry = slot[key];
 
       if (entry != null) {
         entry.updateInfo(info);
       }
     }
+
     return Future.value();
   }
 
   @override
   Future<E?> getEntry(String name, String key) {
-    return _store(name).then((store) => store[key]);
+    return Future.value(_slot(name)?[key]);
   }
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    return _store(name).then((store) => store[key] = entry);
+    final slot = _slot(name);
+
+    if (slot != null) {
+      slot[key] = entry;
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> remove(String name, String key) {
-    return _store(name).then((store) => store.remove(key));
+    final slot = _slot(name);
+
+    if (slot != null) {
+      slot.remove(key);
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> clear(String name) {
-    return _store(name).then((store) => store.clear());
+    final slot = _slot(name);
+
+    if (slot != null) {
+      slot.clear();
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> delete(String name) {
-    if (_stores.containsKey(name)) {
-      _stores.remove(name);
+    if (_slots.containsKey(name)) {
+      _slots.remove(name);
     }
 
     return Future.value();
@@ -95,7 +119,7 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> deleteAll() {
-    _stores.clear();
+    _slots.clear();
 
     return Future.value();
   }

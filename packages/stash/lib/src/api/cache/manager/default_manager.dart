@@ -20,7 +20,7 @@ class DefaultCacheManager extends CacheManager {
   Iterable<String> get names => _caches.keys;
 
   @override
-  Cache<T> newGenericCache<T>(Store<CacheInfo, CacheEntry> storage,
+  Future<Cache<T>> newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
@@ -31,7 +31,7 @@ class DefaultCacheManager extends CacheManager {
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       CacheStats? stats}) {
-    final cache = GenericCache<T>(storage,
+    final cache = GenericCache<T>(store,
         manager: this,
         name: name,
         expiryPolicy: expiryPolicy,
@@ -45,7 +45,7 @@ class DefaultCacheManager extends CacheManager {
         stats: stats);
     _caches[cache.name] = cache;
 
-    return cache;
+    return store.create(cache.name).then((_) => cache);
   }
 
   @override

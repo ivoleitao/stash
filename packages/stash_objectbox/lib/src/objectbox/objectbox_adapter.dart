@@ -40,28 +40,35 @@ class ObjectboxAdapter {
     return Directory(p.join(path, name));
   }
 
-  /// Returns the [Store] or opens a new store it under the base path
+  /// Creates a store
+  ///
+  /// * [name]: The store name
+  Future<void> create(String name) {
+    if (!_stores.containsKey(name)) {
+      return _directory(name).create().then((dir) {
+        final store = Store(getObjectBoxModel(),
+            directory: dir.path,
+            maxDBSizeInKB: maxDBSizeInKB,
+            fileMode: fileMode,
+            maxReaders: maxReaders,
+            queriesCaseSensitiveDefault: queriesCaseSensitiveDefault ?? true);
+
+        _stores[name] = store;
+
+        return Future.value();
+      });
+    }
+
+    return Future.value();
+  }
+
+  /// Returns the [Store]
   ///
   /// * [name]: The name of the store
   ///
   /// Returns the [Store] of the store
-  Future<Store> _store(String name) {
-    if (_stores.containsKey(name)) {
-      return Future.value(_stores[name]);
-    }
-
-    return _directory(name).create().then((dir) {
-      final store = Store(getObjectBoxModel(),
-          directory: dir.path,
-          maxDBSizeInKB: maxDBSizeInKB,
-          fileMode: fileMode,
-          maxReaders: maxReaders,
-          queriesCaseSensitiveDefault: queriesCaseSensitiveDefault ?? true);
-
-      _stores[name] = store;
-
-      return Future.value(store);
-    });
+  Store? _store(String name) {
+    return _stores[name];
   }
 
   /// Returns the [Box]
@@ -69,17 +76,18 @@ class ObjectboxAdapter {
   /// * [name]: The name of the store
   ///
   /// Returns the [Box]
-  Future<Box<O>> box<O>(String name) {
-    return _store(name).then((store) => store.box<O>());
+  Box<O>? box<O>(String name) {
+    return _store(name)?.box<O>();
   }
 
-  /// Deletes a named store or the store itself if is
-  /// stored individually
+  /// Deletes a named store
   ///
   /// * [name]: The store name
   Future<void> _deleteStore(String name) {
-    if (_stores.containsKey(name)) {
-      _stores[name]?.close();
+    final store = _stores[name];
+
+    if (store != null) {
+      store.close();
       return _directory(name)
           .delete(recursive: true)
           .then((_) => _stores.remove(name));
@@ -88,16 +96,14 @@ class ObjectboxAdapter {
     return Future.value();
   }
 
-  /// Deletes a named store or the store itself if is
-  /// stored individually
+  /// Deletes a named store
   ///
   /// * [name]: The store name
   Future<void> delete(String name) {
     return _deleteStore(name);
   }
 
-  /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named stores in one storage, or stores(s) if multiple storages are used
+  /// Deletes all the stores
   Future<void> deleteAll() {
     return Future.wait(_stores.keys.map((name) {
       return _deleteStore(name);

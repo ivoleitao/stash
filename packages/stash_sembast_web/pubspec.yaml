@@ -1,5 +1,5 @@
 name: stash_sembast_web
-version: 4.0.2
+version: 4.1.0
 publish_to: none
 description: >-
   Sembast Web storage extension for the stash API. Provides support to store vaults 

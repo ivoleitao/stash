@@ -68,7 +68,7 @@ SembastVaultStore newSembastLocalVaultStore(
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
   return SembastVaultStore(
-      SembastPathAdapter(path ?? 'stash_sembast.db',
+      SembastLocalAdapter(path ?? 'stash_sembast.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
@@ -92,7 +92,7 @@ SembastCacheStore newSembastLocalCacheStore(
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
   return SembastCacheStore(
-      SembastPathAdapter(path ?? 'stash_sembast.db',
+      SembastLocalAdapter(path ?? 'stash_sembast.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,

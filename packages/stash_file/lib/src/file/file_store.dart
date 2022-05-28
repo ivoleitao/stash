@@ -27,8 +27,8 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   /// object stored
   final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
-  /// List of store directories per store name
-  final Map<String, Directory> _storeDirectoryMap = {};
+  /// Map of directories
+  final Map<String, Directory> _directories = {};
 
   /// Builds a [FileStore].
   /// * [_fs]: The [FileSystem]
@@ -42,73 +42,83 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
       : _codec = codec ?? const MsgpackCodec(),
         _fromEncodable = fromEncodable;
 
-  /// Returns the [Directory] where a store is stored or creates it under the base path
-  ///
-  /// * [name]: The name of the store
-  ///
-  /// Returns the [Directory] where the store is stored
-  Future<Directory> _storeDirectory(String name) {
-    if (_storeDirectoryMap.containsKey(name)) {
-      return Future.value(_storeDirectoryMap[name]);
-    } else {
+  @override
+  Future<void> create(String name) {
+    if (!_directories.containsKey(name)) {
       return _fs
           .directory(p.join(_path, name))
           .create(recursive: true)
-          .then((storeDirectory) {
-        _storeDirectoryMap[name] = storeDirectory;
-
-        return storeDirectory;
+          .then((directory) {
+        _directories[name] = directory;
       });
     }
+
+    return Future.value();
   }
 
-  /// Returns the store [File]
+  /// Returns the [Directory] or creates it under the base path
   ///
-  /// * [name]: The name of the store
-  /// * [key]: The named store key
+  /// * [name]: The name of the partition
   ///
-  /// Returns the [File] that stores the named store key
-  File _storeFile(String name, String key) {
+  /// Returns the partition [Directory]
+  Directory? _directory(String name) {
+    return _directories[name];
+  }
+
+  /// Returns a partition [File] identified by key
+  ///
+  /// * [name]: The name of the partition
+  /// * [key]: The key
+  ///
+  /// Returns the [File] that stores the partition key
+  File _partitionFile(String name, String key) {
     return _fs.file(p.join(_path, name, key));
   }
 
-  /// Returns the [File] that stores a store key under the provided directory
+  /// Returns the partition [File] under the provided directory
   ///
-  /// * [storeDirectory]: The store [Directory]
-  /// * [key]: The store key
+  /// * [directory]: The partition [Directory]
+  /// * [key]: The key
   ///
-  /// Returns the [File] that stores the store key under the provided directory
-  File _storeDirectoryFile(Directory storeDirectory, String key) {
-    return _fs.file(p.join(storeDirectory.path, key));
+  /// Returns the partition [File] that under provided directory
+  File _directoryFile(Directory directory, String key) {
+    return _fs.file(p.join(directory.path, key));
   }
 
-  /// Returns the full list of store files under a named directory
+  /// Returns the full list of files in a partition
   ///
-  /// * [name]: The name of the store
-  /// * [convert]: Converts the store file to the requested value
-  /// * [predicate]: Predicate that filters the returned store files
+  /// * [name]: The name of the partition
+  /// * [convert]: Converts the file to the requested value
+  /// * [predicate]: Predicate that filters the returned files
   ///
-  /// Returns a list of store files filtered and converted according with the provided parameters
-  Future<List<T>> _storeFiles<T>(
+  /// Returns a list of files filtered and converted according with the
+  /// provided parameters
+  Future<List<T>> _partitionFiles<T>(
       String name, FutureOr<T> Function(File) convert,
       {bool Function(FileSystemEntity fse)? predicate}) {
     final filter = predicate ?? ((fse) => true);
-    return _storeDirectory(name).then((storeDirectory) => storeDirectory
-        .list()
-        .asyncWhere((fse) => fse.stat().then((FileStat stat) =>
-            stat.type == FileSystemEntityType.file && filter(fse)))
-        .cast<File>()
-        .asyncMap(convert)
-        .toList());
+    final partitionDirectory = _directory(name);
+
+    if (partitionDirectory != null) {
+      return partitionDirectory
+          .list()
+          .asyncWhere((fse) => fse.stat().then((FileStat stat) =>
+              stat.type == FileSystemEntityType.file && filter(fse)))
+          .cast<File>()
+          .asyncMap(convert)
+          .toList();
+    }
+
+    return Future.value(<T>[]);
   }
 
-  /// Returns a list of the named store
+  /// Returns a list of keys in the partition
   ///
-  /// * [name]: The name of the store
+  /// * [name]: The name of the partition
   ///
-  /// Returns the list of keys of the provided store
+  /// Returns the list of keys in the partition
   Future<Iterable<String>> _getKeys(String name) =>
-      _storeFiles(name, (fse) => p.basename(fse.path));
+      _partitionFiles(name, (fse) => p.basename(fse.path));
 
   @override
   Future<int> size(String name) => _getKeys(name).then((it) => it.length);
@@ -117,26 +127,27 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
   @override
-  Future<Iterable<I>> infos(String name) => _storeFiles(
+  Future<Iterable<I>> infos(String name) => _partitionFiles(
       name, (FileSystemEntity fse) => _readFileInfo(_fs.file(fse.path)));
 
   @override
-  Future<Iterable<E>> values(String name) => _storeFiles(
+  Future<Iterable<E>> values(String name) => _partitionFiles(
       name, (FileSystemEntity fse) => _readFileEntry(_fs.file(fse.path)));
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) =>
-      _storeFiles(name, (FileSystemEntity fse) => _getInfo(_fs.file(fse.path)),
+      _partitionFiles(
+          name, (FileSystemEntity fse) => _getInfo(_fs.file(fse.path)),
           predicate: (fse) => keys.contains(p.basename(fse.path)));
 
   @override
   Future<void> clear(String name) {
-    return _storeFiles(name, (FileSystemEntity fse) => fse.delete());
+    return _partitionFiles(name, (FileSystemEntity fse) => fse.delete());
   }
 
   @override
   Future<bool> containsKey(String name, String key) {
-    return _storeFile(name, key).exists();
+    return _partitionFile(name, key).exists();
   }
 
   /// The size of the [Info] header
@@ -145,8 +156,8 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Creates a [Info] from the provided byte list
   ///
-  /// * [key]: The store key
-  /// * [bytes]: A [Uint8List] with the store value
+  /// * [key]: The partition key
+  /// * [bytes]: A [Uint8List] with the partition value
   ///
   /// Returns a [Info]
   @protected
@@ -174,7 +185,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Creates a [Info] from the provided [File]
   ///
-  /// * [file]: The store [File]
+  /// * [file]: The partition [File]
   /// * [checkFile]: If the existence of the file should be checked, defaults to false
   ///
   /// Returns a [Info]
@@ -187,10 +198,10 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<I?> getInfo(String name, String key) {
-    return _getInfo(_storeFile(name, key), checkFile: true);
+    return _getInfo(_partitionFile(name, key), checkFile: true);
   }
 
-  /// Updates only the information of a store not the full store
+  /// Updates only the information of a entry not the full entry
   ///
   /// * [info]: The [Info] to write
   /// * [writer]: An optional instance of the [BytesWriter] in case it was already instanciated.
@@ -201,7 +212,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    return _storeFile(name, key).open(mode: FileMode.append).then((raf) {
+    return _partitionFile(name, key).open(mode: FileMode.append).then((raf) {
       final pre = lock
           ? (RandomAccessFile f) => f.lock(FileLock.blockingExclusive)
           : (RandomAccessFile f) => Future.value(f);
@@ -218,7 +229,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Reads a [Entry] from a [Uint8List]
   ///
-  /// * [key]: The store key
+  /// * [key]: The partition key
   /// * [bytes]: The list of bytes from where the [Entry] should be read
   ///
   /// Returns a [Entry]
@@ -226,7 +237,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Reads a [Entry] from the provided [File]
   ///
-  /// * [file]: The store [File]
+  /// * [file]: The partition [File]
   ///
   /// Returns a [Entry]
   Future<E> _readFileEntry(File file) {
@@ -251,7 +262,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Gets a [Entry] from the provided [File]
   ///
-  /// * [file]: The store [File]
+  /// * [file]: The partition [File]
   /// * [checkFile]: If the existence of the [File] should be checked
   ///
   /// Returns a [Entry]
@@ -264,12 +275,12 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<E?> getEntry(String name, String key) {
-    return _getEntry(_storeFile(name, key), checkFile: true);
+    return _getEntry(_partitionFile(name, key), checkFile: true);
   }
 
   /// Writes a value to a optionally provided [BytesWriter] or creates a new one
   ///
-  /// * [value]: The value to write to the store
+  /// * [value]: The value to write to the partition
   /// * [writer]: The optionally provided [BytesWriter]
   ///
   /// Returns the provided [BytesWriter] or a new one after writing [value] into it
@@ -302,27 +313,34 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    return _storeDirectory(name).then((storeDirectory) {
-      return _putFileEntry(_storeDirectoryFile(storeDirectory, key), entry);
-    });
-  }
+    final directory = _directory(name);
 
-  @override
-  Future<void> remove(String name, String key) {
-    if (_storeDirectoryMap.containsKey(name)) {
-      return _storeFile(name, key).delete();
+    if (directory != null) {
+      return _putFileEntry(_directoryFile(directory, key), entry);
     }
 
     return Future.value();
   }
 
-  Future<void> _deleteStore(String name) {
-    if (_storeDirectoryMap.containsKey(name)) {
-      final storeDirectory = _storeDirectoryMap[name]!;
+  @override
+  Future<void> remove(String name, String key) {
+    if (_directories.containsKey(name)) {
+      return _partitionFile(name, key).delete();
+    }
 
-      return storeDirectory
+    return Future.value();
+  }
+
+  /// Deletes a partition
+  ///
+  /// [name]: The partition name
+  Future<void> _deletepartition(String name) {
+    if (_directories.containsKey(name)) {
+      final partitionDirectory = _directories[name]!;
+
+      return partitionDirectory
           .delete(recursive: true)
-          .then((_) => _storeDirectoryMap.remove(name));
+          .then((_) => _directories.remove(name));
     }
 
     return Future.value();
@@ -330,13 +348,13 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<void> delete(String name) {
-    return _deleteStore(name);
+    return _deletepartition(name);
   }
 
   @override
   Future<void> deleteAll() {
-    return Future.wait(_storeDirectoryMap.keys.map((name) {
-      return _deleteStore(name);
+    return Future.wait(_directories.keys.map((name) {
+      return _deletepartition(name);
     }));
   }
 }

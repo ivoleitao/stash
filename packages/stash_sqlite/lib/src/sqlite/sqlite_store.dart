@@ -10,7 +10,7 @@ class SqliteStore<I extends Info, E extends Entry<I>> implements Store<I, E> {
   /// The adapter
   final SqliteAdapter<I, E> _adapter;
 
-  /// The cache codec to use
+  /// The codec to use
   final StoreCodec _codec;
 
   /// The function that converts between the Map representation to the
@@ -27,6 +27,11 @@ class SqliteStore<I extends Info, E extends Entry<I>> implements Store<I, E> {
       dynamic Function(Map<String, dynamic>)? fromEncodable})
       : _codec = codec ?? MsgpackCodec(),
         _fromEncodable = fromEncodable;
+
+  @override
+  Future<void> create(String name) {
+    return _adapter.create(name);
+  }
 
   @override
   Future<int> size(String name) => _adapter.dao.count(name);

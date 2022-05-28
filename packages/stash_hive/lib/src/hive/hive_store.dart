@@ -23,11 +23,16 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
       : _fromEncodable = fromEncodable;
 
   @override
+  Future<void> create(String name) {
+    return _adapter.create(name);
+  }
+
+  @override
   Future<int> size(String name) =>
-      _adapter.store(name).then((store) => store.length);
+      Future.value(_adapter.box(name)?.length ?? 0);
 
   Future<Iterable<String>> _getKeys(String name) {
-    return _adapter.store(name).then((store) => store.keys.cast<String>());
+    return Future.value((_adapter.box(name)?.keys ?? const []).cast<String>());
   }
 
   @override
@@ -43,38 +48,43 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   /// Gets a [Entry] from the provided [LazyBox]
   ///
-  /// * [store]: The Hive box
-  /// * [key]: The cache key
+  /// * [slot]: The box
+  /// * [key]: The key
   ///
   /// Returns a [Entry]
-  Future<E?> _getEntryFromStore(T store, String key) =>
-      _adapter.boxValue(store, key).then((value) =>
+  Future<E?> _boxEntry(T slot, String key) =>
+      _adapter.boxValue(slot, key).then((value) =>
           value != null ? _readEntry(value.cast<String, dynamic>()) : null);
 
-  /// Returns the [Entry] for the named cache value specified [key].
+  /// Returns the box [Entry] for the specified [key].
   ///
-  /// * [name]: The cache name
-  /// * [key]: The cache key
+  /// * [name]: The box name
+  /// * [key]: The key
   ///
   /// Returns a [Entry]
   Future<E?> _getEntry(String name, String key) {
-    return _adapter.store(name).then((store) => _getEntryFromStore(store, key));
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return _boxEntry(box, key);
+    }
+
+    return Future<E?>.value();
   }
 
-  /// Returns the [Info] for the named cache value specified [key].
+  /// Returns the box [Info] for the specified [key].
   ///
-  /// * [name]: The cache name
-  /// * [key]: The cache key
+  /// * [slot]: The box name
+  /// * [key]: The key
   ///
   /// Returns a [Info]
   Future<I?> _getInfo(String name, String key) {
     return _getEntry(name, key).then((entry) => entry?.info);
   }
 
-  /// Returns a [Iterable] over all the [Store] [Info]s keys requested
-  /// of a named cache.
+  /// Returns a [Iterable] over all the [Info]s for the keys requested
   ///
-  /// * [name]: The cache name
+  /// * [name]: The box name
   /// * [keys]: The list of keys
   ///
   /// Return a list of [CacheInfo]s
@@ -89,12 +99,11 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
       .then((keys) => _getInfos(name, keys))
       .then((infos) => infos.map((info) => info!));
 
-  /// Returns a [Iterable] over all the [Store] [Entry]s
-  /// of a named cache.
+  /// Returns a [Iterable] over all the box [Entry]s
   ///
-  /// * [name]: The cache name
+  /// * [name]: The box name
   ///
-  /// Return a list of [CacheEntry]s
+  /// Return a list of [Entry]s
   Future<Iterable<E>> _getValues(String name) {
     return _getKeys(name).then((keys) => Stream.fromIterable(keys)
         .asyncMap((key) => _getEntry(name, key))
@@ -107,7 +116,7 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<bool> containsKey(String name, String key) =>
-      _adapter.store(name).then((store) => store.containsKey(key));
+      Future.value(_adapter.box(name)?.containsKey(key) ?? false);
 
   @override
   Future<I?> getInfo(String name, String key) {
@@ -149,16 +158,20 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    return _adapter.store(name).then((store) {
-      return _getEntryFromStore(store, key).then((entry) {
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return _boxEntry(box, key).then((entry) {
         if (entry != null) {
           entry.updateInfo(info);
-          return store.put(key, _writeEntry(entry));
+          return box.put(key, _writeEntry(entry));
         }
 
         return Future<void>.value();
       });
-    });
+    }
+
+    return Future.value();
   }
 
   @override
@@ -168,19 +181,35 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    return _adapter
-        .store(name)
-        .then((store) => store.put(key, _writeEntry(entry)));
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return box.put(key, _writeEntry(entry));
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> remove(String name, String key) {
-    return _adapter.store(name).then((store) => store.delete(key));
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return box.delete(key);
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> clear(String name) {
-    return _adapter.store(name).then((store) => store.clear());
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return box.clear().then((value) => null);
+    }
+
+    return Future.value();
   }
 
   @override

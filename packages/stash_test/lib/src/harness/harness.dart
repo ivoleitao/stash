@@ -296,7 +296,8 @@ void check<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
 /// * [eventListenerMode]: The event listener mode of this vault
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
-Vault<V> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
+Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
+    T store,
     {String? name,
     Clock? clock,
     EventListenerMode? eventListenerMode,
@@ -323,7 +324,8 @@ Vault<V> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(T store,
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
-Cache<V> newGenericCache<V, T extends Store<CacheInfo, CacheEntry>>(T store,
+Future<Cache<V>> newGenericCache<V, T extends Store<CacheInfo, CacheEntry>>(
+    T store,
     {String? name,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
@@ -570,7 +572,7 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
-  Vault<V> newVault<V>(T store,
+  Future<Vault<V>> newVault<V>(T store,
       {String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
@@ -623,7 +625,7 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
-  Cache<V> newCache<V>(T store,
+  Future<Cache<V>> newCache<V>(T store,
       {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,

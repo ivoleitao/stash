@@ -32,6 +32,11 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
       : _codec = codec ?? const MsgpackCodec(),
         _fromEncodable = fromEncodable;
 
+  @override
+  Future<void> create(String name) {
+    return _adapter.create(name);
+  }
+
   @protected
   O _toEntity(E entry);
 
@@ -40,74 +45,117 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
 
   @override
   Future<int> size(String name) =>
-      _adapter.box<O>(name).then((box) => box.count());
+      Future.value(_adapter.box<O>(name)?.count() ?? 0);
 
-  @override
-  Future<Iterable<String>> keys(String name) => _adapter
-      .box<O>(name)
-      .then((box) => box.getAll().map((entity) => entity.key).toList());
-
-  @override
-  Future<Iterable<I>> infos(String name) => _adapter.box<O>(name).then(
-      (box) => box.getAll().map((entity) => _toEntry(entity)!.info).toList());
-
-  @override
-  Future<Iterable<E>> values(String name) => _adapter
-      .box<O>(name)
-      .then((box) => box.getAll().map((entity) => _toEntry(entity)!).toList());
-
-  @override
-  Future<bool> containsKey(String name, String key) =>
-      _adapter.box<O>(name).then((box) => box.contains(key.hashCode));
-
-  @override
-  Future<I?> getInfo(String name, String key) {
-    return _adapter
-        .box<O>(name)
-        .then((box) => _toEntry(box.get(key.hashCode))?.info);
+  /// Returns all the entries on store
+  ///
+  /// * [name]: The store name
+  List<O> _getEntries(String name) {
+    return _adapter.box<O>(name)?.getAll() ?? <O>[];
   }
 
   @override
-  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) =>
-      _adapter.box<O>(name).then((box) => box
+  Future<Iterable<String>> keys(String name) =>
+      Future.value(_getEntries(name).map((entity) => entity.key).toList());
+
+  @override
+  Future<Iterable<I>> infos(String name) => Future.value(
+      _getEntries(name).map((entity) => _toEntry(entity)!.info).toList());
+
+  @override
+  Future<Iterable<E>> values(String name) =>
+      Future.value((_adapter.box<O>(name)?.getAll() ?? [])
+          .map((entity) => _toEntry(entity)!)
+          .toList());
+
+  @override
+  Future<bool> containsKey(String name, String key) =>
+      Future.value(_adapter.box<O>(name)?.contains(key.hashCode) ?? false);
+
+  @override
+  Future<I?> getInfo(String name, String key) {
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      return Future.value(_toEntry(box.get(key.hashCode))?.info);
+    }
+
+    return Future.value();
+  }
+
+  @override
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      return Future.value(box
           .getMany(keys.map((key) => key.hashCode).toList())
           .map((entity) => _toEntry(entity)?.info)
           .toList());
+    }
+
+    return Future.value(<I?>[]);
+  }
 
   @protected
   void _writeInfo(O entity, I info);
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    return _adapter.box<O>(name).then((box) {
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
       final entity = box.get(key.hashCode);
       if (entity != null) {
         _writeInfo(entity, info);
         box.put(entity, mode: PutMode.update);
       }
-    });
+    }
+
+    return Future.value();
   }
 
   @override
   Future<E?> getEntry(String name, String key) {
-    return _adapter.box<O>(name).then((box) => _toEntry(box.get(key.hashCode)));
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      return Future.value(_toEntry(box.get(key.hashCode)));
+    }
+
+    return Future<E?>.value();
   }
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    return _adapter
-        .box<O>(name)
-        .then((box) => box.put(_toEntity(entry), mode: PutMode.put));
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      box.put(_toEntity(entry), mode: PutMode.put);
+    }
+    return Future.value();
   }
 
   @override
   Future<void> remove(String name, String key) {
-    return _adapter.box<O>(name).then((box) => box.remove(key.hashCode));
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      box.remove(key.hashCode);
+    }
+
+    return Future.value();
   }
 
   @override
   Future<void> clear(String name) {
-    return _adapter.box<O>(name).then((box) => box.removeAll());
+    final box = _adapter.box<O>(name);
+
+    if (box != null) {
+      box.removeAll();
+    }
+
+    return Future.value();
   }
 
   @override

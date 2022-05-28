@@ -16,13 +16,13 @@ class DefaultVaultManager extends VaultManager {
   Iterable<String> get names => _vaults.keys;
 
   @override
-  Vault<T> newGenericVault<T>(Store<VaultInfo, VaultEntry> storage,
+  Future<Vault<T>> newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
-    final vault = GenericVault<T>(storage,
+    final vault = GenericVault<T>(store,
         manager: this,
         name: name,
         clock: clock,
@@ -31,7 +31,7 @@ class DefaultVaultManager extends VaultManager {
         stats: stats);
     _vaults[vault.name] = vault;
 
-    return vault;
+    return store.create(vault.name).then((_) => vault);
   }
 
   @override

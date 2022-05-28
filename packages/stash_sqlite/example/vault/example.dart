@@ -37,7 +37,7 @@ void main() async {
       file: file, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store
-  final vault = store.vault<Task>(
+  final vault = await store.vault<Task>(
       name: 'vault', eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the vault'));

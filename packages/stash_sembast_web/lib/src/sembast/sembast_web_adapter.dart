@@ -7,7 +7,7 @@ class SembastWebAdapter extends SembastAdapter {
 
   /// Builds a [SembastWebAdapter].
   ///
-  /// * [name]: The name of the database
+  /// * [name]: The database name
   /// * [version]: The expected version
   /// * [onVersionChanged]:  If [version] not null and if the existing version is different, onVersionChanged is called
   /// * [mode]: The database mode

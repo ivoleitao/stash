@@ -1,6 +1,7 @@
-# 4.0.2
+# 4.1.0
 
 - BREAKING CHANGE: Changed minimum sdk version
+- BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - feat: Updated dependencies
 - fix: Concurrency problem on the creation / removal of stores
 

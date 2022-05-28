@@ -17,7 +17,7 @@ abstract class VaultManager {
 
   /// Builds a new Vault
   ///
-  /// * [storage]: The [Store] that will back this [Vault]
+  /// * [store]: The [Store] that will back this [Vault]
   /// * [name]: The name of the vault
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [eventListenerMode]: The event listener mode of this vault
@@ -25,7 +25,7 @@ abstract class VaultManager {
   /// * [stats]: The statistics instance
   ///
   /// Returns a new [GenericVault]
-  Vault<T> newGenericVault<T>(Store<VaultInfo, VaultEntry> storage,
+  Future<Vault<T>> newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {String? name,
       Clock? clock,
       EventListenerMode? eventListenerMode,

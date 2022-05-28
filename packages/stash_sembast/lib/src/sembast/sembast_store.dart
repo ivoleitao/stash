@@ -25,6 +25,11 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
       : _fromEncodable = fromEncodable;
 
   @override
+  Future<void> create(String name) {
+    return _adapter.create(name);
+  }
+
+  @override
   Future<int> size(String name) => _adapter.count(name);
 
   @override
@@ -56,28 +61,28 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
     return _getEntryFromValue(value)?.info;
   }
 
-  /// Calls the [CacheDao] and retries a [Entry] by key
+  /// Gets an [Entry] by key
   ///
-  /// * [name]: The cache name
-  /// * [key]: The cache key
+  /// * [name]: The store name
+  /// * [key]: The key
   ///
   ///  Returns the corresponding [Entry]
   Future<E?> _getEntryFromStore(String name, String key) =>
       _adapter.getByKey(name, key).then(_getEntryFromValue);
 
-  /// Returns the [Entry] for the named cache value specified [key].
+  /// Returns the [Entry] for the named value specified [key].
   ///
-  /// * [name]: The cache name
-  /// * [key]: The cache key
+  /// * [name]: The store name
+  /// * [key]: The key
   ///
   /// Returns a [Entry]
   Future<E?> _getEntry(String name, String key) {
     return _getEntryFromStore(name, key);
   }
 
-  /// Gets the list of all the records by cache name
+  /// Gets the list of all the records by store name
   ///
-  /// * [name]: The name of the cache
+  /// * [name]: The store name
   ///
   ///  Returns the list of [RecordSnapshot]'s by cache name
   Future<List<RecordSnapshot<String, Map<String, dynamic>>>> _getRecords(
@@ -114,8 +119,9 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
         records.map((record) => _getEntryFromValue(record)?.info).toList());
   }
 
-  /// Checks if the [value] is one of the base datatypes supported by Sembast either returning that value if it is or
-  /// invoking toJson to transform it in a supported value
+  /// Checks if the [value] is one of the base datatypes supported by Sembast
+  /// either returning that value if it is or invoking toJson to transform it
+  /// in a supported value
   ///
   /// * [value]: the value to convert
   @protected

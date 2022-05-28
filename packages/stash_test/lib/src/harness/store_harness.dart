@@ -41,6 +41,16 @@ const _storeTests = {
   StoreTest.infos
 };
 
+/// Creates a new store
+///
+/// * [ctx]: The test context
+Future<T> newStore<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
+    TestContext<I, E, T> ctx) {
+  return ctx.newStore().then((store) {
+    return store.create(_defaultStore).then((_) => store);
+  });
+}
+
 /// Calls [Store.size] with a optional store name
 ///
 /// * [store]: The [Store]
@@ -196,7 +206,7 @@ Future<void> _delete<I extends Info, E extends Entry<I>>(Store<I, E> store,
 Future<T>
     _storeAddEntry<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
         TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry = await _putGetEntry(store, ctx, 1);
   final hasEntry = await _containsKey(store, entry.key);
@@ -212,7 +222,7 @@ Future<T>
 /// Return the created store
 Future<T> _storeAddGetEntry<I extends Info, E extends Entry<I>,
     T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   final entry2 = await _getEntry(store, entry1.key);
@@ -229,7 +239,7 @@ Future<T> _storeAddGetEntry<I extends Info, E extends Entry<I>,
 /// Return the created store
 Future<T> _storeRemoveEntry<I extends Info, E extends Entry<I>,
     T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   var hasEntry = await _containsKey(store, entry1.key);
@@ -249,7 +259,7 @@ Future<T> _storeRemoveEntry<I extends Info, E extends Entry<I>,
 /// Return the created store
 Future<T> _storeSize<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
     TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   var size = await _size(store);
   check(ctx, size, 0, '_storeSize_1');
@@ -283,21 +293,27 @@ Future<T>
         TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
-  await _putGetEntry(store, ctx, 1, name: 'entry1');
-  await _putGetEntry(store, ctx, 2, name: 'entry1');
-  var size = await _size(store, name: 'entry1');
+  final partition1 = 'partition1';
+  await store.create(partition1);
+
+  await _putGetEntry(store, ctx, 1, name: partition1);
+  await _putGetEntry(store, ctx, 2, name: partition1);
+  var size = await _size(store, name: partition1);
   check(ctx, size, 2, '_storeClear_1');
 
-  await _putGetEntry(store, ctx, 1, name: 'entry2');
-  await _putGetEntry(store, ctx, 2, name: 'entry2');
-  size = await _size(store, name: 'entry2');
+  final partition2 = 'partition2';
+  await store.create(partition2);
+
+  await _putGetEntry(store, ctx, 1, name: partition2);
+  await _putGetEntry(store, ctx, 2, name: partition2);
+  size = await _size(store, name: partition2);
   check(ctx, size, 2, '_storeClear_2');
 
-  await _clear(store, name: 'entry1');
-  size = await _size(store, name: 'entry1');
+  await _clear(store, name: partition1);
+  size = await _size(store, name: partition1);
   check(ctx, size, 0, '_storeClear_3');
 
-  size = await _size(store, name: 'entry2');
+  size = await _size(store, name: partition2);
   check(ctx, size, 2, '_storeClear_4');
 
   return store;
@@ -313,21 +329,27 @@ Future<T>
         TestContext<I, E, T> ctx) async {
   final store = await ctx.newStore();
 
-  await _putGetEntry(store, ctx, 1, name: 'entry1');
-  await _putGetEntry(store, ctx, 2, name: 'entry1');
-  var size = await _size(store, name: 'entry1');
+  final partition1 = 'partition1';
+  await store.create(partition1);
+
+  await _putGetEntry(store, ctx, 1, name: partition1);
+  await _putGetEntry(store, ctx, 2, name: partition1);
+  var size = await _size(store, name: partition1);
   check(ctx, size, 2, '_storeDelete_1');
 
-  await _putGetEntry(store, ctx, 1, name: 'entry2');
-  await _putGetEntry(store, ctx, 2, name: 'entry2');
-  size = await _size(store, name: 'entry2');
+  final partition2 = 'partition2';
+  await store.create(partition2);
+
+  await _putGetEntry(store, ctx, 1, name: partition2);
+  await _putGetEntry(store, ctx, 2, name: partition2);
+  size = await _size(store, name: partition2);
   check(ctx, size, 2, '_storeDelete_2');
 
-  await _delete(store, name: 'entry1');
-  size = await _size(store, name: 'entry1');
+  await _delete(store, name: partition1);
+  size = await _size(store, name: partition1);
   check(ctx, size, 0, '_storeDelete_3');
 
-  size = await _size(store, name: 'entry2');
+  size = await _size(store, name: partition2);
   check(ctx, size, 2, '_storeDelete_4');
 
   return store;
@@ -341,7 +363,7 @@ Future<T>
 Future<T>
     _storeGetInfo<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
         TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry = await _putGetEntry(store, ctx, 1);
   final info = await _getInfo(store, entry.key);
@@ -362,7 +384,7 @@ Future<T>
 /// Return the created store
 Future<T> _storeChangeEntry<I extends Info, E extends Entry<I>,
     T extends Store<I, E>>(TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
 
@@ -390,7 +412,7 @@ Future<T> _storeChangeEntry<I extends Info, E extends Entry<I>,
 /// Return the created store
 Future<T> _storeKeys<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
     TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   final entry2 = await _putGetEntry(store, ctx, 2);
@@ -409,7 +431,7 @@ Future<T> _storeKeys<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
 Future<T>
     _storeValues<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
         TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   final entry2 = await _putGetEntry(store, ctx, 2);
@@ -428,7 +450,7 @@ Future<T>
 Future<T>
     _storeInfos<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
         TestContext<I, E, T> ctx) async {
-  final store = await ctx.newStore();
+  final store = await newStore(ctx);
 
   final entry1 = await _putGetEntry(store, ctx, 1);
   final entry2 = await _putGetEntry(store, ctx, 2);
@@ -472,7 +494,7 @@ Future<void>
     testStoreWith<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
         TestContext<I, E, T> ctx,
         {Set<StoreTest> tests = _storeTests}) async {
-  for (var test in _getTests<I, E, T>()) {
+  for (var test in _getTests<I, E, T>(tests: tests)) {
     await test(ctx).then(ctx.deleteStore);
   }
 }

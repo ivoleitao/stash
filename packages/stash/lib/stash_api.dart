@@ -97,7 +97,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Vault] backed by a [Store]
-  Vault<T> _newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
+  Future<Vault<T>> _newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {VaultManager? manager,
       String? name,
       EventListenerMode? eventListenerMode,
@@ -119,7 +119,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Vault] backed by a [Store]
-  Vault<T> vault<T>(
+  Future<Vault<T>> vault<T>(
       {VaultManager? manager,
       String? name,
       EventListenerMode? eventListenerMode,
@@ -150,7 +150,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
-  Cache<T> _newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
+  Future<Cache<T>> _newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {CacheManager? manager,
       String? name,
       KeySampler? sampler,
@@ -187,7 +187,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [stats]: The statistics instance
   ///
   /// Returns a [Cache] backed by a [Store]
-  Cache<T> cache<T>(
+  Future<Cache<T>> cache<T>(
       {CacheManager? manager,
       String? name,
       KeySampler? sampler,

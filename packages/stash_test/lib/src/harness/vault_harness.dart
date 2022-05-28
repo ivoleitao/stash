@@ -65,7 +65,7 @@ const _vaultTests = {
 Future<T> _vaultName<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newVault(store, name: 'test');
+  final cache = await ctx.newVault(store, name: 'test');
 
   check(ctx, cache.name, isNotNull, '_vaultName_1');
   check(ctx, cache.name, 'test', '_vaultName_2');
@@ -81,7 +81,7 @@ Future<T> _vaultName<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
@@ -99,7 +99,7 @@ Future<T> _vaultPut<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutRemove<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   var size = await vault.size;
@@ -120,7 +120,7 @@ Future<T> _vaultPutRemove<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultSize<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   var size = await vault.size;
@@ -157,7 +157,7 @@ Future<T> _vaultSize<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultContainsKey<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
@@ -177,7 +177,7 @@ Future<T> _vaultContainsKey<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultKeys<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key1 = 'key_1';
   await vault.put(key1, ctx.generator.nextValue(1));
@@ -204,7 +204,7 @@ Future<T> _vaultKeys<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutGet<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key1 = 'key_1';
   var value1 = await vault.get(key1);
@@ -240,7 +240,7 @@ Future<T> _vaultPutGet<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutGetOperator<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -261,7 +261,7 @@ Future<T> _vaultPutGetOperator<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutAllGetAll<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key1 = 'key_1';
   final key2 = 'key_2';
@@ -289,7 +289,7 @@ Future<T> _vaultPutAllGetAll<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   var value1 = ctx.generator.nextValue(1);
@@ -317,7 +317,7 @@ Future<T> _vaultPutPut<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultPutIfAbsent<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -346,7 +346,7 @@ Future<T> _vaultPutIfAbsent<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultGetAndPut<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -372,7 +372,7 @@ Future<T> _vaultGetAndPut<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultGetAndRemove<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -397,7 +397,7 @@ Future<T> _vaultGetAndRemove<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   await vault.put('key_2', ctx.generator.nextValue(2));
@@ -420,7 +420,7 @@ Future<T> _vaultClear<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultRemove<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   await vault.put('key_2', ctx.generator.nextValue(2));
@@ -447,7 +447,7 @@ Future<T> _vaultRemove<T extends Store<VaultInfo, VaultEntry>>(
 Future<T> _vaultRemoveAll<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final vault = ctx.newVault(store);
+  final vault = await ctx.newVault(store);
 
   await vault.put('key_1', ctx.generator.nextValue(1));
   await vault.put('key_2', ctx.generator.nextValue(2));
@@ -479,7 +479,7 @@ Future<T> _vaultCreatedEvent<T extends Store<VaultInfo, VaultEntry>>(
   final clock1 = Clock.fixed(now1);
   var clock = clock1;
   VaultEntryCreatedEvent? created;
-  final cache = ctx.newVault(store,
+  final cache = await ctx.newVault(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<VaultEntryCreatedEvent>().listen((event) => created = event);
@@ -515,7 +515,7 @@ Future<T> _vaultUpdatedEvent<T extends Store<VaultInfo, VaultEntry>>(
   var clock = clock1;
   VaultEntryCreatedEvent? created;
   VaultEntryUpdatedEvent? updated;
-  final cache = ctx.newVault(store,
+  final cache = await ctx.newVault(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<VaultEntryCreatedEvent>().listen((event) => created = event)
@@ -575,7 +575,7 @@ Future<T> _vaultRemovedEvent<T extends Store<VaultInfo, VaultEntry>>(
   var clock = clock1;
   VaultEntryCreatedEvent? created;
   VaultEntryRemovedEvent? removed;
-  final cache = ctx.newVault(store,
+  final cache = await ctx.newVault(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<VaultEntryCreatedEvent>().listen((event) => created = event)
@@ -622,7 +622,7 @@ Future<T> _vaultStats<T extends Store<VaultInfo, VaultEntry>>(
     systemTime = systemTime.add(Duration(milliseconds: 10));
     return systemTime;
   });
-  final vault = ctx.newVault(store, clock: clock, statsEnabled: true);
+  final vault = await ctx.newVault(store, clock: clock, statsEnabled: true);
 
   // Get a non existing entry
   final key1 = 'key_1';

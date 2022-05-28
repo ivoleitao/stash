@@ -35,7 +35,7 @@ void main() async {
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache = store.cache<Task>(
+  final cache = await store.cache<Task>(
       name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)

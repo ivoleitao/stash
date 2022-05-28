@@ -93,7 +93,7 @@ const _cacheTests = {
 Future<T> _cacheName<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store, name: 'test');
+  final cache = await ctx.newCache(store, name: 'test');
 
   check(ctx, cache.name, isNotNull, '_cacheName_1');
   check(ctx, cache.name, 'test', '_cacheName_2');
@@ -110,7 +110,7 @@ Future<T> _cachePut<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   StashEvent? created;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       eventListenerMode: EventListenerMode.synchronous)
     ..on().listen((event) => created = event);
 
@@ -132,7 +132,7 @@ Future<T> _cachePut<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutRemove<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   await cache.put('key_1', ctx.generator.nextValue(1));
   var size = await cache.size;
@@ -153,7 +153,7 @@ Future<T> _cachePutRemove<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheSize<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   await cache.put('key_1', ctx.generator.nextValue(1));
   var size = await cache.size;
@@ -190,7 +190,7 @@ Future<T> _cacheSize<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheContainsKey<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   final value = ctx.generator.nextValue(1);
@@ -210,7 +210,7 @@ Future<T> _cacheContainsKey<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheKeys<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key1 = 'key_1';
   await cache.put(key1, ctx.generator.nextValue(1));
@@ -237,7 +237,7 @@ Future<T> _cacheKeys<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutGet<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key1 = 'key_1';
   var value1 = await cache.get(key1);
@@ -274,7 +274,7 @@ Future<T> _cachePutGet<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutGetOperator<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -295,7 +295,7 @@ Future<T> _cachePutGetOperator<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutAllGetAll<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key1 = 'key_1';
   final key2 = 'key_2';
@@ -323,7 +323,7 @@ Future<T> _cachePutAllGetAll<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutPut<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   var value1 = ctx.generator.nextValue(1);
@@ -351,7 +351,7 @@ Future<T> _cachePutPut<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cachePutIfAbsent<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -380,7 +380,7 @@ Future<T> _cachePutIfAbsent<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheGetAndPut<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -406,7 +406,7 @@ Future<T> _cacheGetAndPut<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheGetAndRemove<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   final key = 'key_1';
   final value1 = ctx.generator.nextValue(1);
@@ -431,7 +431,7 @@ Future<T> _cacheGetAndRemove<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheClear<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   await cache.put('key_1', ctx.generator.nextValue(1));
   await cache.put('key_2', ctx.generator.nextValue(2));
@@ -454,7 +454,7 @@ Future<T> _cacheClear<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheRemove<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   await cache.put('key_1', ctx.generator.nextValue(1));
   await cache.put('key_2', ctx.generator.nextValue(2));
@@ -481,7 +481,7 @@ Future<T> _cacheRemove<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheRemoveAll<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store);
+  final cache = await ctx.newCache(store);
 
   await cache.put('key_1', ctx.generator.nextValue(1));
   await cache.put('key_2', ctx.generator.nextValue(2));
@@ -511,7 +511,7 @@ Future<T> _cacheCreatedExpiry<T extends Store<CacheInfo, CacheEntry>>(
   final store = await ctx.newStore();
   var now = Clock().now();
 
-  var cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const CreatedExpiryPolicy(Duration(minutes: 10)),
       clock: Clock(() => now));
 
@@ -538,7 +538,7 @@ Future<T> _cacheAccessedExpiry<T extends Store<CacheInfo, CacheEntry>>(
   final store = await ctx.newStore();
   var now = Clock().fromNow(seconds: 1);
 
-  var cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
@@ -565,7 +565,7 @@ Future<T> _cacheModifiedExpiry<T extends Store<CacheInfo, CacheEntry>>(
   final store = await ctx.newStore();
   var now = Clock().now();
 
-  final cache1 = ctx.newCache(store,
+  final cache1 = await ctx.newCache(store,
       expiryPolicy: const ModifiedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
@@ -578,7 +578,7 @@ Future<T> _cacheModifiedExpiry<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, present, isFalse, '_cacheModifiedExpiry_2');
 
   now = Clock().now();
-  final cache2 = ctx.newCache(store,
+  final cache2 = await ctx.newCache(store,
       expiryPolicy: const ModifiedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
@@ -612,7 +612,7 @@ Future<T> _cacheTouchedExpiry<T extends Store<CacheInfo, CacheEntry>>(
   var now = Clock().now();
 
   // The cache expires
-  final cache1 = ctx.newCache(store,
+  final cache1 = await ctx.newCache(store,
       expiryPolicy: const TouchedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
@@ -626,7 +626,7 @@ Future<T> _cacheTouchedExpiry<T extends Store<CacheInfo, CacheEntry>>(
 
   // Check if the update of the cache increases the expiry time
   now = Clock().now();
-  final cache2 = ctx.newCache(store,
+  final cache2 = await ctx.newCache(store,
       expiryPolicy: const TouchedExpiryPolicy(Duration(minutes: 1)),
       clock: Clock(() => now));
 
@@ -663,7 +663,7 @@ Future<T> _cacheEternalExpiry<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   var now = Clock().fromNow(seconds: 1);
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const EternalExpiryPolicy(), clock: Clock(() => now));
 
   await cache.put('key_1', ctx.generator.nextValue(1));
@@ -690,7 +690,7 @@ Future<T> _cacheLoader<T extends Store<CacheInfo, CacheEntry>>(
   final store = await ctx.newStore();
 
   final value2 = ctx.generator.nextValue(2);
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(seconds: 0)),
       cacheLoader: (key) => Future.value(value2),
       clock: Clock(() => now));
@@ -712,7 +712,7 @@ Future<T> _cacheLoader<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheFifoEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FifoEvictionPolicy());
 
   await cache.put('key_1', ctx.generator.nextValue(1));
@@ -739,7 +739,7 @@ Future<T> _cacheFifoEviction<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheFiloEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 2, evictionPolicy: const FiloEvictionPolicy());
 
   await cache.put('key_1', ctx.generator.nextValue(1));
@@ -767,7 +767,7 @@ Future<T> _cacheLruEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 3,
       evictionPolicy: const LruEvictionPolicy(),
       clock: Clock(() => now));
@@ -807,7 +807,7 @@ Future<T> _cacheMruEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 3,
       evictionPolicy: const MruEvictionPolicy(),
       clock: Clock(() => now));
@@ -842,7 +842,7 @@ Future<T> _cacheMruEviction<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheLfuEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 3, evictionPolicy: const LfuEvictionPolicy());
 
   await cache.put('key_1', ctx.generator.nextValue(1));
@@ -877,7 +877,7 @@ Future<T> _cacheLfuEviction<T extends Store<CacheInfo, CacheEntry>>(
 Future<T> _cacheMfuEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 3, evictionPolicy: const MfuEvictionPolicy());
 
   await cache.put('key_1', ctx.generator.nextValue(1));
@@ -913,7 +913,7 @@ Future<T> _cacheHyperbolicEviction<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContext<T> ctx) async {
   final store = await ctx.newStore();
   var now = Clock().now();
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 3,
       evictionPolicy: const HyperbolicEvictionPolicy(),
       clock: Clock(() => now));
@@ -957,7 +957,7 @@ Future<T> _cacheCreatedEvent<T extends Store<CacheInfo, CacheEntry>>(
   final expiryTime = clock1.fromNowBy(expireDuration);
   var clock = clock1;
   CacheEntryCreatedEvent? created;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<CacheEntryCreatedEvent>().listen((event) => created = event);
@@ -997,7 +997,7 @@ Future<T> _cacheUpdatedEvent<T extends Store<CacheInfo, CacheEntry>>(
   var clock = clock1;
   CacheEntryCreatedEvent? created;
   CacheEntryUpdatedEvent? updated;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<CacheEntryCreatedEvent>().listen((event) => created = event)
@@ -1065,7 +1065,7 @@ Future<T> _cacheRemovedEvent<T extends Store<CacheInfo, CacheEntry>>(
   var clock = clock1;
   CacheEntryCreatedEvent? created;
   CacheEntryRemovedEvent? removed;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
     ..on<CacheEntryCreatedEvent>().listen((event) => created = event)
@@ -1120,7 +1120,7 @@ Future<T> _cacheExpiredEvent<T extends Store<CacheInfo, CacheEntry>>(
   var clock = clock1;
   CacheEntryCreatedEvent? created;
   CacheEntryExpiredEvent? expired;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const CreatedExpiryPolicy(expireDuration),
       eventListenerMode: EventListenerMode.synchronous,
       clock: Clock(() => clock.now()))
@@ -1177,7 +1177,7 @@ Future<T> _cacheEvictedEvent<T extends Store<CacheInfo, CacheEntry>>(
   var clock = clock1;
   CacheEntryCreatedEvent? created;
   CacheEntryEvictedEvent? evicted;
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       maxEntries: 1,
       evictionPolicy: const FiloEvictionPolicy(),
       eventListenerMode: EventListenerMode.synchronous,
@@ -1232,7 +1232,7 @@ Future<T> _cacheStats<T extends Store<CacheInfo, CacheEntry>>(
     now = now.add(Duration(milliseconds: 10));
     return now;
   });
-  final cache = ctx.newCache(store,
+  final cache = await ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(minutes: 1)),
       maxEntries: 2,
       evictionPolicy: const FifoEvictionPolicy(),

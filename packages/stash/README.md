@@ -100,7 +100,7 @@ Then you can create as many vault's as you wish from this store. Let's create on
 
 ```dart
   // Creates a vault from the previously created store
-  final stringVault = store.vault<String>();
+  final stringVault = await store.vault<String>();
 
   // Adds a new value to the vault
   await stringVault.put('key1', 'value1');
@@ -110,7 +110,7 @@ Let's create a untyped vault and add two values to it
 
 ```dart
   // Creates a second vault from the previously created store
-  final anyVault = store.vault();
+  final anyVault = await store.vault();
 
     // Adds a string value to the vault
   await anyVault.put('key1', 'value1');
@@ -128,7 +128,7 @@ Now let's create a cache. In this case a new type of store is needed as the cach
   final store = newMemoryCacheStore();
 
   // Creates a cache with a max capacity of 10 from the previously created store
-  final cache = store.cache<String>(maxEntries: 10);
+  final cache = await store.cache<String>(maxEntries: 10);
 ```
 
 Then add a element to the cache:
@@ -187,7 +187,7 @@ void main() async {
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache = store.cache<Task>(
+  final cache = await store.cache<Task>(
       name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
@@ -235,7 +235,7 @@ The user of a `Vault` can subscribe to entry events if they are enabled as, by d
 
 ```dart
   // Creates a vault from a previously created store subscribing to the created, updated, removed events
-  final vault = store.vault<String>(
+  final vault = await store.vault<String>(
       eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<String>>().listen(
         (event) => print('Key "${event.entry.key}" added'))
@@ -307,8 +307,8 @@ Note that this is not the only type of cache provided, `stash` also provies a ti
   /// a memory based storage. The first cache with a maximum capacity of 10 and 
   /// the second with unlimited capacity
   final cache = newTieredCache(
-      store.cache<String>(maxEntries: 10),
-      store.cache<String>());
+      await store.cache<String>(maxEntries: 10),
+      await store.cache<String>());
 ```
 
 A more common use case is to have the primary cache using a memory storage and the secondary a cache backed by a persistent storage like the one provided by [stash_file](https://github.com/ivoleitao/stash/tree/develop/packages/stash_file) or [stash_sqlite](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sqlite) packages. The example bellow illustrates one of those use cases with the `stash_file` package as the provider of the storage backend of the secondary cache.
@@ -321,8 +321,8 @@ A more common use case is to have the primary cache using a memory storage and t
   final fileStore = newFileLocalCacheStore(path: Directory.systemTemp.path);  
 
   final cache = newTieredCache(
-      memoryStore.cache<String>(name: 'memoryCache', maxEntries: 10),
-      fileStore.cache(name: 'diskCache', maxEntries: 1000));
+      await memoryStore.cache<String>(name: 'memoryCache', maxEntries: 10),
+      await fileStore.cache(name: 'diskCache', maxEntries: 1000));
 ```
 
 ### Expiry Policies
@@ -368,7 +368,7 @@ The user of a `Cache` can subscribe to entry events if they are enabled as, by d
 
 ```dart
   // Creates a cache with a capacity of 10 from a previously created store subscribing to the created, updated, removed, expired and evicted events
-  final cache = store.cache<String>(
+  final cache = await store.cache<String>(
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<String>>().listen(

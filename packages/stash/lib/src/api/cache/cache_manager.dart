@@ -24,7 +24,7 @@ abstract class CacheManager {
 
   /// Builds a new Cache
   ///
-  /// * [storage]: The [Store] that will back this [Cache]
+  /// * [store]: The [Store] that will back this [Cache]
   /// * [name]: The name of the cache
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
@@ -37,7 +37,7 @@ abstract class CacheManager {
   /// * [stats]: The statistics instance
   ///
   /// Returns a new DefaultCache
-  Cache<T> newGenericCache<T>(Store<CacheInfo, CacheEntry> storage,
+  Future<Cache<T>> newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {String? name,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
