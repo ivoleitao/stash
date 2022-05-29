@@ -57,10 +57,10 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = await newMemoryVaultStore();
 
   // Creates a vault from the previously created store
-  final vault = store.vault<Task>(
+  final vault = await store.vault<Task>(
       name: 'vault', eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the vault'));
@@ -96,10 +96,10 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryCacheStore();
+  final store = await newMemoryCacheStore();
 
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache = store.cache<Task>(
+  final cache = await store.cache<Task>(
       name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)

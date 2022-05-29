@@ -75,11 +75,11 @@ void main() async {
   final path = '${dir.path}/stash_sembast.sdb';
 
   // Creates a store
-  final store = newSembastLocalVaultStore(
+  final store = await newSembastLocalVaultStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store
-  final vault = store.vault<Task>(
+  final vault = await store.vault<Task>(
       name: 'vault', eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the vault'));
@@ -132,11 +132,11 @@ void main() async {
   final path = '${dir.path}/stash_sembast.sdb';
 
   // Creates a store
-  final store = newSembastLocalCacheStore(
+  final store = await newSembastLocalCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
-  final cache = store.cache<Task>(
+  final cache = await store.cache<Task>(
       name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
