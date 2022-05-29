@@ -13,7 +13,7 @@ abstract class SembastAdapter {
 
   /// [SembastAdapter] constructor
   ///
-  /// * [db]: The database
+  /// * [_db]: The database
   SembastAdapter(this._db);
 
   /// Creates a partition

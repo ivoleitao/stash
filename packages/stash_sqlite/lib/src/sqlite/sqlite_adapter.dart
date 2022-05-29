@@ -18,7 +18,7 @@ abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
 
   /// [SqliteAdapter] constructor.
   ///
-  /// * [db]: The database
+  /// * [_db]: The database
   SqliteAdapter(this._db);
 
   /// Returns the [DaoAdapter] of the underlining [SqliteDatabase]
@@ -50,7 +50,6 @@ class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
   /// Builds [SqliteMemoryAdapter].
   ///
   /// * [builder]: Database builder
-  /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
   static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(

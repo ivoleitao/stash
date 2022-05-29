@@ -27,7 +27,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
 
   /// Builds a [FileStore].
   ///
-  /// * [adapter]: The file store adapter
+  /// * [_adapter]: The file store adapter
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
@@ -340,7 +340,7 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
   int get _headerSize => _cacheHeaderSize;
 
   /// Builds a [FileCacheStore].
-  /// * [fs]: The [FileSystem]
+  /// * [adapter]: The adapter
   /// * [path]: The base location of the file storage
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
