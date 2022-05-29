@@ -3,6 +3,7 @@
 - BREAKING CHANGE: Changed minimum sdk version
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - feat: Updated dependencies
+- feat: melos configured with `usePubspecOverrides`
 - fix: Concurrency problem on the creation / removal of stores
 
 # 4.0.1

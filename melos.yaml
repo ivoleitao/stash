@@ -7,6 +7,10 @@ ide:
   intellij:
     false
 
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
 scripts:
   get:
     run: |

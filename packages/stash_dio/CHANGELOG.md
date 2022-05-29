@@ -2,6 +2,7 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
+- feat: melos configured with `usePubspecOverrides`
 - feat: Updated dependencies
 
 # 4.0.1

@@ -4,6 +4,9 @@
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - feat: Updated dependencies
 - feat: Added support for `removeAll`
+- feat: Added support for `getAll`
+- feat: Added support for `putAll`
+- feat: melos configured with `usePubspecOverrides`
 - chore: Updated README
 
 # 4.0.1

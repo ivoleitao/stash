@@ -14,12 +14,8 @@ dependencies:
   path: ^1.8.2
   file: ^6.1.2
   stream_transform: ^2.0.0
-  #stash: ^4.0.1
-  stash:
-    path: ../stash
+  stash: ^4.0.1
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.1
-  #stash_test: ^4.0.1
-  stash_test:
-    path: ../stash_test
+  stash_test: ^4.0.1

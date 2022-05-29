@@ -5,6 +5,9 @@
 - feat: Updated dependencies
 - feat: Added `removeAll` tests
 - feat: Added `remove` tests
+- feat: Added `getAll` tests
+- feat: Added `putAll` tests
+- feat: melos configured with `usePubspecOverrides`
 
 # 4.0.1
 
