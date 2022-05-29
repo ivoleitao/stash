@@ -54,21 +54,22 @@ jobs:
       - name: Bootstrap
         run: |
           dart pub cache clean
-          melos bootstrap
+          melos build
+          melos get
           
       - name: Linter
         run: |
-          melos run format
-          melos run analyze
+          melos format
+          melos analyze
 
       - name: Test
         run: |
-          melos run test
+          melos test
 
       - name: Documentation
         run: |
-          melos run doc
+          melos doc
 
       - name: Verify
         run: |
-          melos run verify
+          melos verify

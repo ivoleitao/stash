@@ -43,9 +43,10 @@ jobs:
       - name: Bootstrap
         run: |
           dart pub cache clean
-          melos bootstrap
+          melos build
+          melos get
 
       - name: Coverage
         run: |
-          melos run coverage
-          melos run codecov
+          melos coverage
+          melos codecov
