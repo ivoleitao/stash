@@ -31,7 +31,7 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = newFileLocalCacheStore(
+  final store = await newFileLocalCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store

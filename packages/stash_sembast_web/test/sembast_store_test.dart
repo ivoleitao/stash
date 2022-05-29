@@ -9,7 +9,7 @@ class VaultStoreContext extends VaultTestContext<SembastVaultStore> {
 
   @override
   Future<SembastVaultStore> newStore() {
-    return Future.value(newSembastWebVaultStore(fromEncodable: fromEncodable));
+    return newSembastWebVaultStore(fromEncodable: fromEncodable);
   }
 }
 
@@ -20,7 +20,7 @@ class CacheStoreContext extends CacheTestContext<SembastCacheStore> {
 
   @override
   Future<SembastCacheStore> newStore() {
-    return Future.value(newSembastWebCacheStore(fromEncodable: fromEncodable));
+    return newSembastWebCacheStore(fromEncodable: fromEncodable);
   }
 }
 

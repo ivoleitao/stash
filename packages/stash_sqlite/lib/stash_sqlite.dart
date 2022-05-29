@@ -20,16 +20,17 @@ export 'src/sqlite/sqlite_store.dart';
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
-SqliteVaultStore newSqliteMemoryVaultStore(
+Future<SqliteVaultStore> newSqliteMemoryVaultStore(
     {StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
     DatabaseSetup? databaseSetup}) {
-  return SqliteVaultStore(
-      SqliteMemoryAdapter((QueryExecutor executor) => VaultDatabase(executor),
-          logStatements: logStatements, setup: databaseSetup),
-      codec: codec,
-      fromEncodable: fromEncodable);
+  return SqliteMemoryAdapter.build<VaultInfo, VaultEntry>(
+          (QueryExecutor executor) => VaultDatabase(executor),
+          logStatements: logStatements,
+          setup: databaseSetup)
+      .then((adapter) => SqliteVaultStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }
 
 /// Creates a new in-memory [SqliteCacheStore]
@@ -38,16 +39,17 @@ SqliteVaultStore newSqliteMemoryVaultStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
-SqliteCacheStore newSqliteMemoryCacheStore(
+Future<SqliteCacheStore> newSqliteMemoryCacheStore(
     {StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
     DatabaseSetup? databaseSetup}) {
-  return SqliteCacheStore(
-      SqliteMemoryAdapter((QueryExecutor executor) => CacheDatabase(executor),
-          logStatements: logStatements, setup: databaseSetup),
-      codec: codec,
-      fromEncodable: fromEncodable);
+  return SqliteMemoryAdapter.build<CacheInfo, CacheEntry>(
+          (QueryExecutor executor) => CacheDatabase(executor),
+          logStatements: logStatements,
+          setup: databaseSetup)
+      .then((adapter) => SqliteCacheStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [SqliteVaultStore] on a file
@@ -57,18 +59,19 @@ SqliteCacheStore newSqliteMemoryCacheStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
-SqliteVaultStore newSqliteLocalVaultStore(
+Future<SqliteVaultStore> newSqliteLocalVaultStore(
     {File? file,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
     DatabaseSetup? databaseSetup}) {
-  return SqliteVaultStore(
-      SqliteFileAdapter((QueryExecutor executor) => VaultDatabase(executor),
+  return SqliteFileAdapter.build<VaultInfo, VaultEntry>(
+          (QueryExecutor executor) => VaultDatabase(executor),
           file ?? File('${Directory.systemTemp.path}/stash_sqlite.db'),
-          logStatements: logStatements, setup: databaseSetup),
-      codec: codec,
-      fromEncodable: fromEncodable);
+          logStatements: logStatements,
+          setup: databaseSetup)
+      .then((adapter) => SqliteVaultStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [SqliteCacheStore] on a file
@@ -78,16 +81,17 @@ SqliteVaultStore newSqliteLocalVaultStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [logStatements]: If [logStatements] is true (defaults to `false`), generated sql statements will be printed before executing
 /// * [databaseSetup]: This optional function can be used to perform a setup just after the database is opened, before drift is fully ready
-SqliteCacheStore newSqliteLocalCacheStore(
+Future<SqliteCacheStore> newSqliteLocalCacheStore(
     {File? file,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? logStatements,
     DatabaseSetup? databaseSetup}) {
-  return SqliteCacheStore(
-      SqliteFileAdapter((QueryExecutor executor) => CacheDatabase(executor),
+  return SqliteFileAdapter.build<CacheInfo, CacheEntry>(
+          (QueryExecutor executor) => CacheDatabase(executor),
           file ?? File('${Directory.systemTemp.path}/stash_sqlite.db'),
-          logStatements: logStatements, setup: databaseSetup),
-      codec: codec,
-      fromEncodable: fromEncodable);
+          logStatements: logStatements,
+          setup: databaseSetup)
+      .then((adapter) => SqliteCacheStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }

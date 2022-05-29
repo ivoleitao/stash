@@ -11,7 +11,7 @@
 
 ## Overview
 
-The `stash` library is a key-value store abstraction with a pluggable backend architecture. It provides support for vault and cache objects.The vault simply provides a key value storage for primitives and objects, however the cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
+The `stash` library is a key-value store abstraction with a pluggable backend architecture that provides support for vault and cache objects.The vault is a simple key value storage for primitives and objects. The cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
 
 3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the developers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
 
@@ -91,7 +91,7 @@ Start by creating an instance of the storage backend. For example, on the in-mem
 
 ```dart
   // Create a in-memory store
-  final store = newMemoryVaultStore();
+  final store = await newMemoryVaultStore();
   // In a more general sense 'newXXXVaultStore' or 'newXXXCacheStore' where xxx is the name of the storage provider,
   // memory, file, sqlite, hive and so on
 ```
@@ -125,7 +125,7 @@ Now let's create a cache. In this case a new type of store is needed as the cach
 
 ```dart
   // Creates a in-memory store
-  final store = newMemoryCacheStore();
+  final store = await newMemoryCacheStore();
 
   // Creates a cache with a max capacity of 10 from the previously created store
   final cache = await store.cache<String>(maxEntries: 10);
@@ -183,7 +183,7 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = newFileLocalCacheStore(
+  final store = await newFileLocalCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
@@ -301,7 +301,7 @@ Note that this is not the only type of cache provided, `stash` also provies a ti
 
 ```dart
   // Creates a in-memory store
-  final store = newMemoryCacheStore();
+  final store = await newMemoryCacheStore();
 
   /// Creates a tiered cache with both the primary and the secondary caches using 
   /// a memory based storage. The first cache with a maximum capacity of 10 and 
@@ -315,10 +315,10 @@ A more common use case is to have the primary cache using a memory storage and t
 
 ```dart
   // Creates a in-memory store
-  final memoryStore = newMemoryCacheStore();
+  final memoryStore = await newMemoryCacheStore();
 
   // Creates a file store
-  final fileStore = newFileLocalCacheStore(path: Directory.systemTemp.path);  
+  final fileStore = await newFileLocalCacheStore(path: Directory.systemTemp.path);  
 
   final cache = newTieredCache(
       await memoryStore.cache<String>(name: 'memoryCache', maxEntries: 10),

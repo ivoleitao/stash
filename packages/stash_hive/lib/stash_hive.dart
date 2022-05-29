@@ -14,17 +14,17 @@ export 'src/hive/hive_store.dart';
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveDefaultVaultStore newHiveDefaultVaultStore(
+Future<HiveDefaultVaultStore> newHiveDefaultVaultStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveDefaultVaultStore(
-      HiveDefaultAdapter(
+  return HiveDefaultAdapter.build(
           path: path ?? '.',
           encryptionCipher: encryptionCipher,
-          crashRecovery: crashRecovery),
-      fromEncodable: fromEncodable);
+          crashRecovery: crashRecovery)
+      .then((adapter) =>
+          HiveDefaultVaultStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [HiveDefaultCacheStore]
@@ -33,17 +33,17 @@ HiveDefaultVaultStore newHiveDefaultVaultStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveDefaultCacheStore newHiveDefaultCacheStore(
+Future<HiveDefaultCacheStore> newHiveDefaultCacheStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveDefaultCacheStore(
-      HiveDefaultAdapter(
+  return HiveDefaultAdapter.build(
           path: path ?? '.',
           encryptionCipher: encryptionCipher,
-          crashRecovery: crashRecovery),
-      fromEncodable: fromEncodable);
+          crashRecovery: crashRecovery)
+      .then((adapter) =>
+          HiveDefaultCacheStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [HiveLazyVaultStore]
@@ -52,17 +52,17 @@ HiveDefaultCacheStore newHiveDefaultCacheStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveLazyVaultStore newHiveLazyVaultStore(
+Future<HiveLazyVaultStore> newHiveLazyVaultStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveLazyVaultStore(
-      HiveLazyAdapter(
+  return HiveLazyAdapter.build(
           path: path ?? '.',
           encryptionCipher: encryptionCipher,
-          crashRecovery: crashRecovery),
-      fromEncodable: fromEncodable);
+          crashRecovery: crashRecovery)
+      .then((adapter) =>
+          HiveLazyVaultStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [HiveLazyCacheStore]
@@ -71,15 +71,15 @@ HiveLazyVaultStore newHiveLazyVaultStore(
 /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [encryptionCipher]: The encryption cypher
 /// * [crashRecovery]: If it supports crash recovery
-HiveLazyCacheStore newHiveLazyCacheStore(
+Future<HiveLazyCacheStore> newHiveLazyCacheStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     HiveCipher? encryptionCipher,
     bool? crashRecovery}) {
-  return HiveLazyCacheStore(
-      HiveLazyAdapter(
+  return HiveLazyAdapter.build(
           path: path ?? '.',
           encryptionCipher: encryptionCipher,
-          crashRecovery: crashRecovery),
-      fromEncodable: fromEncodable);
+          crashRecovery: crashRecovery)
+      .then((adapter) =>
+          HiveLazyCacheStore(adapter, fromEncodable: fromEncodable));
 }

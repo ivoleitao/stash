@@ -129,7 +129,7 @@ void main() async {
   });
 
   test('With cache setting two different responses', () async {
-    final cache = await newMemoryCacheStore().cache();
+    final cache = await newMemoryCacheStore().then((store) => store.cache());
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
@@ -144,7 +144,7 @@ void main() async {
   });
 
   test('With cache but not matching the request', () async {
-    final cache = await newMemoryCacheStore().cache();
+    final cache = await newMemoryCacheStore().then((store) => store.cache());
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
@@ -159,7 +159,7 @@ void main() async {
   });
 
   test('With cache but with status code out of the allowed range', () async {
-    final cache = await newMemoryCacheStore().cache();
+    final cache = await newMemoryCacheStore().then((store) => store.cache());
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     _withAnswer(dioAdapterMock, Post._a(), statusCode: 404);
@@ -168,7 +168,7 @@ void main() async {
   });
 
   test('With a file cache', () async {
-    final cache = await newFileLocalCacheStore().cache();
+    final cache = await newFileLocalCacheStore().then((store) => store.cache());
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a());
@@ -183,7 +183,7 @@ void main() async {
   }, testOn: '!js');
 
   test('stash-dio #14', () async {
-    final cache = await newMemoryCacheStore().cache();
+    final cache = await newMemoryCacheStore().then((store) => store.cache());
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     var providedResponse1 = _withAnswer(dioAdapterMock, Post._a(), headers: {

@@ -1,14 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-/// The [StoreAdapter] provides a bridge between the store and the
-/// backend
-abstract class StoreAdapter {}
-
 /// The [HiveAdapter] provides a bridge between the store and the
 /// Hive backend
-abstract class HiveAdapter<T extends BoxBase<Map>> extends StoreAdapter {
-  /// The path to the box
+abstract class HiveAdapter<T extends BoxBase<Map>> {
+  /// The path to the partition
   final String? path;
 
   /// The encryption cypher
@@ -18,22 +14,22 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends StoreAdapter {
   final bool? crashRecovery;
 
   /// List of boxs
-  final Map<String, T> _boxes = {};
+  final Map<String, T> _partitions = {};
 
-  /// Builds a [HiveAdapter].
+  /// [HiveAdapter] constructor
   ///
-  /// * [path]: The base location of the Hive storage
+  /// * [path]: The base location of the Hive box
   /// * [encryptionCipher]: The encryption cypher
   /// * [crashRecovery]: If it supports crash recovery
   HiveAdapter({this.path, this.encryptionCipher, this.crashRecovery});
 
-  /// Creates a box
+  /// Creates a partition
   ///
-  /// * [name]: The box name
+  /// * [name]: The partition name
   Future<void> create(String name) {
-    if (!_boxes.containsKey(name)) {
+    if (!_partitions.containsKey(name)) {
       return openBox(name).then((box) {
-        _boxes[name] = box;
+        _partitions[name] = box;
       });
     }
 
@@ -42,57 +38,77 @@ abstract class HiveAdapter<T extends BoxBase<Map>> extends StoreAdapter {
 
   /// Opens the box
   ///
-  /// * [name]: The name of the vault/cache
+  /// * [name]: The name of the partition
   Future<T> openBox(String name);
 
   /// Returns the box value by key
   ///
-  /// * [store]: The Hive box
+  /// * [box]: The Hive box
   /// * [key]: The store key
   ///
   /// Returns the [Map] stored in the box
-  Future<Map?> boxValue(T store, String key);
+  Future<Map?> boxValue(T box, String key);
 
-  /// Returns a specific box identified by [name]
+  /// Returns the partition box identified by [name]
   ///
-  /// * [name]: The box name
+  /// * [name]: The partition name
   T? box(String name) {
-    return _boxes[name];
+    return _partitions[name];
   }
 
-  /// Deletes a box
+  /// Deletes a partition box
   ///
-  /// [name]: The box name
-  Future<void> _deletebox(String name) {
-    if (_boxes.containsKey(name)) {
+  /// [name]: The partition name
+  Future<void> _deletePartition(String name) {
+    if (_partitions.containsKey(name)) {
       if (UniversalPlatform.isWeb) {
         // https://github.com/hivedb/hive/issues/344
-        return _boxes[name]!.clear().then((_) => _boxes.remove(name));
+        return _partitions[name]!.clear().then((_) => _partitions.remove(name));
       } else {
-        return Hive.deleteBoxFromDisk(name).then((_) => _boxes.remove(name));
+        return Hive.deleteBoxFromDisk(name)
+            .then((_) => _partitions.remove(name));
       }
     }
 
     return Future.value();
   }
 
-  /// Deletes a box from a store
+  /// Deletes a partition box
   ///
-  /// * [name]: The store name
+  /// * [name]: The partition name
   Future<void> delete(String name) {
-    return _deletebox(name);
+    return _deletePartition(name);
   }
 
-  /// Deletes all the boxes
+  /// Deletes all the partition
   Future<void> deleteAll() {
-    return Future.wait(_boxes.keys.map((name) {
-      return _deletebox(name);
+    return Future.wait(_partitions.keys.map((name) {
+      return _deletePartition(name);
     }));
   }
 }
 
 class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
-  HiveDefaultAdapter({super.path, super.encryptionCipher, super.crashRecovery});
+  /// [HiveDefaultAdapter] constructor
+  ///
+  /// * [path]: The base location of the Hive box
+  /// * [encryptionCipher]: The encryption cypher
+  /// * [crashRecovery]: If it supports crash recovery
+  HiveDefaultAdapter._(
+      {super.path, super.encryptionCipher, super.crashRecovery});
+
+  /// Builds a [HiveDefaultAdapter].
+  ///
+  /// * [path]: The base location of the Hive box
+  /// * [encryptionCipher]: The encryption cypher
+  /// * [crashRecovery]: If it supports crash recovery
+  static Future<HiveDefaultAdapter> build(
+      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery}) {
+    return Future.value(HiveDefaultAdapter._(
+        path: path,
+        encryptionCipher: encryptionCipher,
+        crashRecovery: crashRecovery));
+  }
 
   @override
   Future<Box<Map>> openBox(String name) {
@@ -103,13 +119,31 @@ class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
   }
 
   @override
-  Future<Map?> boxValue(Box<Map> store, String key) {
-    return Future.value(store.get(key));
+  Future<Map?> boxValue(Box<Map> box, String key) {
+    return Future.value(box.get(key));
   }
 }
 
 class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
-  HiveLazyAdapter({super.path, super.encryptionCipher, super.crashRecovery});
+  /// [HiveLazyAdapter] constructor
+  ///
+  /// * [path]: The base location of the Hive box
+  /// * [encryptionCipher]: The encryption cypher
+  /// * [crashRecovery]: If it supports crash recovery
+  HiveLazyAdapter._({super.path, super.encryptionCipher, super.crashRecovery});
+
+  /// Builds a [HiveLazyAdapter].
+  ///
+  /// * [path]: The base location of the Hive box
+  /// * [encryptionCipher]: The encryption cypher
+  /// * [crashRecovery]: If it supports crash recovery
+  static Future<HiveLazyAdapter> build(
+      {String? path, HiveCipher? encryptionCipher, bool? crashRecovery}) {
+    return Future.value(HiveLazyAdapter._(
+        path: path,
+        encryptionCipher: encryptionCipher,
+        crashRecovery: crashRecovery));
+  }
 
   @override
   Future<LazyBox<Map>> openBox(String name) {
@@ -120,7 +154,7 @@ class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
   }
 
   @override
-  Future<Map?> boxValue(LazyBox<Map> store, String key) {
-    return store.get(key);
+  Future<Map?> boxValue(LazyBox<Map> box, String key) {
+    return box.get(key);
   }
 }

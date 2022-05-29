@@ -33,7 +33,7 @@ void main() async {
   final path = '${dir.path}/stash_sembast.sdb';
 
   // Creates a store
-  final store = newSembastLocalCacheStore(
+  final store = await newSembastLocalCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store

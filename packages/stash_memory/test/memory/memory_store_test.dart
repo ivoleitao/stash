@@ -6,7 +6,7 @@ class VaultStoreContext extends VaultTestContext<MemoryVaultStore> {
 
   @override
   Future<MemoryVaultStore> newStore() {
-    return Future.value(newMemoryVaultStore());
+    return newMemoryVaultStore();
   }
 }
 
@@ -15,7 +15,7 @@ class CacheStoreContext extends CacheTestContext<MemoryCacheStore> {
 
   @override
   Future<MemoryCacheStore> newStore() {
-    return Future.value(newMemoryCacheStore());
+    return newMemoryCacheStore();
   }
 }
 

@@ -1,6 +1,7 @@
 # 4.1.0
 
 - BREAKING CHANGE: Changed minimum sdk version
+- BREAKING CHANGE: The creation of stores now returns a `Future<XXXStore>` where XXX is the specific store
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - feat: Updated dependencies
 - feat: melos configured with `usePubspecOverrides`

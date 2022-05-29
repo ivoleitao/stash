@@ -33,7 +33,7 @@ void main() async {
   final path = '${dir.path}/stash_sembast.sdb';
 
   // Creates a store
-  final store = newSembastLocalVaultStore(
+  final store = await newSembastLocalVaultStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store

@@ -14,26 +14,27 @@ typedef SqliteBuilder<I extends Info, E extends Entry<I>> = SqliteDatabase<I, E>
 /// Sqlite backend
 abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
   /// The [SqliteDatabase] to use
-  late final SqliteDatabase<I, E> _db;
+  final SqliteDatabase<I, E> _db;
 
-  /// Builds a [SqliteAdapter].
-  SqliteAdapter();
+  /// [SqliteAdapter] constructor.
+  ///
+  /// * [db]: The database
+  SqliteAdapter(this._db);
 
-  /// Returns the [DaoAdapter] for the underlining [Store]
+  /// Returns the [DaoAdapter] of the underlining [SqliteDatabase]
   DaoAdapter<I, E> get dao => _db.dao;
 
-  /// Creates a store
+  /// Creates a partition
   ///
-  /// * [name]: The store name
+  /// * [name]: The partition name
   Future<void> create(String name) => Future.value();
 
-  /// Deletes a named store or the store itself
+  /// Deletes a partition
   ///
-  /// * [name]: The vault/cache name
+  /// * [name]: The partition name
   Future<void> delete(String name);
 
-  /// Deletes the store a if a store is implemented in a way that puts all the
-  /// named caches in one storage, or stores(s) if multiple storages are used
+  /// Deletes all partitions
   Future<void> deleteAll();
 }
 
@@ -41,14 +42,23 @@ abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
 /// Sqlite in-memory backend
 class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
     extends SqliteAdapter<I, E> {
-  /// Builds a [SqliteMemoryAdapter].
+  /// [SqliteMemoryAdapter] constructor
   ///
+  /// * [db]: The database
+  SqliteMemoryAdapter._(super.db);
+
+  /// Builds [SqliteMemoryAdapter].
+  ///
+  /// * [builder]: Database builder
+  /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteMemoryAdapter(SqliteBuilder<I, E> builder,
-      {bool? logStatements, DatabaseSetup? setup}) {
-    _db = builder(NativeDatabase.memory(
-        logStatements: logStatements ?? false, setup: setup));
+  static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
+      SqliteBuilder<I, E> builder,
+      {bool? logStatements,
+      DatabaseSetup? setup}) {
+    return Future.value(SqliteMemoryAdapter._(builder(NativeDatabase.memory(
+        logStatements: logStatements ?? false, setup: setup))));
   }
 
   @override
@@ -68,15 +78,25 @@ class SqliteFileAdapter<I extends Info, E extends Entry<I>>
     extends SqliteAdapter<I, E> {
   final File file;
 
-  /// Builds a [SqliteMemoryAdapter].
+  /// [SqliteFileAdapter] constructor.
   ///
+  /// * [db]: The database
+  /// * [file]: The [File] that store the Sqlite database
+  SqliteFileAdapter._(super.db, this.file);
+
+  /// Builds [SqliteFileAdapter].
+  ///
+  /// * [builder]: Database builder
   /// * [file]: The [File] that store the Sqlite database
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  SqliteFileAdapter(SqliteBuilder<I, E> builder, this.file,
+  static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
+      SqliteBuilder<I, E> builder, File file,
       {bool? logStatements, DatabaseSetup? setup}) {
-    _db = builder(NativeDatabase(file,
-        logStatements: logStatements ?? false, setup: setup));
+    return Future.value(SqliteFileAdapter._(
+        builder(NativeDatabase(file,
+            logStatements: logStatements ?? false, setup: setup)),
+        file));
   }
 
   @override

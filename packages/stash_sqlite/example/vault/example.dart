@@ -33,7 +33,7 @@ void main() async {
   final file = File('${dirPath.path}/stash_sqlite.sdb');
 
   // Creates a store
-  final store = newSqliteLocalVaultStore(
+  final store = await newSqliteLocalVaultStore(
       file: file, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store

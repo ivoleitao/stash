@@ -7,7 +7,7 @@ class VaultStoreContext extends VaultTestContext<FileVaultStore> {
       : super(generator, fromEncodable: generator.fromEncodable);
 
   Future<FileVaultStore> _newMemoryStore() {
-    return Future.value(newFileMemoryVaultStore(fromEncodable: fromEncodable));
+    return newFileMemoryVaultStore(fromEncodable: fromEncodable);
   }
 
   @override
@@ -22,7 +22,7 @@ class CacheStoreContext extends CacheTestContext<FileCacheStore> {
       : super(generator, fromEncodable: generator.fromEncodable);
 
   Future<FileCacheStore> _newMemoryStore() {
-    return Future.value(newFileMemoryCacheStore(fromEncodable: fromEncodable));
+    return newFileMemoryCacheStore(fromEncodable: fromEncodable);
   }
 
   @override

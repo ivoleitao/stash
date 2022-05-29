@@ -16,7 +16,7 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryVaultStore();
+  final store = await newMemoryVaultStore();
 
   // Creates a vault from the previously created store
   final vault = await store.vault<Task>(

@@ -19,7 +19,7 @@ export 'src/objectbox/objectbox_store.dart';
 /// * [fileMode]: The file mode
 /// * [maxReaders]: The number of maximum readers
 /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive, the default is true
-ObjectboxVaultStore newObjectboxLocalVaultStore(
+Future<ObjectboxVaultStore> newObjectboxLocalVaultStore(
     {String? path,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
@@ -27,14 +27,13 @@ ObjectboxVaultStore newObjectboxLocalVaultStore(
     int? fileMode,
     int? maxReaders,
     bool? queriesCaseSensitiveDefault}) {
-  return ObjectboxVaultStore(
-      ObjectboxAdapter(path ?? Directory.systemTemp.path,
+  return ObjectboxAdapter.build(path ?? Directory.systemTemp.path,
           maxDBSizeInKB: maxDBSizeInKB,
           fileMode: fileMode,
           maxReaders: maxReaders,
-          queriesCaseSensitiveDefault: queriesCaseSensitiveDefault),
-      codec: codec,
-      fromEncodable: fromEncodable);
+          queriesCaseSensitiveDefault: queriesCaseSensitiveDefault)
+      .then((adapter) => ObjectboxVaultStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [ObjectboxCacheStore]
@@ -46,7 +45,7 @@ ObjectboxVaultStore newObjectboxLocalVaultStore(
 /// * [fileMode]: The file mode
 /// * [maxReaders]: The number of maximum readers
 /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive, the default is true
-ObjectboxCacheStore newObjectboxLocalCacheStore(
+Future<ObjectboxCacheStore> newObjectboxLocalCacheStore(
     {String? path,
     StoreCodec? codec,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
@@ -54,12 +53,11 @@ ObjectboxCacheStore newObjectboxLocalCacheStore(
     int? fileMode,
     int? maxReaders,
     bool? queriesCaseSensitiveDefault}) {
-  return ObjectboxCacheStore(
-      ObjectboxAdapter(path ?? Directory.systemTemp.path,
+  return ObjectboxAdapter.build(path ?? Directory.systemTemp.path,
           maxDBSizeInKB: maxDBSizeInKB,
           fileMode: fileMode,
           maxReaders: maxReaders,
-          queriesCaseSensitiveDefault: queriesCaseSensitiveDefault),
-      codec: codec,
-      fromEncodable: fromEncodable);
+          queriesCaseSensitiveDefault: queriesCaseSensitiveDefault)
+      .then((adapter) => ObjectboxCacheStore(adapter,
+          codec: codec, fromEncodable: fromEncodable));
 }

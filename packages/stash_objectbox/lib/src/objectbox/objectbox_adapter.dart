@@ -15,36 +15,55 @@ class ObjectboxAdapter {
   final int? maxReaders;
   final bool? queriesCaseSensitiveDefault;
 
-  /// List of stores per name
-  final Map<String, Store> _stores = {};
+  /// List of partitions per name
+  final Map<String, Store> _partitions = {};
 
-  /// Builds a [ObjectboxAdapter].
+  /// [ObjectboxAdapter] constructor
   ///
   /// * [path]: The base location of the Objectbox storage
   /// * [maxDBSizeInKB]: The max DB size
   /// * [fileMode]: The file mode
   /// * [maxReaders]: The number of maximum readers
   /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive
-  ObjectboxAdapter(this.path,
+  ObjectboxAdapter._(this.path,
       {this.maxDBSizeInKB,
       this.fileMode,
       this.maxReaders,
       this.queriesCaseSensitiveDefault});
 
-  /// Returns the store [Directory]
+  /// Builds [ObjectboxAdapter].
   ///
-  /// * [name]: The name of the store
+  /// * [path]: The base location of the Objectbox storage
+  /// * [maxDBSizeInKB]: The max DB size
+  /// * [fileMode]: The file mode
+  /// * [maxReaders]: The number of maximum readers
+  /// * [queriesCaseSensitiveDefault]: If the queries are case sensitive
+  static Future<ObjectboxAdapter> build(String path,
+      {int? maxDBSizeInKB,
+      int? fileMode,
+      int? maxReaders,
+      bool? queriesCaseSensitiveDefault}) {
+    return Future.value(ObjectboxAdapter._(path,
+        maxDBSizeInKB: maxDBSizeInKB,
+        fileMode: fileMode,
+        maxReaders: maxReaders,
+        queriesCaseSensitiveDefault: queriesCaseSensitiveDefault));
+  }
+
+  /// Returns the partition [Directory]
   ///
-  /// Returns the store [Directory]
+  /// * [name]: The name of the partition
+  ///
+  /// Returns the partition [Directory]
   Directory _directory(String name) {
     return Directory(p.join(path, name));
   }
 
-  /// Creates a store
+  /// Creates a partition
   ///
-  /// * [name]: The store name
+  /// * [name]: The partition name
   Future<void> create(String name) {
-    if (!_stores.containsKey(name)) {
+    if (!_partitions.containsKey(name)) {
       return _directory(name).create().then((dir) {
         final store = Store(getObjectBoxModel(),
             directory: dir.path,
@@ -53,7 +72,7 @@ class ObjectboxAdapter {
             maxReaders: maxReaders,
             queriesCaseSensitiveDefault: queriesCaseSensitiveDefault ?? true);
 
-        _stores[name] = store;
+        _partitions[name] = store;
 
         return Future.value();
       });
@@ -64,49 +83,49 @@ class ObjectboxAdapter {
 
   /// Returns the [Store]
   ///
-  /// * [name]: The name of the store
+  /// * [name]: The partition name
   ///
-  /// Returns the [Store] of the store
-  Store? _store(String name) {
-    return _stores[name];
+  /// Returns the partition [Store]
+  Store? _partition(String name) {
+    return _partitions[name];
   }
 
-  /// Returns the [Box]
+  /// Returns a partition [Box]
   ///
-  /// * [name]: The name of the store
+  /// * [name]: The partition name
   ///
   /// Returns the [Box]
   Box<O>? box<O>(String name) {
-    return _store(name)?.box<O>();
+    return _partition(name)?.box<O>();
   }
 
-  /// Deletes a named store
+  /// Deletes a partition
   ///
-  /// * [name]: The store name
-  Future<void> _deleteStore(String name) {
-    final store = _stores[name];
+  /// * [name]: The partition name
+  Future<void> _deletePartition(String name) {
+    final store = _partitions[name];
 
     if (store != null) {
       store.close();
       return _directory(name)
           .delete(recursive: true)
-          .then((_) => _stores.remove(name));
+          .then((_) => _partitions.remove(name));
     }
 
     return Future.value();
   }
 
-  /// Deletes a named store
+  /// Deletes a partition
   ///
-  /// * [name]: The store name
+  /// * [name]: The partition name
   Future<void> delete(String name) {
-    return _deleteStore(name);
+    return _deletePartition(name);
   }
 
-  /// Deletes all the stores
+  /// Deletes all the partitions
   Future<void> deleteAll() {
-    return Future.wait(_stores.keys.map((name) {
-      return _deleteStore(name);
+    return Future.wait(_partitions.keys.map((name) {
+      return _deletePartition(name);
     }));
   }
 }

@@ -16,7 +16,7 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryCacheStore();
+  final store = await newMemoryCacheStore();
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(

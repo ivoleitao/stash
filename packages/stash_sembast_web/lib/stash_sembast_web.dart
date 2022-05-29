@@ -14,19 +14,19 @@ export 'src/sembast/sembast_web_adapter.dart';
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastVaultStore newSembastWebVaultStore(
+Future<SembastVaultStore> newSembastWebVaultStore(
     {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastVaultStore(
-      SembastWebAdapter('sembast_web',
+  return SembastWebAdapter.build('sembast_web',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastVaultStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new web [SembastCacheStore]
@@ -36,17 +36,17 @@ SembastVaultStore newSembastWebVaultStore(
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastCacheStore newSembastWebCacheStore(
+Future<SembastCacheStore> newSembastWebCacheStore(
     {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastCacheStore(
-      SembastWebAdapter('sembast_web',
+  return SembastWebAdapter.build('sembast_web',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastCacheStore(adapter, fromEncodable: fromEncodable));
 }

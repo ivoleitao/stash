@@ -6,11 +6,11 @@ import 'package:stash_memory/src/memory/memory_store.dart';
 export 'src/memory/memory_store.dart';
 
 /// Creates a new [MemoryVaultStore]
-MemoryVaultStore newMemoryVaultStore() {
-  return MemoryVaultStore();
+Future<MemoryVaultStore> newMemoryVaultStore() {
+  return Future.value(MemoryVaultStore());
 }
 
 /// Creates a new [MemoryCacheStore]
-MemoryCacheStore newMemoryCacheStore() {
-  return MemoryCacheStore();
+Future<MemoryCacheStore> newMemoryCacheStore() {
+  return Future.value(MemoryCacheStore());
 }

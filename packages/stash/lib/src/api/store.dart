@@ -3,7 +3,7 @@ import 'info.dart';
 
 /// Store definition
 abstract class Store<I extends Info, E extends Entry<I>> {
-  /// Creates a store partition
+  /// Creates a partition
   ///
   /// * [name]: The partition name
   Future<void> create(String name);

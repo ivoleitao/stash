@@ -26,8 +26,8 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store =
-      newSembastWebVaultStore(fromEncodable: (json) => Task.fromJson(json));
+  final store = await newSembastWebVaultStore(
+      fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store
   final vault = await store.vault<Task>(

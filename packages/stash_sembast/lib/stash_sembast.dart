@@ -15,19 +15,19 @@ export 'src/sembast/sembast_store.dart';
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastVaultStore newSembastMemoryVaultStore(
+Future<SembastVaultStore> newSembastMemoryVaultStore(
     {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastVaultStore(
-      SembastMemoryAdapter('sembast',
+  return SembastMemoryAdapter.build('sembast',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastVaultStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new in-memory [SembastCacheStore]
@@ -37,19 +37,19 @@ SembastVaultStore newSembastMemoryVaultStore(
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastCacheStore newSembastMemoryCacheStore(
+Future<SembastCacheStore> newSembastMemoryCacheStore(
     {dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastCacheStore(
-      SembastMemoryAdapter('sembast',
+  return SembastMemoryAdapter.build('sembast',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastCacheStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [SembastVaultStore] on a file
@@ -60,20 +60,20 @@ SembastCacheStore newSembastMemoryCacheStore(
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastVaultStore newSembastLocalVaultStore(
+Future<SembastVaultStore> newSembastLocalVaultStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastVaultStore(
-      SembastLocalAdapter(path ?? 'stash_sembast.db',
+  return SembastLocalAdapter.build(path ?? 'stash_sembast.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastVaultStore(adapter, fromEncodable: fromEncodable));
 }
 
 /// Creates a new [SembastCacheStore] on a file
@@ -84,18 +84,18 @@ SembastVaultStore newSembastLocalVaultStore(
 /// * [onVersionChanged]:  If [databaseVersion] not null and if the existing version is different, onVersionChanged is called
 /// * [databaseMode]: The database mode
 /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
-SembastCacheStore newSembastLocalCacheStore(
+Future<SembastCacheStore> newSembastLocalCacheStore(
     {String? path,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
     int? databaseVersion,
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastCacheStore(
-      SembastLocalAdapter(path ?? 'stash_sembast.db',
+  return SembastLocalAdapter.build(path ?? 'stash_sembast.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
-          codec: sembastCodec),
-      fromEncodable: fromEncodable);
+          codec: sembastCodec)
+      .then((adapter) =>
+          SembastCacheStore(adapter, fromEncodable: fromEncodable));
 }

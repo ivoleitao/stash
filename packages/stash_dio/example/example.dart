@@ -28,7 +28,7 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = newMemoryCacheStore();
+  final store = await newMemoryCacheStore();
   // Creates a cache
   final cache = await store.cache(
       eventListenerMode: EventListenerMode.synchronous)

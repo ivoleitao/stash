@@ -31,7 +31,7 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = newFileLocalVaultStore(
+  final store = await newFileLocalVaultStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store

@@ -9,8 +9,7 @@ class VaultStoreContext extends VaultTestContext<SqliteVaultStore> {
 
   @override
   Future<SqliteVaultStore> newStore() {
-    return Future.value(
-        newSqliteMemoryVaultStore(fromEncodable: fromEncodable));
+    return newSqliteMemoryVaultStore(fromEncodable: fromEncodable);
   }
 }
 
@@ -21,8 +20,7 @@ class CacheStoreContext extends CacheTestContext<SqliteCacheStore> {
 
   @override
   Future<SqliteCacheStore> newStore() {
-    return Future.value(
-        newSqliteMemoryCacheStore(fromEncodable: fromEncodable));
+    return newSqliteMemoryCacheStore(fromEncodable: fromEncodable);
   }
 }
 
