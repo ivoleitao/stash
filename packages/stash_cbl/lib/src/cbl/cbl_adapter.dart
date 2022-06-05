@@ -38,7 +38,7 @@ class CblAdapter {
   }) async =>
       CblAdapter._(path, async, encryptionKey);
 
-  /// The base location of the Objectbox storage.
+  /// The base location of the Couchbase Lite storage.
   final String path;
 
   /// Whether to execute database operations asynchronously
