@@ -25,6 +25,8 @@ coverage:
         flags: stash_isar
       stash_dio:
         flags: stash_dio
+      stash_cbl:
+        flags: stash_cbl
 
 flags:
   stash:
@@ -60,3 +62,6 @@ flags:
   stash_dio:
     paths:
       - packages/stash_dio/lib/
+  stash_cbl:
+    paths:
+      - packages/stash_cbl/lib/
