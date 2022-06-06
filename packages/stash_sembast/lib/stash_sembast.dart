@@ -67,7 +67,7 @@ Future<SembastVaultStore> newSembastLocalVaultStore(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastLocalAdapter.build(path ?? 'stash_sembast.db',
+  return SembastLocalAdapter.build(path ?? 'vault.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,
@@ -91,7 +91,7 @@ Future<SembastCacheStore> newSembastLocalCacheStore(
     OnVersionChangedFunction? onVersionChanged,
     DatabaseMode? databaseMode,
     SembastCodec? sembastCodec}) {
-  return SembastLocalAdapter.build(path ?? 'stash_sembast.db',
+  return SembastLocalAdapter.build(path ?? 'cache.db',
           version: databaseVersion,
           onVersionChanged: onVersionChanged,
           mode: databaseMode,

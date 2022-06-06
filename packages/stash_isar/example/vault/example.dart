@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:isar/isar.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash_sembast/stash_sembast.dart';
+import 'package:stash_isar/stash_isar.dart';
 
 class Task {
   final int id;
@@ -27,13 +29,14 @@ class Task {
 }
 
 void main() async {
-  // Temporary path
-  final dir = Directory.systemTemp;
-  // Temporary database file for a shared store
-  final path = '${dir.path}/vault.db';
+  await Isar.initializeIsarCore(
+      libraries: {Abi.macosArm64: '/usr/local/lib/libisar.dylib'});
+
+  // Temporary directory
+  final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newSembastLocalVaultStore(
+  final store = await newIsarLocalVaultStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a vault from the previously created store

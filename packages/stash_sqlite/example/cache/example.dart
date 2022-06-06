@@ -28,9 +28,9 @@ class Task {
 
 void main() async {
   // Temporary directory
-  final dirPath = Directory.systemTemp;
+  final dir = Directory.systemTemp;
   // Temporary database file for a shared store
-  final file = File('${dirPath.path}/stash_sqlite.sdb');
+  final file = File('${dir.path}/cache.db');
 
   // Creates a store
   final store = await newSqliteLocalCacheStore(

@@ -33,16 +33,25 @@ scripts:
     description: |
       Run `dart pub outdated` in all packages.
 
+  install:objectbox:
+    run: |
+      bash -c 'bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)'
+
+  install:
+    run: melos run install:objectbox
+    description: |
+      Installs library dependencies
+
   build:
     run: |
-      melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" -- \
+      melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" --scope="stash_isar" -- \
         "dart run build_runner build --delete-conflicting-outputs"
     description: |
       Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
   
   clean:
     run: |
-      melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" -- \
+      melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" --scope="stash_isar" -- \
         "dart run build_runner clean"
     description: |
       Run `dart run build_runner clean` in the selected packages.
@@ -77,7 +86,7 @@ scripts:
   
   test:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" \
+      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_isar" \
         "dart test -p vm"
     description: |
       Run `dart test -p vm` in the selected packages.

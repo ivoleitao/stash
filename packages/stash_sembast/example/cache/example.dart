@@ -30,7 +30,7 @@ void main() async {
   // Temporary path
   final dir = Directory.systemTemp;
   // Temporary database file for a shared store
-  final path = '${dir.path}/stash_sembast.sdb';
+  final path = '${dir.path}/cache.db';
 
   // Creates a store
   final store = await newSembastLocalCacheStore(
@@ -38,7 +38,7 @@ void main() async {
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
-      name: 'cache1',
+      name: 'cache',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

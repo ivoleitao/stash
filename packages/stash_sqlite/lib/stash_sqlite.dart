@@ -67,7 +67,7 @@ Future<SqliteVaultStore> newSqliteLocalVaultStore(
     DatabaseSetup? databaseSetup}) {
   return SqliteFileAdapter.build<VaultInfo, VaultEntry>(
           (QueryExecutor executor) => VaultDatabase(executor),
-          file ?? File('${Directory.systemTemp.path}/stash_sqlite.db'),
+          file ?? File('${Directory.systemTemp.path}/vault.db'),
           logStatements: logStatements,
           setup: databaseSetup)
       .then((adapter) => SqliteVaultStore(adapter,
@@ -89,7 +89,7 @@ Future<SqliteCacheStore> newSqliteLocalCacheStore(
     DatabaseSetup? databaseSetup}) {
   return SqliteFileAdapter.build<CacheInfo, CacheEntry>(
           (QueryExecutor executor) => CacheDatabase(executor),
-          file ?? File('${Directory.systemTemp.path}/stash_sqlite.db'),
+          file ?? File('${Directory.systemTemp.path}/cache.db'),
           logStatements: logStatements,
           setup: databaseSetup)
       .then((adapter) => SqliteCacheStore(adapter,

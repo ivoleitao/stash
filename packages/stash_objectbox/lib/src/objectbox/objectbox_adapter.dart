@@ -64,7 +64,7 @@ class ObjectboxAdapter {
   /// * [name]: The partition name
   Future<void> create(String name) {
     if (!_partitions.containsKey(name)) {
-      return _directory(name).create().then((dir) {
+      return _directory(name).create(recursive: true).then((dir) {
         final store = Store(getObjectBoxModel(),
             directory: dir.path,
             maxDBSizeInKB: maxDBSizeInKB,

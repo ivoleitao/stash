@@ -36,7 +36,7 @@ void main() async {
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
-      name: 'cache1',
+      name: 'cache',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

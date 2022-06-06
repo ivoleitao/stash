@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:isar/isar.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash_file/stash_file.dart';
+import 'package:stash_isar/stash_isar.dart';
 
 class Task {
   final int id;
@@ -10,7 +11,7 @@ class Task {
 
   Task({required this.id, required this.title, this.completed = false});
 
-  /// Creates a [Task] from json map
+  /// Creates a [Task] from json ma
   factory Task.fromJson(Map<String, dynamic> json) => Task(
       id: json['id'] as int,
       title: json['title'] as String,
@@ -27,16 +28,17 @@ class Task {
 }
 
 void main() async {
+  await Isar.initializeIsarCore(download: true);
   // Temporary directory
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newFileLocalCacheStore(
+  final store = await newIsarLocalCacheStore(
       path: path, fromEncodable: (json) => Task.fromJson(json));
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
-      name: 'cache',
+      name: 'cache1',
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(
