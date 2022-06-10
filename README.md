@@ -446,6 +446,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/blaugold"><img src="https://avatars.githubusercontent.com/u/5929595?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gabriel Terwesten</b></sub></a><br /><a href="https://github.com/ivoleitao/stash/commits?author=blaugold" title="Documentation">📖</a> <a href="https://github.com/ivoleitao/stash/commits?author=blaugold" title="Code">💻</a> <a href="https://github.com/ivoleitao/stash/commits?author=blaugold" title="Tests">⚠️</a> <a href="#example-blaugold" title="Examples">💡</a></td>
+    <td align="center"><a href="https://ilikerobots.github.io/"><img src="https://avatars.githubusercontent.com/u/6736189?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mike Hoolehan</b></sub></a><br /><a href="https://github.com/ivoleitao/stash/commits?author=ilikerobots" title="Tests">⚠️</a></td>
   </tr>
 </table>
 

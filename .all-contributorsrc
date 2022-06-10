@@ -21,6 +21,15 @@
         "test",
         "example"
       ]
+    },
+    {
+      "login": "ilikerobots",
+      "name": "Mike Hoolehan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6736189?v=4",
+      "profile": "https://ilikerobots.github.io/",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
