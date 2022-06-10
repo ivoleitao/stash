@@ -54,6 +54,12 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# node
+node_modules
+
+#yarn
+yarn.lock
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
