@@ -1,7 +1,4 @@
 # stash
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Build Status](https://github.com/ivoleitao/stash/actions/workflows/dart-ci.yml/badge.svg)](https://github.com/ivoleitao/stash/actions/workflows/dart-ci.yml)
 [![Pub Package](https://img.shields.io/pub/v/stash.svg?style=flat-square)](https://pub.dartlang.org/packages/stash)
@@ -440,6 +437,10 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/ivoleitao/stash/blob/develop/LICENSE) file for details
 
 ## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
