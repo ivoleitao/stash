@@ -1,3 +1,7 @@
+# 4.2.0
+
+- chore: Version bump
+
 # 4.1.0
 
 - BREAKING CHANGE: Changed minimum sdk version

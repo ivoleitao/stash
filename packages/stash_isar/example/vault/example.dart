@@ -29,8 +29,9 @@ class Task {
 }
 
 void main() async {
+  // Initialize Isar
   await Isar.initializeIsarCore(
-      libraries: {Abi.macosArm64: '/usr/local/lib/libisar.dylib'});
+      libraries: {Abi.current(): '.dart_tool/libisar.dylib'}, download: true);
 
   // Temporary directory
   final path = Directory.systemTemp.path;

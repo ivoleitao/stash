@@ -1,3 +1,7 @@
+# 4.2.0
+
+- feat: Added support for the cbl package
+
 # 4.1.0
 
 - BREAKING CHANGE: Changed minimum sdk version

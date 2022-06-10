@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:isar/isar.dart';
@@ -28,7 +29,10 @@ class Task {
 }
 
 void main() async {
-  await Isar.initializeIsarCore(download: true);
+  // Initialize Isar
+  await Isar.initializeIsarCore(
+      libraries: {Abi.current(): '.dart_tool/libisar.dylib'}, download: true);
+
   // Temporary directory
   final path = Directory.systemTemp.path;
 
