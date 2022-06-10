@@ -1,9 +1,14 @@
 {
+  "projectName": "stash",
+  "projectOwner": "ivoleitao",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": false,
+  "commit": true,
+  "commitConvention": "gitmoji",
   "contributors": [
     {
       "login": "blaugold",
@@ -11,14 +16,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/5929595?v=4",
       "profile": "https://github.com/blaugold",
       "contributions": [
-        "code"
+        "doc"
       ]
     }
   ],
-  "contributorsPerLine": 7,
-  "projectName": "stash",
-  "projectOwner": "ivoleitao",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "skipCi": true
+  "contributorsPerLine": 7
 }
