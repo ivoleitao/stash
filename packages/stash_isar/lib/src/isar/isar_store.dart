@@ -216,7 +216,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
         if (entry != null) {
           final model = fromEntry(entry..updateInfo(info));
 
-          return partition.isar.writeTxn((_) => partition.put(model));
+          return partition.isar.writeTxn(() => partition.put(model));
         }
 
         return Future.value();
@@ -238,11 +238,11 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     if (partition != null) {
       return _partitionModel(partition, key).then((model) {
         if (model != null) {
-          return partition.isar.writeTxn((_) =>
+          return partition.isar.writeTxn(() =>
               partition.put(fromEntry(entry)..id = model.id).then((_) => null));
         } else {
           return partition.isar.writeTxn(
-              (_) => partition.put(fromEntry(entry)).then((_) => null));
+              () => partition.put(fromEntry(entry)).then((_) => null));
         }
       });
     }
@@ -260,7 +260,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
 
         if (id != null) {
           return partition.isar
-              .writeTxn((_) => partition.delete(id).then((_) => null));
+              .writeTxn(() => partition.delete(id).then((_) => null));
         }
 
         return Future.value();

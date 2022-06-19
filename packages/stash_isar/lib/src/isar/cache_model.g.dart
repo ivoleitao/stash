@@ -6,7 +6,8 @@ part of 'cache_model.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers, inference_failure_on_function_invocation
 
 extension GetCacheModelCollection on Isar {
   IsarCollection<CacheModel> get cacheModels => getCollection();
@@ -60,7 +61,7 @@ void _cacheModelSetId(CacheModel object, int id) {
   object.id = id;
 }
 
-List<IsarLinkBase> _cacheModelGetLinks(CacheModel object) {
+List<IsarLinkBase<dynamic>> _cacheModelGetLinks(CacheModel object) {
   return [];
 }
 
@@ -71,36 +72,20 @@ void _cacheModelSerializeNative(
     int staticSize,
     List<int> offsets,
     AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.accessTime;
-  final _accessTime = value0;
-  final value1 = object.creationTime;
-  final _creationTime = value1;
-  final value2 = object.expiryTime;
-  final _expiryTime = value2;
-  final value3 = object.hitCount;
-  final _hitCount = value3;
-  final value4 = object.key;
-  final _key = IsarBinaryWriter.utf8Encoder.convert(value4);
-  dynamicSize += (_key.length) as int;
-  final value5 = object.updateTime;
-  final _updateTime = value5;
-  final value6 = object.value;
-  dynamicSize += (value6.length) * 1;
-  final _value = value6;
-  final size = staticSize + dynamicSize;
-
+  final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
+  final size = staticSize + (key$Bytes.length) + (object.value.length);
   cObj.buffer = alloc(size);
   cObj.buffer_length = size;
+
   final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _accessTime);
-  writer.writeDateTime(offsets[1], _creationTime);
-  writer.writeDateTime(offsets[2], _expiryTime);
-  writer.writeLong(offsets[3], _hitCount);
-  writer.writeBytes(offsets[4], _key);
-  writer.writeDateTime(offsets[5], _updateTime);
-  writer.writeBytes(offsets[6], _value);
+  writer.writeDateTime(offsets[0], object.accessTime);
+  writer.writeDateTime(offsets[1], object.creationTime);
+  writer.writeDateTime(offsets[2], object.expiryTime);
+  writer.writeLong(offsets[3], object.hitCount);
+  writer.writeBytes(offsets[4], key$Bytes);
+  writer.writeDateTime(offsets[5], object.updateTime);
+  writer.writeBytes(offsets[6], object.value);
 }
 
 CacheModel _cacheModelDeserializeNative(IsarCollection<CacheModel> collection,
@@ -141,7 +126,7 @@ P _cacheModelDeserializePropNative<P>(
   }
 }
 
-dynamic _cacheModelSerializeWeb(
+Object _cacheModelSerializeWeb(
     IsarCollection<CacheModel> collection, CacheModel object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(
@@ -160,23 +145,23 @@ dynamic _cacheModelSerializeWeb(
 }
 
 CacheModel _cacheModelDeserializeWeb(
-    IsarCollection<CacheModel> collection, dynamic jsObj) {
+    IsarCollection<CacheModel> collection, Object jsObj) {
   final object = CacheModel();
   object.accessTime = IsarNative.jsObjectGet(jsObj, 'accessTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'accessTime'),
+              IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
               isUtc: true)
           .toLocal()
       : null;
   object.creationTime = IsarNative.jsObjectGet(jsObj, 'creationTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'creationTime'),
+              IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
               isUtc: true)
           .toLocal()
       : DateTime.fromMillisecondsSinceEpoch(0);
   object.expiryTime = IsarNative.jsObjectGet(jsObj, 'expiryTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'expiryTime'),
+              IsarNative.jsObjectGet(jsObj, 'expiryTime') as int,
               isUtc: true)
           .toLocal()
       : DateTime.fromMillisecondsSinceEpoch(0);
@@ -185,7 +170,7 @@ CacheModel _cacheModelDeserializeWeb(
   object.key = IsarNative.jsObjectGet(jsObj, 'key') ?? '';
   object.updateTime = IsarNative.jsObjectGet(jsObj, 'updateTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'updateTime'),
+              IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
               isUtc: true)
           .toLocal()
       : null;
@@ -198,21 +183,21 @@ P _cacheModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'accessTime':
       return (IsarNative.jsObjectGet(jsObj, 'accessTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'accessTime'),
+                  IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
     case 'creationTime':
       return (IsarNative.jsObjectGet(jsObj, 'creationTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'creationTime'),
+                  IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
                   isUtc: true)
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     case 'expiryTime':
       return (IsarNative.jsObjectGet(jsObj, 'expiryTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'expiryTime'),
+                  IsarNative.jsObjectGet(jsObj, 'expiryTime') as int,
                   isUtc: true)
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
@@ -225,7 +210,7 @@ P _cacheModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'updateTime':
       return (IsarNative.jsObjectGet(jsObj, 'updateTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'updateTime'),
+                  IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
@@ -236,7 +221,8 @@ P _cacheModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-void _cacheModelAttachLinks(IsarCollection col, int id, CacheModel object) {}
+void _cacheModelAttachLinks(
+    IsarCollection<dynamic> col, int id, CacheModel object) {}
 
 extension CacheModelQueryWhereSort
     on QueryBuilder<CacheModel, CacheModel, QWhere> {
@@ -342,17 +328,14 @@ extension CacheModelQueryFilter
     on QueryBuilder<CacheModel, CacheModel, QFilterCondition> {
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       accessTimeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'accessTime',
-      value: null,
     ));
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> accessTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'accessTime',
       value: value,
     ));
@@ -363,8 +346,7 @@ extension CacheModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'accessTime',
       value: value,
@@ -376,8 +358,7 @@ extension CacheModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'accessTime',
       value: value,
@@ -401,8 +382,7 @@ extension CacheModelQueryFilter
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       creationTimeEqualTo(DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'creationTime',
       value: value,
     ));
@@ -413,8 +393,7 @@ extension CacheModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'creationTime',
       value: value,
@@ -426,8 +405,7 @@ extension CacheModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'creationTime',
       value: value,
@@ -452,8 +430,7 @@ extension CacheModelQueryFilter
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> expiryTimeEqualTo(
       DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'expiryTime',
       value: value,
     ));
@@ -464,8 +441,7 @@ extension CacheModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'expiryTime',
       value: value,
@@ -477,8 +453,7 @@ extension CacheModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'expiryTime',
       value: value,
@@ -501,17 +476,14 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> hitCountIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'hitCount',
-      value: null,
     ));
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> hitCountEqualTo(
       int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'hitCount',
       value: value,
     ));
@@ -522,8 +494,7 @@ extension CacheModelQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'hitCount',
       value: value,
@@ -534,8 +505,7 @@ extension CacheModelQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'hitCount',
       value: value,
@@ -558,17 +528,14 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'id',
-      value: null,
     ));
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idEqualTo(
       int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'id',
       value: value,
     ));
@@ -578,8 +545,7 @@ extension CacheModelQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'id',
       value: value,
@@ -590,8 +556,7 @@ extension CacheModelQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'id',
       value: value,
@@ -617,8 +582,7 @@ extension CacheModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -630,8 +594,7 @@ extension CacheModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'key',
       value: value,
@@ -644,8 +607,7 @@ extension CacheModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'key',
       value: value,
@@ -674,8 +636,7 @@ extension CacheModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
+    return addFilterConditionInternal(FilterCondition.startsWith(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -686,8 +647,7 @@ extension CacheModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
+    return addFilterConditionInternal(FilterCondition.endsWith(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -697,8 +657,7 @@ extension CacheModelQueryFilter
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> keyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
+    return addFilterConditionInternal(FilterCondition.contains(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -708,27 +667,23 @@ extension CacheModelQueryFilter
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> keyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
+    return addFilterConditionInternal(FilterCondition.matches(
       property: 'key',
-      value: pattern,
+      wildcard: pattern,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       updateTimeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'updateTime',
-      value: null,
     ));
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> updateTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'updateTime',
       value: value,
     ));
@@ -739,8 +694,7 @@ extension CacheModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'updateTime',
       value: value,
@@ -752,8 +706,7 @@ extension CacheModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'updateTime',
       value: value,
@@ -811,14 +764,6 @@ extension CacheModelQueryWhereSortBy
 
   QueryBuilder<CacheModel, CacheModel, QAfterSortBy> sortByHitCountDesc() {
     return addSortByInternal('hitCount', Sort.desc);
-  }
-
-  QueryBuilder<CacheModel, CacheModel, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<CacheModel, CacheModel, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterSortBy> sortByKey() {
@@ -913,10 +858,6 @@ extension CacheModelQueryWhereDistinct
 
   QueryBuilder<CacheModel, CacheModel, QDistinct> distinctByHitCount() {
     return addDistinctByInternal('hitCount');
-  }
-
-  QueryBuilder<CacheModel, CacheModel, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
   }
 
   QueryBuilder<CacheModel, CacheModel, QDistinct> distinctByKey(

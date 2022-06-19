@@ -42,7 +42,6 @@ jobs:
 
       - name: Bootstrap
         run: |
-          dart pub cache clean
           melos build
           melos get
 

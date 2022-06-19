@@ -16,9 +16,6 @@ abstract class IsarAdapter<M extends EntryModel> {
   /// The relaxed durability setting
   final bool? relaxedDurability;
 
-  /// The inspector setting
-  final bool? inspector;
-
   /// List of partitions
   final Map<String, Isar> _partitions = {};
 
@@ -27,8 +24,7 @@ abstract class IsarAdapter<M extends EntryModel> {
   /// * [schema]: The collection schema
   /// * [path]: The base location of the Isar partition
   /// * [relaxedDurability]: Relaxed durability setting
-  /// * [inspector]: Inspector setting
-  IsarAdapter(this.schema, {this.path, this.relaxedDurability, this.inspector});
+  IsarAdapter(this.schema, {this.path, this.relaxedDurability});
 
   /// Creates a partition
   ///
@@ -39,8 +35,7 @@ abstract class IsarAdapter<M extends EntryModel> {
               schemas: [schema],
               directory: path,
               name: name,
-              relaxedDurability: relaxedDurability ?? true,
-              inspector: inspector ?? false)
+              relaxedDurability: relaxedDurability ?? true)
           .then((isar) {
         _partitions[name] = isar;
 
@@ -97,21 +92,17 @@ class IsarVaultAdapter extends IsarAdapter<VaultModel> {
   ///
   /// * [path]: The base location of the Isar partition
   /// * [relaxedDurability]: Relaxed durability setting
-  /// * [inspector]: Inspector setting
-  IsarVaultAdapter._({super.path, super.relaxedDurability, super.inspector})
+  IsarVaultAdapter._({super.path, super.relaxedDurability})
       : super(VaultModelSchema);
 
   /// Builds [IsarVaultAdapter].
   ///
   /// * [path]: The base location of the Isar partition
   /// * [relaxedDurability]: Relaxed durability setting
-  /// * [inspector]: Inspector setting
   static Future<IsarVaultAdapter> build(
       {String? path, bool? relaxedDurability, bool? inspector}) {
-    return Future.value(IsarVaultAdapter._(
-        path: path,
-        relaxedDurability: relaxedDurability,
-        inspector: inspector));
+    return Future.value(
+        IsarVaultAdapter._(path: path, relaxedDurability: relaxedDurability));
   }
 }
 
@@ -123,7 +114,7 @@ class IsarCacheAdapter extends IsarAdapter<CacheModel> {
   /// * [path]: The base location of the Isar partition
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [inspector]: Inspector setting
-  IsarCacheAdapter._({super.path, super.relaxedDurability, super.inspector})
+  IsarCacheAdapter._({super.path, super.relaxedDurability})
       : super(CacheModelSchema);
 
   /// Builds [IsarCacheAdapter].
@@ -133,9 +124,7 @@ class IsarCacheAdapter extends IsarAdapter<CacheModel> {
   /// * [inspector]: Inspector setting
   static Future<IsarCacheAdapter> build(
       {String? path, bool? relaxedDurability, bool? inspector}) {
-    return Future.value(IsarCacheAdapter._(
-        path: path,
-        relaxedDurability: relaxedDurability,
-        inspector: inspector));
+    return Future.value(
+        IsarCacheAdapter._(path: path, relaxedDurability: relaxedDurability));
   }
 }

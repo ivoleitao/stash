@@ -6,7 +6,8 @@ part of 'vault_model.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers, inference_failure_on_function_invocation
 
 extension GetVaultModelCollection on Isar {
   IsarCollection<VaultModel> get vaultModels => getCollection();
@@ -58,7 +59,7 @@ void _vaultModelSetId(VaultModel object, int id) {
   object.id = id;
 }
 
-List<IsarLinkBase> _vaultModelGetLinks(VaultModel object) {
+List<IsarLinkBase<dynamic>> _vaultModelGetLinks(VaultModel object) {
   return [];
 }
 
@@ -69,30 +70,18 @@ void _vaultModelSerializeNative(
     int staticSize,
     List<int> offsets,
     AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.accessTime;
-  final _accessTime = value0;
-  final value1 = object.creationTime;
-  final _creationTime = value1;
-  final value2 = object.key;
-  final _key = IsarBinaryWriter.utf8Encoder.convert(value2);
-  dynamicSize += (_key.length) as int;
-  final value3 = object.updateTime;
-  final _updateTime = value3;
-  final value4 = object.value;
-  dynamicSize += (value4.length) * 1;
-  final _value = value4;
-  final size = staticSize + dynamicSize;
-
+  final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
+  final size = staticSize + (key$Bytes.length) + (object.value.length);
   cObj.buffer = alloc(size);
   cObj.buffer_length = size;
+
   final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _accessTime);
-  writer.writeDateTime(offsets[1], _creationTime);
-  writer.writeBytes(offsets[2], _key);
-  writer.writeDateTime(offsets[3], _updateTime);
-  writer.writeBytes(offsets[4], _value);
+  writer.writeDateTime(offsets[0], object.accessTime);
+  writer.writeDateTime(offsets[1], object.creationTime);
+  writer.writeBytes(offsets[2], key$Bytes);
+  writer.writeDateTime(offsets[3], object.updateTime);
+  writer.writeBytes(offsets[4], object.value);
 }
 
 VaultModel _vaultModelDeserializeNative(IsarCollection<VaultModel> collection,
@@ -127,7 +116,7 @@ P _vaultModelDeserializePropNative<P>(
   }
 }
 
-dynamic _vaultModelSerializeWeb(
+Object _vaultModelSerializeWeb(
     IsarCollection<VaultModel> collection, VaultModel object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(
@@ -143,17 +132,17 @@ dynamic _vaultModelSerializeWeb(
 }
 
 VaultModel _vaultModelDeserializeWeb(
-    IsarCollection<VaultModel> collection, dynamic jsObj) {
+    IsarCollection<VaultModel> collection, Object jsObj) {
   final object = VaultModel();
   object.accessTime = IsarNative.jsObjectGet(jsObj, 'accessTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'accessTime'),
+              IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
               isUtc: true)
           .toLocal()
       : null;
   object.creationTime = IsarNative.jsObjectGet(jsObj, 'creationTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'creationTime'),
+              IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
               isUtc: true)
           .toLocal()
       : DateTime.fromMillisecondsSinceEpoch(0);
@@ -161,7 +150,7 @@ VaultModel _vaultModelDeserializeWeb(
   object.key = IsarNative.jsObjectGet(jsObj, 'key') ?? '';
   object.updateTime = IsarNative.jsObjectGet(jsObj, 'updateTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'updateTime'),
+              IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
               isUtc: true)
           .toLocal()
       : null;
@@ -174,14 +163,14 @@ P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'accessTime':
       return (IsarNative.jsObjectGet(jsObj, 'accessTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'accessTime'),
+                  IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
     case 'creationTime':
       return (IsarNative.jsObjectGet(jsObj, 'creationTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'creationTime'),
+                  IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
                   isUtc: true)
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
@@ -192,7 +181,7 @@ P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'updateTime':
       return (IsarNative.jsObjectGet(jsObj, 'updateTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'updateTime'),
+                  IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
@@ -203,7 +192,8 @@ P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-void _vaultModelAttachLinks(IsarCollection col, int id, VaultModel object) {}
+void _vaultModelAttachLinks(
+    IsarCollection<dynamic> col, int id, VaultModel object) {}
 
 extension VaultModelQueryWhereSort
     on QueryBuilder<VaultModel, VaultModel, QWhere> {
@@ -309,17 +299,14 @@ extension VaultModelQueryFilter
     on QueryBuilder<VaultModel, VaultModel, QFilterCondition> {
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       accessTimeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'accessTime',
-      value: null,
     ));
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> accessTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'accessTime',
       value: value,
     ));
@@ -330,8 +317,7 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'accessTime',
       value: value,
@@ -343,8 +329,7 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'accessTime',
       value: value,
@@ -368,8 +353,7 @@ extension VaultModelQueryFilter
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       creationTimeEqualTo(DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'creationTime',
       value: value,
     ));
@@ -380,8 +364,7 @@ extension VaultModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'creationTime',
       value: value,
@@ -393,8 +376,7 @@ extension VaultModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'creationTime',
       value: value,
@@ -418,17 +400,14 @@ extension VaultModelQueryFilter
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'id',
-      value: null,
     ));
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idEqualTo(
       int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'id',
       value: value,
     ));
@@ -438,8 +417,7 @@ extension VaultModelQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'id',
       value: value,
@@ -450,8 +428,7 @@ extension VaultModelQueryFilter
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'id',
       value: value,
@@ -477,8 +454,7 @@ extension VaultModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -490,8 +466,7 @@ extension VaultModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'key',
       value: value,
@@ -504,8 +479,7 @@ extension VaultModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'key',
       value: value,
@@ -534,8 +508,7 @@ extension VaultModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
+    return addFilterConditionInternal(FilterCondition.startsWith(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -546,8 +519,7 @@ extension VaultModelQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
+    return addFilterConditionInternal(FilterCondition.endsWith(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -557,8 +529,7 @@ extension VaultModelQueryFilter
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
+    return addFilterConditionInternal(FilterCondition.contains(
       property: 'key',
       value: value,
       caseSensitive: caseSensitive,
@@ -568,27 +539,23 @@ extension VaultModelQueryFilter
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
+    return addFilterConditionInternal(FilterCondition.matches(
       property: 'key',
-      value: pattern,
+      wildcard: pattern,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       updateTimeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
+    return addFilterConditionInternal(const FilterCondition.isNull(
       property: 'updateTime',
-      value: null,
     ));
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> updateTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
+    return addFilterConditionInternal(FilterCondition.equalTo(
       property: 'updateTime',
       value: value,
     ));
@@ -599,8 +566,7 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
+    return addFilterConditionInternal(FilterCondition.greaterThan(
       include: include,
       property: 'updateTime',
       value: value,
@@ -612,8 +578,7 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
+    return addFilterConditionInternal(FilterCondition.lessThan(
       include: include,
       property: 'updateTime',
       value: value,
@@ -655,14 +620,6 @@ extension VaultModelQueryWhereSortBy
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByCreationTimeDesc() {
     return addSortByInternal('creationTime', Sort.desc);
-  }
-
-  QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByKey() {
@@ -733,10 +690,6 @@ extension VaultModelQueryWhereDistinct
 
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByCreationTime() {
     return addDistinctByInternal('creationTime');
-  }
-
-  QueryBuilder<VaultModel, VaultModel, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
   }
 
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByKey(
