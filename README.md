@@ -11,7 +11,7 @@
 
 ## Overview
 
-The `stash` library is a key-value store abstraction with a pluggable backend architecture that provides support for vault and cache objects.The vault is a simple key value storage for primitives and objects. The cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
+The `stash` library is a key-value store abstraction with a pluggable backend architecture that provides support for vault and cache objects. The vault is a simple key value storage for primitives and objects, the cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
 
 3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the developers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
 

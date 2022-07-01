@@ -1,3 +1,8 @@
+# 4.2.1
+
+- chore: Updated README
+- feat: Updated dependencies
+
 # 4.2.0
 
 - feat: Added support for the cbl package

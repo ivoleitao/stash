@@ -31,8 +31,7 @@ abstract class IsarAdapter<M extends EntryModel> {
   /// * [name]: The partition name
   Future<void> create(String name) {
     if (!_partitions.containsKey(name)) {
-      return Isar.open(
-              schemas: [schema],
+      return Isar.open([schema],
               directory: path,
               name: name,
               relaxedDurability: relaxedDurability ?? true)

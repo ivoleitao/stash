@@ -7,28 +7,28 @@ part of 'vault_model.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable, no_leading_underscores_for_local_identifiers, inference_failure_on_function_invocation
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
 
 extension GetVaultModelCollection on Isar {
   IsarCollection<VaultModel> get vaultModels => getCollection();
 }
 
 const VaultModelSchema = CollectionSchema(
-  name: 'Vault',
+  name: r'Vault',
   schema:
-      '{"name":"Vault","idName":"id","properties":[{"name":"accessTime","type":"Long"},{"name":"creationTime","type":"Long"},{"name":"key","type":"String"},{"name":"updateTime","type":"Long"},{"name":"value","type":"ByteList"}],"indexes":[{"name":"key","unique":false,"replace":false,"properties":[{"name":"key","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  idName: 'id',
+      r'{"name":"Vault","idName":"id","properties":[{"name":"accessTime","type":"Long"},{"name":"creationTime","type":"Long"},{"name":"key","type":"String"},{"name":"updateTime","type":"Long"},{"name":"value","type":"ByteList"}],"indexes":[{"name":"key","unique":false,"replace":false,"properties":[{"name":"key","type":"Hash","caseSensitive":true}]}],"links":[]}',
+  idName: r'id',
   propertyIds: {
-    'accessTime': 0,
-    'creationTime': 1,
-    'key': 2,
-    'updateTime': 3,
-    'value': 4
+    r'accessTime': 0,
+    r'creationTime': 1,
+    r'key': 2,
+    r'updateTime': 3,
+    r'value': 4
   },
-  listProperties: {'value'},
-  indexIds: {'key': 0},
+  listProperties: {r'value'},
+  indexIds: {r'key': 0},
   indexValueTypes: {
-    'key': [
+    r'key': [
       IndexValueType.stringHash,
     ]
   },
@@ -71,12 +71,13 @@ void _vaultModelSerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
-  final size = staticSize + (key$Bytes.length) + (object.value.length);
+  final size = (staticSize + (key$Bytes.length) + (object.value.length)) as int;
   cObj.buffer = alloc(size);
   cObj.buffer_length = size;
 
   final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeHeader();
   writer.writeDateTime(offsets[0], object.accessTime);
   writer.writeDateTime(offsets[1], object.creationTime);
   writer.writeBytes(offsets[2], key$Bytes);
@@ -112,7 +113,7 @@ P _vaultModelDeserializePropNative<P>(
     case 4:
       return (reader.readBytes(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Illegal propertyIndex');
   }
 }
 
@@ -120,75 +121,75 @@ Object _vaultModelSerializeWeb(
     IsarCollection<VaultModel> collection, VaultModel object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(
-      jsObj, 'accessTime', object.accessTime?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'creationTime',
+      jsObj, r'accessTime', object.accessTime?.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, r'creationTime',
       object.creationTime.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'key', object.key);
+  IsarNative.jsObjectSet(jsObj, r'id', object.id);
+  IsarNative.jsObjectSet(jsObj, r'key', object.key);
   IsarNative.jsObjectSet(
-      jsObj, 'updateTime', object.updateTime?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'value', object.value);
+      jsObj, r'updateTime', object.updateTime?.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, r'value', object.value);
   return jsObj;
 }
 
 VaultModel _vaultModelDeserializeWeb(
     IsarCollection<VaultModel> collection, Object jsObj) {
   final object = VaultModel();
-  object.accessTime = IsarNative.jsObjectGet(jsObj, 'accessTime') != null
+  object.accessTime = IsarNative.jsObjectGet(jsObj, r'accessTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
+              IsarNative.jsObjectGet(jsObj, r'accessTime') as int,
               isUtc: true)
           .toLocal()
       : null;
-  object.creationTime = IsarNative.jsObjectGet(jsObj, 'creationTime') != null
+  object.creationTime = IsarNative.jsObjectGet(jsObj, r'creationTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
+              IsarNative.jsObjectGet(jsObj, r'creationTime') as int,
               isUtc: true)
           .toLocal()
       : DateTime.fromMillisecondsSinceEpoch(0);
-  object.id = IsarNative.jsObjectGet(jsObj, 'id');
-  object.key = IsarNative.jsObjectGet(jsObj, 'key') ?? '';
-  object.updateTime = IsarNative.jsObjectGet(jsObj, 'updateTime') != null
+  object.id = IsarNative.jsObjectGet(jsObj, r'id');
+  object.key = IsarNative.jsObjectGet(jsObj, r'key') ?? '';
+  object.updateTime = IsarNative.jsObjectGet(jsObj, r'updateTime') != null
       ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
+              IsarNative.jsObjectGet(jsObj, r'updateTime') as int,
               isUtc: true)
           .toLocal()
       : null;
-  object.value = IsarNative.jsObjectGet(jsObj, 'value') ?? Uint8List(0);
+  object.value = IsarNative.jsObjectGet(jsObj, r'value') ?? Uint8List(0);
   return object;
 }
 
 P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
-    case 'accessTime':
-      return (IsarNative.jsObjectGet(jsObj, 'accessTime') != null
+    case r'accessTime':
+      return (IsarNative.jsObjectGet(jsObj, r'accessTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'accessTime') as int,
+                  IsarNative.jsObjectGet(jsObj, r'accessTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
-    case 'creationTime':
-      return (IsarNative.jsObjectGet(jsObj, 'creationTime') != null
+    case r'creationTime':
+      return (IsarNative.jsObjectGet(jsObj, r'creationTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'creationTime') as int,
+                  IsarNative.jsObjectGet(jsObj, r'creationTime') as int,
                   isUtc: true)
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'key':
-      return (IsarNative.jsObjectGet(jsObj, 'key') ?? '') as P;
-    case 'updateTime':
-      return (IsarNative.jsObjectGet(jsObj, 'updateTime') != null
+    case r'id':
+      return (IsarNative.jsObjectGet(jsObj, r'id')) as P;
+    case r'key':
+      return (IsarNative.jsObjectGet(jsObj, r'key') ?? '') as P;
+    case r'updateTime':
+      return (IsarNative.jsObjectGet(jsObj, r'updateTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'updateTime') as int,
+                  IsarNative.jsObjectGet(jsObj, r'updateTime') as int,
                   isUtc: true)
               .toLocal()
           : null) as P;
-    case 'value':
-      return (IsarNative.jsObjectGet(jsObj, 'value') ?? Uint8List(0)) as P;
+    case r'value':
+      return (IsarNative.jsObjectGet(jsObj, r'value') ?? Uint8List(0)) as P;
     default:
-      throw 'Illegal propertyName';
+      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -198,53 +199,69 @@ void _vaultModelAttachLinks(
 extension VaultModelQueryWhereSort
     on QueryBuilder<VaultModel, VaultModel, QWhere> {
   QueryBuilder<VaultModel, VaultModel, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhere> anyKey() {
-    return addWhereClauseInternal(const IndexWhereClause.any(indexName: 'key'));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'key'),
+      );
+    });
   }
 }
 
 extension VaultModelQueryWhere
     on QueryBuilder<VaultModel, VaultModel, QWhereClause> {
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> idGreaterThan(int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> idLessThan(int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> idBetween(
@@ -253,45 +270,59 @@ extension VaultModelQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> keyEqualTo(
       String key) {
-    return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'key',
-      value: [key],
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'key',
+        value: [key],
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> keyNotEqualTo(
       String key) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'key',
-        upper: [key],
-        includeUpper: false,
-      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'key',
-        lower: [key],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'key',
-        lower: [key],
-        includeLower: false,
-      )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'key',
-        upper: [key],
-        includeUpper: false,
-      ));
-    }
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'key',
+              lower: [],
+              upper: [key],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'key',
+              lower: [key],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'key',
+              lower: [key],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'key',
+              lower: [],
+              upper: [key],
+              includeUpper: false,
+            ));
+      }
+    });
   }
 }
 
@@ -299,17 +330,21 @@ extension VaultModelQueryFilter
     on QueryBuilder<VaultModel, VaultModel, QFilterCondition> {
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       accessTimeIsNull() {
-    return addFilterConditionInternal(const FilterCondition.isNull(
-      property: 'accessTime',
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'accessTime',
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> accessTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition.equalTo(
-      property: 'accessTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'accessTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -317,11 +352,13 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.greaterThan(
-      include: include,
-      property: 'accessTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'accessTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -329,11 +366,13 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.lessThan(
-      include: include,
-      property: 'accessTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'accessTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> accessTimeBetween(
@@ -342,21 +381,25 @@ extension VaultModelQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'accessTime',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'accessTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       creationTimeEqualTo(DateTime value) {
-    return addFilterConditionInternal(FilterCondition.equalTo(
-      property: 'creationTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'creationTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -364,11 +407,13 @@ extension VaultModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.greaterThan(
-      include: include,
-      property: 'creationTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'creationTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -376,11 +421,13 @@ extension VaultModelQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.lessThan(
-      include: include,
-      property: 'creationTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'creationTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -390,49 +437,59 @@ extension VaultModelQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'creationTime',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'creationTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(const FilterCondition.isNull(
-      property: 'id',
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idEqualTo(
       int value) {
-    return addFilterConditionInternal(FilterCondition.equalTo(
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idGreaterThan(
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.greaterThan(
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idLessThan(
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.lessThan(
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idBetween(
@@ -441,24 +498,28 @@ extension VaultModelQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.equalTo(
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyGreaterThan(
@@ -466,12 +527,14 @@ extension VaultModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.greaterThan(
-      include: include,
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyLessThan(
@@ -479,12 +542,14 @@ extension VaultModelQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.lessThan(
-      include: include,
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyBetween(
@@ -494,71 +559,85 @@ extension VaultModelQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'key',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'key',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.startsWith(
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.endsWith(
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition.contains(
-      property: 'key',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition.matches(
-      property: 'key',
-      wildcard: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'key',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       updateTimeIsNull() {
-    return addFilterConditionInternal(const FilterCondition.isNull(
-      property: 'updateTime',
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updateTime',
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> updateTimeEqualTo(
       DateTime? value) {
-    return addFilterConditionInternal(FilterCondition.equalTo(
-      property: 'updateTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updateTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -566,11 +645,13 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.greaterThan(
-      include: include,
-      property: 'updateTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updateTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
@@ -578,11 +659,13 @@ extension VaultModelQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition.lessThan(
-      include: include,
-      property: 'updateTime',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updateTime',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> updateTimeBetween(
@@ -591,13 +674,15 @@ extension VaultModelQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'updateTime',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updateTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
@@ -607,124 +692,186 @@ extension VaultModelQueryLinks
 extension VaultModelQueryWhereSortBy
     on QueryBuilder<VaultModel, VaultModel, QSortBy> {
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByAccessTime() {
-    return addSortByInternal('accessTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'accessTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByAccessTimeDesc() {
-    return addSortByInternal('accessTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'accessTime', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByCreationTime() {
-    return addSortByInternal('creationTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'creationTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByCreationTimeDesc() {
-    return addSortByInternal('creationTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'creationTime', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByKey() {
-    return addSortByInternal('key', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'key', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByKeyDesc() {
-    return addSortByInternal('key', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'key', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByUpdateTime() {
-    return addSortByInternal('updateTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updateTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByUpdateTimeDesc() {
-    return addSortByInternal('updateTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updateTime', Sort.desc);
+    });
   }
 }
 
 extension VaultModelQueryWhereSortThenBy
     on QueryBuilder<VaultModel, VaultModel, QSortThenBy> {
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByAccessTime() {
-    return addSortByInternal('accessTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'accessTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByAccessTimeDesc() {
-    return addSortByInternal('accessTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'accessTime', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByCreationTime() {
-    return addSortByInternal('creationTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'creationTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByCreationTimeDesc() {
-    return addSortByInternal('creationTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'creationTime', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByKey() {
-    return addSortByInternal('key', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'key', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByKeyDesc() {
-    return addSortByInternal('key', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'key', Sort.desc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByUpdateTime() {
-    return addSortByInternal('updateTime', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updateTime', Sort.asc);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByUpdateTimeDesc() {
-    return addSortByInternal('updateTime', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updateTime', Sort.desc);
+    });
   }
 }
 
 extension VaultModelQueryWhereDistinct
     on QueryBuilder<VaultModel, VaultModel, QDistinct> {
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByAccessTime() {
-    return addDistinctByInternal('accessTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'accessTime');
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByCreationTime() {
-    return addDistinctByInternal('creationTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'creationTime');
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByKey(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('key', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByUpdateTime() {
-    return addDistinctByInternal('updateTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updateTime');
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QDistinct> distinctByValue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'value');
+    });
   }
 }
 
 extension VaultModelQueryProperty
     on QueryBuilder<VaultModel, VaultModel, QQueryProperty> {
   QueryBuilder<VaultModel, DateTime?, QQueryOperations> accessTimeProperty() {
-    return addPropertyNameInternal('accessTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'accessTime');
+    });
   }
 
   QueryBuilder<VaultModel, DateTime, QQueryOperations> creationTimeProperty() {
-    return addPropertyNameInternal('creationTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'creationTime');
+    });
   }
 
   QueryBuilder<VaultModel, int?, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
   }
 
   QueryBuilder<VaultModel, String, QQueryOperations> keyProperty() {
-    return addPropertyNameInternal('key');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'key');
+    });
   }
 
   QueryBuilder<VaultModel, DateTime?, QQueryOperations> updateTimeProperty() {
-    return addPropertyNameInternal('updateTime');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updateTime');
+    });
   }
 
   QueryBuilder<VaultModel, Uint8List, QQueryOperations> valueProperty() {
-    return addPropertyNameInternal('value');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'value');
+    });
   }
 }
