@@ -1,4 +1,4 @@
-# 4.2.1
+# 4.3.0
 
 - feat: Updated dependencies
 
