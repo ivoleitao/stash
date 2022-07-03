@@ -19,5 +19,5 @@ abstract class VaultEvent<T> extends StashEvent<T, VaultEventType, Vault<T>> {
   ///
   /// * [source]: The vault that originated the event
   /// * [type]: The event type
-  VaultEvent(Vault<T> source, VaultEventType type) : super(source, type);
+  VaultEvent(super.source, super.type);
 }

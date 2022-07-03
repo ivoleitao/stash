@@ -293,18 +293,21 @@ void check<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
 ///
 /// * [store]: The store implementation
 /// * [name]: The name of the vault
+/// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
 /// * [eventListenerMode]: The event listener mode of this vault
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
 Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
     T store,
     {String? name,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     Clock? clock,
     EventListenerMode? eventListenerMode,
     bool? statsEnabled,
     VaultStats? stats}) {
   return DefaultVaultManager().newGenericVault(store,
       name: name,
+      fromEncodable: fromEncodable,
       clock: clock,
       eventListenerMode: eventListenerMode,
       statsEnabled: statsEnabled,
@@ -315,6 +318,7 @@ Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
 ///
 /// * [store]: The store implementation
 /// * [name]: The name of the cache
+/// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
 /// * [expiryPolicy]: The expiry policy to use
 /// * [sampler]: The sampler to use upon eviction of a cache element
 /// * [evictionPolicy]: The eviction policy to use
@@ -327,6 +331,7 @@ Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
 Future<Cache<V>> newGenericCache<V, T extends Store<CacheInfo, CacheEntry>>(
     T store,
     {String? name,
+    dynamic Function(Map<String, dynamic>)? fromEncodable,
     ExpiryPolicy? expiryPolicy,
     KeySampler? sampler,
     EvictionPolicy? evictionPolicy,
@@ -338,6 +343,7 @@ Future<Cache<V>> newGenericCache<V, T extends Store<CacheInfo, CacheEntry>>(
     CacheStats? stats}) {
   return DefaultCacheManager().newGenericCache(store,
       name: name,
+      fromEncodable: fromEncodable,
       expiryPolicy: expiryPolicy,
       sampler: sampler,
       evictionPolicy: evictionPolicy,
@@ -533,14 +539,10 @@ abstract class TestContext<I extends Info, E extends Entry<I>,
   @override
   final ValueGenerator generator;
 
-  /// Function called on encodable object to obtain the underlining type
-  final dynamic Function(Map<String, dynamic>)? fromEncodable;
-
   /// Builds a new [TestContext]
   ///
   /// * [generator]: A value generator
-  /// * [fromEncodable]: An optional function to convert a json map into a object
-  TestContext(this.generator, {this.fromEncodable});
+  TestContext(this.generator);
 
   /// Creates a new store
   Future<T> newStore();
@@ -559,27 +561,27 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   /// Builds a new [VaultTestContext]
   ///
   /// * [generator]: A value generator
-  /// * [fromEncodable]: An optional function to convert a json map into a object
-  VaultTestContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: fromEncodable);
+  VaultTestContext(super.generator);
 
   /// Creates a new vault
   ///
   /// * [store]: The [Store]
   /// * [name]: The name of the vault
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [clock]: The source of time to be used on this
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
   Future<Vault<V>> newVault<V>(T store,
       {String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return newGenericVault<V, T>(store,
         name: name,
+        fromEncodable: fromEncodable ?? generator.fromEncodable,
         clock: clock,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
@@ -607,15 +609,13 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
   /// Builds a new [CacheTestContext]
   ///
   /// * [generator]: A value generator
-  /// * [fromEncodable]: An optional function to convert a json map into a object
-  CacheTestContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: fromEncodable);
+  CacheTestContext(super.generator);
 
   /// Creates a new cache
   ///
   /// * [store]: The [Store]
   /// * [name]: The name of the cache
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -627,6 +627,7 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
   /// * [stats]: The statistics instance
   Future<Cache<V>> newCache<V>(T store,
       {String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -638,6 +639,7 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
       CacheStats? stats}) {
     return newGenericCache<V, T>(store,
         name: name,
+        fromEncodable: fromEncodable ?? generator.fromEncodable,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,

@@ -28,6 +28,7 @@ abstract class DaoAdapter<I extends Info, E extends Entry<I>> {
   /// Returns the list of all store entries on a named store
   ///
   /// * [name]: The name of the store
+  /// * [valueDecoder]: The function used to convert a list of bytes to the store value
   ///
   /// Returns a [Iterable] over all [Entry]s
   Future<Iterable<E>> entries(

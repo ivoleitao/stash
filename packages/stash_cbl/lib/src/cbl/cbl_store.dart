@@ -2,35 +2,28 @@ import 'dart:typed_data';
 
 import 'package:cbl/cbl.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash/stash_msgpack.dart';
 
 import 'cbl_adapter.dart';
 
 /// Couchbase Lite based implementation of a [Store].
 abstract class CblStore<I extends Info, E extends Entry<I>>
-    extends Store<I, E> {
+    extends PersistenceStore<I, E> {
+  /// The adapter
+  final CblAdapter _adapter;
+
   /// Creates a Couchbase Lite based implementation of a [Store].
   ///
   /// * [_adapter]: The Couchbase Lite store adapter.
   /// * [codec]: The [StoreCodec] used to convert to/from a
   ///   Map<String, dynamic>` representation to a binary representation.
-  /// * [fromEncodable]: A custom function the converts to the object from a
-  ///   `Map<String, dynamic>` representation.
-  CblStore(
-    this._adapter, {
-    StoreCodec? codec,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
-  })  : _codec = codec ?? const MsgpackCodec(),
-        _fromEncodable = fromEncodable;
-
-  final CblAdapter _adapter;
-
-  final StoreCodec _codec;
-
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
+  CblStore(this._adapter, {super.codec});
 
   @override
-  Future<void> create(String name) => _adapter.create(name);
+  Future<void> create(String name,
+          {dynamic Function(Map<String, dynamic>)? fromEncodable}) =>
+      super
+          .create(name, fromEncodable: fromEncodable)
+          .then((_) => _adapter.create(name));
 
   @override
   Future<int> size(String name) async => _adapter.database(name)?.count ?? 0;
@@ -59,6 +52,7 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
         .map((entry) => _loadEntry(
               entry.string('id')!,
               entry.dictionary('properties')!,
+              decoder(name),
             ).info)
         .toList();
   }
@@ -71,10 +65,8 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
     }
 
     return entries
-        .map((entry) => _loadEntry(
-              entry.string('id')!,
-              entry.dictionary('properties')!,
-            ))
+        .map((entry) => _loadEntry(entry.string('id')!,
+            entry.dictionary('properties')!, decoder(name)))
         .toList();
   }
 
@@ -108,7 +100,7 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
     if (document == null) {
       return null;
     }
-    return _loadEntry(document.id, document);
+    return _loadEntry(document.id, document, decoder(name));
   }
 
   @override
@@ -144,61 +136,83 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   @override
   Future<void> deleteAll() => _adapter.deleteAll();
 
-  E _loadEntry(String id, DictionaryInterface properties);
+  /// Loads the entry
+  ///
+  /// * [id]: The id
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+  E _loadEntry(String id, DictionaryInterface properties,
+      dynamic Function(Map<String, dynamic>)? fromEncodable);
 
-  dynamic _loadValue(DictionaryInterface properties) {
+  /// Loads the value
+  ///
+  /// * [properties]: The properties
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+  dynamic _loadValue(DictionaryInterface properties,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     final valueBytes = Uint8List.fromList(
       properties.array('value')!.toPlainList().cast<int>(),
     );
-    final reader = _codec.decoder(valueBytes, fromEncodable: _fromEncodable);
+    final reader = codec.decoder(valueBytes, fromEncodable: fromEncodable);
     return reader.read();
   }
 
+  /// Writes the entry
+  ///
+  /// * [document]: The document
+  /// * [entry]: The entry
   void _writeEntry(MutableDocument document, E entry) {
     document.setDate(entry.creationTime, key: 'creationTime');
     _writeInfo(document, entry.info);
     _writeValue(document, entry.value);
   }
 
+  /// Writes the info
+  ///
+  /// * [document]: The document
+  //  * [info]: The info
   void _writeInfo(MutableDocument document, I info) {
     document
       ..setDate(info.accessTime, key: 'accessTime')
       ..setDate(info.updateTime, key: 'updateTime');
   }
 
+  /// Writes the value
+  ///
+  /// * [properties]: The properties
+  //  * [value]: The value
   void _writeValue(MutableDictionaryInterface properties, dynamic value) {
-    final writer = _codec.encoder();
+    final writer = codec.encoder();
     writer.write(value);
     properties.setValue(writer.takeBytes(), key: 'value');
   }
 }
 
 class CblVaultStore extends CblStore<VaultInfo, VaultEntry> {
-  CblVaultStore(CblAdapter adapter, {super.codec, super.fromEncodable})
-      : super(adapter);
+  CblVaultStore(super.adapter, {super.codec});
 
   @override
-  VaultEntry _loadEntry(String id, DictionaryInterface properties) =>
+  VaultEntry _loadEntry(String id, DictionaryInterface properties,
+          dynamic Function(Map<String, dynamic>)? fromEncodable) =>
       VaultEntry.loadEntry(
         id,
         properties.date('creationTime')!,
-        _loadValue(properties),
+        _loadValue(properties, fromEncodable),
         accessTime: properties.date('accessTime'),
         updateTime: properties.date('updateTime'),
       );
 }
 
 class CblCacheStore extends CblStore<CacheInfo, CacheEntry> {
-  CblCacheStore(CblAdapter adapter, {super.codec, super.fromEncodable})
-      : super(adapter);
+  CblCacheStore(super.adapter, {super.codec});
 
   @override
-  CacheEntry _loadEntry(String id, DictionaryInterface properties) =>
+  CacheEntry _loadEntry(String id, DictionaryInterface properties,
+          dynamic Function(Map<String, dynamic>)? fromEncodable) =>
       CacheEntry.loadEntry(
         id,
         properties.date('creationTime')!,
         properties.date('expiryTime')!,
-        _loadValue(properties),
+        _loadValue(properties, fromEncodable),
         accessTime: properties.date('accessTime'),
         updateTime: properties.date('updateTime'),
         hitCount: properties.integer('hitCount'),

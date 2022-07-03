@@ -17,7 +17,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   /// Builds a [CacheDao]
   ///
   /// * [db]: The [StoreDatabase]
-  CacheDao(CacheDatabase db) : super(db);
+  CacheDao(super.db);
 
   /// Counts the number of entries on a named cache
   ///

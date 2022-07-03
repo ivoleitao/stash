@@ -3,24 +3,20 @@ import 'package:stash_sqlite/stash_sqlite.dart';
 import 'package:stash_test/stash_test.dart';
 
 class VaultStoreContext extends VaultTestContext<SqliteVaultStore> {
-  VaultStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  VaultStoreContext(super.generator);
 
   @override
   Future<SqliteVaultStore> newStore() {
-    return newSqliteMemoryVaultStore(fromEncodable: fromEncodable);
+    return newSqliteMemoryVaultStore();
   }
 }
 
 class CacheStoreContext extends CacheTestContext<SqliteCacheStore> {
-  CacheStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  CacheStoreContext(super.generator);
 
   @override
   Future<SqliteCacheStore> newStore() {
-    return newSqliteMemoryCacheStore(fromEncodable: fromEncodable);
+    return newSqliteMemoryCacheStore();
   }
 }
 

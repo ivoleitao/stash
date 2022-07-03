@@ -17,7 +17,7 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   /// Builds a [VaultDao]
   ///
   /// * [db]: The [VaultDatabase]
-  VaultDao(VaultDatabase db) : super(db);
+  VaultDao(super.db);
 
   /// Counts the number of entries on a named vault
   ///

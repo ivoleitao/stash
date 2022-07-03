@@ -31,12 +31,13 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newHiveDefaultVaultStore(
-      path: path, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newHiveDefaultVaultStore(path: path);
 
   // Creates a vault from the previously created store
   final vault = await store.vault<Task>(
-      name: 'vault', eventListenerMode: EventListenerMode.synchronous)
+      name: 'vault',
+      fromEncodable: (json) => Task.fromJson(json),
+      eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the vault'));
 

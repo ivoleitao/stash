@@ -89,9 +89,10 @@ Cache<T> newTieredCache<T>(
 extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// Creates a new [Vault] backed by a [Store]
   ///
-  /// * [manager]: An optional [VaultManager]
   /// * [store]: An existing store
+  /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -100,11 +101,13 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   Future<Vault<T>> _newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {VaultManager? manager,
       String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return (manager ?? VaultManager.instance).newGenericVault<T>(store,
         name: name,
+        fromEncodable: fromEncodable,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -114,6 +117,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   ///
   /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -122,12 +126,14 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   Future<Vault<T>> vault<T>(
       {VaultManager? manager,
       String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return _newGenericVault<T>(this,
         manager: manager,
         name: name,
+        fromEncodable: fromEncodable,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -142,6 +148,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [store]: An existing store
   /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -153,6 +160,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   Future<Cache<T>> _newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {CacheManager? manager,
       String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
@@ -163,6 +171,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
       CacheStats? stats}) {
     return (manager ?? CacheManager.instance).newGenericCache<T>(store,
         name: name,
+        fromEncodable: fromEncodable,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,
@@ -177,6 +186,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   ///
   /// * [manager]: An optional [CacheManager]
   /// * [name]: The name of the cache
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [expiryPolicy]: The expiry policy to use
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
@@ -190,6 +200,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   Future<Cache<T>> cache<T>(
       {CacheManager? manager,
       String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
       int? maxEntries,
@@ -201,6 +212,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
     return _newGenericCache<T>(this,
         manager: manager,
         name: name,
+        fromEncodable: fromEncodable,
         expiryPolicy: expiryPolicy,
         sampler: sampler,
         evictionPolicy: evictionPolicy,

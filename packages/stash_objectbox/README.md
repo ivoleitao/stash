@@ -73,12 +73,13 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newObjectboxLocalVaultStore(
-      path: path, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newObjectboxLocalVaultStore(path: path);
 
   // Creates a vault from the previously created store
   final vault = await store.vault<Task>(
-      name: 'vault', eventListenerMode: EventListenerMode.synchronous)
+      name: 'vault',
+      fromEncodable: (json) => Task.fromJson(json),
+      eventListenerMode: EventListenerMode.synchronous)
     ..on<VaultEntryCreatedEvent<Task>>().listen(
         (event) => print('Key "${event.entry.key}" added to the vault'));
 
@@ -129,12 +130,12 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newObjectboxLocalCacheStore(
-      path: path, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newObjectboxLocalCacheStore(path: path);
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
       name: 'cache1',
+      fromEncodable: (json) => Task.fromJson(json),
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

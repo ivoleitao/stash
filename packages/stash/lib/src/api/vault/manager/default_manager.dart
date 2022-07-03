@@ -18,6 +18,7 @@ class DefaultVaultManager extends VaultManager {
   @override
   Future<Vault<T>> newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
@@ -31,7 +32,9 @@ class DefaultVaultManager extends VaultManager {
         stats: stats);
     _vaults[vault.name] = vault;
 
-    return store.create(vault.name).then((_) => vault);
+    return store
+        .create(vault.name, fromEncodable: fromEncodable)
+        .then((_) => vault);
   }
 
   @override

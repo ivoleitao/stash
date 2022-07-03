@@ -1,11 +1,9 @@
 import 'package:stash_hive/stash_hive.dart';
 
-Future<HiveVaultStore> newVaultStore(
-    dynamic Function(Map<String, dynamic>)? fromEncodable) {
-  return Future.value(newHiveDefaultVaultStore(fromEncodable: fromEncodable));
+Future<HiveVaultStore> newVaultStore() {
+  return Future.value(newHiveDefaultVaultStore());
 }
 
-Future<HiveCacheStore> newCacheStore(
-    dynamic Function(Map<String, dynamic>)? fromEncodable) {
-  return Future.value(newHiveDefaultCacheStore(fromEncodable: fromEncodable));
+Future<HiveCacheStore> newCacheStore() {
+  return Future.value(newHiveDefaultCacheStore());
 }

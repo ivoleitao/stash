@@ -20,7 +20,7 @@ class VaultDatabase extends _$VaultDatabase
   /// Builds a [VaultDatabase]
   ///
   /// * [executor]: The [QueryExecutor] to user
-  VaultDatabase(QueryExecutor executor) : super(executor);
+  VaultDatabase(super.executor);
 
   @override
   int get schemaVersion => _schemaVersion;

@@ -37,12 +37,12 @@ void main() async {
   final path = Directory.systemTemp.path;
 
   // Creates a store
-  final store = await newIsarLocalCacheStore(
-      path: path, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newIsarLocalCacheStore(path: path);
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
       name: 'cache1',
+      fromEncodable: (json) => Task.fromJson(json),
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

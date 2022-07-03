@@ -15,8 +15,7 @@ class CacheEntry extends Entry<CacheInfo> {
   /// * [info]: The cache info
   /// * [value]: The cache value
   /// * [state]: The entry state
-  CacheEntry._(CacheInfo info, dynamic value, EntryState state)
-      : super(info, value, state);
+  CacheEntry._(super.info, super.value, super.state);
 
   /// Builds a new [CacheEntry]
   ///
@@ -125,10 +124,8 @@ class CacheEntryBuilder<T> extends EntryBuilder<T, CacheInfo, CacheEntry> {
   /// * [accessTime]: The access time
   /// * [updateTime]: The update time
   CacheEntryBuilder(
-      String key, T value, DateTime creationTime, this.expiryDuration,
-      {this.hitCount, DateTime? accessTime, DateTime? updateTime})
-      : super(key, value, creationTime,
-            accessTime: accessTime, updateTime: updateTime);
+      super.key, super.value, super.creationTime, this.expiryDuration,
+      {this.hitCount, super.accessTime, super.updateTime});
 
   @override
   CacheEntry build() {

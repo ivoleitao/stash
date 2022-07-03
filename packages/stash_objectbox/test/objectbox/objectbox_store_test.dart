@@ -4,32 +4,24 @@ import 'package:stash_objectbox/stash_objectbox.dart';
 import 'package:stash_test/stash_test.dart';
 
 class VaultStoreContext extends VaultTestContext<ObjectboxVaultStore> {
-  VaultStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  VaultStoreContext(super.generator);
 
   @override
   Future<ObjectboxVaultStore> newStore() {
     return Directory.systemTemp.createTemp('stash_objectbox').then((d) =>
         newObjectboxLocalVaultStore(
-            path: d.path,
-            queriesCaseSensitiveDefault: true,
-            fromEncodable: fromEncodable));
+            path: d.path, queriesCaseSensitiveDefault: true));
   }
 }
 
 class CacheStoreContext extends CacheTestContext<ObjectboxCacheStore> {
-  CacheStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  CacheStoreContext(super.generator);
 
   @override
   Future<ObjectboxCacheStore> newStore() {
     return Directory.systemTemp.createTemp('stash_objectbox').then((d) =>
         newObjectboxLocalCacheStore(
-            path: d.path,
-            queriesCaseSensitiveDefault: true,
-            fromEncodable: fromEncodable));
+            path: d.path, queriesCaseSensitiveDefault: true));
   }
 }
 

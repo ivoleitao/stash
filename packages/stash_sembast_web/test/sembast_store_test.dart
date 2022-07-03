@@ -3,24 +3,20 @@ import 'package:stash_sembast_web/stash_sembast_web.dart';
 import 'package:stash_test/stash_test.dart';
 
 class VaultStoreContext extends VaultTestContext<SembastVaultStore> {
-  VaultStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  VaultStoreContext(super.generator);
 
   @override
   Future<SembastVaultStore> newStore() {
-    return newSembastWebVaultStore(fromEncodable: fromEncodable);
+    return newSembastWebVaultStore();
   }
 }
 
 class CacheStoreContext extends CacheTestContext<SembastCacheStore> {
-  CacheStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
+  CacheStoreContext(super.generator);
 
   @override
   Future<SembastCacheStore> newStore() {
-    return newSembastWebCacheStore(fromEncodable: fromEncodable);
+    return newSembastWebCacheStore();
   }
 }
 

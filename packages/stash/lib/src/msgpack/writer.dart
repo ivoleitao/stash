@@ -46,7 +46,7 @@ class MsgPackCyclicError extends MsgPackUnsupportedObjectError {
   /// Builds a [MsgPackCyclicError]
   ///
   /// * [object]: The first object that was detected as part of a cycle.
-  MsgPackCyclicError(Object object) : super(object);
+  MsgPackCyclicError(super.object);
   @override
   String toString() => 'Cyclic error in JSON stringify';
 }
@@ -56,7 +56,7 @@ class MsgPackOverflowError extends MsgPackUnsupportedObjectError {
   /// Builds a [MsgPackOverflowError]
   ///
   /// * [object]: The object that cannot be serialized.
-  MsgPackOverflowError(Object object) : super(object);
+  MsgPackOverflowError(super.object);
 
   @override
   String toString() => 'Overflow error';

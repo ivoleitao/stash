@@ -47,7 +47,9 @@ const _storeTests = {
 Future<T> newStore<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
     TestContext<I, E, T> ctx) {
   return ctx.newStore().then((store) {
-    return store.create(_defaultStore).then((_) => store);
+    return store
+        .create(_defaultStore, fromEncodable: ctx.generator.fromEncodable)
+        .then((_) => store);
   });
 }
 

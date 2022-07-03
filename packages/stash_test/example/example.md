@@ -3,32 +3,20 @@ import 'package:stash_custom/stash_custom.dart';
 import 'package:stash_test/stash_test.dart';
 
 class VaultStoreContext extends VaultTestContext<CustomVaultStore> {
-  VaultStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
-
-  Future<CustomVaultStore> _newCustomStore() {
-    return Future.value(newCustomVaultStore(fromEncodable: fromEncodable));
-  }
+  VaultStoreContext(super.generator);
 
   @override
   Future<CustomVaultStore> newStore() {
-    return _newCustomStore();
+    return newCustomVaultStore();
   }
 }
 
 class CacheStoreContext extends CacheTestContext<CustomCacheStore> {
-  CacheStoreContext(ValueGenerator generator,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(generator, fromEncodable: generator.fromEncodable);
-
-  Future<CustomCacheStore> _newCustomStore() {
-    return Future.value(newCustomCacheStore(fromEncodable: fromEncodable));
-  }
+  CacheStoreContext(super.generator);
 
   @override
   Future<CustomCacheStore> newStore() {
-    return _newCustomStore();
+    return newCustomCacheStore();
   }
 }
 

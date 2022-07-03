@@ -7,13 +7,9 @@ import 'package:stash_test/stash_test.dart';
 final _cblInitialization = CouchbaseLiteDart.init(edition: Edition.community);
 
 class VaultStoreContext extends VaultTestContext<CblVaultStore> {
-  VaultStoreContext(super.generator)
-      : async = true,
-        super(fromEncodable: generator.fromEncodable);
+  VaultStoreContext(super.generator) : async = true;
 
-  VaultStoreContext.sync(super.generator)
-      : async = false,
-        super(fromEncodable: generator.fromEncodable);
+  VaultStoreContext.sync(super.generator) : async = false;
 
   final bool async;
 
@@ -24,20 +20,15 @@ class VaultStoreContext extends VaultTestContext<CblVaultStore> {
         .createTemp('stash_cbl')
         .then((d) => newCblLocalVaultStore(
               path: d.path,
-              fromEncodable: fromEncodable,
               async: async,
             ));
   }
 }
 
 class CacheStoreContext extends CacheTestContext<CblCacheStore> {
-  CacheStoreContext(super.generator)
-      : async = true,
-        super(fromEncodable: generator.fromEncodable);
+  CacheStoreContext(super.generator) : async = true;
 
-  CacheStoreContext.sync(super.generator)
-      : async = false,
-        super(fromEncodable: generator.fromEncodable);
+  CacheStoreContext.sync(super.generator) : async = false;
 
   final bool async;
 
@@ -48,7 +39,6 @@ class CacheStoreContext extends CacheTestContext<CblCacheStore> {
         .createTemp('stash_cbl')
         .then((d) => newCblLocalCacheStore(
               path: d.path,
-              fromEncodable: fromEncodable,
               async: async,
             ));
   }

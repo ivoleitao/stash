@@ -8,8 +8,6 @@ class VaultInfo extends Info {
   /// * [creationTime]: The vault creation time
   /// * [accessTime]: The vault access time
   /// * [updateTime]: The vault update time
-  VaultInfo(String key, DateTime creationTime,
-      {int? type, DateTime? accessTime, DateTime? updateTime})
-      : super(key, creationTime,
-            accessTime: accessTime, updateTime: updateTime);
+  VaultInfo(super.key, super.creationTime,
+      {super.accessTime, super.updateTime});
 }

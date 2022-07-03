@@ -22,6 +22,7 @@ class DefaultCacheManager extends CacheManager {
   @override
   Future<Cache<T>> newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
@@ -45,7 +46,9 @@ class DefaultCacheManager extends CacheManager {
         stats: stats);
     _caches[cache.name] = cache;
 
-    return store.create(cache.name).then((_) => cache);
+    return store
+        .create(cache.name, fromEncodable: fromEncodable)
+        .then((_) => cache);
   }
 
   @override

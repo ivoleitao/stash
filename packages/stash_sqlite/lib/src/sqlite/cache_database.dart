@@ -20,7 +20,7 @@ class CacheDatabase extends _$CacheDatabase
   /// Builds a [CacheDatabase]
   ///
   /// * [executor]: The [QueryExecutor]
-  CacheDatabase(QueryExecutor executor) : super(executor);
+  CacheDatabase(super.executor);
 
   @override
   int get schemaVersion => _schemaVersion;

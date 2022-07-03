@@ -25,5 +25,5 @@ abstract class CacheEvent<T> extends StashEvent<T, CacheEventType, Cache<T>> {
   ///
   /// * [source]: The cache that originated the event
   /// * [type]: The event type
-  CacheEvent(Cache<T> source, CacheEventType type) : super(source, type);
+  CacheEvent(super.source, super.type);
 }

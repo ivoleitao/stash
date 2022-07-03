@@ -26,12 +26,12 @@ class Task {
 
 void main() async {
   // Creates a store
-  final store = await newSembastWebCacheStore(
-      fromEncodable: (json) => Task.fromJson(json));
+  final store = await newSembastWebCacheStore();
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
       name: 'cache1',
+      fromEncodable: (json) => Task.fromJson(json),
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

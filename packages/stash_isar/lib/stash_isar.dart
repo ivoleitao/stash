@@ -14,40 +14,34 @@ export 'src/isar/isar_store.dart';
 ///
 /// * [path]: The base storage location for this store
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [relaxedDurability]: Relaxed durability setting
 /// * [inspector]: Inspector setting
 Future<IsarVaultStore> newIsarLocalVaultStore(
     {String? path,
     StoreCodec? codec,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? relaxedDurability,
     bool? inspector}) {
   return IsarVaultAdapter.build(
           path: path ?? Directory.systemTemp.path,
           relaxedDurability: relaxedDurability,
           inspector: inspector)
-      .then((adapter) =>
-          IsarVaultStore(adapter, codec: codec, fromEncodable: fromEncodable));
+      .then((adapter) => IsarVaultStore(adapter, codec: codec));
 }
 
 /// Creates a new [IsarCacheStore]
 ///
 /// * [path]: The base storage location for this store
 /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to a binary representation
-/// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
 /// * [relaxedDurability]: Relaxed durability setting
 /// * [inspector]: Inspector setting
 Future<IsarCacheStore> newIsarLocalCacheStore(
     {String? path,
     StoreCodec? codec,
-    dynamic Function(Map<String, dynamic>)? fromEncodable,
     bool? relaxedDurability,
     bool? inspector}) {
   return IsarCacheAdapter.build(
           path: path ?? Directory.systemTemp.path,
           relaxedDurability: relaxedDurability,
           inspector: inspector)
-      .then((adapter) =>
-          IsarCacheStore(adapter, codec: codec, fromEncodable: fromEncodable));
+      .then((adapter) => IsarCacheStore(adapter, codec: codec));
 }

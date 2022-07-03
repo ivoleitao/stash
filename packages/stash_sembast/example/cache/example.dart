@@ -33,12 +33,12 @@ void main() async {
   final path = '${dir.path}/cache.db';
 
   // Creates a store
-  final store = await newSembastLocalCacheStore(
-      path: path, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newSembastLocalCacheStore(path: path);
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
       name: 'cache',
+      fromEncodable: (json) => Task.fromJson(json),
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

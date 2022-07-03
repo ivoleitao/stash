@@ -5,42 +5,31 @@ import 'package:file/file.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:stash/stash_api.dart';
-import 'package:stash/stash_msgpack.dart';
 
 import 'file_adapter.dart';
 
 /// File based implemention of a [Store]
 abstract class FileStore<I extends Info, E extends Entry<I>>
-    implements Store<I, E> {
+    extends PersistenceStore<I, E> {
   /// The adapter
   final FileAdapter _adapter;
 
   /// If locks are obtained before performing read/write operations
   final bool lock;
 
-  /// The store codec to use
-  final StoreCodec _codec;
-
-  /// The function that converts between the Map representation to the
-  /// object stored
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
-
   /// Builds a [FileStore].
   ///
   /// * [_adapter]: The file store adapter
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  FileStore(this._adapter, this.lock,
-      {StoreCodec? codec,
-      dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : _codec = codec ?? const MsgpackCodec(),
-        _fromEncodable = fromEncodable;
+  FileStore(this._adapter, this.lock, {super.codec});
 
   @override
-  Future<void> create(String name) {
-    return _adapter.create(name);
-  }
+  Future<void> create(String name,
+          {dynamic Function(Map<String, dynamic>)? fromEncodable}) =>
+      super
+          .create(name, fromEncodable: fromEncodable)
+          .then((_) => _adapter.create(name));
 
   /// Returns a list of keys in the partition
   ///
@@ -161,13 +150,22 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
     });
   }
 
+  /// Obtains the partition `fromEncodable` function
+  ///
+  /// * [name]: The partition name
+  dynamic Function(Map<String, dynamic>)? fileFromEncodable(File file) {
+    return decoder(p.basename(p.dirname(file.path)));
+  }
+
   /// Reads a [Entry] from a [Uint8List]
   ///
   /// * [key]: The partition key
   /// * [bytes]: The list of bytes from where the [Entry] should be read
+  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
   ///
   /// Returns a [Entry]
-  E _readEntry(String key, Uint8List bytes);
+  E _readEntry(String key, Uint8List bytes,
+      dynamic Function(Map<String, dynamic>)? fromEncodable);
 
   /// Reads a [Entry] from the provided [File]
   ///
@@ -182,15 +180,13 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
             .then((f) => f.length())
             .then((length) {
           final buffer = Uint8List(length);
-          return raf
-              .readInto(buffer, 0, length)
-              .then((_) => _readEntry(p.basename(file.path), buffer));
+          return raf.readInto(buffer, 0, length).then((_) => _readEntry(
+              p.basename(file.path), buffer, fileFromEncodable(file)));
         }).whenComplete(() => raf.unlock().then((value) => raf.close()));
       });
     } else {
-      return file
-          .readAsBytes()
-          .then((bytes) => _readEntry(p.basename(file.path), bytes));
+      return file.readAsBytes().then((bytes) =>
+          _readEntry(p.basename(file.path), bytes, fileFromEncodable(file)));
     }
   }
 
@@ -219,7 +215,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   ///
   /// Returns the provided [BytesWriter] or a new one after writing [value] into it
   BytesWriter _writeValue(dynamic value, {BytesWriter? writer}) {
-    writer = writer ?? _codec.encoder();
+    writer = writer ?? codec.encoder();
 
     writer.write(value);
 
@@ -227,7 +223,7 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   }
 
   Future<void> _putFileEntry(File file, E entry) {
-    var writer = _codec.encoder();
+    var writer = codec.encoder();
 
     _writeInfo(entry.info, writer: writer);
     _writeValue(entry.value, writer: writer);
@@ -290,12 +286,11 @@ class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
   /// * [adapter]: The file store adapter
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  FileVaultStore(super.adapter, super.lock, {super.codec, super.fromEncodable});
+  FileVaultStore(super.adapter, super.lock, {super.codec});
 
   @override
   VaultInfo _readInfo(String key, Uint8List bytes) {
-    final reader = _codec.decoder(bytes);
+    final reader = codec.decoder(bytes);
 
     final creationTime =
         DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
@@ -308,7 +303,7 @@ class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
 
   @override
   BytesWriter _writeInfo(VaultInfo info, {BytesWriter? writer}) {
-    writer = writer ?? _codec.encoder();
+    writer = writer ?? codec.encoder();
 
     writer.writeUint64(info.creationTime.microsecondsSinceEpoch);
     writer.writeUint64(info.accessTime.microsecondsSinceEpoch);
@@ -318,8 +313,9 @@ class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
   }
 
   @override
-  VaultEntry _readEntry(String key, Uint8List bytes) {
-    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+  VaultEntry _readEntry(String key, Uint8List bytes,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
 
     final creationTime =
         DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
@@ -344,12 +340,11 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
   /// * [path]: The base location of the file storage
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  FileCacheStore(super.adapter, super.lock, {super.codec, super.fromEncodable});
+  FileCacheStore(super.adapter, super.lock, {super.codec});
 
   @override
   CacheInfo _readInfo(String key, Uint8List bytes) {
-    final reader = _codec.decoder(bytes);
+    final reader = codec.decoder(bytes);
 
     final creationTime =
         DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());
@@ -364,7 +359,7 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
 
   @override
   BytesWriter _writeInfo(CacheInfo info, {BytesWriter? writer}) {
-    writer = writer ?? _codec.encoder();
+    writer = writer ?? codec.encoder();
 
     writer.writeUint64(info.creationTime.microsecondsSinceEpoch);
     writer.writeUint64(info.expiryTime.microsecondsSinceEpoch);
@@ -376,8 +371,9 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
   }
 
   @override
-  CacheEntry _readEntry(String key, Uint8List bytes) {
-    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+  CacheEntry _readEntry(String key, Uint8List bytes,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
 
     final creationTime =
         DateTime.fromMicrosecondsSinceEpoch(reader.readUInt64());

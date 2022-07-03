@@ -9,8 +9,7 @@ class VaultEntry extends Entry<VaultInfo> {
   /// * [info]: The entry info
   /// * [value]: The entry value
   /// * [state]: The entry state
-  VaultEntry._(VaultInfo info, dynamic value, EntryState state)
-      : super(info, value, state);
+  VaultEntry._(super.info, super.value, super.state);
 
   /// Builds a new [VaultEntry]
   ///

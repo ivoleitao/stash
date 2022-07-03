@@ -2,7 +2,7 @@ import 'package:stash_memory/stash_memory.dart';
 import 'package:stash_test/stash_test.dart';
 
 class VaultStoreContext extends VaultTestContext<MemoryVaultStore> {
-  VaultStoreContext(ValueGenerator generator) : super(generator);
+  VaultStoreContext(super.generator);
 
   @override
   Future<MemoryVaultStore> newStore() {
@@ -11,7 +11,7 @@ class VaultStoreContext extends VaultTestContext<MemoryVaultStore> {
 }
 
 class CacheStoreContext extends CacheTestContext<MemoryCacheStore> {
-  CacheStoreContext(ValueGenerator generator) : super(generator);
+  CacheStoreContext(super.generator);
 
   @override
   Future<MemoryCacheStore> newStore() {

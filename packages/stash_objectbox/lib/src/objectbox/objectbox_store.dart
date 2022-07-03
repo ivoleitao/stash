@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash/stash_msgpack.dart';
 import 'package:stash_objectbox/objectbox.g.dart' show PutMode;
 
 import 'cache_entity.dart';
@@ -10,38 +9,28 @@ import 'vault_entity.dart';
 
 /// Objectbox based implemention of a [Store]
 abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
-    E extends Entry<I>> implements Store<I, E> {
+    E extends Entry<I>> extends PersistenceStore<I, E> {
   /// The adapter
   final ObjectboxAdapter _adapter;
-
-  /// The cache codec to use
-  final StoreCodec _codec;
-
-  /// The function that converts between the Map representation to the
-  /// object stored in the cache
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
   /// Builds a [ObjectboxStore].
   ///
   /// * [_adapter]: The objectbox store adapter
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  ObjectboxStore(this._adapter,
-      {StoreCodec? codec,
-      dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : _codec = codec ?? const MsgpackCodec(),
-        _fromEncodable = fromEncodable;
+  ObjectboxStore(this._adapter, {super.codec});
 
   @override
-  Future<void> create(String name) {
-    return _adapter.create(name);
-  }
+  Future<void> create(String name,
+          {dynamic Function(Map<String, dynamic>)? fromEncodable}) =>
+      super
+          .create(name, fromEncodable: fromEncodable)
+          .then((_) => _adapter.create(name));
 
   @protected
   O _toEntity(E entry);
 
   @protected
-  E? _toEntry(O? entity);
+  E? _toEntry(O? entity, dynamic Function(Map<String, dynamic>)? fromEncodable);
 
   @override
   Future<int> size(String name) =>
@@ -59,13 +48,14 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
       Future.value(_getEntries(name).map((entity) => entity.key).toList());
 
   @override
-  Future<Iterable<I>> infos(String name) => Future.value(
-      _getEntries(name).map((entity) => _toEntry(entity)!.info).toList());
+  Future<Iterable<I>> infos(String name) => Future.value(_getEntries(name)
+      .map((entity) => _toEntry(entity, decoder(name))!.info)
+      .toList());
 
   @override
   Future<Iterable<E>> values(String name) =>
       Future.value((_adapter.box<O>(name)?.getAll() ?? [])
-          .map((entity) => _toEntry(entity)!)
+          .map((entity) => _toEntry(entity, decoder(name))!)
           .toList());
 
   @override
@@ -77,7 +67,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     final box = _adapter.box<O>(name);
 
     if (box != null) {
-      return Future.value(_toEntry(box.get(key.hashCode))?.info);
+      return Future.value(_toEntry(box.get(key.hashCode), decoder(name))?.info);
     }
 
     return Future.value();
@@ -90,7 +80,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     if (box != null) {
       return Future.value(box
           .getMany(keys.map((key) => key.hashCode).toList())
-          .map((entity) => _toEntry(entity)?.info)
+          .map((entity) => _toEntry(entity, decoder(name))?.info)
           .toList());
     }
 
@@ -120,7 +110,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     final box = _adapter.box<O>(name);
 
     if (box != null) {
-      return Future.value(_toEntry(box.get(key.hashCode)));
+      return Future.value(_toEntry(box.get(key.hashCode), decoder(name)));
     }
 
     return Future<E?>.value();
@@ -171,14 +161,11 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
 
 class ObjectboxVaultStore
     extends ObjectboxStore<VaultEntity, VaultInfo, VaultEntry> {
-  ObjectboxVaultStore(ObjectboxAdapter adapter,
-      {StoreCodec? codec,
-      dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(adapter, codec: codec, fromEncodable: fromEncodable);
+  ObjectboxVaultStore(super.adapter, {super.codec});
 
   @override
   VaultEntity _toEntity(VaultEntry entry) {
-    final writer = _codec.encoder();
+    final writer = codec.encoder();
     writer.write(entry.value);
 
     return VaultEntity(
@@ -191,10 +178,10 @@ class ObjectboxVaultStore
   }
 
   @override
-  VaultEntry? _toEntry(VaultEntity? entity) {
+  VaultEntry? _toEntry(VaultEntity? entity,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
-      final reader =
-          _codec.decoder(entity.value, fromEncodable: _fromEncodable);
+      final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);
       final value = reader.read();
 
       return VaultEntry.loadEntry(
@@ -219,14 +206,12 @@ class ObjectboxVaultStore
 
 class ObjectboxCacheStore
     extends ObjectboxStore<CacheEntity, CacheInfo, CacheEntry> {
-  ObjectboxCacheStore(ObjectboxAdapter adapter,
-      {StoreCodec? codec,
-      dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(adapter, codec: codec, fromEncodable: fromEncodable);
+  ObjectboxCacheStore(ObjectboxAdapter adapter, {StoreCodec? codec})
+      : super(adapter, codec: codec);
 
   @override
   CacheEntity _toEntity(CacheEntry entry) {
-    final writer = _codec.encoder();
+    final writer = codec.encoder();
     writer.write(entry.value);
 
     return CacheEntity(
@@ -241,10 +226,10 @@ class ObjectboxCacheStore
   }
 
   @override
-  CacheEntry? _toEntry(CacheEntity? entity) {
+  CacheEntry? _toEntry(CacheEntity? entity,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
-      final reader =
-          _codec.decoder(entity.value, fromEncodable: _fromEncodable);
+      final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);
       final value = reader.read();
 
       return CacheEntry.loadEntry(

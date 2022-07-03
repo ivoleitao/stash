@@ -8,26 +8,21 @@ import 'sembast_adapter.dart';
 
 /// Sembast based implemention of a [Store]
 abstract class SembastStore<I extends Info, E extends Entry<I>>
-    implements Store<I, E> {
+    extends PersistenceStore<I, E> {
   /// The adapter
   final SembastAdapter _adapter;
-
-  /// The function that converts between the Map representation to the
-  /// object stored in the cache
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
   /// Builds a [SembastStore].
   ///
   /// * [_adapter]: The sembast store adapter
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastStore(this._adapter,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : _fromEncodable = fromEncodable;
+  SembastStore(this._adapter);
 
   @override
-  Future<void> create(String name) {
-    return _adapter.create(name);
-  }
+  Future<void> create(String name,
+          {dynamic Function(Map<String, dynamic>)? fromEncodable}) =>
+      super
+          .create(name, fromEncodable: fromEncodable)
+          .then((_) => _adapter.create(name));
 
   @override
   Future<int> size(String name) => _adapter.count(name);
@@ -38,27 +33,33 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   /// Reads a [Entry] from a json map
   ///
   /// * [value]: The json map
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   ///
   ///  Returns the corresponding [Entry]
   @protected
-  E _readEntry(Map<String, dynamic> json);
+  E _readEntry(Map<String, dynamic> value,
+      dynamic Function(Map<String, dynamic>)? fromEncodable);
 
   /// Retrieves a [Entry] from a json map
   ///
   /// * [value]: The json map
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   ///
   ///  Returns the corresponding [Entry]
-  E? _getEntryFromValue(Map<String, dynamic>? value) {
-    return value != null ? _readEntry(value) : null;
+  E? _getEntryFromValue(Map<String, dynamic>? value,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    return value != null ? _readEntry(value, fromEncodable) : null;
   }
 
   /// Retrieves a [Info] from a json map
   ///
   /// * [value]: The json map
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   ///
   ///  Returns the corresponding [Info]
-  I? _getInfoFromValue(Map<String, dynamic> value) {
-    return _getEntryFromValue(value)?.info;
+  I? _getInfoFromValue(Map<String, dynamic> value,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    return _getEntryFromValue(value, fromEncodable)?.info;
   }
 
   /// Gets an [Entry] by key
@@ -67,8 +68,9 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   /// * [key]: The key
   ///
   ///  Returns the corresponding [Entry]
-  Future<E?> _getEntryFromStore(String name, String key) =>
-      _adapter.getByKey(name, key).then(_getEntryFromValue);
+  Future<E?> _getEntryFromStore(String name, String key) => _adapter
+      .getByKey(name, key)
+      .then((value) => _getEntryFromValue(value, decoder(name)));
 
   /// Returns the [Entry] for the named value specified [key].
   ///
@@ -93,14 +95,14 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   @override
   Future<Iterable<I>> infos(String name) =>
       _getRecords(name).then((records) => records
-          .map((record) => _getInfoFromValue(record.value))
+          .map((record) => _getInfoFromValue(record.value, decoder(name)))
           .map((info) => info!)
           .toList());
 
   @override
   Future<Iterable<E>> values(String name) =>
       _getRecords(name).then((records) => records
-          .map((record) => _getEntryFromValue(record.value))
+          .map((record) => _getEntryFromValue(record.value, decoder(name)))
           .map((entry) => entry!)
           .toList());
 
@@ -115,8 +117,9 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _adapter.getByKeys(name, keys).then((records) =>
-        records.map((record) => _getEntryFromValue(record)?.info).toList());
+    return _adapter.getByKeys(name, keys).then((records) => records
+        .map((record) => _getEntryFromValue(record, decoder(name))?.info)
+        .toList());
   }
 
   /// Checks if the [value] is one of the base datatypes supported by Sembast
@@ -196,28 +199,22 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
   /// Builds a [SembastVaultStore].
   ///
   /// * [_adapter]: The sembast store adapter
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastVaultStore(SembastAdapter adapter,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(adapter, fromEncodable: fromEncodable);
+  SembastVaultStore(super.adapter);
 
   @override
-  VaultEntry _readEntry(Map<String, dynamic> json) {
+  VaultEntry _readEntry(Map<String, dynamic> value,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loadEntry(
-        json['key'] as String,
-        DateTime.parse(json['creationTime'] as String),
-        json['value'] == null
+        value['key'] as String,
+        DateTime.parse(value['creationTime'] as String),
+        decodeValue(value['value'], fromEncodable,
+            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        accessTime: value['accessTime'] == null
             ? null
-            : _fromEncodable != null
-                ? _fromEncodable!(
-                    (json['value'] as Map).cast<String, dynamic>())
-                : json['value'],
-        accessTime: json['accessTime'] == null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
             ? null
-            : DateTime.parse(json['accessTime'] as String),
-        updateTime: json['updateTime'] == null
-            ? null
-            : DateTime.parse(json['updateTime'] as String));
+            : DateTime.parse(value['updateTime'] as String));
   }
 
   @override
@@ -236,30 +233,24 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry> {
   /// Builds a [SembastCacheStore].
   ///
   /// * [_adapter]: The sembast store adapter
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  SembastCacheStore(SembastAdapter adapter,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : super(adapter, fromEncodable: fromEncodable);
+  SembastCacheStore(super.adapter);
 
   @override
-  CacheEntry _readEntry(Map<String, dynamic> json) {
+  CacheEntry _readEntry(Map<String, dynamic> value,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loadEntry(
-        json['key'] as String,
-        DateTime.parse(json['creationTime'] as String),
-        DateTime.parse(json['expiryTime'] as String),
-        json['value'] == null
+        value['key'] as String,
+        DateTime.parse(value['creationTime'] as String),
+        DateTime.parse(value['expiryTime'] as String),
+        decodeValue(value['value'], fromEncodable,
+            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        accessTime: value['accessTime'] == null
             ? null
-            : _fromEncodable != null
-                ? _fromEncodable!(
-                    (json['value'] as Map).cast<String, dynamic>())
-                : json['value'],
-        accessTime: json['accessTime'] == null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
             ? null
-            : DateTime.parse(json['accessTime'] as String),
-        updateTime: json['updateTime'] == null
-            ? null
-            : DateTime.parse(json['updateTime'] as String),
-        hitCount: json['hitCount'] as int?);
+            : DateTime.parse(value['updateTime'] as String),
+        hitCount: value['hitCount'] as int?);
   }
 
   @override

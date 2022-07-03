@@ -33,12 +33,12 @@ void main() async {
   final file = File('${dir.path}/cache.db');
 
   // Creates a store
-  final store = await newSqliteLocalCacheStore(
-      file: file, fromEncodable: (json) => Task.fromJson(json));
+  final store = await newSqliteLocalCacheStore(file: file);
 
   // Creates a cache with a capacity of 10 from the previously created store
   final cache = await store.cache<Task>(
       name: 'cache1',
+      fromEncodable: (json) => Task.fromJson(json),
       maxEntries: 10,
       eventListenerMode: EventListenerMode.synchronous)
     ..on<CacheEntryCreatedEvent<Task>>().listen(

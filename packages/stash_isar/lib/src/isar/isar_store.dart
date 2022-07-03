@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:isar/isar.dart';
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
-import 'package:stash/stash_msgpack.dart';
 import 'package:stash_isar/src/isar/entry_model.dart';
 
 import 'cache_model.dart';
@@ -12,32 +11,22 @@ import 'vault_model.dart';
 
 /// Isar based implemention of a [Store]
 abstract class IsarStore<M extends EntryModel, I extends Info,
-    E extends Entry<I>> implements Store<I, E> {
+    E extends Entry<I>> extends PersistenceStore<I, E> {
   /// The adapter
   final IsarAdapter<M> _adapter;
-
-  /// The codec to use
-  final StoreCodec _codec;
-
-  /// The function that converts between the Map representation to the
-  /// object stored
-  final dynamic Function(Map<String, dynamic>)? _fromEncodable;
 
   /// Builds a [IsarStore].
   ///
   /// * [_adapter]: The isar store adapter
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  IsarStore(this._adapter,
-      {StoreCodec? codec,
-      dynamic Function(Map<String, dynamic>)? fromEncodable})
-      : _codec = codec ?? MsgpackCodec(),
-        _fromEncodable = fromEncodable;
+  IsarStore(this._adapter, {super.codec});
 
   @override
-  Future<void> create(String name) {
-    return _adapter.create(name);
-  }
+  Future<void> create(String name,
+          {dynamic Function(Map<String, dynamic>)? fromEncodable}) =>
+      super
+          .create(name, fromEncodable: fromEncodable)
+          .then((_) => _adapter.create(name));
 
   @override
   Future<int> size(String name) {
@@ -78,7 +67,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   /// Returns the value encoded as a list of bytes
   @protected
   Uint8List valueEncoder(dynamic value) {
-    final writer = _codec.encoder();
+    final writer = codec.encoder();
 
     writer.write(value);
 
@@ -88,19 +77,23 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   /// Returns a value decoded from the provided list of bytes
   ///
   /// * [bytes]: The list of bytes
+  /// * [fromEncodable]: An function that converts between the Map representation and the object
   ///
   /// Returns the decoded value from the list of bytes
   @protected
-  dynamic valueDecoder(Uint8List bytes) {
-    final reader = _codec.decoder(bytes, fromEncodable: _fromEncodable);
+  dynamic valueDecoder(
+      Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
 
     return reader.read();
   }
 
   @protected
-  E toEntry(M model);
+  E toEntry(M model, dynamic Function(Map<String, dynamic>)? fromEncodable);
 
-  E? toEntryOptional(M? model) => model != null ? toEntry(model) : null;
+  E? toEntryOptional(
+          M? model, dynamic Function(Map<String, dynamic>)? fromEncodable) =>
+      model != null ? toEntry(model, fromEncodable) : null;
 
   @protected
   M fromEntry(E entry);
@@ -123,9 +116,10 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   /// * [key]: The key
   ///
   /// Returns a [Entry]
-  Future<E?> _partitionEntry(IsarCollection<M> partition, String key) {
+  Future<E?> _partitionEntry(IsarCollection<M> partition, String key,
+      dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return _partitionModel(partition, key)
-        .then((model) => toEntryOptional(model));
+        .then((model) => toEntryOptional(model, fromEncodable));
   }
 
   /// Returns the [Entry] for the specified [key].
@@ -138,7 +132,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return _partitionEntry(partition, key);
+      return _partitionEntry(partition, key, decoder(name));
     }
 
     return Future<E?>.value();
@@ -212,7 +206,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return _partitionEntry(partition, key).then((entry) {
+      return _partitionEntry(partition, key, decoder(name)).then((entry) {
         if (entry != null) {
           final model = fromEntry(entry..updateInfo(info));
 
@@ -298,8 +292,7 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry> {
   ///
   /// * [adapter]: The isar store adapter
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  IsarVaultStore(super.adapter, {super.codec, super.fromEncodable});
+  IsarVaultStore(super.adapter, {super.codec});
 
   @override
   QueryBuilder<VaultModel, String, QQueryOperations> keyProperty(
@@ -314,9 +307,10 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry> {
   }
 
   @override
-  VaultEntry toEntry(VaultModel model) {
+  VaultEntry toEntry(
+      VaultModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loadEntry(
-        model.key, model.creationTime, valueDecoder(model.value),
+        model.key, model.creationTime, valueDecoder(model.value, fromEncodable),
         accessTime: model.accessTime, updateTime: model.updateTime);
   }
 
@@ -337,8 +331,7 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry> {
   ///
   /// * [adapter]: The isar store adapter
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
-  /// * [fromEncodable]: A custom function the converts to the object from a `Map<String, dynamic>` representation
-  IsarCacheStore(super.adapter, {super.codec, super.fromEncodable});
+  IsarCacheStore(super.adapter, {super.codec});
 
   @override
   QueryBuilder<CacheModel, String, QQueryOperations> keyProperty(
@@ -353,9 +346,10 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry> {
   }
 
   @override
-  CacheEntry toEntry(CacheModel model) {
+  CacheEntry toEntry(
+      CacheModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loadEntry(model.key, model.creationTime, model.expiryTime,
-        valueDecoder(model.value),
+        valueDecoder(model.value, fromEncodable),
         accessTime: model.accessTime,
         updateTime: model.updateTime,
         hitCount: model.hitCount);

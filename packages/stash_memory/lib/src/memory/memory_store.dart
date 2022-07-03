@@ -8,7 +8,8 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
   final Map<String, Map<String, E>> _slots = <String, Map<String, E>>{};
 
   @override
-  Future<void> create(String name) {
+  Future<void> create(String name,
+      {dynamic Function(Map<String, dynamic>)? fromEncodable}) {
     if (!_slots.containsKey(name)) {
       _slots[name] = <String, E>{};
     }

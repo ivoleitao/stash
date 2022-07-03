@@ -26,6 +26,7 @@ abstract class CacheManager {
   ///
   /// * [store]: The [Store] that will back this [Cache]
   /// * [name]: The name of the cache
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   /// * [expiryPolicy]: The expiry policy to use, defaults to [EternalExpiryPolicy] if not provided
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
   /// * [evictionPolicy]: The eviction policy to use, defaults to [LruEvictionPolicy] if not provided
@@ -39,6 +40,7 @@ abstract class CacheManager {
   /// Returns a new DefaultCache
   Future<Cache<T>> newGenericCache<T>(Store<CacheInfo, CacheEntry> store,
       {String? name,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       ExpiryPolicy? expiryPolicy,
       KeySampler? sampler,
       EvictionPolicy? evictionPolicy,
