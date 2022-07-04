@@ -105,14 +105,14 @@ scripts:
 
   coverage:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" \
+      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_isar" \
         "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p vm` in the selected packages and collects coverage.
 
   coverage:chrome:
     run: |
-      melos exec -c 1 --scope="stash_sembast_web" \
+      melos exec -c 1 --scope="stash_sembast_web" --ignore="stash_isar" \
         "dart test -p chrome --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p chrome` in the selected packages and collects coverage.
