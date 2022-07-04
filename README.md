@@ -22,7 +22,7 @@ The `stash` library started it's life as a pure cache library,  however with the
 ## Features
 
 * :rocket: **Binary serialization** - Provides out-of-box highly performant binary serialization using and implementation of [msgpack](https://msgpack.org) inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library .
-* :twisted_rightwards_arrows: **Type Agnostic** Reuse the same store for multiple types. Each store is partitioned and it's possible to configure a type per partition.
+* :twisted_rightwards_arrows: **Type Agnostic** Reuse the same store for multiple types. Each store is partitioned and it's possible to configure a type and the respective `fromEncodable` per partition.
 * :sparkles: **Events** - Subscribable events for vault and cache instances, providing notifications on creation, update or removal of an entry and also expiry and eviction notifications for caches.
 * :bar_chart: **Statistics** - Supports the capture of vault and cache statistics
 * :alarm_clock: **Cache Expiry policies** - out-of-box support for `Eternal`,`Created`, `Accessed`, `Modified` and `Touched` policies.
@@ -204,7 +204,7 @@ void main() async {
 }
 ```
 
-Notice that `fromEncodable` function is configured per cache which means you can configure a cache with a different type *using the same store*. This was not previously possible as before versio 4.3.0 the `fromEncodable` function was configured per store. That as changed with version 4.3.0 which brough this feature alongside a (small) breaking change in the way this library is used. Find bellow a complete example that stores two different objects in the same store and creates two vaults from it using two different `fromEncodable` functions.
+Notice that `fromEncodable` function is configured per cache which means you can configure a cache with a different type *using the same store*. This was not previously possible as before version 4.3.0 the `fromEncodable` function was configured per store. That has changed with version 4.3.0 which brough this feature alongside a breaking change in the way this library is used. Find bellow a complete example that stores two different objects in the same store and creates two vaults using two different `fromEncodable` functions.
 
 ```dart
 import 'dart:io';
