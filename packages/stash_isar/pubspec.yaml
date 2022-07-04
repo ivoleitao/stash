@@ -18,4 +18,4 @@ dev_dependencies:
   test: ^1.21.3
   build_runner: ^2.1.11
   isar_generator: ^3.0.0-dev.5
-  stash_test: ^4.2.0
+  stash_test: ^4.3.0
