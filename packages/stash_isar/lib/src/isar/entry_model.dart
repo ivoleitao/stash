@@ -3,8 +3,7 @@ import 'dart:typed_data';
 import 'package:isar/isar.dart';
 
 abstract class EntryModel {
-  @Id()
-  int? id;
+  Id? id;
 
   @Index(name: 'key')
   late String key;

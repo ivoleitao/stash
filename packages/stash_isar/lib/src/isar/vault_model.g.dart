@@ -10,7 +10,7 @@ part of 'vault_model.dart';
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
 
 extension GetVaultModelCollection on Isar {
-  IsarCollection<VaultModel> get vaultModels => getCollection();
+  IsarCollection<VaultModel> get vaultModels => collection();
 }
 
 const VaultModelSchema = CollectionSchema(
@@ -71,7 +71,8 @@ void _vaultModelSerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
-  final size = (staticSize + (key$Bytes.length) + (object.value.length)) as int;
+  final size =
+      (staticSize + 3 + (key$Bytes.length) + 3 + (object.value.length)) as int;
   cObj.buffer = alloc(size);
   cObj.buffer_length = size;
 
@@ -80,9 +81,9 @@ void _vaultModelSerializeNative(
   writer.writeHeader();
   writer.writeDateTime(offsets[0], object.accessTime);
   writer.writeDateTime(offsets[1], object.creationTime);
-  writer.writeBytes(offsets[2], key$Bytes);
+  writer.writeByteList(offsets[2], key$Bytes);
   writer.writeDateTime(offsets[3], object.updateTime);
-  writer.writeBytes(offsets[4], object.value);
+  writer.writeByteList(offsets[4], object.value);
 }
 
 VaultModel _vaultModelDeserializeNative(IsarCollection<VaultModel> collection,
@@ -93,7 +94,7 @@ VaultModel _vaultModelDeserializeNative(IsarCollection<VaultModel> collection,
   object.id = id;
   object.key = reader.readString(offsets[2]);
   object.updateTime = reader.readDateTimeOrNull(offsets[3]);
-  object.value = reader.readBytes(offsets[4]);
+  object.value = reader.readByteList(offsets[4]);
   return object;
 }
 
@@ -111,7 +112,7 @@ P _vaultModelDeserializePropNative<P>(
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readBytes(offset)) as P;
+      return (reader.readByteList(offset)) as P;
     default:
       throw IsarError('Illegal propertyIndex');
   }
@@ -201,14 +202,6 @@ extension VaultModelQueryWhereSort
   QueryBuilder<VaultModel, VaultModel, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-
-  QueryBuilder<VaultModel, VaultModel, QAfterWhere> anyKey() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'key'),
-      );
     });
   }
 }
@@ -839,6 +832,12 @@ extension VaultModelQueryWhereDistinct
 
 extension VaultModelQueryProperty
     on QueryBuilder<VaultModel, VaultModel, QQueryProperty> {
+  QueryBuilder<VaultModel, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<VaultModel, DateTime?, QQueryOperations> accessTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'accessTime');
@@ -848,12 +847,6 @@ extension VaultModelQueryProperty
   QueryBuilder<VaultModel, DateTime, QQueryOperations> creationTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'creationTime');
-    });
-  }
-
-  QueryBuilder<VaultModel, int?, QQueryOperations> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
     });
   }
 

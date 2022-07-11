@@ -1,3 +1,7 @@
+# 4.3.1
+
+- chore: version bump
+
 # 4.3.0
 
 - feat: Updated dependencies

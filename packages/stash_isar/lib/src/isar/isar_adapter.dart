@@ -53,7 +53,7 @@ abstract class IsarAdapter<M extends EntryModel> {
   }
 
   IsarCollection<M>? partition(String name) {
-    return isar(name)?.getCollection<M>();
+    return isar(name)?.collection<M>();
   }
 
   /// Deletes a partition

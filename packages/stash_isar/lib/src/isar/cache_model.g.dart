@@ -10,7 +10,7 @@ part of 'cache_model.dart';
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
 
 extension GetCacheModelCollection on Isar {
-  IsarCollection<CacheModel> get cacheModels => getCollection();
+  IsarCollection<CacheModel> get cacheModels => collection();
 }
 
 const CacheModelSchema = CollectionSchema(
@@ -73,7 +73,8 @@ void _cacheModelSerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
-  final size = (staticSize + (key$Bytes.length) + (object.value.length)) as int;
+  final size =
+      (staticSize + 3 + (key$Bytes.length) + 3 + (object.value.length)) as int;
   cObj.buffer = alloc(size);
   cObj.buffer_length = size;
 
@@ -84,9 +85,9 @@ void _cacheModelSerializeNative(
   writer.writeDateTime(offsets[1], object.creationTime);
   writer.writeDateTime(offsets[2], object.expiryTime);
   writer.writeLong(offsets[3], object.hitCount);
-  writer.writeBytes(offsets[4], key$Bytes);
+  writer.writeByteList(offsets[4], key$Bytes);
   writer.writeDateTime(offsets[5], object.updateTime);
-  writer.writeBytes(offsets[6], object.value);
+  writer.writeByteList(offsets[6], object.value);
 }
 
 CacheModel _cacheModelDeserializeNative(IsarCollection<CacheModel> collection,
@@ -99,7 +100,7 @@ CacheModel _cacheModelDeserializeNative(IsarCollection<CacheModel> collection,
   object.id = id;
   object.key = reader.readString(offsets[4]);
   object.updateTime = reader.readDateTimeOrNull(offsets[5]);
-  object.value = reader.readBytes(offsets[6]);
+  object.value = reader.readByteList(offsets[6]);
   return object;
 }
 
@@ -121,7 +122,7 @@ P _cacheModelDeserializePropNative<P>(
     case 5:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 6:
-      return (reader.readBytes(offset)) as P;
+      return (reader.readByteList(offset)) as P;
     default:
       throw IsarError('Illegal propertyIndex');
   }
@@ -230,14 +231,6 @@ extension CacheModelQueryWhereSort
   QueryBuilder<CacheModel, CacheModel, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-
-  QueryBuilder<CacheModel, CacheModel, QAfterWhere> anyKey() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'key'),
-      );
     });
   }
 }
@@ -1045,6 +1038,12 @@ extension CacheModelQueryWhereDistinct
 
 extension CacheModelQueryProperty
     on QueryBuilder<CacheModel, CacheModel, QQueryProperty> {
+  QueryBuilder<CacheModel, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<CacheModel, DateTime?, QQueryOperations> accessTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'accessTime');
@@ -1066,12 +1065,6 @@ extension CacheModelQueryProperty
   QueryBuilder<CacheModel, int?, QQueryOperations> hitCountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'hitCount');
-    });
-  }
-
-  QueryBuilder<CacheModel, int?, QQueryOperations> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
     });
   }
 

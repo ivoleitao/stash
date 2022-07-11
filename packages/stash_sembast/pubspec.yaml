@@ -1,5 +1,5 @@
 name: stash_sembast
-version: 4.3.0
+version: 4.3.1
 description: >-
   Sembast storage extension for the stash API. Provides support to store vaults and 
   caches in the local file system in binary format using the msgpack json format
@@ -9,7 +9,7 @@ environment:
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
-  meta: ^1.8.0
+  meta: ^1.7.0
   sembast: ^3.2.0+1
   stash: ^4.3.0
 dev_dependencies:
