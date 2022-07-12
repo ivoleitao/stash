@@ -15,5 +15,5 @@ dependencies:
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.4
-  stash_test: ^4.3.0
+  stash_test: ^4.3.1
   cbl_dart: ^2.0.0
