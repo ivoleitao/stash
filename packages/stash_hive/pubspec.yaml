@@ -12,7 +12,7 @@ dependencies:
   meta: ^1.7.0
   hive: ^2.2.3
   universal_platform: ^1.0.0+1
-  stash: ^4.3.0
+  stash: ^4.3.1
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.4
