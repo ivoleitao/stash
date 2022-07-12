@@ -12,7 +12,7 @@ dependencies:
   equatable: ^2.0.3
   clock: ^1.1.0
   time: ^2.1.0
-  test: ^1.21.3
+  test: ^1.21.4
   stash: ^4.3.0
 dev_dependencies:
   lints: ^2.0.0
