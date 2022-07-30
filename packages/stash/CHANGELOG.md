@@ -1,3 +1,9 @@
+# 4.3.2
+
+- fix: Removed extra coverage link in README
+- chore: Made the flutter dependencies standout to avoid overrides when updating dependencies
+- feat: Updated dependencies
+
 # 4.3.1
 
 - fix: downgraded some dependencies to guarantee compatibility with latest flutter version (see https://github.com/ivoleitao/stash/issues/34) 
