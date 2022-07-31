@@ -3,6 +3,7 @@
 - fix: Removed extra coverage link in README
 - chore: Made the flutter dependencies standout to avoid overrides when updating dependencies
 - feat: Updated dependencies
+- chore: Improved and added package attributes
 
 # 4.3.1
 

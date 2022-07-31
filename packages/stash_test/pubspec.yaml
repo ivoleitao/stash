@@ -3,7 +3,9 @@ version: 4.3.2
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
-homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_test
+homepage: https://pub.dev/packages/stash
+repository: https://github.com/ivoleitao/stash
+issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
   sdk: '>=2.17.0 <3.0.0'

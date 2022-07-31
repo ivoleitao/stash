@@ -1,6 +1,7 @@
 # 4.3.2
 
 - feat: dependency updates
+- chore: Improved and added package attributes
 
 # 4.3.1
 

@@ -3,7 +3,9 @@ version: 4.3.2
 description: >-
   Sembast Web storage extension for the stash API. Provides support to store vaults 
   and caches in a IndexedDB in binary format using the msgpack json format
-homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_sembast_web
+homepage: https://pub.dev/packages/stash
+repository: https://github.com/ivoleitao/stash
+issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
   sdk: '>=2.17.0 <3.0.0'

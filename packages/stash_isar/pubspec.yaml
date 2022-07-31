@@ -4,7 +4,9 @@ publish_to: none
 description: >-
   Isar storage extension for the stash caching API. Provides support to store vaults 
   and caches in the Isar database
-homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_isar
+homepage: https://pub.dev/packages/stash
+repository: https://github.com/ivoleitao/stash
+issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
   sdk: '>=2.17.0 <3.0.0'

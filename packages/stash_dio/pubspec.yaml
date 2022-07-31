@@ -3,7 +3,9 @@ version: 4.3.2
 description: >-
   Dio extension for the stash API. Provides an interceptor that uses
   stash as a caching layer for Dio
-homepage: https://github.com/ivoleitao/stash/tree/develop/packages/stash_dio
+homepage: https://pub.dev/packages/stash
+repository: https://github.com/ivoleitao/stash
+issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
   sdk: '>=2.17.0 <3.0.0'

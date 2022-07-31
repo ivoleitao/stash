@@ -2,6 +2,7 @@
 
 - feat: dependency updates
 - chore: Made the flutter dependencies standout to avoid overrides when updating dependencies
+- chore: Improved and added package attributes
 
 # 4.3.1
 
