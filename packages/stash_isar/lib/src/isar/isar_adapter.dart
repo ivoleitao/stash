@@ -34,7 +34,8 @@ abstract class IsarAdapter<M extends EntryModel> {
       return Isar.open([schema],
               directory: path,
               name: name,
-              relaxedDurability: relaxedDurability ?? true)
+              relaxedDurability: relaxedDurability ?? true,
+              inspector: false)
           .then((isar) {
         _partitions[name] = isar;
 

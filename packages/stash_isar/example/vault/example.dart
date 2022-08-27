@@ -30,8 +30,9 @@ class Task {
 
 void main() async {
   // Initialize Isar
-  await Isar.initializeIsarCore(
-      libraries: {Abi.current(): '.dart_tool/libisar.dylib'}, download: true);
+  await Isar.initializeIsarCore(libraries: {
+    Abi.current(): '${Directory.current.path}/.dart_tool/libisar.dylib'
+  }, download: true);
 
   // Temporary directory
   final path = Directory.systemTemp.path;
