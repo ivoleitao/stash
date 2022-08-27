@@ -3,7 +3,7 @@
 part of 'cache_database.dart';
 
 // **************************************************************************
-// MoorGenerator
+// DriftDatabaseGenerator
 // **************************************************************************
 
 // ignore_for_file: type=lint
@@ -31,7 +31,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
 
   /// Returns a [BlobColumn] to store the value field
   final Uint8List value;
-  CacheData(
+  const CacheData(
       {required this.name,
       required this.key,
       required this.creationTime,
@@ -40,27 +40,6 @@ class CacheData extends DataClass implements Insertable<CacheData> {
       required this.updateTime,
       required this.hitCount,
       required this.value});
-  factory CacheData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return CacheData(
-      name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      key: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}key'])!,
-      creationTime: $CacheTableTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}creation_time']))!,
-      expiryTime: $CacheTableTable.$converter1.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}expiry_time']))!,
-      accessTime: $CacheTableTable.$converter2.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}access_time']))!,
-      updateTime: $CacheTableTable.$converter3.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}update_time']))!,
-      hitCount: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}hit_count'])!,
-      value: const BlobType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}value'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -68,20 +47,19 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     map['key'] = Variable<String>(key);
     {
       final converter = $CacheTableTable.$converter0;
-      map['creation_time'] =
-          Variable<String>(converter.mapToSql(creationTime)!);
+      map['creation_time'] = Variable<String>(converter.toSql(creationTime));
     }
     {
       final converter = $CacheTableTable.$converter1;
-      map['expiry_time'] = Variable<String>(converter.mapToSql(expiryTime)!);
+      map['expiry_time'] = Variable<String>(converter.toSql(expiryTime));
     }
     {
       final converter = $CacheTableTable.$converter2;
-      map['access_time'] = Variable<String>(converter.mapToSql(accessTime)!);
+      map['access_time'] = Variable<String>(converter.toSql(accessTime));
     }
     {
       final converter = $CacheTableTable.$converter3;
-      map['update_time'] = Variable<String>(converter.mapToSql(updateTime)!);
+      map['update_time'] = Variable<String>(converter.toSql(updateTime));
     }
     map['hit_count'] = Variable<int>(hitCount);
     map['value'] = Variable<Uint8List>(value);
@@ -220,10 +198,10 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
   static Insertable<CacheData> custom({
     Expression<String>? name,
     Expression<String>? key,
-    Expression<DateTime>? creationTime,
-    Expression<DateTime>? expiryTime,
-    Expression<DateTime>? accessTime,
-    Expression<DateTime>? updateTime,
+    Expression<String>? creationTime,
+    Expression<String>? expiryTime,
+    Expression<String>? accessTime,
+    Expression<String>? updateTime,
     Expression<int>? hitCount,
     Expression<Uint8List>? value,
   }) {
@@ -272,22 +250,19 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     if (creationTime.present) {
       final converter = $CacheTableTable.$converter0;
       map['creation_time'] =
-          Variable<String>(converter.mapToSql(creationTime.value)!);
+          Variable<String>(converter.toSql(creationTime.value));
     }
     if (expiryTime.present) {
       final converter = $CacheTableTable.$converter1;
-      map['expiry_time'] =
-          Variable<String>(converter.mapToSql(expiryTime.value)!);
+      map['expiry_time'] = Variable<String>(converter.toSql(expiryTime.value));
     }
     if (accessTime.present) {
       final converter = $CacheTableTable.$converter2;
-      map['access_time'] =
-          Variable<String>(converter.mapToSql(accessTime.value)!);
+      map['access_time'] = Variable<String>(converter.toSql(accessTime.value));
     }
     if (updateTime.present) {
       final converter = $CacheTableTable.$converter3;
-      map['update_time'] =
-          Variable<String>(converter.mapToSql(updateTime.value)!);
+      map['update_time'] = Variable<String>(converter.toSql(updateTime.value));
     }
     if (hitCount.present) {
       map['hit_count'] = Variable<int>(hitCount.value);
@@ -322,49 +297,49 @@ class $CacheTableTable extends CacheTable
   $CacheTableTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _keyMeta = const VerificationMeta('key');
   @override
-  late final GeneratedColumn<String?> key = GeneratedColumn<String?>(
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
       'key', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String?> creationTime =
-      GeneratedColumn<String?>('creation_time', aliasedName, false,
-              type: const StringType(), requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<DateTime, String> creationTime =
+      GeneratedColumn<String>('creation_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter0);
   final VerificationMeta _expiryTimeMeta = const VerificationMeta('expiryTime');
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String?> expiryTime =
-      GeneratedColumn<String?>('expiry_time', aliasedName, false,
-              type: const StringType(), requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<DateTime, String> expiryTime =
+      GeneratedColumn<String>('expiry_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter1);
   final VerificationMeta _accessTimeMeta = const VerificationMeta('accessTime');
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String?> accessTime =
-      GeneratedColumn<String?>('access_time', aliasedName, false,
-              type: const StringType(), requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<DateTime, String> accessTime =
+      GeneratedColumn<String>('access_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter2);
   final VerificationMeta _updateTimeMeta = const VerificationMeta('updateTime');
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String?> updateTime =
-      GeneratedColumn<String?>('update_time', aliasedName, false,
-              type: const StringType(), requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<DateTime, String> updateTime =
+      GeneratedColumn<String>('update_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DateTime>($CacheTableTable.$converter3);
   final VerificationMeta _hitCountMeta = const VerificationMeta('hitCount');
   @override
-  late final GeneratedColumn<int?> hitCount = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> hitCount = GeneratedColumn<int>(
       'hit_count', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
-  late final GeneratedColumn<Uint8List?> value = GeneratedColumn<Uint8List?>(
+  late final GeneratedColumn<Uint8List> value = GeneratedColumn<Uint8List>(
       'value', aliasedName, false,
-      type: const BlobType(), requiredDuringInsert: true);
+      type: DriftSqlType.blob, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         name,
@@ -420,8 +395,29 @@ class $CacheTableTable extends CacheTable
   Set<GeneratedColumn> get $primaryKey => {name, key};
   @override
   CacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return CacheData.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CacheData(
+      name: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      key: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      creationTime: $CacheTableTable.$converter0.fromSql(attachedDatabase
+          .options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}creation_time'])!),
+      expiryTime: $CacheTableTable.$converter1.fromSql(attachedDatabase
+          .options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}expiry_time'])!),
+      accessTime: $CacheTableTable.$converter2.fromSql(attachedDatabase
+          .options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}access_time'])!),
+      updateTime: $CacheTableTable.$converter3.fromSql(attachedDatabase
+          .options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}update_time'])!),
+      hitCount: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}hit_count'])!,
+      value: attachedDatabase.options.types
+          .read(DriftSqlType.blob, data['${effectivePrefix}value'])!,
+    );
   }
 
   @override
@@ -436,11 +432,12 @@ class $CacheTableTable extends CacheTable
 }
 
 abstract class _$CacheDatabase extends GeneratedDatabase {
-  _$CacheDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$CacheDatabase(QueryExecutor e) : super(e);
   late final $CacheTableTable cacheTable = $CacheTableTable(this);
   late final CacheDao cacheDao = CacheDao(this as CacheDatabase);
   @override
-  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  Iterable<TableInfo<Table, dynamic>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [cacheTable];
 }

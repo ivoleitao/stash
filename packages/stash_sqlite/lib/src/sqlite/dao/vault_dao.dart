@@ -31,7 +31,10 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
       ..addColumns([countColumn])
       ..where(vaultTable.name.equals(name));
 
-    return query.map((row) => row.read(countColumn)).getSingle();
+    return query
+        .map((row) => row.read(countColumn))
+        .getSingle()
+        .then((value) => value ?? 0);
   }
 
   /// Returns all the keys on a named vault

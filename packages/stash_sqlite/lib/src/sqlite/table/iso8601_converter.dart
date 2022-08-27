@@ -7,20 +7,28 @@ class Iso8601Converter extends TypeConverter<DateTime, String> {
   const Iso8601Converter();
 
   @override
+  DateTime fromSql(String fromDb) {
+    return DateTime.parse(fromDb);
+  }
+
+  @override
+  String toSql(DateTime value) {
+    return value.toIso8601String();
+  }
+
   DateTime? mapToDart(String? fromDb) {
     if (fromDb == null) {
       return null;
     }
 
-    return DateTime.parse(fromDb);
+    return fromSql(fromDb);
   }
 
-  @override
   String? mapToSql(DateTime? value) {
     if (value == null) {
       return null;
     }
 
-    return value.toIso8601String();
+    return toSql(value);
   }
 }

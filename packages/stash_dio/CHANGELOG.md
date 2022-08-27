@@ -1,3 +1,7 @@
+# 4.3.3
+
+- feat: Updated dependencies
+
 # 4.3.2
 
 - feat: dependency updates

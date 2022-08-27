@@ -309,8 +309,8 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry> {
   @override
   VaultEntry toEntry(
       VaultModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return VaultEntry.loadEntry(
-        model.key, model.creationTime, valueDecoder(model.value, fromEncodable),
+    return VaultEntry.loadEntry(model.key, model.creationTime,
+        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
         accessTime: model.accessTime, updateTime: model.updateTime);
   }
 
@@ -349,7 +349,7 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry> {
   CacheEntry toEntry(
       CacheModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loadEntry(model.key, model.creationTime, model.expiryTime,
-        valueDecoder(model.value, fromEncodable),
+        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
         accessTime: model.accessTime,
         updateTime: model.updateTime,
         hitCount: model.hitCount);

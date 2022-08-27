@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:isar/isar.dart';
 
 import 'entry_model.dart';

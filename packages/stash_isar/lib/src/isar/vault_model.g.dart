@@ -7,102 +7,122 @@ part of 'vault_model.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
 
 extension GetVaultModelCollection on Isar {
-  IsarCollection<VaultModel> get vaultModels => collection();
+  IsarCollection<VaultModel> get vaultModels => this.collection();
 }
 
 const VaultModelSchema = CollectionSchema(
   name: r'Vault',
-  schema:
-      r'{"name":"Vault","idName":"id","properties":[{"name":"accessTime","type":"Long"},{"name":"creationTime","type":"Long"},{"name":"key","type":"String"},{"name":"updateTime","type":"Long"},{"name":"value","type":"ByteList"}],"indexes":[{"name":"key","unique":false,"replace":false,"properties":[{"name":"key","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  idName: r'id',
-  propertyIds: {
-    r'accessTime': 0,
-    r'creationTime': 1,
-    r'key': 2,
-    r'updateTime': 3,
-    r'value': 4
+  id: -4342956630933593564,
+  properties: {
+    r'accessTime': PropertySchema(
+      id: 0,
+      name: r'accessTime',
+      type: IsarType.dateTime,
+    ),
+    r'creationTime': PropertySchema(
+      id: 1,
+      name: r'creationTime',
+      type: IsarType.dateTime,
+    ),
+    r'key': PropertySchema(
+      id: 2,
+      name: r'key',
+      type: IsarType.string,
+    ),
+    r'updateTime': PropertySchema(
+      id: 3,
+      name: r'updateTime',
+      type: IsarType.dateTime,
+    ),
+    r'value': PropertySchema(
+      id: 4,
+      name: r'value',
+      type: IsarType.byteList,
+    )
   },
-  listProperties: {r'value'},
-  indexIds: {r'key': 0},
-  indexValueTypes: {
-    r'key': [
-      IndexValueType.stringHash,
-    ]
-  },
-  linkIds: {},
-  backlinkLinkNames: {},
-  getId: _vaultModelGetId,
-  setId: _vaultModelSetId,
-  getLinks: _vaultModelGetLinks,
-  attachLinks: _vaultModelAttachLinks,
+  estimateSize: _vaultModelEstimateSize,
   serializeNative: _vaultModelSerializeNative,
   deserializeNative: _vaultModelDeserializeNative,
   deserializePropNative: _vaultModelDeserializePropNative,
   serializeWeb: _vaultModelSerializeWeb,
   deserializeWeb: _vaultModelDeserializeWeb,
   deserializePropWeb: _vaultModelDeserializePropWeb,
-  version: 4,
+  idName: r'id',
+  indexes: {
+    r'key': IndexSchema(
+      id: -4906094122524121629,
+      name: r'key',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'key',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
+  links: {},
+  embeddedSchemas: {},
+  getId: _vaultModelGetId,
+  getLinks: _vaultModelGetLinks,
+  attach: _vaultModelAttach,
+  version: 5,
 );
 
-int? _vaultModelGetId(VaultModel object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+int _vaultModelEstimateSize(
+  VaultModel object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.key.length * 3;
+  bytesCount += 3 + object.value.length;
+  return bytesCount;
 }
 
-void _vaultModelSetId(VaultModel object, int id) {
-  object.id = id;
-}
-
-List<IsarLinkBase<dynamic>> _vaultModelGetLinks(VaultModel object) {
-  return [];
-}
-
-void _vaultModelSerializeNative(
-    IsarCollection<VaultModel> collection,
-    IsarCObject cObj,
-    VaultModel object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  final key$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.key);
-  final size =
-      (staticSize + 3 + (key$Bytes.length) + 3 + (object.value.length)) as int;
-  cObj.buffer = alloc(size);
-  cObj.buffer_length = size;
-
-  final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeHeader();
+int _vaultModelSerializeNative(
+  VaultModel object,
+  IsarBinaryWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   writer.writeDateTime(offsets[0], object.accessTime);
   writer.writeDateTime(offsets[1], object.creationTime);
-  writer.writeByteList(offsets[2], key$Bytes);
+  writer.writeString(offsets[2], object.key);
   writer.writeDateTime(offsets[3], object.updateTime);
   writer.writeByteList(offsets[4], object.value);
+  return writer.usedBytes;
 }
 
-VaultModel _vaultModelDeserializeNative(IsarCollection<VaultModel> collection,
-    int id, IsarBinaryReader reader, List<int> offsets) {
+VaultModel _vaultModelDeserializeNative(
+  int id,
+  IsarBinaryReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = VaultModel();
   object.accessTime = reader.readDateTimeOrNull(offsets[0]);
   object.creationTime = reader.readDateTime(offsets[1]);
   object.id = id;
   object.key = reader.readString(offsets[2]);
   object.updateTime = reader.readDateTimeOrNull(offsets[3]);
-  object.value = reader.readByteList(offsets[4]);
+  object.value = reader.readByteList(offsets[4]) ?? [];
   return object;
 }
 
 P _vaultModelDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+  Id id,
+  IsarBinaryReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
@@ -112,90 +132,46 @@ P _vaultModelDeserializePropNative<P>(
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readByteList(offset)) as P;
+      return (reader.readByteList(offset) ?? []) as P;
     default:
-      throw IsarError('Illegal propertyIndex');
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
 Object _vaultModelSerializeWeb(
     IsarCollection<VaultModel> collection, VaultModel object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(
-      jsObj, r'accessTime', object.accessTime?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, r'creationTime',
-      object.creationTime.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, r'id', object.id);
-  IsarNative.jsObjectSet(jsObj, r'key', object.key);
-  IsarNative.jsObjectSet(
-      jsObj, r'updateTime', object.updateTime?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, r'value', object.value);
-  return jsObj;
+  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
 }
 
 VaultModel _vaultModelDeserializeWeb(
     IsarCollection<VaultModel> collection, Object jsObj) {
-  final object = VaultModel();
-  object.accessTime = IsarNative.jsObjectGet(jsObj, r'accessTime') != null
-      ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, r'accessTime') as int,
-              isUtc: true)
-          .toLocal()
-      : null;
-  object.creationTime = IsarNative.jsObjectGet(jsObj, r'creationTime') != null
-      ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, r'creationTime') as int,
-              isUtc: true)
-          .toLocal()
-      : DateTime.fromMillisecondsSinceEpoch(0);
-  object.id = IsarNative.jsObjectGet(jsObj, r'id');
-  object.key = IsarNative.jsObjectGet(jsObj, r'key') ?? '';
-  object.updateTime = IsarNative.jsObjectGet(jsObj, r'updateTime') != null
-      ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, r'updateTime') as int,
-              isUtc: true)
-          .toLocal()
-      : null;
-  object.value = IsarNative.jsObjectGet(jsObj, r'value') ?? Uint8List(0);
-  return object;
+  /*final object = VaultModel();object.accessTime = IsarNative.jsObjectGet(jsObj, r'accessTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'accessTime') as int, isUtc: true).toLocal() : null;object.creationTime = IsarNative.jsObjectGet(jsObj, r'creationTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'creationTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0);object.id = IsarNative.jsObjectGet(jsObj, r'id') ;object.key = IsarNative.jsObjectGet(jsObj, r'key') ?? '';object.updateTime = IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null;object.value = (IsarNative.jsObjectGet(jsObj, r'value') as List?)?.map((e) => e ?? 0).toList().cast<int>() ?? [];*/
+  //return object;
+  throw UnimplementedError();
 }
 
 P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
-    case r'accessTime':
-      return (IsarNative.jsObjectGet(jsObj, r'accessTime') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, r'accessTime') as int,
-                  isUtc: true)
-              .toLocal()
-          : null) as P;
-    case r'creationTime':
-      return (IsarNative.jsObjectGet(jsObj, r'creationTime') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, r'creationTime') as int,
-                  isUtc: true)
-              .toLocal()
-          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
-    case r'id':
-      return (IsarNative.jsObjectGet(jsObj, r'id')) as P;
-    case r'key':
-      return (IsarNative.jsObjectGet(jsObj, r'key') ?? '') as P;
-    case r'updateTime':
-      return (IsarNative.jsObjectGet(jsObj, r'updateTime') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, r'updateTime') as int,
-                  isUtc: true)
-              .toLocal()
-          : null) as P;
-    case r'value':
-      return (IsarNative.jsObjectGet(jsObj, r'value') ?? Uint8List(0)) as P;
     default:
       throw IsarError('Illegal propertyName');
   }
 }
 
-void _vaultModelAttachLinks(
-    IsarCollection<dynamic> col, int id, VaultModel object) {}
+int? _vaultModelGetId(VaultModel object) {
+  if (object.id == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.id;
+  }
+}
+
+List<IsarLinkBase<dynamic>> _vaultModelGetLinks(VaultModel object) {
+  return [];
+}
+
+void _vaultModelAttach(IsarCollection<dynamic> col, Id id, VaultModel object) {
+  object.id = id;
+}
 
 extension VaultModelQueryWhereSort
     on QueryBuilder<VaultModel, VaultModel, QWhere> {
@@ -330,6 +306,17 @@ extension VaultModelQueryFilter
     });
   }
 
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      accessTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query
+          .copyWith(filterNot: !query.filterNot)
+          .addFilterCondition(const FilterCondition.isNull(
+            property: r'accessTime',
+          ));
+    });
+  }
+
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> accessTimeEqualTo(
       DateTime? value) {
     return QueryBuilder.apply(this, (query) {
@@ -449,8 +436,18 @@ extension VaultModelQueryFilter
     });
   }
 
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query
+          .copyWith(filterNot: !query.filterNot)
+          .addFilterCondition(const FilterCondition.isNull(
+            property: r'id',
+          ));
+    });
+  }
+
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idEqualTo(
-      int value) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -460,7 +457,7 @@ extension VaultModelQueryFilter
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -473,7 +470,7 @@ extension VaultModelQueryFilter
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -486,8 +483,8 @@ extension VaultModelQueryFilter
   }
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -517,8 +514,8 @@ extension VaultModelQueryFilter
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -532,8 +529,8 @@ extension VaultModelQueryFilter
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
@@ -548,9 +545,9 @@ extension VaultModelQueryFilter
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -623,6 +620,17 @@ extension VaultModelQueryFilter
     });
   }
 
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      updateTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query
+          .copyWith(filterNot: !query.filterNot)
+          .addFilterCondition(const FilterCondition.isNull(
+            property: r'updateTime',
+          ));
+    });
+  }
+
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> updateTimeEqualTo(
       DateTime? value) {
     return QueryBuilder.apply(this, (query) {
@@ -677,12 +685,159 @@ extension VaultModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'value',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> valueIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
+      valueLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'value',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
 }
+
+extension VaultModelQueryObject
+    on QueryBuilder<VaultModel, VaultModel, QFilterCondition> {}
 
 extension VaultModelQueryLinks
     on QueryBuilder<VaultModel, VaultModel, QFilterCondition> {}
 
-extension VaultModelQueryWhereSortBy
+extension VaultModelQuerySortBy
     on QueryBuilder<VaultModel, VaultModel, QSortBy> {
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> sortByAccessTime() {
     return QueryBuilder.apply(this, (query) {
@@ -733,7 +888,7 @@ extension VaultModelQueryWhereSortBy
   }
 }
 
-extension VaultModelQueryWhereSortThenBy
+extension VaultModelQuerySortThenBy
     on QueryBuilder<VaultModel, VaultModel, QSortThenBy> {
   QueryBuilder<VaultModel, VaultModel, QAfterSortBy> thenByAccessTime() {
     return QueryBuilder.apply(this, (query) {
@@ -862,7 +1017,7 @@ extension VaultModelQueryProperty
     });
   }
 
-  QueryBuilder<VaultModel, Uint8List, QQueryOperations> valueProperty() {
+  QueryBuilder<VaultModel, List<int>, QQueryOperations> valueProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'value');
     });

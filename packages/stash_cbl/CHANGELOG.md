@@ -1,3 +1,7 @@
+# 4.3.3
+
+- feat: Updated dependencies
+
 # 4.3.2
 
 - chore: Made the flutter dependencies standout to avoid overrides when updating dependencies
