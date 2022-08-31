@@ -7,6 +7,7 @@ import 'src/api/cache/cache_entry.dart';
 import 'src/api/cache/cache_info.dart';
 import 'src/api/cache/cache_manager.dart';
 import 'src/api/cache/cache_stats.dart';
+import 'src/api/cache/cache_store.dart';
 import 'src/api/cache/eviction/eviction_policy.dart';
 import 'src/api/cache/expiry/expiry_policy.dart';
 import 'src/api/cache/sampler/sampler.dart';
@@ -17,12 +18,14 @@ import 'src/api/vault/vault_entry.dart';
 import 'src/api/vault/vault_info.dart';
 import 'src/api/vault/vault_manager.dart';
 import 'src/api/vault/vault_stats.dart';
+import 'src/api/vault/vault_store.dart';
 
 export 'src/api/cache/cache.dart';
 export 'src/api/cache/cache_entry.dart';
 export 'src/api/cache/cache_info.dart';
 export 'src/api/cache/cache_manager.dart';
 export 'src/api/cache/cache_stats.dart';
+export 'src/api/cache/cache_store.dart';
 export 'src/api/cache/event/created_event.dart';
 export 'src/api/cache/event/event.dart';
 export 'src/api/cache/event/evicted_event.dart';
@@ -68,6 +71,7 @@ export 'src/api/vault/vault_entry.dart';
 export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
+export 'src/api/vault/vault_store.dart';
 
 /// Builds a new Tiered [Cache]
 ///
@@ -86,7 +90,7 @@ Cache<T> newTieredCache<T>(
 
 /// Extension over [Store] allowing the creation of multiple vaults from
 /// the same store
-extension VaultExtension on Store<VaultInfo, VaultEntry> {
+extension VaultExtension on VaultStore {
   /// Creates a new [Vault] backed by a [Store]
   ///
   /// * [store]: An existing store
@@ -142,7 +146,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
 
 /// Extension over [Store] allowing the creation of multiple caches from
 /// the same store
-extension CacheExtension on Store<CacheInfo, CacheEntry> {
+extension CacheExtension on CacheStore {
   /// Creates a new [Cache] backed by a [Store]
   ///
   /// * [store]: An existing store

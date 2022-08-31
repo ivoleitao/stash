@@ -274,7 +274,8 @@ abstract class FileStore<I extends Info, E extends Entry<I>>
   }
 }
 
-class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
+class FileVaultStore extends FileStore<VaultInfo, VaultEntry>
+    implements VaultStore {
   /// The size in bytes of the store entry header
   static const int _vaultHeaderSize = uint64Size * 3;
 
@@ -328,7 +329,8 @@ class FileVaultStore extends FileStore<VaultInfo, VaultEntry> {
   }
 }
 
-class FileCacheStore extends FileStore<CacheInfo, CacheEntry> {
+class FileCacheStore extends FileStore<CacheInfo, CacheEntry>
+    implements CacheStore {
   /// The size in bytes of the cache entry header
   static const int _cacheHeaderSize = uint64Size * 5;
 

@@ -195,7 +195,8 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   }
 }
 
-class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
+class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry>
+    implements VaultStore {
   /// Builds a [SembastVaultStore].
   ///
   /// * [_adapter]: The sembast store adapter
@@ -229,7 +230,8 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry> {
   }
 }
 
-class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry> {
+class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry>
+    implements CacheStore {
   /// Builds a [SembastCacheStore].
   ///
   /// * [_adapter]: The sembast store adapter

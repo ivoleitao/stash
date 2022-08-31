@@ -187,7 +187,8 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   }
 }
 
-class CblVaultStore extends CblStore<VaultInfo, VaultEntry> {
+class CblVaultStore extends CblStore<VaultInfo, VaultEntry>
+    implements VaultStore {
   CblVaultStore(super.adapter, {super.codec});
 
   @override
@@ -202,7 +203,8 @@ class CblVaultStore extends CblStore<VaultInfo, VaultEntry> {
       );
 }
 
-class CblCacheStore extends CblStore<CacheInfo, CacheEntry> {
+class CblCacheStore extends CblStore<CacheInfo, CacheEntry>
+    implements CacheStore {
   CblCacheStore(super.adapter, {super.codec});
 
   @override

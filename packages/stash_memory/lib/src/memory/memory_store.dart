@@ -126,6 +126,8 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
   }
 }
 
-class MemoryVaultStore extends MemoryStore<VaultInfo, VaultEntry> {}
+class MemoryVaultStore extends MemoryStore<VaultInfo, VaultEntry>
+    implements VaultStore {}
 
-class MemoryCacheStore extends MemoryStore<CacheInfo, CacheEntry> {}
+class MemoryCacheStore extends MemoryStore<CacheInfo, CacheEntry>
+    implements CacheStore {}
