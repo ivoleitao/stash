@@ -2,6 +2,7 @@
 
 - feat: Updated dependencies
 - feat: Added VaultStore and CacheStore marker interfaces to allow a cleaner usage of a store or cache abstraction for more advanced clients
+- fix: Improved the documentation
 
 # 4.3.2
 
