@@ -1,3 +1,7 @@
+# 4.3.4
+
+- feat: Updated stash and stash_test dependencies
+
 # 4.3.3
 
 - feat: Updated dependencies

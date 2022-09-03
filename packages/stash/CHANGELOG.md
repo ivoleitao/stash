@@ -1,3 +1,7 @@
+# 4.3.4
+
+- fix:Involuntary brealking change, extension methods are now targeting again `Store<VaultInfo, VaultEntry>` and `Store<CacheInfo, CacheEntry>` (see https://github.com/ivoleitao/stash/issues/38)
+
 # 4.3.3
 
 - feat: Updated dependencies
