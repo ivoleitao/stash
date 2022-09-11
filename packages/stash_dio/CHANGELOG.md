@@ -1,10 +1,15 @@
+# 4.4.0
+
+- BREAKING CHANGE: Changed minimum sdk version
+- chore: Updated dependencies
+
 # 4.3.4
 
 - feat: Updated stash, stash_memory and stash_file dependencies
 
 # 4.3.3
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.3.2
 
@@ -17,7 +22,7 @@
 
 # 4.3.0
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.2.0
 
@@ -29,11 +34,11 @@
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - BREAKING CHANGE: The creation of stores now returns a `Future<XXXStore>` where XXX is the specific store
 - feat: melos configured with `usePubspecOverrides`
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.0.1
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - chore: Updated package description
 
 # 4.0.0

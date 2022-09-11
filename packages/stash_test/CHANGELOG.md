@@ -1,10 +1,15 @@
+# 4.4.0
+
+- BREAKING CHANGE: Changed minimum sdk version
+- chore: Updated dependencies
+
 # 4.3.4
 
 - feat: Updated stash dependency
 
 # 4.3.3
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.3.2
 
@@ -20,7 +25,7 @@
 
 # 4.3.0
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - BREAKING CHANGE: The `fromEncodable` function is not specified on the store creation but instead on the `vault` or `cache` creation. This allows vaults and caches that support different classes with different `fromEncodable` functions
 
 # 4.2.0
@@ -31,7 +36,7 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
-- feat: Updated dependencies
+- chore: Updated dependencies
 - feat: Added `removeAll` tests
 - feat: Added `remove` tests
 - feat: Added `getAll` tests
@@ -40,7 +45,7 @@
 
 # 4.0.1
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - chore: Updated package description
 - fix: melos script does not run tests in parallel anymore 
 - feat: Added test case to get an inexisting key on both cache and vault

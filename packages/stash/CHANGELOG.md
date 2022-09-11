@@ -1,10 +1,15 @@
+# 4.4.0
+
+- BREAKING CHANGE: Changed minimum sdk version
+- chore: Updated dependencies
+
 # 4.3.4
 
 - fix:Involuntary breaking change, extension methods are now targeting again `Store<VaultInfo, VaultEntry>` and `Store<CacheInfo, CacheEntry>` (see https://github.com/ivoleitao/stash/issues/38)
 
 # 4.3.3
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - feat: Added VaultStore and CacheStore marker interfaces to allow a cleaner usage of a store or cache abstraction for more advanced clients
 - fix: Improved the documentation
 
@@ -12,7 +17,7 @@
 
 - fix: Removed extra coverage link in README
 - chore: Made the flutter dependencies standout to avoid overrides when updating dependencies
-- feat: Updated dependencies
+- chore: Updated dependencies
 - chore: Improved and added package attributes
 
 # 4.3.1
@@ -22,7 +27,7 @@
 # 4.3.0
 
 - chore: Updated README
-- feat: Updated dependencies
+- chore: Updated dependencies
 - BREAKING CHANGE: The `fromEncodable` function is not specified on the store creation but instead on the `vault` or `cache` creation. This allows vaults and caches that support different classes with different `fromEncodable` functions
 
 # 4.2.0
@@ -33,7 +38,7 @@
 
 - BREAKING CHANGE: Changed minimum sdk version
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
-- feat: Updated dependencies
+- chore: Updated dependencies
 - feat: Added support for `removeAll`
 - feat: Added support for `getAll`
 - feat: Added support for `putAll`
@@ -42,7 +47,7 @@
 
 # 4.0.1
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - fix: Fixed a bug when fetching a non existing key (see https://github.com/ivoleitao/stash/issues/24)
 
 # 4.0.0

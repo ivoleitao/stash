@@ -1,10 +1,15 @@
+# 4.4.0
+
+- BREAKING CHANGE: Changed minimum sdk version
+- chore: Updated dependencies
+
 # 4.3.4
 
 - feat: Updated stash and stash_test dependencies
 
 # 4.3.3
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - feat: Added VaultStore and CacheStore marker interfaces support to allow a cleaner usage of a store or cache abstraction for more advanced clients
 
 # 4.3.2
@@ -18,12 +23,12 @@
 
 # 4.3.0
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - BREAKING CHANGE: The `fromEncodable` function is not specified on the store creation but instead on the `vault` or `cache` creation. This allows vaults and caches that support different classes with different `fromEncodable` functions
 
 # 4.2.0
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.1.0
 
@@ -31,11 +36,11 @@
 - BREAKING CHANGE: The creation of vaults and caches now returns a `Future<Vault<T>>` and `Future<Cache<T>>`
 - BREAKING CHANGE: The creation of stores now returns a `Future<XXXStore>` where XXX is the specific store
 - feat: melos configured with `usePubspecOverrides`
-- feat: Updated dependencies
+- chore: Updated dependencies
 
 # 4.0.1
 
-- feat: Updated dependencies
+- chore: Updated dependencies
 - chore: Updated package description
 
 # 4.0.0
