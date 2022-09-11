@@ -71,7 +71,7 @@ const VaultModelSchema = CollectionSchema(
   getId: _vaultModelGetId,
   getLinks: _vaultModelGetLinks,
   attach: _vaultModelAttach,
-  version: 5,
+  version: '3.0.0-dev.13',
 );
 
 int _vaultModelEstimateSize(
@@ -100,7 +100,7 @@ int _vaultModelSerializeNative(
 }
 
 VaultModel _vaultModelDeserializeNative(
-  int id,
+  Id id,
   IsarBinaryReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -116,7 +116,6 @@ VaultModel _vaultModelDeserializeNative(
 }
 
 P _vaultModelDeserializePropNative<P>(
-  Id id,
   IsarBinaryReader reader,
   int propertyId,
   int offset,
@@ -157,12 +156,8 @@ P _vaultModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-int? _vaultModelGetId(VaultModel object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+Id _vaultModelGetId(VaultModel object) {
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _vaultModelGetLinks(VaultModel object) {
@@ -309,11 +304,9 @@ extension VaultModelQueryFilter
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       accessTimeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'accessTime',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'accessTime',
+      ));
     });
   }
 
@@ -438,11 +431,9 @@ extension VaultModelQueryFilter
 
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'id',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
     });
   }
 
@@ -611,6 +602,24 @@ extension VaultModelQueryFilter
     });
   }
 
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition> keyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       updateTimeIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -623,11 +632,9 @@ extension VaultModelQueryFilter
   QueryBuilder<VaultModel, VaultModel, QAfterFilterCondition>
       updateTimeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'updateTime',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updateTime',
+      ));
     });
   }
 

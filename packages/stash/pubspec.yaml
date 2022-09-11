@@ -3,7 +3,7 @@ version: 4.3.3
 description: >-
   Stash is a key-value store abstraction with plain and cache driven semantics 
   and support for a pluggable backend architecture.
-homepage: https://pub.dev/packages/stash
+homepage: https://github.com/ivoleitao/stash
 repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 

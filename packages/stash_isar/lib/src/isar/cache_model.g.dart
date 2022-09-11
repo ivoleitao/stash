@@ -81,7 +81,7 @@ const CacheModelSchema = CollectionSchema(
   getId: _cacheModelGetId,
   getLinks: _cacheModelGetLinks,
   attach: _cacheModelAttach,
-  version: 5,
+  version: '3.0.0-dev.13',
 );
 
 int _cacheModelEstimateSize(
@@ -112,7 +112,7 @@ int _cacheModelSerializeNative(
 }
 
 CacheModel _cacheModelDeserializeNative(
-  int id,
+  Id id,
   IsarBinaryReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -130,7 +130,6 @@ CacheModel _cacheModelDeserializeNative(
 }
 
 P _cacheModelDeserializePropNative<P>(
-  Id id,
   IsarBinaryReader reader,
   int propertyId,
   int offset,
@@ -175,12 +174,8 @@ P _cacheModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-int? _cacheModelGetId(CacheModel object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+Id _cacheModelGetId(CacheModel object) {
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _cacheModelGetLinks(CacheModel object) {
@@ -327,11 +322,9 @@ extension CacheModelQueryFilter
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       accessTimeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'accessTime',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'accessTime',
+      ));
     });
   }
 
@@ -512,11 +505,9 @@ extension CacheModelQueryFilter
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       hitCountIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'hitCount',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'hitCount',
+      ));
     });
   }
 
@@ -584,11 +575,9 @@ extension CacheModelQueryFilter
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'id',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
     });
   }
 
@@ -757,6 +746,24 @@ extension CacheModelQueryFilter
     });
   }
 
+  QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> keyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> keyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       updateTimeIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -769,11 +776,9 @@ extension CacheModelQueryFilter
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition>
       updateTimeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query
-          .copyWith(filterNot: !query.filterNot)
-          .addFilterCondition(const FilterCondition.isNull(
-            property: r'updateTime',
-          ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updateTime',
+      ));
     });
   }
 
