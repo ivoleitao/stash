@@ -1,3 +1,7 @@
+# 4.3.4
+
+- feat: Updated stash dependency
+
 # 4.3.3
 
 - feat: Updated dependencies

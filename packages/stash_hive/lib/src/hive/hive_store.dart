@@ -224,7 +224,7 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
 /// The Hive vault store
 class HiveVaultStore<T extends BoxBase<Map>>
-    extends HiveStore<T, VaultInfo, VaultEntry> {
+    extends HiveStore<T, VaultInfo, VaultEntry> implements VaultStore {
   /// Builds a [HiveVaultStore].
   ///
   /// * [adapter]: The hive store adapter
@@ -260,7 +260,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
 
 /// The Hive cache store
 class HiveCacheStore<T extends BoxBase<Map>>
-    extends HiveStore<T, CacheInfo, CacheEntry> {
+    extends HiveStore<T, CacheInfo, CacheEntry> implements CacheStore {
   /// Builds a [HiveCacheStore].
   ///
   /// * [adapter]: The hive store adapter

@@ -1,6 +1,11 @@
+# 4.3.4
+
+- feat: Updated stash and stash_test dependencies
+
 # 4.3.3
 
 - feat: Updated dependencies
+- feat: Added VaultStore and CacheStore marker interfaces support to allow a cleaner usage of a store or cache abstraction for more advanced clients
 
 # 4.3.2
 

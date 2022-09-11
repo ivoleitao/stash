@@ -160,7 +160,8 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
 }
 
 class ObjectboxVaultStore
-    extends ObjectboxStore<VaultEntity, VaultInfo, VaultEntry> {
+    extends ObjectboxStore<VaultEntity, VaultInfo, VaultEntry>
+    implements VaultStore {
   ObjectboxVaultStore(super.adapter, {super.codec});
 
   @override
@@ -205,7 +206,8 @@ class ObjectboxVaultStore
 }
 
 class ObjectboxCacheStore
-    extends ObjectboxStore<CacheEntity, CacheInfo, CacheEntry> {
+    extends ObjectboxStore<CacheEntity, CacheInfo, CacheEntry>
+    implements CacheStore {
   ObjectboxCacheStore(ObjectboxAdapter adapter, {StoreCodec? codec})
       : super(adapter, codec: codec);
 

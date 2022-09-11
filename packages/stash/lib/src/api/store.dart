@@ -96,9 +96,8 @@ abstract class Store<I extends Info, E extends Entry<I>> {
 /// A definition of a stores that persists data
 abstract class PersistenceStore<I extends Info, E extends Entry<I>>
     extends Store<I, E> {
-  @protected
-
   /// The store codec to use
+  @protected
   final StoreCodec codec;
 
   /// Creates a [PersistenceStore].
@@ -114,6 +113,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   /// Gets the partition `fromEncodable` function
   ///
   /// * [name]: The partition name
+  @protected
   dynamic Function(Map<String, dynamic>)? decoder(String name) {
     return _fromEncodables[name];
   }
@@ -125,6 +125,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   /// * [mapFn]: A optional function that maps the value
   /// * [defaultFn]: A optional function that obtains the value to use in
   /// case there is no `fromEncodable` function for the partition
+  @protected
   dynamic decodeValue(
       dynamic value, dynamic Function(Map<String, dynamic>)? fromEncodable,
       {dynamic Function(dynamic)? mapFn, dynamic Function()? defaultFn}) {

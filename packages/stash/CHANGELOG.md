@@ -1,6 +1,12 @@
+# 4.3.4
+
+- fix:Involuntary breaking change, extension methods are now targeting again `Store<VaultInfo, VaultEntry>` and `Store<CacheInfo, CacheEntry>` (see https://github.com/ivoleitao/stash/issues/38)
+
 # 4.3.3
 
 - feat: Updated dependencies
+- feat: Added VaultStore and CacheStore marker interfaces to allow a cleaner usage of a store or cache abstraction for more advanced clients
+- fix: Improved the documentation
 
 # 4.3.2
 

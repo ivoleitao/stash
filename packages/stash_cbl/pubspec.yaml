@@ -1,5 +1,5 @@
 name: stash_cbl
-version: 4.3.3
+version: 4.3.4
 description: >-
   Couchbase Lite storage extension for the stash API. Provides support to store
   vaults and caches in a Couchbase Lite database.
@@ -15,10 +15,10 @@ dependencies:
   path: ^1.8.1
   # Other dependencies
   cbl: ^2.0.0+0
-  stash: ^4.3.2
+  stash: ^4.3.4
 
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.4
-  stash_test: ^4.3.2
+  stash_test: ^4.3.4
   cbl_dart: ^2.1.0

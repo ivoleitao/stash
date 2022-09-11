@@ -287,7 +287,8 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
 }
 
 /// The Isar vault store
-class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry> {
+class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
+    implements VaultStore {
   /// Builds a [IsarVaultStore].
   ///
   /// * [adapter]: The isar store adapter
@@ -326,7 +327,8 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry> {
 }
 
 /// The Isar cache store
-class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry> {
+class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
+    implements CacheStore {
   /// Builds a [IsarCacheStore].
   ///
   /// * [adapter]: The isar store adapter

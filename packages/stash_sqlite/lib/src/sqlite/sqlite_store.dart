@@ -117,7 +117,8 @@ class SqliteStore<I extends Info, E extends Entry<I>>
 }
 
 /// Sqlite based implemention of a Vault [Store]
-class SqliteVaultStore extends SqliteStore<VaultInfo, VaultEntry> {
+class SqliteVaultStore extends SqliteStore<VaultInfo, VaultEntry>
+    implements VaultStore {
   /// Builds a [SqliteVaultStore].
   ///
   /// * [_adapter]: The [SqliteAdapter]
@@ -126,7 +127,8 @@ class SqliteVaultStore extends SqliteStore<VaultInfo, VaultEntry> {
 }
 
 /// Sqlite based implemention of a Cache [Store]
-class SqliteCacheStore extends SqliteStore<CacheInfo, CacheEntry> {
+class SqliteCacheStore extends SqliteStore<CacheInfo, CacheEntry>
+    implements CacheStore {
   /// Builds a [SqliteCacheStore].
   ///
   /// * [_adapter]: The [SqliteAdapter]

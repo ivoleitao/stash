@@ -23,6 +23,7 @@ export 'src/api/cache/cache_entry.dart';
 export 'src/api/cache/cache_info.dart';
 export 'src/api/cache/cache_manager.dart';
 export 'src/api/cache/cache_stats.dart';
+export 'src/api/cache/cache_store.dart';
 export 'src/api/cache/event/created_event.dart';
 export 'src/api/cache/event/event.dart';
 export 'src/api/cache/event/evicted_event.dart';
@@ -68,6 +69,7 @@ export 'src/api/vault/vault_entry.dart';
 export 'src/api/vault/vault_info.dart';
 export 'src/api/vault/vault_manager.dart';
 export 'src/api/vault/vault_stats.dart';
+export 'src/api/vault/vault_store.dart';
 
 /// Builds a new Tiered [Cache]
 ///

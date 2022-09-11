@@ -11,7 +11,7 @@
 
 ## Overview
 
-The `stash` library is a key-value store abstraction with a pluggable backend architecture that provides support for vault and cache objects. The vault is a simple key value storage for primitives and objects, the cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
+The `stash` library is a key-value store abstraction with a pluggable backend architecture that provides support for vault and cache objects. The vault is a simple key value storage for primitives and objects but the cache goes one step further and adds caching semantics. The design of the cache was heavily influenced by the JCache [spec](https://github.com/jsr107/jsr107spec) from the Java world, albeit it draws inspiration from other libraries as well. It supports the most traditional capabilities found on well know caching libraries like expiration or eviction and all it's core concepts were designed from ground up with extensibility in mind.
 
 3rd party library support was a major concern since the inception, as such, a library `stash_test` is provided with a complete set of tests that allow the developers of novel storage backends to test their implementations against the same baseline tests that were used by the main library.
 
@@ -21,8 +21,8 @@ The `stash` library started it's life as a pure cache library,  however with the
 
 ## Features
 
-* :rocket: **Binary serialization** - Provides out-of-box highly performant binary serialization using and implementation of [msgpack](https://msgpack.org) inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library .
-* :twisted_rightwards_arrows: **Type Agnostic** Reuse the same store for multiple types. Each store is partitioned and it's possible to configure a type and the respective `fromEncodable` per partition.
+* :rocket: **Binary serialization** - Provides out-of-box highly performant binary serialization using an implementation of [msgpack](https://msgpack.org) inspired on the [msgpack_dart](https://pub.dev/packages/msgpack_dart) package and adapted to the specific needs of this library .
+* :twisted_rightwards_arrows: **Type Agnostic** Reuse the same store for multiple types. Each store is partitioned and it's possible to configure a type and the respective `fromEncodable` function per partition.
 * :sparkles: **Events** - Subscribable events for vault and cache instances, providing notifications on creation, update or removal of an entry and also expiry and eviction notifications for caches.
 * :bar_chart: **Statistics** - Supports the capture of vault and cache statistics
 * :alarm_clock: **Cache Expiry policies** - out-of-box support for `Eternal`,`Created`, `Accessed`, `Modified` and `Touched` policies.
@@ -65,11 +65,12 @@ Finally a testing library is provided to aid in the development of third party s
 
 ## Getting Started
 
-Select one of the storage implementation libraries and add the package to your `pubspec.yaml` replacing x.x.x with the latest version of the storage implementation. The example below uses the `stash_memory` package which provides an in-memory implementation:
+Select one of the storage libraries and add the api and storage packages to your `pubspec.yaml` replacing x.x.x and y.y.y with the latest version of both. The example below uses the `stash_memory` package which provides an in-memory storage:
 
 ```dart
 dependencies:
-    stash_memory: ^x.x.x
+    stash_api: ^x.x.x
+    stash_memory: ^y.y.y
 ```
 
 Run the following command to install dependencies:
@@ -78,7 +79,7 @@ Run the following command to install dependencies:
 dart pub get
 ```
 
-Finally, to start developing import the corresponding implementation. In the example bellow it's the in-memory storage provider which you can start using if you import the `stash_api`and the `stash_memory` libraries:
+Finally, to start developing import the api and the selected storage implementation. In the example bellow the selected storage implementation is `stash_memory` thus we import the `stash_api`and the `stash_memory` libraries:
 
 ```dart
 import 'package:stash/stash_api.dart';
@@ -89,7 +90,7 @@ import 'package:stash/stash_memory.dart';
 
 ## Usage
 
-Start by creating an instance of the storage backend. For example, on the in-memory implementation for vaults you will be using the `newMemoryVaultStore` function exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
+Start by creating an instance of the storage backend and to decide if the stash needs caching or plain key-value semantics. For the former we need a cache while for the latter we need a vault. For example, to use an in-memory vault you we need to call the `newMemoryVaultStore` function wchich is exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
 
 ```dart
   // Create a in-memory store
@@ -98,7 +99,7 @@ Start by creating an instance of the storage backend. For example, on the in-mem
   // memory, file, sqlite, hive and so on
 ```
 
-Then you can create as many vault's as you wish from this store. Let's create one to store string's and add an element to it
+Then you can create as many vault's as you wish from this store (for caches you need a different storage). Let's create one to store string's and add an element to it
 
 ```dart
   // Creates a vault from the previously created store
@@ -108,7 +109,7 @@ Then you can create as many vault's as you wish from this store. Let's create on
   await stringVault.put('key1', 'value1');
 ```
 
-Let's create a untyped vault and add two values to it
+Let's create a untyped vault and add two values to it with different types
 
 ```dart
   // Creates a second vault from the previously created store
@@ -204,7 +205,7 @@ void main() async {
 }
 ```
 
-Notice that `fromEncodable` function is configured per cache which means you can configure a cache with a different type *using the same store*. This was not previously possible as before version 4.3.0 the `fromEncodable` function was configured per store. That has changed with version 4.3.0 which brough this feature alongside a breaking change in the way this library is used. Find bellow a complete example that stores two different objects in the same store and creates two vaults using two different `fromEncodable` functions.
+Notice that `fromEncodable` function is configured per cache which means you can configure a cache with a different type *using the same store*. This was not previously possible as before version 4.3.0 the `fromEncodable` function was configured per store. That has changed with version 4.3.0 which introduced this feature. Find bellow a complete example that stores two different objects in the same store and creates two vaults using two different `fromEncodable` functions.
 
 ```dart
 import 'dart:io';
@@ -297,7 +298,7 @@ void main() async {
 
 ### Operations
 
-The `Vault` frontend provides a number of operations which are presented in the table bellow. Find bellow a comple example that stores two different objects, with different `fromEncodable` functions.
+The `Vault` frontend provides a number of operations which are presented in the table bellow:
 
 | Operation | Description |
 | --------- | ----------- |
@@ -346,7 +347,7 @@ The user of a `Vault` can subscribe to entry events if they are enabled as, by d
 
 ### Statistics
 
-The user of a `Vault` can collect a number of statistics about it's usage by enabling stats through the `statsEnabled`. He can also provide a custom implementation of the `VaultStats` interface allowing custom statistics backends. The `VaultStats` interface defines a number of statistics that the user can collect through the following operations:
+The user of a `Vault` can collect a number of statistics about it's usage by enabling stats through the `statsEnabled` flag. He can also provide a custom implementation of the `VaultStats` interface allowing custom statistics backends. The `VaultStats` interface defines a number of statistics that the user can collect through the following operations:
 
 | Operation | Description |
 | --------- | ----------- |
