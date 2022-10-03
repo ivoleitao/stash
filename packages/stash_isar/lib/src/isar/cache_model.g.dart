@@ -7,7 +7,7 @@ part of 'cache_model.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetCacheModelCollection on Isar {
   IsarCollection<CacheModel> get cacheModels => this.collection();
@@ -54,12 +54,9 @@ const CacheModelSchema = CollectionSchema(
     )
   },
   estimateSize: _cacheModelEstimateSize,
-  serializeNative: _cacheModelSerializeNative,
-  deserializeNative: _cacheModelDeserializeNative,
-  deserializePropNative: _cacheModelDeserializePropNative,
-  serializeWeb: _cacheModelSerializeWeb,
-  deserializeWeb: _cacheModelDeserializeWeb,
-  deserializePropWeb: _cacheModelDeserializePropWeb,
+  serialize: _cacheModelSerialize,
+  deserialize: _cacheModelDeserialize,
+  deserializeProp: _cacheModelDeserializeProp,
   idName: r'id',
   indexes: {
     r'key': IndexSchema(
@@ -81,7 +78,7 @@ const CacheModelSchema = CollectionSchema(
   getId: _cacheModelGetId,
   getLinks: _cacheModelGetLinks,
   attach: _cacheModelAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _cacheModelEstimateSize(
@@ -95,9 +92,9 @@ int _cacheModelEstimateSize(
   return bytesCount;
 }
 
-int _cacheModelSerializeNative(
+void _cacheModelSerialize(
   CacheModel object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -108,12 +105,11 @@ int _cacheModelSerializeNative(
   writer.writeString(offsets[4], object.key);
   writer.writeDateTime(offsets[5], object.updateTime);
   writer.writeByteList(offsets[6], object.value);
-  return writer.usedBytes;
 }
 
-CacheModel _cacheModelDeserializeNative(
+CacheModel _cacheModelDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -129,8 +125,8 @@ CacheModel _cacheModelDeserializeNative(
   return object;
 }
 
-P _cacheModelDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _cacheModelDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -152,25 +148,6 @@ P _cacheModelDeserializePropNative<P>(
       return (reader.readByteList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _cacheModelSerializeWeb(
-    IsarCollection<CacheModel> collection, CacheModel object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-CacheModel _cacheModelDeserializeWeb(
-    IsarCollection<CacheModel> collection, Object jsObj) {
-  /*final object = CacheModel();object.accessTime = IsarNative.jsObjectGet(jsObj, r'accessTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'accessTime') as int, isUtc: true).toLocal() : null;object.creationTime = IsarNative.jsObjectGet(jsObj, r'creationTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'creationTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0);object.expiryTime = IsarNative.jsObjectGet(jsObj, r'expiryTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'expiryTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0);object.hitCount = IsarNative.jsObjectGet(jsObj, r'hitCount') ;object.id = IsarNative.jsObjectGet(jsObj, r'id') ;object.key = IsarNative.jsObjectGet(jsObj, r'key') ?? '';object.updateTime = IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null;object.value = (IsarNative.jsObjectGet(jsObj, r'value') as List?)?.map((e) => e ?? 0).toList().cast<int>() ?? [];*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _cacheModelDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -197,7 +174,7 @@ extension CacheModelQueryWhereSort
 
 extension CacheModelQueryWhere
     on QueryBuilder<CacheModel, CacheModel, QWhereClause> {
-  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idEqualTo(int id) {
+  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -206,7 +183,7 @@ extension CacheModelQueryWhere
     });
   }
 
-  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -228,7 +205,7 @@ extension CacheModelQueryWhere
     });
   }
 
-  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -237,7 +214,7 @@ extension CacheModelQueryWhere
     });
   }
 
-  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -247,8 +224,8 @@ extension CacheModelQueryWhere
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -582,7 +559,7 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -592,7 +569,7 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -605,7 +582,7 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -618,8 +595,8 @@ extension CacheModelQueryFilter
   }
 
   QueryBuilder<CacheModel, CacheModel, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
