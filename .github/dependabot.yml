@@ -5,7 +5,14 @@
 
 version: 2
 updates:
-  - package-ecosystem: "pub" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"
+      
+  - package-ecosystem: "pub"
+    directory: "/packages"
+    schedule:
+      interval: "weekly"
+      
+
