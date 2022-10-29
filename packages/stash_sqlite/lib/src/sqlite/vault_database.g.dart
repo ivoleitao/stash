@@ -118,8 +118,8 @@ class VaultData extends DataClass implements Insertable<VaultData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(name, key, creationTime, accessTime, updateTime, value);
+  int get hashCode => Object.hash(name, key, creationTime, accessTime,
+      updateTime, $driftBlobEquality.hash(value));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -129,7 +129,7 @@ class VaultData extends DataClass implements Insertable<VaultData> {
           other.creationTime == this.creationTime &&
           other.accessTime == this.accessTime &&
           other.updateTime == this.updateTime &&
-          other.value == this.value);
+          $driftBlobEquality.equals(other.value, this.value));
 }
 
 class VaultTableCompanion extends UpdateCompanion<VaultData> {

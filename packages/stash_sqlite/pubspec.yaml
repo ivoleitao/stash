@@ -11,11 +11,11 @@ environment:
   sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
-  drift: ^2.1.0
+  drift: ^2.2.0
   stash: ^4.3.4
 dev_dependencies:
-  lints: ^2.0.0
-  test: ^1.21.5
-  build_runner: ^2.2.0
+  lints: ^2.0.1
+  test: ^1.21.7
+  build_runner: ^2.3.2
   stash_test: ^4.3.4
-  drift_dev: ^2.1.0
+  drift_dev: ^2.2.0+1

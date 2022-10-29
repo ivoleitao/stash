@@ -144,7 +144,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
 
   @override
   int get hashCode => Object.hash(name, key, creationTime, expiryTime,
-      accessTime, updateTime, hitCount, value);
+      accessTime, updateTime, hitCount, $driftBlobEquality.hash(value));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -156,7 +156,7 @@ class CacheData extends DataClass implements Insertable<CacheData> {
           other.accessTime == this.accessTime &&
           other.updateTime == this.updateTime &&
           other.hitCount == this.hitCount &&
-          other.value == this.value);
+          $driftBlobEquality.equals(other.value, this.value));
 }
 
 class CacheTableCompanion extends UpdateCompanion<CacheData> {
