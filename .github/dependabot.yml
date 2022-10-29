@@ -14,5 +14,3 @@ updates:
     directory: "/packages"
     schedule:
       interval: "weekly"
-      
-
