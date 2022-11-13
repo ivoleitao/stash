@@ -339,7 +339,6 @@ class FileCacheStore extends FileStore<CacheInfo, CacheEntry>
 
   /// Builds a [FileCacheStore].
   /// * [adapter]: The adapter
-  /// * [path]: The base location of the file storage
   /// * [lock]: If locks are obtained before doing read/write operations
   /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
   FileCacheStore(super.adapter, super.lock, {super.codec});
