@@ -1,4 +1,5 @@
 name: stash
+repository: https://github.com/ivoleitao/stash
 
 packages:
   - packages/**
@@ -10,6 +11,8 @@ ide:
 command:
   bootstrap:
     usePubspecOverrides: true
+  version:
+    branch: develop     
 
 scripts:
   get:
@@ -42,7 +45,7 @@ scripts:
     description: |
       Installs library dependencies
 
-  build:
+  generate:
     run: |
       melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" --scope="stash_isar" -- \
         "dart run build_runner build --delete-conflicting-outputs"
@@ -132,4 +135,4 @@ scripts:
       Uploads the code coverage to codecov.
 
   postbootstrap: |
-      melos run build
+      melos run generate 
