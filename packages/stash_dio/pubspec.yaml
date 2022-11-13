@@ -18,7 +18,7 @@ dependencies:
   stash: ^4.3.4
 dev_dependencies:
   lints: ^2.0.1
-  test: ^1.21.7
+  test: ^1.22.0
   mocktail: ^0.3.0
   stash_memory: ^4.3.4
   stash_file: ^4.3.4

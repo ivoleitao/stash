@@ -68,7 +68,7 @@ const VaultModelSchema = CollectionSchema(
   getId: _vaultModelGetId,
   getLinks: _vaultModelGetLinks,
   attach: _vaultModelAttach,
-  version: '3.0.2',
+  version: '3.0.3',
 );
 
 int _vaultModelEstimateSize(
