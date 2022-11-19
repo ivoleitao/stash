@@ -1,16 +1,14 @@
-import 'dart:io';
-
 import 'package:stash_isar/stash_isar.dart';
 import 'package:stash_test/stash_test.dart';
+
+import "vm_store.dart" if (dart.library.js) "web_store.dart";
 
 class VaultStoreContext extends VaultTestContext<IsarVaultStore> {
   VaultStoreContext(super.generator);
 
   @override
   Future<IsarVaultStore> newStore() {
-    return Directory.systemTemp
-        .createTemp('stash_isar')
-        .then((d) => newIsarLocalVaultStore(path: d.path));
+    return newVaultStore();
   }
 }
 
@@ -19,9 +17,7 @@ class CacheStoreContext extends CacheTestContext<IsarCacheStore> {
 
   @override
   Future<IsarCacheStore> newStore() {
-    return Directory.systemTemp
-        .createTemp('stash_isar')
-        .then((d) => newIsarLocalCacheStore(path: d.path));
+    return newCacheStore();
   }
 }
 

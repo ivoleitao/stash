@@ -89,7 +89,7 @@ scripts:
   
   test:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_isar" \
+      melos exec -c 1 --ignore="stash_sembast_web" \
         "dart test -p vm"
     description: |
       Run `dart test -p vm` in the selected packages.
@@ -108,14 +108,14 @@ scripts:
 
   coverage:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_isar" \
+      melos exec -c 1 --ignore="stash_sembast_web" \
         "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p vm` in the selected packages and collects coverage.
 
   coverage:chrome:
     run: |
-      melos exec -c 1 --scope="stash_sembast_web" --ignore="stash_isar" \
+      melos exec -c 1 --scope="stash_sembast_web" \
         "dart test -p chrome --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p chrome` in the selected packages and collects coverage.
@@ -129,7 +129,7 @@ scripts:
 
   codecov:
     run: |
-      melos exec -c 1 --ignore="stash_isar" -- \
+      melos exec -c 1 -- \
         "bash -c 'bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -F MELOS_PACKAGE_NAME'"
     description: |
       Uploads the code coverage to codecov.

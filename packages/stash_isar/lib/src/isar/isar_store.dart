@@ -96,10 +96,11 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
       model != null ? toEntry(model, fromEncodable) : null;
 
   @protected
-  M fromEntry(E entry);
+  M fromEntry(E entry, {M? model});
 
   @protected
-  M? fromEntryOptional(E? entry) => entry != null ? fromEntry(entry) : null;
+  M? fromEntryOptional(E? entry, {M? model}) =>
+      entry != null ? fromEntry(entry, model: model) : null;
 
   /// Returns the partition [Entry] for the specified [key].
   ///
@@ -206,11 +207,12 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return _partitionEntry(partition, key, decoder(name)).then((entry) {
-        if (entry != null) {
-          final model = fromEntry(entry..updateInfo(info));
+      return _partitionModel(partition, key).then((model) {
+        if (model != null) {
+          final entry = toEntry(model, decoder(name))..updateInfo(info);
 
-          return partition.isar.writeTxn(() => partition.put(model));
+          return partition.isar
+              .writeTxn(() => partition.put(fromEntry(entry, model: model)));
         }
 
         return Future.value();
@@ -233,7 +235,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
       return _partitionModel(partition, key).then((model) {
         if (model != null) {
           return partition.isar.writeTxn(() =>
-              partition.put(fromEntry(entry)..id = model.id).then((_) => null));
+              partition.put(fromEntry(entry, model: model)).then((_) => null));
         } else {
           return partition.isar.writeTxn(
               () => partition.put(fromEntry(entry)).then((_) => null));
@@ -269,7 +271,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return partition.clear();
+      return partition.isar.writeTxn(() => partition.clear());
     }
 
     return Future.value();
@@ -316,8 +318,8 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
   }
 
   @override
-  VaultModel fromEntry(VaultEntry entry) {
-    return VaultModel()
+  VaultModel fromEntry(VaultEntry entry, {VaultModel? model}) {
+    return model ?? VaultModel()
       ..key = entry.key
       ..creationTime = entry.creationTime
       ..value = valueEncoder(entry.value)
@@ -358,8 +360,8 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
   }
 
   @override
-  CacheModel fromEntry(CacheEntry entry) {
-    return CacheModel()
+  CacheModel fromEntry(CacheEntry entry, {CacheModel? model}) {
+    return model ?? CacheModel()
       ..key = entry.key
       ..creationTime = entry.creationTime
       ..expiryTime = entry.expiryTime

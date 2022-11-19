@@ -12,8 +12,9 @@ dartdoc:
     - no-library-level-docs
     - not-implemented
     - orphaned-file
-    - reexported-private-api-across-packages
     - unknown-directive
     - unknown-file
     - unknown-macro
+  warnings:
+    - reexported-private-api-across-packages
     - unresolved-doc-reference

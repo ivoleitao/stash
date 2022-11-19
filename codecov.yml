@@ -2,31 +2,31 @@ coverage:
   range: 50..100
   status:
     project:
-      default: off
+      default: false
       stash:
-        flags: stash
+        flags: [stash]
       stash_test:
-        flags: stash_test
+        flags: [stash_test]
       stash_memory:
-        flags: stash_memory
+        flags: [stash_memory]
       stash_file:
-        flags: stash_file
+        flags: [stash_file]
       stash_sqlite:
-        flags: stash_sqlite
+        flags: [stash_sqlite]
       stash_hive:
-        flags: stash_hive
+        flags: [stash_hive]
       stash_sembast:
-        flags: stash_sembast
+        flags: [stash_sembast]
       stash_sembast_web:
-        flags: stash_sembast_web
+        flags: [stash_sembast_web]
       stash_objectbox:
-        flags: stash_objectbox
-      stash_isar:
-        flags: stash_isar
-      stash_dio:
-        flags: stash_dio
+        flags: [stash_objectbox]
       stash_cbl:
-        flags: stash_cbl
+        flags: [stash_cbl]
+      stash_isar:
+        flags: [stash_isar]
+      stash_dio:
+        flags: [stash_dio]
 
 flags:
   stash:
@@ -56,12 +56,12 @@ flags:
   stash_objectbox:
     paths:
       - packages/stash_objectbox/lib/
+  stash_cbl:
+    paths:
+      - packages/stash_cbl/lib/
   stash_isar:
     paths:
       - packages/stash_isar/lib/
   stash_dio:
     paths:
       - packages/stash_dio/lib/
-  stash_cbl:
-    paths:
-      - packages/stash_cbl/lib/

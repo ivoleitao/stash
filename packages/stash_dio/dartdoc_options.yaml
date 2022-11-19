@@ -16,4 +16,5 @@ dartdoc:
     - unknown-directive
     - unknown-file
     - unknown-macro
+  warnings:
     - unresolved-doc-reference
