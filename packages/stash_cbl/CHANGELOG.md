@@ -1,3 +1,8 @@
+## 4.5.0
+
+ - **FIX**: downgraded some dependencies to guarantee compatibility with latest flutter version (see https://github.com/ivoleitao/stash/issues/34).
+ - **FEAT**: add package for Couchbase Lite store.
+
 # 4.4.0
 
 - BREAKING CHANGE: Changed minimum sdk version

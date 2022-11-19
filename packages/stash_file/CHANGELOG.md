@@ -1,3 +1,8 @@
+## 4.4.1
+
+ - **FIX**: downgraded some dependencies to guarantee compatibility with latest flutter version (see https://github.com/ivoleitao/stash/issues/34).
+ - **DOCS**: removed variable reference.
+
 # 4.4.0
 
 - BREAKING CHANGE: Changed minimum sdk version
