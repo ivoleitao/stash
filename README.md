@@ -46,7 +46,7 @@ There's a vast array of storage implementations available which you can use.
 |[stash_sembast_web](https://github.com/ivoleitao/stash/tree/develop/packages/stash_sembast_web)|[![Pub](https://img.shields.io/pub/v/stash_sembast_web.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_sembast_web) | A sembast web storage implementation using the [sembast_web](https://pub.dev/packages/sembast_web) package|
 |[stash_objectbox](https://github.com/ivoleitao/stash/tree/develop/packages/stash_objectbox)|[![Pub](https://img.shields.io/pub/v/stash_objectbox.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_objectbox) | A objectbox storage implementation using the [objectbox](https://pub.dev/packages/objectbox) package|
 |[stash_cbl](https://github.com/ivoleitao/stash/tree/develop/packages/stash_cbl)|[![Pub](https://img.shields.io/pub/v/stash_cbl.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_cbl) | A Couchbase Lite storage implementation using the [cbl](https://pub.dev/packages/cbl) package|
-|[stash_isa](https://github.com/ivoleitao/stash/tree/develop/packages/stash_isar)|[![Pub](https://img.shields.io/pub/v/stash_isar.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_isar) | A Isar storage implementation using the [isar](https://pub.dev/packages/isar) package|
+|[stash_isar](https://github.com/ivoleitao/stash/tree/develop/packages/stash_isar)|[![Pub](https://img.shields.io/pub/v/stash_isar.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_isar) | A Isar storage implementation using the [isar](https://pub.dev/packages/isar) package|
 
 ## Library Integrations
 
