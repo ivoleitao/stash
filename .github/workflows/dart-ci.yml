@@ -36,6 +36,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libsqlite3-dev -y
+          sudo apt-get install libicu-dev -y
           bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)
 
       - name: Set up dart
