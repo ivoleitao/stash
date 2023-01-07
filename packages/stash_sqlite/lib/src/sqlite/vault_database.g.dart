@@ -3,6 +3,121 @@
 part of 'vault_database.dart';
 
 // ignore_for_file: type=lint
+class $VaultTableTable extends VaultTable
+    with TableInfo<$VaultTableTable, VaultData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VaultTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+      'key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _creationTimeMeta =
+      const VerificationMeta('creationTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> creationTime =
+      GeneratedColumn<String>('creation_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<DateTime>($VaultTableTable.$convertercreationTime);
+  static const VerificationMeta _accessTimeMeta =
+      const VerificationMeta('accessTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> accessTime =
+      GeneratedColumn<String>('access_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<DateTime>($VaultTableTable.$converteraccessTime);
+  static const VerificationMeta _updateTimeMeta =
+      const VerificationMeta('updateTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> updateTime =
+      GeneratedColumn<String>('update_time', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<DateTime>($VaultTableTable.$converterupdateTime);
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<Uint8List> value = GeneratedColumn<Uint8List>(
+      'value', aliasedName, false,
+      type: DriftSqlType.blob, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [name, key, creationTime, accessTime, updateTime, value];
+  @override
+  String get aliasedName => _alias ?? 'Vault';
+  @override
+  String get actualTableName => 'Vault';
+  @override
+  VerificationContext validateIntegrity(Insertable<VaultData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('key')) {
+      context.handle(
+          _keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    context.handle(_creationTimeMeta, const VerificationResult.success());
+    context.handle(_accessTimeMeta, const VerificationResult.success());
+    context.handle(_updateTimeMeta, const VerificationResult.success());
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {name, key};
+  @override
+  VaultData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VaultData(
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      key: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      creationTime: $VaultTableTable.$convertercreationTime.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}creation_time'])!),
+      accessTime: $VaultTableTable.$converteraccessTime.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}access_time'])!),
+      updateTime: $VaultTableTable.$converterupdateTime.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_time'])!),
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.blob, data['${effectivePrefix}value'])!,
+    );
+  }
+
+  @override
+  $VaultTableTable createAlias(String alias) {
+    return $VaultTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, String> $convertercreationTime =
+      const Iso8601Converter();
+  static TypeConverter<DateTime, String> $converteraccessTime =
+      const Iso8601Converter();
+  static TypeConverter<DateTime, String> $converterupdateTime =
+      const Iso8601Converter();
+}
+
 class VaultData extends DataClass implements Insertable<VaultData> {
   /// Returns a [TextColumn] for the name
   final String name;
@@ -231,121 +346,6 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
           ..write(')'))
         .toString();
   }
-}
-
-class $VaultTableTable extends VaultTable
-    with TableInfo<$VaultTableTable, VaultData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $VaultTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _keyMeta = const VerificationMeta('key');
-  @override
-  late final GeneratedColumn<String> key = GeneratedColumn<String>(
-      'key', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _creationTimeMeta =
-      const VerificationMeta('creationTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> creationTime =
-      GeneratedColumn<String>('creation_time', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DateTime>($VaultTableTable.$convertercreationTime);
-  static const VerificationMeta _accessTimeMeta =
-      const VerificationMeta('accessTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> accessTime =
-      GeneratedColumn<String>('access_time', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DateTime>($VaultTableTable.$converteraccessTime);
-  static const VerificationMeta _updateTimeMeta =
-      const VerificationMeta('updateTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> updateTime =
-      GeneratedColumn<String>('update_time', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DateTime>($VaultTableTable.$converterupdateTime);
-  static const VerificationMeta _valueMeta = const VerificationMeta('value');
-  @override
-  late final GeneratedColumn<Uint8List> value = GeneratedColumn<Uint8List>(
-      'value', aliasedName, false,
-      type: DriftSqlType.blob, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [name, key, creationTime, accessTime, updateTime, value];
-  @override
-  String get aliasedName => _alias ?? 'Vault';
-  @override
-  String get actualTableName => 'Vault';
-  @override
-  VerificationContext validateIntegrity(Insertable<VaultData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('key')) {
-      context.handle(
-          _keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
-    } else if (isInserting) {
-      context.missing(_keyMeta);
-    }
-    context.handle(_creationTimeMeta, const VerificationResult.success());
-    context.handle(_accessTimeMeta, const VerificationResult.success());
-    context.handle(_updateTimeMeta, const VerificationResult.success());
-    if (data.containsKey('value')) {
-      context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
-    } else if (isInserting) {
-      context.missing(_valueMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {name, key};
-  @override
-  VaultData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return VaultData(
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      key: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
-      creationTime: $VaultTableTable.$convertercreationTime.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}creation_time'])!),
-      accessTime: $VaultTableTable.$converteraccessTime.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}access_time'])!),
-      updateTime: $VaultTableTable.$converterupdateTime.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}update_time'])!),
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.blob, data['${effectivePrefix}value'])!,
-    );
-  }
-
-  @override
-  $VaultTableTable createAlias(String alias) {
-    return $VaultTableTable(attachedDatabase, alias);
-  }
-
-  static TypeConverter<DateTime, String> $convertercreationTime =
-      const Iso8601Converter();
-  static TypeConverter<DateTime, String> $converteraccessTime =
-      const Iso8601Converter();
-  static TypeConverter<DateTime, String> $converterupdateTime =
-      const Iso8601Converter();
 }
 
 abstract class _$VaultDatabase extends GeneratedDatabase {
