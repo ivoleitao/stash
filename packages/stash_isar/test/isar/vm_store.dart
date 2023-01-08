@@ -10,11 +10,11 @@ Future<IsarVaultStore> newVaultStore() {
     return Isar.initializeIsarCore(
             libraries: {Abi.current(): '$path/libisar.dylib'}, download: true)
         .then((_) => path);
-  }).then((path) => newIsarLocalVaultStore(path: path));
+  }).then((path) => newIsarLocalVaultStore(path: path, inspector: false));
 }
 
 Future<IsarCacheStore> newCacheStore() {
   return Directory.systemTemp
       .createTemp('stash_isar')
-      .then((d) => newIsarLocalCacheStore(path: d.path));
+      .then((d) => newIsarLocalCacheStore(path: d.path, inspector: false));
 }

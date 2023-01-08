@@ -61,15 +61,19 @@ scripts:
 
   analyze:
     run: |
-      melos exec -c 1 -- \
+      melos exec -c 1 --no-flutter -- \
         "dart analyze . --fatal-infos"
+      melos exec -c 1 --flutter -- \
+        "flutter analyze . --fatal-infos"
     description: |
       Run `dart analyze` in all packages.
 
   format:
     run: |
-      melos exec -c 1 -- \
+      melos exec -c 1 --no-flutter -- \
         "dart format --set-exit-if-changed ."
+      melos exec -c 1 --flutter -- \
+        "flutter format --set-exit-if-changed ."
     description: |
       Run `dart format` in all packages.
   
@@ -83,47 +87,63 @@ scripts:
       Generate documentation for all packages.
 
   test:
-    run: melos run test:vm && melos run test:chrome
+    run: melos run test:vm && melos run test:chrome && melos run test:flutter
     description: |
-      Run `dart test` in vm and chrome in the selected packages
+      Run `dart test` in vm, chrome and flutter in the selected packages
   
   test:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_cbl" \
+      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" --ignore="stash_cbl" \
         "dart test -p vm"
     description: |
       Run `dart test -p vm` in the selected packages.
 
   test:chrome:
     run: |
-      melos exec -c 1 --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_sembast_web" --scope="stash_dio" \
+      melos exec -c 1 --no-flutter --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_sembast_web" --scope="stash_dio" \
         "dart test -p chrome"
     description: |
       Run `dart test -p chome` in the selected packages. 
 
+  test:flutter:
+    run: |
+      melos exec -c 1 --flutter \
+        "flutter test"
+    description: |
+      Run `flutter test` in the selected packages.
+
   coverage:
-    run: melos run coverage:vm && melos run coverage:chrome
+    run: melos run coverage:vm && melos run coverage:chrome && melos run coverage:flutter
     description: |
       Run `dart test` in vm and chrome and collects coverage.
 
   coverage:vm:
     run: |
-      melos exec -c 1 --ignore="stash_sembast_web" --ignore="stash_cbl" \
+      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" --ignore="stash_cbl" \
         "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p vm` in the selected packages and collects coverage.
 
   coverage:chrome:
     run: |
-      melos exec -c 1 --scope="stash_sembast_web" \
+      melos exec -c 1 --no-flutter --scope="stash_sembast_web" \
         "dart test -p chrome --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p chrome` in the selected packages and collects coverage.
 
+  coverage:flutter:
+    run: |
+      melos exec -c 1 --flutter \
+        "flutter test --concurrency=1 --coverage --coverage-path=coverage/lcov.info && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
+    description: |
+      Run `flutter test` in the selected packages and collects coverage.
+
   verify:
     run: |
-      melos exec -c 1 --no-private \
+      melos exec -c 1 --no-flutter --no-private \
         "dart pub publish --dry-run"
+      melos exec -c 1 --flutter --no-private \
+        "flutter pub publish --dry-run"
     description: |
       Verify package
 

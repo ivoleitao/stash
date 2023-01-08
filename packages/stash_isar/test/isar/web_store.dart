@@ -1,9 +1,9 @@
 import 'package:stash_isar/stash_isar.dart';
 
 Future<IsarVaultStore> newVaultStore() {
-  return newIsarLocalVaultStore();
+  return newIsarLocalVaultStore(inspector: false);
 }
 
 Future<IsarCacheStore> newCacheStore() {
-  return newIsarLocalCacheStore();
+  return newIsarLocalCacheStore(inspector: false);
 }

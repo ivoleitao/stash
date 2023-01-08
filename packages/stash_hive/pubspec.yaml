@@ -16,6 +16,8 @@ dependencies:
   universal_platform: ^1.0.0+1
   stash: ^4.4.1
 dev_dependencies:
+  # Flutter shared dependencies
+  test: ^1.21.4
+  # Other dependencies
   lints: ^2.0.1
-  test: ^1.22.1
   stash_test: ^4.4.1

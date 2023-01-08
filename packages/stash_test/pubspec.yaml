@@ -13,10 +13,10 @@ environment:
 dependencies:
   # Flutter shared dependencies
   clock: ^1.1.1
+  test: ^1.21.4
   # Other dependencies
   equatable: ^2.0.5
   time: ^2.1.3
-  test: ^1.22.1
   stash: ^4.4.1
 dev_dependencies:
   lints: ^2.0.1
