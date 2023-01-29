@@ -131,7 +131,7 @@ scripts:
 
   coverage:flutter:
     run: |
-      melos exec -c 1 --flutter \
+      melos exec -c 1 --flutter --scope="stash_shared_preferences" \
         "flutter test --concurrency=1 --coverage --coverage-path=coverage/lcov.info && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `flutter test` in the selected packages and collects coverage.
