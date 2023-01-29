@@ -34,118 +34,128 @@ import 'package:stash_shared_preferences/stash_shared_preferences.dart';
 
 ## Usage
 
-### Vault
-
 The example bellow creates a vault with a shared_preferences storage backend. In this rather simple example the serialization and deserialization of the object is coded by hand but it's more usual to rely on libraries like [json_serializable](https://pub.dev/packages/json_serializable). 
 
 ```dart
-import 'dart:io';
-
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stash/stash_api.dart';
 import 'package:stash_shared_preferences/stash_shared_preferences.dart';
 
-class Task {
-  final int id;
-  final String title;
-  final bool completed;
+void main() {
+  runApp(const MyApp());
+}
 
-  Task({required this.id, required this.title, this.completed = false});
+class Counter {
+  final int value;
+  final DateTime updateTime;
 
-  /// Creates a [Task] from json map
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      completed: json['completed'] as bool);
+  Counter({required this.value, required this.updateTime});
+
+  /// Creates a [Counter] from json map
+  factory Counter.fromJson(Map<String, dynamic> json) => Counter(
+      value: json['value'] as int,
+      updateTime: DateTime.parse(json['timestamp'] as String));
 
   /// Creates a json map from a [Task]
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'id': id, 'title': title, 'completed': completed};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'value': value,
+        'timestamp': updateTime.toIso8601String()
+      };
+}
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
   @override
-  String toString() {
-    return 'Task $id, "$title" is ${completed ? "completed" : "not completed"}';
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Stash Shared Preferences Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const SharedPreferencesDemo(),
+    );
   }
 }
 
-void main() async {
-  // Temporary directory
-  final path = Directory.systemTemp.path;
-
-  // Creates a store
-  final store = await newshared_preferencesDefaultVaultStore(path: path);
-
-  // Creates a vault from the previously created store
-  final vault = await store.vault<Task>(
-      name: 'vault', 
-      fromEncodable: (json) => Task.fromJson(json),
-      eventListenerMode: EventListenerMode.synchronous)
-    ..on<VaultEntryCreatedEvent<Task>>().listen(
-        (event) => print('Key "${event.entry.key}" added to the vault'));
-
-  // Adds a task with key 'task1' to the vault
-  await vault.put(
-      'task1', Task(id: 1, title: 'Run vault store example', completed: true));
-  // Retrieves the value from the vault
-  print(await vault.get('task1'));
-}
-```
-
-### Cache
-
-The example bellow creates a cache with a shared_preferences storage backend. In this rather simple example the serialization and deserialization of the object is coded by hand but it's more usual to rely on libraries like [json_serializable](https://pub.dev/packages/json_serializable). 
-
-```dart
-import 'dart:io';
-
-import 'package:stash/stash_api.dart';
-import 'package:stash_shared_preferences/stash_shared_preferences.dart';
-
-class Task {
-  final int id;
-  final String title;
-  final bool completed;
-
-  Task({required this.id, required this.title, this.completed = false});
-
-  /// Creates a [Task] from json map
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      completed: json['completed'] as bool);
-
-  /// Creates a json map from a [Task]
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'id': id, 'title': title, 'completed': completed};
+class SharedPreferencesDemo extends StatefulWidget {
+  const SharedPreferencesDemo({Key? key}) : super(key: key);
 
   @override
-  String toString() {
-    return 'Task $id, "$title" is ${completed ? "completed" : "not completed"}';
+  SharedPreferencesDemoState createState() => SharedPreferencesDemoState();
+}
+
+class SharedPreferencesDemoState extends State<SharedPreferencesDemo> {
+  final Future<Vault<Counter>> _vault = newSharedPreferencesVaultStore().then(
+      (store) => store.vault<Counter>(
+          name: 'vault', fromEncodable: (json) => Counter.fromJson(json)));
+  late Future<Counter> _counter;
+
+  Future<Counter> _getCounter([Vault<Counter>? vault]) {
+    final v = vault == null ? _vault : Future.value(vault);
+
+    return v.then((vault) => vault.get('counter')).then(
+        (counter) => counter ?? Counter(value: 0, updateTime: DateTime.now()));
+  }
+
+  Future<void> _incrementCounter() async {
+    final Vault<Counter> vault = await _vault;
+    final Counter currentCounter = await _getCounter(vault);
+
+    setState(() {
+      final newCounter =
+          Counter(value: currentCounter.value + 1, updateTime: DateTime.now());
+      _counter = vault.put('counter', newCounter).then((value) => newCounter);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = _getCounter();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SharedPreferences Demo'),
+      ),
+      body: Center(
+          child: FutureBuilder<Counter>(
+              future: _counter,
+              builder: (BuildContext context, AsyncSnapshot<Counter> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final count = snapshot.data?.value ?? 0;
+                      final updateTime = snapshot.data?.updateTime;
+                      final lastPressed = updateTime != null
+                          ? ' (last pressed on ${DateFormat('dd-MM-yyyy HH:mm:ss').format(updateTime)})'
+                          : '';
+                      return Text(
+                        'Button tapped $count time${count == 1 ? '' : 's'}.\n\n'
+                        'This should persist across restarts$lastPressed.',
+                      );
+                    }
+                }
+              })),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
-
-void main() async {
-  // Temporary directory
-  final path = Directory.systemTemp.path;
-
-  // Creates a store
-  final store = await newshared_preferencesDefaultCacheStore(path: path);
-
-  // Creates a cache with a capacity of 10 from the previously created store
-  final cache = await store.cache<Task>(
-      name: 'cache1',
-      fromEncodable: (json) => Task.fromJson(json),
-      maxEntries: 10,
-      eventListenerMode: EventListenerMode.synchronous)
-    ..on<CacheEntryCreatedEvent<Task>>().listen(
-        (event) => print('Key "${event.entry.key}" added to the cache'));
-
-  // Adds a task with key 'task1' to the cache
-  await cache.put(
-      'task1', Task(id: 1, title: 'Run cache store example', completed: true));
-  // Retrieves the value from the cache
-  print(await cache.get('task1'));
-}
-
 ```
 
 ### Additional Features
