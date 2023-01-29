@@ -1,12 +1,14 @@
 # See https://www.dartlang.org/guides/libraries/private-files
 
-# Files and directories created by pub
+# Flutter/Dart/Pub related
 packages/*/.dart_tool/
 packages/*/.packages
 packages/*/.pub/
 packages/*/build/
 packages/*/pubspec.lock
 packages/*/pubspec_overrides.yaml
+packages/*/.flutter-plugins
+packages/*/.flutter-plugins-dependencies
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.

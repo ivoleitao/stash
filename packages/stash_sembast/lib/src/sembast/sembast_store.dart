@@ -149,6 +149,7 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   /// * [entry]: The entry
   ///
   /// Returns the json representation of a [Entry]
+  @protected
   Map<String, dynamic> _writeEntry(E entry);
 
   @override

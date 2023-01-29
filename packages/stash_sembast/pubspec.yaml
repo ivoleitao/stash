@@ -8,13 +8,13 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
 
 dependencies:
   # Flutter shared dependencies
   meta: ^1.8.0
   # Other dependencies
-  sembast: ^3.3.1+1
+  sembast: ^3.4.0+6
   stash: ^4.4.1
 dev_dependencies:
   # Flutter shared dependencies

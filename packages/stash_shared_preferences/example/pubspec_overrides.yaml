@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: stash,stash_shared_preferences
+dependency_overrides:
+  stash:
+    path: ../../stash
+  stash_shared_preferences:
+    path: ..

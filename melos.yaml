@@ -70,10 +70,8 @@ scripts:
 
   format:
     run: |
-      melos exec -c 1 --no-flutter -- \
+      melos exec -c 1 -- \
         "dart format --set-exit-if-changed ."
-      melos exec -c 1 --flutter -- \
-        "flutter format --set-exit-if-changed ."
     description: |
       Run `dart format` in all packages.
   

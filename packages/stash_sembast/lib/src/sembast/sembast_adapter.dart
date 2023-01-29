@@ -197,7 +197,7 @@ abstract class SembastAdapter {
     return Future.value();
   }
 
-  /// Deletes a named cache from a store or the store itself if a named cache is
+  /// Deletes a partition from a store or the store itself if a partition is
   /// stored individually
   ///
   /// * [name]: The cache name

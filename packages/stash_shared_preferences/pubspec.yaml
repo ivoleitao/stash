@@ -8,13 +8,15 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=2.19.0 <3.0.0'
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.8.0
   stash: ^4.4.1
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

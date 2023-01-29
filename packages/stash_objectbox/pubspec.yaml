@@ -8,15 +8,15 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
 
 dependencies:
   # Flutter shared dependencies
   meta: ^1.8.0
-  path: ^1.8.2
+  path: ^1.8.3
   # Other dependencies
   stash: ^4.4.1
-  objectbox: ^1.7.0
+  objectbox: ^1.7.1
   flat_buffers: ^2.0.5
 dev_dependencies:
   # Flutter shared dependencies
@@ -25,4 +25,4 @@ dev_dependencies:
   lints: ^2.0.1
   build_runner: ^2.3.3
   stash_test: ^4.4.1
-  objectbox_generator: ^1.7.0
+  objectbox_generator: ^1.7.1
