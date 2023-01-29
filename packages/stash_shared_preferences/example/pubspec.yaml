@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.0
   stash: ^4.4.1
   stash_shared_preferences:
     path: ../
