@@ -1,3 +1,8 @@
+## 4.5.0
+
+ - **FEAT**: added shared_preferences support.
+ - **FEAT**: added flutter support.
+
 ## 4.4.1
 
  - **FIX**: downgraded some dependencies to guarantee compatibility with latest flutter version (see https://github.com/ivoleitao/stash/issues/34).

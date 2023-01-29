@@ -1,5 +1,5 @@
 name: stash_memory
-version: 4.4.1
+version: 4.5.0
 description: >-
   Memory storage extension for the stash API. Provides support to store vaults 
   and caches in-memory
@@ -11,10 +11,10 @@ environment:
   sdk: '>=2.19.0 <3.0.0'
 
 dependencies:
-  stash: ^4.4.1
+  stash: ^4.5.0
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.21.4
   # Other dependencies
   lints: ^2.0.1
-  stash_test: ^4.4.1
+  stash_test: ^4.5.0
