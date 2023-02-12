@@ -27,6 +27,8 @@ coverage:
         flags: [stash_isar]
       stash_shared_preferences:
         flags: [stash_shared_preferences]
+      stash_secure_storage:
+        flags: [stash_secure_storage]
       stash_dio:
         flags: [stash_dio]
 
@@ -67,6 +69,9 @@ flags:
   stash_shared_preferences:
     paths:
       - packages/stash_shared_preferences/lib/
+  stash_secure_storage:
+    paths:
+      - packages/stash_secure_storage/lib/
   stash_dio:
     paths:
       - packages/stash_dio/lib/

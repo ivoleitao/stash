@@ -16,7 +16,7 @@ dependencies:
   path: ^1.8.3
   # Other dependencies
   stash: ^4.5.0
-  objectbox: ^1.7.1
+  objectbox: ^1.7.2
   flat_buffers: ^2.0.5
 dev_dependencies:
   # Flutter shared dependencies
@@ -25,4 +25,4 @@ dev_dependencies:
   lints: ^2.0.1
   build_runner: ^2.3.3
   stash_test: ^4.5.0
-  objectbox_generator: ^1.7.1
+  objectbox_generator: ^1.7.2

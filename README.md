@@ -48,6 +48,7 @@ There's a vast array of storage implementations available which you can use.
 |[stash_cbl](https://github.com/ivoleitao/stash/tree/develop/packages/stash_cbl)|[![Pub](https://img.shields.io/pub/v/stash_cbl.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_cbl) | A storage implementation using the [cbl](https://pub.dev/packages/cbl) package|
 |[stash_isar](https://github.com/ivoleitao/stash/tree/develop/packages/stash_isar)|[![Pub](https://img.shields.io/pub/v/stash_isar.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_isar) | A storage implementation using the [isar](https://pub.dev/packages/isar) package|
 |[stash_shared_preferences](https://github.com/ivoleitao/stash/tree/develop/packages/stash_shared_preferences)|[![Pub](https://img.shields.io/pub/v/stash_shared_preferences.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_shared_preferences) | A  storage implementation using the [shared_preferences](https://pub.dev/packages/shared_preferences) package|
+|[stash_secure_storage](https://github.com/ivoleitao/stash/tree/develop/packages/stash_secure_storage)|[![Pub](https://img.shields.io/pub/v/stash_secure_storage.svg?style=flat-square)](https://pub.dartlang.org/packages/stash_shared_preferences) | A  storage implementation using the [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package|
 
 ## Library Integrations
 

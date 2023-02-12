@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Shared Prefererences backend
 class SharedPreferencesAdapter {
   // The preferences backing store
-  final SharedPreferences _prefs;
+  final SharedPreferences _store;
 
   /// Set of partitions
   final Set<String> _partitions = {};
@@ -14,7 +14,7 @@ class SharedPreferencesAdapter {
   /// [SharedPreferencesAdapter] constructor
   ///
   /// * [_prefs]: The [SharedPreferences]
-  SharedPreferencesAdapter._(this._prefs);
+  SharedPreferencesAdapter._(this._store);
 
   /// Creates a partition
   ///
@@ -29,7 +29,7 @@ class SharedPreferencesAdapter {
   ///
   /// * [prefix]: the prefix of the keys
   Iterable<String> _preferenceKeysByPrefix(String prefix) =>
-      _prefs.getKeys().where((key) => key.startsWith(prefix));
+      _store.getKeys().where((key) => key.startsWith(prefix));
 
   /// Returns the partition prefix
   ///
@@ -59,7 +59,7 @@ class SharedPreferencesAdapter {
   /// * [name]: the partition name
   /// * [key]: the key
   Future<Map<String, dynamic>?> partitionValue(String name, String key) {
-    final value = _prefs.getString(_partitionKey(name, key));
+    final value = _store.getString(_partitionKey(name, key));
 
     if (value != null) {
       return Future.value(json.decode(value));
@@ -75,7 +75,7 @@ class SharedPreferencesAdapter {
   ///
   /// Returns true if contains a entry with the provided key
   Future<bool> exists(String name, String key) {
-    return Future.value(_prefs.containsKey(_partitionKey(name, key)));
+    return Future.value(_store.containsKey(_partitionKey(name, key)));
   }
 
   /// Returns the json maps of the provided keys
@@ -104,7 +104,7 @@ class SharedPreferencesAdapter {
   /// Returns the updated value
   Future<void> put(String name, String key, Map<String, dynamic> value) {
     if (_partitions.contains(name)) {
-      return _prefs
+      return _store
           .setString(_partitionKey(name, key), json.encode(value))
           .then((_) => null);
     }
@@ -118,7 +118,7 @@ class SharedPreferencesAdapter {
   /// * [key]: The key
   Future<void> remove(String name, String key) {
     if (_partitions.contains(name)) {
-      return _prefs.remove(_partitionKey(name, key)).then((_) => null);
+      return _store.remove(_partitionKey(name, key)).then((_) => null);
     }
 
     return Future.value();

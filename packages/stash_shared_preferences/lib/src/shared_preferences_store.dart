@@ -196,7 +196,7 @@ class SharedPreferencesVaultStore
     implements VaultStore {
   /// Builds a [SharedPreferencesVaultStore].
   ///
-  /// * [_adapter]: The sembast store adapter
+  /// * [_adapter]: The shared preferences store adapter
   SharedPreferencesVaultStore(super.adapter);
 
   @override

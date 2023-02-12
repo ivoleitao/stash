@@ -1,4 +1,4 @@
-/// Provides a Shared Preferences implementation of the Stash caching API for Dart
+/// Provides a Shared Preferences implementation of the Stash API for Dart
 library stash_shared_preferences;
 
 import 'package:stash_shared_preferences/stash_shared_preferences.dart';
