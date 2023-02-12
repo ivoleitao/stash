@@ -1,3 +1,7 @@
+## 4.5.1
+
+ - **CHORE**: updated dependencies
+ 
 ## 4.5.0
 
  - **FEAT**: added shared_preferences support.
