@@ -1,3 +1,7 @@
+## 4.7.0
+
+ - **FEAT**: added support for flutter_secure_storage as a storage backend.
+
 ## 4.6.0
 
  - **FEAT**: added shared_preferences support.

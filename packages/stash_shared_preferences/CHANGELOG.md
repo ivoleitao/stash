@@ -1,3 +1,7 @@
+## 4.6.0
+
+ - **FEAT**: added support for flutter_secure_storage as a storage backend.
+
 ## 4.5.0
 
  - **FIX**: removed melos extra file from sample.
