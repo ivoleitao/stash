@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.0
-  stash: ^4.5.0
+  stash: ^4.5.1
   stash_shared_preferences:
     path: ../
 

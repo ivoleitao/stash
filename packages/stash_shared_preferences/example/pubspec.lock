@@ -309,7 +309,7 @@ packages:
       path: "../../stash"
       relative: true
     source: path
-    version: "4.5.0"
+    version: "4.5.1"
   stash_shared_preferences:
     dependency: "direct main"
     description:
