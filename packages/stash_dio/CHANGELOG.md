@@ -1,5 +1,9 @@
 ## 4.6.0
 
+ - **CHORE**: updated dependencies
+ 
+## 4.6.0
+
  - **FEAT**: added shared_preferences support.
  - **FEAT**: added flutter support.
 
