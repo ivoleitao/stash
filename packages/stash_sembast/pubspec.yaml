@@ -1,5 +1,5 @@
 name: stash_sembast
-version: 4.5.1
+version: 4.5.2
 description: >-
   Sembast storage extension for the stash API. Provides support to store vaults and 
   caches in the local file system in binary format using the msgpack json format
@@ -15,10 +15,10 @@ dependencies:
   meta: ^1.8.0
   # Other dependencies
   sembast: ^3.4.0+6
-  stash: ^4.5.1
+  stash: ^4.5.2
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.21.4
   # Other dependencies
   lints: ^2.0.1
-  stash_test: ^4.5.1
+  stash_test: ^4.5.2

@@ -1,5 +1,5 @@
 name: stash_hive
-version: 4.5.1
+version: 4.5.2
 description: >-
   Hive storage extension for the stash caching API. Provides support to store vaults 
   and caches in the Hive database
@@ -14,10 +14,10 @@ dependencies:
   # Other dependencies
   hive: ^2.2.3
   universal_platform: ^1.0.0+1
-  stash: ^4.5.1
+  stash: ^4.5.2
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.21.4
   # Other dependencies
   lints: ^2.0.1
-  stash_test: ^4.5.1
+  stash_test: ^4.5.2
