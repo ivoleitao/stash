@@ -26,12 +26,6 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
           .create(name, fromEncodable: fromEncodable)
           .then((_) => _adapter.create(name));
 
-  @protected
-  O _toEntity(E entry);
-
-  @protected
-  E? _toEntry(O? entity, dynamic Function(Map<String, dynamic>)? fromEncodable);
-
   @override
   Future<int> size(String name) =>
       Future.value(_adapter.box<O>(name)?.count() ?? 0);
@@ -47,16 +41,27 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
   Future<Iterable<String>> keys(String name) =>
       Future.value(_getEntries(name).map((entity) => entity.key).toList());
 
+  @protected
+  I? _readInfo(O? entity);
+
+  @protected
+  O _toEntity(E entry);
+
+  @protected
+  E? _readEntry(
+      O? entity, dynamic Function(Map<String, dynamic>)? fromEncodable);
+
   @override
   Future<Iterable<I>> infos(String name) => Future.value(_getEntries(name)
-      .map((entity) => _toEntry(entity, decoder(name))!.info)
+      .map((entity) => _readInfo(entity))
+      .whereType<I>()
       .toList());
 
   @override
-  Future<Iterable<E>> values(String name) =>
-      Future.value((_adapter.box<O>(name)?.getAll() ?? [])
-          .map((entity) => _toEntry(entity, decoder(name))!)
-          .toList());
+  Future<Iterable<E>> values(String name) => Future.value(_getEntries(name)
+      .map((entity) => _readEntry(entity, decoder(name)))
+      .whereType<E>()
+      .toList());
 
   @override
   Future<bool> containsKey(String name, String key) =>
@@ -67,7 +72,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     final box = _adapter.box<O>(name);
 
     if (box != null) {
-      return Future.value(_toEntry(box.get(key.hashCode), decoder(name))?.info);
+      return Future.value(_readInfo(box.get(key.hashCode)));
     }
 
     return Future.value();
@@ -80,7 +85,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     if (box != null) {
       return Future.value(box
           .getMany(keys.map((key) => key.hashCode).toList())
-          .map((entity) => _toEntry(entity, decoder(name))?.info)
+          .map((entity) => _readInfo(entity))
           .toList());
     }
 
@@ -110,7 +115,7 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
     final box = _adapter.box<O>(name);
 
     if (box != null) {
-      return Future.value(_toEntry(box.get(key.hashCode), decoder(name)));
+      return Future.value(_readEntry(box.get(key.hashCode), decoder(name)));
     }
 
     return Future<E?>.value();
@@ -179,7 +184,22 @@ class ObjectboxVaultStore
   }
 
   @override
-  VaultEntry? _toEntry(VaultEntity? entity,
+  VaultInfo? _readInfo(VaultEntity? entity) {
+    if (entity != null) {
+      return VaultInfo(entity.key, DateTime.parse(entity.creationTime),
+          accessTime: entity.accessTime != null
+              ? DateTime.parse(entity.accessTime!)
+              : null,
+          updateTime: entity.updateTime != null
+              ? DateTime.parse(entity.updateTime!)
+              : null);
+    }
+
+    return null;
+  }
+
+  @override
+  VaultEntry? _readEntry(VaultEntity? entity,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
       final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);
@@ -228,7 +248,24 @@ class ObjectboxCacheStore
   }
 
   @override
-  CacheEntry? _toEntry(CacheEntity? entity,
+  CacheInfo? _readInfo(CacheEntity? entity) {
+    if (entity != null) {
+      return CacheInfo(entity.key, DateTime.parse(entity.creationTime),
+          DateTime.parse(entity.expiryTime),
+          accessTime: entity.accessTime != null
+              ? DateTime.parse(entity.accessTime!)
+              : null,
+          updateTime: entity.updateTime != null
+              ? DateTime.parse(entity.updateTime!)
+              : null,
+          hitCount: entity.hitCount);
+    }
+
+    return null;
+  }
+
+  @override
+  CacheEntry? _readEntry(CacheEntity? entity,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
       final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);

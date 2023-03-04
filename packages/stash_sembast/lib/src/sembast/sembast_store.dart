@@ -102,7 +102,7 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   Future<Iterable<I>> infos(String name) =>
       _partitionRecords(name).then((records) => records
           .map((record) => _getInfoFromValue(record.value))
-          .map((info) => info!)
+          .whereType<I>()
           .toList());
 
   @override
