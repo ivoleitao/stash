@@ -38,8 +38,17 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   }
 
   @override
-  Future<Iterable<I>> infos(String name) async =>
-      (await values(name)).map((entry) => entry.info);
+  Future<Iterable<I>> infos(String name) async {
+    final entries = _adapter.entries(name);
+    if (entries == null) {
+      return [];
+    }
+
+    return entries
+        .map((entry) =>
+            _readInfo(entry.string('id')!, entry.dictionary('properties')!))
+        .toList();
+  }
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) async {
@@ -49,11 +58,10 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
     }
 
     return entries
-        .map((entry) => _loadEntry(
+        .map((entry) => _readInfo(
               entry.string('id')!,
               entry.dictionary('properties')!,
-              decoder(name),
-            ).info)
+            ))
         .toList();
   }
 
@@ -65,7 +73,7 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
     }
 
     return entries
-        .map((entry) => _loadEntry(entry.string('id')!,
+        .map((entry) => _readEntry(entry.string('id')!,
             entry.dictionary('properties')!, decoder(name)))
         .toList();
   }
@@ -75,8 +83,13 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
       (await _adapter.database(name)?.document(key)) != null;
 
   @override
-  Future<I?> getInfo(String name, String key) async =>
-      (await getEntry(name, key))?.info;
+  Future<I?> getInfo(String name, String key) async {
+    final document = await _adapter.database(name)?.document(key);
+    if (document == null) {
+      return null;
+    }
+    return _readInfo(document.id, document);
+  }
 
   @override
   Future<void> setInfo(String name, String key, I info) async {
@@ -100,7 +113,7 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
     if (document == null) {
       return null;
     }
-    return _loadEntry(document.id, document, decoder(name));
+    return _readEntry(document.id, document, decoder(name));
   }
 
   @override
@@ -136,11 +149,18 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   @override
   Future<void> deleteAll() => _adapter.deleteAll();
 
-  /// Loads the entry
+  /// Reads the info
   ///
   /// * [id]: The id
+  /// * [properties]: The dictory of properties
+  I _readInfo(String id, DictionaryInterface properties);
+
+  /// Reads the entry
+  ///
+  /// * [id]: The id
+  /// * [properties]: The dictory of properties
   /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
-  E _loadEntry(String id, DictionaryInterface properties,
+  E _readEntry(String id, DictionaryInterface properties,
       dynamic Function(Map<String, dynamic>)? fromEncodable);
 
   /// Loads the value
@@ -192,7 +212,15 @@ class CblVaultStore extends CblStore<VaultInfo, VaultEntry>
   CblVaultStore(super.adapter, {super.codec});
 
   @override
-  VaultEntry _loadEntry(String id, DictionaryInterface properties,
+  VaultInfo _readInfo(String id, DictionaryInterface properties) => VaultInfo(
+        id,
+        properties.date('creationTime')!,
+        accessTime: properties.date('accessTime'),
+        updateTime: properties.date('updateTime'),
+      );
+
+  @override
+  VaultEntry _readEntry(String id, DictionaryInterface properties,
           dynamic Function(Map<String, dynamic>)? fromEncodable) =>
       VaultEntry.loaded(
         id,
@@ -208,7 +236,17 @@ class CblCacheStore extends CblStore<CacheInfo, CacheEntry>
   CblCacheStore(super.adapter, {super.codec});
 
   @override
-  CacheEntry _loadEntry(String id, DictionaryInterface properties,
+  CacheInfo _readInfo(String id, DictionaryInterface properties) => CacheInfo(
+        id,
+        properties.date('creationTime')!,
+        properties.date('expiryTime')!,
+        accessTime: properties.date('accessTime'),
+        updateTime: properties.date('updateTime'),
+        hitCount: properties.integer('hitCount'),
+      );
+
+  @override
+  CacheEntry _readEntry(String id, DictionaryInterface properties,
           dynamic Function(Map<String, dynamic>)? fromEncodable) =>
       CacheEntry.loaded(
         id,
