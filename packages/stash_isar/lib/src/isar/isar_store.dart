@@ -89,11 +89,16 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   }
 
   @protected
-  E toEntry(M model, dynamic Function(Map<String, dynamic>)? fromEncodable);
+  I _readInfo(M model);
+
+  I? toInfoOptional(M? model) => model != null ? _readInfo(model) : null;
+
+  @protected
+  E _readEntry(M model, dynamic Function(Map<String, dynamic>)? fromEncodable);
 
   E? toEntryOptional(
           M? model, dynamic Function(Map<String, dynamic>)? fromEncodable) =>
-      model != null ? toEntry(model, fromEncodable) : null;
+      model != null ? _readEntry(model, fromEncodable) : null;
 
   @protected
   M fromEntry(E entry, {M? model});
@@ -110,6 +115,50 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   /// Returns a [Entry]
   Future<M?> _partitionModel(IsarCollection<M> partition, String key) =>
       keyQuery(partition, key).findFirst();
+
+  /// Returns the partition [Info] for the specified [key].
+  ///
+  /// * [name]: The partition
+  /// * [key]: The key
+  ///
+  /// Returns a [Entry]
+  Future<I?> _partitionInfo(IsarCollection<M> partition, String key) {
+    return _partitionModel(partition, key)
+        .then((model) => toInfoOptional(model));
+  }
+
+  /// Returns the [Info] for the specified [key].
+  ///
+  /// * [slot]: The partition name
+  /// * [key]: The key
+  ///
+  /// Returns a [Info]
+  Future<I?> _getInfo(String name, String key) {
+    final partition = _adapter.partition(name);
+
+    if (partition != null) {
+      return _partitionInfo(partition, key);
+    }
+
+    return Future<I?>.value();
+  }
+
+  /// Returns a [Iterable] over all the [Info]s for the keys requested
+  ///
+  /// * [name]: The partition name
+  /// * [keys]: The list of keys
+  ///
+  /// Return a list of [CacheInfo]s
+  Future<Iterable<I?>> _getInfos(String name, Iterable<String> keys) {
+    return Stream.fromIterable(keys)
+        .asyncMap((key) => _getInfo(name, key))
+        .toList();
+  }
+
+  @override
+  Future<Iterable<I>> infos(String name) => _getKeys(name)
+      .then((keys) => _getInfos(name, keys))
+      .then((infos) => infos.map((info) => info!));
 
   /// Returns the partition [Entry] for the specified [key].
   ///
@@ -138,33 +187,6 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
 
     return Future<E?>.value();
   }
-
-  /// Returns the [Info] for the specified [key].
-  ///
-  /// * [slot]: The partition name
-  /// * [key]: The key
-  ///
-  /// Returns a [Info]
-  Future<I?> _getInfo(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.info);
-  }
-
-  /// Returns a [Iterable] over all the [Info]s for the keys requested
-  ///
-  /// * [name]: The partition name
-  /// * [keys]: The list of keys
-  ///
-  /// Return a list of [CacheInfo]s
-  Future<Iterable<I?>> _getInfos(String name, Iterable<String> keys) {
-    return Stream.fromIterable(keys)
-        .asyncMap((key) => _getInfo(name, key))
-        .toList();
-  }
-
-  @override
-  Future<Iterable<I>> infos(String name) => _getKeys(name)
-      .then((keys) => _getInfos(name, keys))
-      .then((infos) => infos.map((info) => info!));
 
   /// Returns a [Iterable] over all the [Entry]s
   ///
@@ -209,7 +231,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     if (partition != null) {
       return _partitionModel(partition, key).then((model) {
         if (model != null) {
-          final entry = toEntry(model, decoder(name))..updateInfo(info);
+          final entry = _readEntry(model, decoder(name))..updateInfo(info);
 
           return partition.isar
               .writeTxn(() => partition.put(fromEntry(entry, model: model)));
@@ -310,7 +332,13 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
   }
 
   @override
-  VaultEntry toEntry(
+  VaultInfo _readInfo(VaultModel model) {
+    return VaultInfo(model.key, model.creationTime,
+        accessTime: model.accessTime, updateTime: model.updateTime);
+  }
+
+  @override
+  VaultEntry _readEntry(
       VaultModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loaded(model.key, model.creationTime,
         valueDecoder(Uint8List.fromList(model.value), fromEncodable),
@@ -350,7 +378,15 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
   }
 
   @override
-  CacheEntry toEntry(
+  CacheInfo _readInfo(CacheModel model) {
+    return CacheInfo(model.key, model.creationTime, model.expiryTime,
+        accessTime: model.accessTime,
+        updateTime: model.updateTime,
+        hitCount: model.hitCount);
+  }
+
+  @override
+  CacheEntry _readEntry(
       CacheModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loaded(model.key, model.creationTime, model.expiryTime,
         valueDecoder(Uint8List.fromList(model.value), fromEncodable),
