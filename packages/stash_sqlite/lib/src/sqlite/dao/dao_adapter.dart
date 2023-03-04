@@ -48,7 +48,7 @@ abstract class DaoAdapter<I extends Info, E extends Entry<I>> {
   /// * [key]: The key on the store
   ///
   /// Returns the named store key [Info]
-  Future<I> getInfo(String name, String key);
+  Future<I?> getInfo(String name, String key);
 
   /// Returns the list of all store headers on a named store, filtered by the provided keys
   ///

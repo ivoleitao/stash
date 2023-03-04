@@ -540,21 +540,20 @@ Future<T> _vaultUpdatedEvent<T extends Store<VaultInfo, VaultEntry>>(
   check(ctx, updated?.source, cache, '_vaultUpdatedEvent_10');
   check(ctx, updated?.type, VaultEventType.updated, '_vaultUpdatedEvent_11');
   check(ctx, updated?.oldEntry.key, key, '_vaultUpdatedEvent_12');
-  check(ctx, updated?.oldEntry.value, value1, '_vaultUpdatedEvent_13');
   check(ctx, updated?.oldEntry.creationTime, clock1.now(),
-      '_vaultUpdatedEvent_14');
+      '_vaultUpdatedEvent_13');
   check(
-      ctx, updated?.oldEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_15');
+      ctx, updated?.oldEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_14');
   check(
-      ctx, updated?.oldEntry.updateTime, clock1.now(), '_vaultUpdatedEvent_16');
-  check(ctx, updated?.newEntry.key, key, '_vaultUpdatedEvent_17');
-  check(ctx, updated?.newEntry.value, value2, '_vaultUpdatedEvent_18');
+      ctx, updated?.oldEntry.updateTime, clock1.now(), '_vaultUpdatedEvent_15');
+  check(ctx, updated?.newEntry.key, key, '_vaultUpdatedEvent_16');
+  check(ctx, updated?.newEntry.value, value2, '_vaultUpdatedEvent_17');
   check(ctx, updated?.newEntry.creationTime, clock1.now(),
-      '_vaultUpdatedEvent_19');
+      '_vaultUpdatedEvent_18');
   check(
-      ctx, updated?.newEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_20');
+      ctx, updated?.newEntry.accessTime, clock1.now(), '_vaultUpdatedEvent_19');
   check(
-      ctx, updated?.newEntry.updateTime, clock2.now(), '_vaultUpdatedEvent_21');
+      ctx, updated?.newEntry.updateTime, clock2.now(), '_vaultUpdatedEvent_20');
 
   return store;
 }
@@ -599,11 +598,10 @@ Future<T> _vaultRemovedEvent<T extends Store<VaultInfo, VaultEntry>>(
   check(ctx, removed?.source, cache, '_vaultRemovedEvent_10');
   check(ctx, removed?.type, VaultEventType.removed, '_vaultRemovedEvent_11');
   check(ctx, removed?.entry.key, key, '_vaultRemovedEvent_12');
-  check(ctx, removed?.entry.value, value1, '_vaultRemovedEvent_13');
   check(
-      ctx, removed?.entry.creationTime, clock1.now(), '_vaultRemovedEvent_14');
-  check(ctx, removed?.entry.accessTime, clock1.now(), '_vaultRemovedEvent_15');
-  check(ctx, removed?.entry.updateTime, clock1.now(), '_vaultRemovedEvent_16');
+      ctx, removed?.entry.creationTime, clock1.now(), '_vaultRemovedEvent_13');
+  check(ctx, removed?.entry.accessTime, clock1.now(), '_vaultRemovedEvent_14');
+  check(ctx, removed?.entry.updateTime, clock1.now(), '_vaultRemovedEvent_15');
 
   return store;
 }

@@ -9,11 +9,11 @@ enum EntryState {
   /// The [Entry] is new and was not yet committed to the storage
   added,
 
-  /// The [Entry] inf was changed since it's retrieval from storage
-  updatedInfo,
-
   /// The [Entry] value and/or info was changed since it's retrievale from storage
-  updatedValue
+  updated,
+
+  /// The [Entry] inf was changed since it's retrieval from storage
+  updatedInfo
 }
 
 abstract class Entry<T extends Info> with EquatableMixin {

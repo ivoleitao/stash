@@ -21,14 +21,14 @@ class VaultEntry extends Entry<VaultInfo> {
             builder.value,
             builder.state);
 
-  /// Loads a new [VaultEntry]
+  /// Creates a loaded [VaultEntry]
   ///
   /// * [key]: The vault key
   /// * [creationTime]: The vault creation time
   /// * [value]: The vault value
   /// * [accessTime]: The vault access time
   /// * [updateTime]: The vault update time
-  VaultEntry.loadEntry(String key, DateTime creationTime, dynamic value,
+  VaultEntry.loaded(String key, DateTime creationTime, dynamic value,
       {DateTime? accessTime, DateTime? updateTime})
       : this._(
             VaultInfo(key, creationTime,
@@ -36,17 +36,17 @@ class VaultEntry extends Entry<VaultInfo> {
             value,
             EntryState.loaded);
 
-  /// Updates the [VaultEntry] value
+  /// Creates an updated [VaultEntry]
   ///
-  /// * [value]: The vault value
-  /// * [updateTime]: The vault update time
-  VaultEntry updateValue(dynamic value, DateTime updateTime) {
-    return VaultEntry._(
-        VaultInfo(key, creationTime,
-            accessTime: accessTime, updateTime: updateTime),
-        value,
-        EntryState.updatedValue);
-  }
+  /// * [info]: The vault info of the original entry
+  /// * [value]: The cache value
+  /// * [updateTime]: The cache update time
+  VaultEntry.updated(VaultInfo info, dynamic value, DateTime updateTime)
+      : this._(
+            VaultInfo(info.key, info.creationTime,
+                accessTime: info.accessTime, updateTime: updateTime),
+            value,
+            EntryState.updated);
 }
 
 /// The [VaultEntry] builder

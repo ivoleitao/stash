@@ -233,7 +233,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
   @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return VaultEntry.loadEntry(
+    return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         decodeValue(value['value'], fromEncodable,
@@ -269,7 +269,7 @@ class HiveCacheStore<T extends BoxBase<Map>>
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return CacheEntry.loadEntry(
+    return CacheEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),

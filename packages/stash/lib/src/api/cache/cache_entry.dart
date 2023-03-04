@@ -30,7 +30,7 @@ class CacheEntry extends Entry<CacheInfo> {
             builder.value,
             builder.state);
 
-  /// Creates a new [CacheEntry]
+  /// Creates a loaded [CacheEntry]
   ///
   /// * [key]: The cache key
   /// * [creationTime]: The cache creation time
@@ -39,7 +39,7 @@ class CacheEntry extends Entry<CacheInfo> {
   /// * [accessTime]: The cache access time
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
-  CacheEntry.loadEntry(
+  CacheEntry.loaded(
       String key, DateTime creationTime, DateTime expiryTime, dynamic value,
       {DateTime? accessTime, DateTime? updateTime, int? hitCount})
       : this._(
@@ -50,20 +50,24 @@ class CacheEntry extends Entry<CacheInfo> {
             value,
             EntryState.loaded);
 
-  /// Copy the current [CacheEntry] and updates it
+  /// Creates an updated [CacheEntry]
   ///
+  /// * [info]: The cache info of the original entry
   /// * [value]: The cache value
   /// * [updateTime]: The cache update time
   /// * [hitCount]: The cache hit count
   /// * [expiryTime]: The cache expiry time
-  CacheEntry updateValue(dynamic value, DateTime updateTime, int hitCount,
-      {DateTime? expiryTime}) {
-    return CacheEntry._(
-        CacheInfo(key, creationTime, expiryTime ?? this.expiryTime,
-            hitCount: hitCount, accessTime: accessTime, updateTime: updateTime),
-        value,
-        EntryState.updatedValue);
-  }
+  CacheEntry.updated(
+      CacheInfo info, dynamic value, DateTime updateTime, int hitCount,
+      {DateTime? expiryTime})
+      : this._(
+            CacheInfo(
+                info.key, info.creationTime, expiryTime ?? info.expiryTime,
+                hitCount: hitCount,
+                accessTime: info.accessTime,
+                updateTime: updateTime),
+            value,
+            EntryState.updated);
 
   /// Updates the [Info] fields
   ///

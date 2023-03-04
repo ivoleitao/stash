@@ -93,6 +93,15 @@ class GenericVault<T> implements Vault<T> {
     return storage.size(name);
   }
 
+  /// Gets a vault info from storage
+  ///
+  /// * [key]: the vault key to retrieve from the underlining storage
+  ///
+  /// Returns the vault info
+  Future<VaultInfo?> _getStorageInfo(String key) {
+    return storage.getInfo(name, key);
+  }
+
   /// Gets a vault entry from storage
   ///
   /// * [key]: the vault key to retrieve from the underlining storage
@@ -109,8 +118,7 @@ class GenericVault<T> implements Vault<T> {
   /// * [event]: An optional event
   Future<void> _putStorageEntry(String key, VaultEntry entry,
       {VaultEvent<T>? event}) {
-    if (entry.state == EntryState.added ||
-        entry.state == EntryState.updatedValue) {
+    if (entry.state == EntryState.added || entry.state == EntryState.updated) {
       return storage.putEntry(name, key, entry).then((_) => _fire(event));
     } else if (entry.state == EntryState.updatedInfo) {
       return storage.setInfo(name, key, entry.info);
@@ -169,20 +177,19 @@ class GenericVault<T> implements Vault<T> {
     return _putStorageEntry(entry.key, entry).then((_) => entry.value);
   }
 
-  /// Updates the entry value and the vault info: the
-  /// [VaultEntry.updateTime] with the update time
-  /// in place for this vault entry
+  /// Replaces the entry value and updates vault info:
   ///
-  /// * [entry]: the [VaultEntry] holding the value
+  /// * Updates [VaultEntry.updateTime] with the current time
+  ///
+  /// * [info]: the [VaultInfo]
   /// * [value]: the new value
   /// * [now]: the current date/time
-  Future<T> _updateEntry(VaultEntry entry, T value, DateTime now) {
-    final newEntry = entry.updateValue(value, now);
+  Future<void> _replaceEntry(VaultInfo info, T value, DateTime now) {
+    final newEntry = VaultEntry.updated(info, value, now);
 
     // Finally store the entry in the underlining storage
-    return _putStorageEntry(entry.key, newEntry,
-            event: VaultEntryUpdatedEvent<T>(this, entry, newEntry))
-        .then((_) => entry.value);
+    return _putStorageEntry(info.key, newEntry,
+        event: VaultEntryUpdatedEvent<T>(this, info, newEntry));
   }
 
   /// Provides a new builder
@@ -253,14 +260,14 @@ class GenericVault<T> implements Vault<T> {
     // #endregion
 
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then((entry) {
+    return _getStorageInfo(key).then((info) {
       // If the entry does not exist
-      if (entry == null) {
+      if (info == null) {
         // And finally we add it to the vault
         return _newEntry(_entryBuilder(key, value, now));
       } else {
         // Already present let's update the vault instead
-        return _updateEntry(entry, value, now);
+        return _replaceEntry(info, value, now);
       }
     }).then(posPut);
   }
@@ -277,15 +284,15 @@ class GenericVault<T> implements Vault<T> {
     final now = clock.now();
     // #region Statistics
     Stopwatch? watch;
-    Future<VaultEntry?> Function(VaultEntry? entry) posGet =
-        (VaultEntry? entry) => Future.value(entry);
+    Future<VaultInfo?> Function(VaultInfo? info) posGet =
+        (VaultInfo? entry) => Future.value(entry);
     Future<bool> Function(bool) posPut = (bool ok) => Future<bool>.value(ok);
     if (statsEnabled) {
       watch = clock.stopwatch()..start();
-      posGet = (VaultEntry? entry) {
+      posGet = (VaultInfo? info) {
         stats.increaseGets();
 
-        return Future.value(entry);
+        return Future.value(info);
       };
       posPut = (bool ok) {
         if (ok) {
@@ -302,7 +309,7 @@ class GenericVault<T> implements Vault<T> {
     // #endregion
 
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then(posGet).then((entry) {
+    return _getStorageInfo(key).then(posGet).then((entry) {
       // If the entry does not exist
       if (entry == null) {
         return _newEntry(_entryBuilder(key, value, now))
@@ -323,7 +330,7 @@ class GenericVault<T> implements Vault<T> {
   /// * [key]: key whose mapping is to be removed from the vault
   Future<void> _removeEntryByKey(String key) {
     // Try to get the entry from the vault
-    return _getStorageEntry(key).then((entry) {
+    return _getStorageInfo(key).then((entry) {
       if (entry != null) {
         // The entry exists on vault let's remove and send and removed event
         return _removeStorageEntry(key, VaultEntryRemovedEvent<T>(this, entry));
@@ -396,7 +403,8 @@ class GenericVault<T> implements Vault<T> {
         return _newEntry(_entryBuilder(key, value, now))
             .then((_) => posPut(null));
       } else {
-        return _updateEntry(entry, value, now).then(posPut);
+        return _replaceEntry(entry.info, value, now)
+            .then((_) => posPut(entry.value));
       }
     });
   }
@@ -436,7 +444,8 @@ class GenericVault<T> implements Vault<T> {
     return _getStorageEntry(key).then(posGet).then((entry) {
       if (entry != null) {
         // The entry exists on vault
-        return _removeStorageEntry(key, VaultEntryRemovedEvent<T>(this, entry))
+        return _removeStorageEntry(
+                key, VaultEntryRemovedEvent<T>(this, entry.info))
             .then((_) => posRemove(entry));
       }
 

@@ -1,12 +1,12 @@
 import 'package:stash/src/api/vault/vault.dart';
-import 'package:stash/src/api/vault/vault_entry.dart';
+import 'package:stash/src/api/vault/vault_info.dart';
 
 import 'event.dart';
 
 /// A vault entry removed event
 class VaultEntryRemovedEvent<T> extends VaultEvent<T> {
   /// The removed entry
-  final VaultEntry entry;
+  final VaultInfo entry;
 
   /// Builds a [VaultEntryRemovedEvent]
   ///

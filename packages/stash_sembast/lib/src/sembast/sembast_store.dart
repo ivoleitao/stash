@@ -206,7 +206,7 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry>
   @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return VaultEntry.loadEntry(
+    return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         decodeValue(value['value'], fromEncodable,
@@ -241,7 +241,7 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry>
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return CacheEntry.loadEntry(
+    return CacheEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),

@@ -104,7 +104,7 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   VaultEntry? _toVaultEntry(
       VaultData? data, dynamic Function(Uint8List) valueDecoder) {
     return data != null
-        ? VaultEntry.loadEntry(
+        ? VaultEntry.loaded(
             data.key, data.creationTime, valueDecoder(data.value),
             accessTime: data.accessTime, updateTime: data.updateTime)
         : null;
@@ -145,11 +145,11 @@ class VaultDao extends DatabaseAccessor<VaultDatabase>
   ///
   /// Returns the named vault key [VaultInfo]
   @override
-  Future<VaultInfo> getInfo(String name, String key) {
+  Future<VaultInfo?> getInfo(String name, String key) {
     var query = _infoQuery()
       ..where(vaultTable.name.equals(name) & vaultTable.key.equals(key));
 
-    return query.map(_infoMapper).getSingle();
+    return query.map(_infoMapper).getSingleOrNull();
   }
 
   /// Returns the list of all vault headers on a named vault, filtered by the provided keys

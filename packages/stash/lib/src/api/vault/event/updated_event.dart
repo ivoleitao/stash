@@ -1,12 +1,13 @@
 import 'package:stash/src/api/vault/vault.dart';
 import 'package:stash/src/api/vault/vault_entry.dart';
+import 'package:stash/src/api/vault/vault_info.dart';
 
 import 'event.dart';
 
 /// A Vault entry updated event
 class VaultEntryUpdatedEvent<T> extends VaultEvent<T> {
   /// The old entry
-  final VaultEntry oldEntry;
+  final VaultInfo oldEntry;
 
   /// The new entry
   final VaultEntry newEntry;

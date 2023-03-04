@@ -1024,25 +1024,24 @@ Future<T> _cacheUpdatedEvent<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, updated?.source, cache, '_cacheUpdatedEvent_12');
   check(ctx, updated?.type, CacheEventType.updated, '_cacheUpdatedEvent_13');
   check(ctx, updated?.oldEntry.key, key, '_cacheUpdatedEvent_14');
-  check(ctx, updated?.oldEntry.value, value1, '_cacheUpdatedEvent_15');
-  check(ctx, updated?.oldEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_16');
+  check(ctx, updated?.oldEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_15');
   check(ctx, updated?.oldEntry.creationTime, clock1.now(),
-      '_cacheUpdatedEvent_17');
+      '_cacheUpdatedEvent_16');
   check(
-      ctx, updated?.oldEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_18');
+      ctx, updated?.oldEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_17');
   check(
-      ctx, updated?.oldEntry.updateTime, clock1.now(), '_cacheUpdatedEvent_19');
-  check(ctx, updated?.oldEntry.hitCount, 0, '_cacheUpdatedEvent_20');
-  check(ctx, updated?.newEntry.key, key, '_cacheUpdatedEvent_21');
-  check(ctx, updated?.newEntry.value, value2, '_cacheUpdatedEvent_22');
-  check(ctx, updated?.newEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_23');
+      ctx, updated?.oldEntry.updateTime, clock1.now(), '_cacheUpdatedEvent_18');
+  check(ctx, updated?.oldEntry.hitCount, 0, '_cacheUpdatedEvent_19');
+  check(ctx, updated?.newEntry.key, key, '_cacheUpdatedEvent_20');
+  check(ctx, updated?.newEntry.value, value2, '_cacheUpdatedEvent_21');
+  check(ctx, updated?.newEntry.expiryTime, expiryTime, '_cacheUpdatedEvent_22');
   check(ctx, updated?.newEntry.creationTime, clock1.now(),
-      '_cacheUpdatedEvent_24');
+      '_cacheUpdatedEvent_23');
   check(
-      ctx, updated?.newEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_25');
+      ctx, updated?.newEntry.accessTime, clock1.now(), '_cacheUpdatedEvent_24');
   check(
-      ctx, updated?.newEntry.updateTime, clock2.now(), '_cacheUpdatedEvent_26');
-  check(ctx, updated?.newEntry.hitCount, 1, '_cacheUpdatedEvent_27');
+      ctx, updated?.newEntry.updateTime, clock2.now(), '_cacheUpdatedEvent_25');
+  check(ctx, updated?.newEntry.hitCount, 1, '_cacheUpdatedEvent_26');
 
   return store;
 }
@@ -1091,13 +1090,12 @@ Future<T> _cacheRemovedEvent<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, removed?.source, cache, '_cacheRemovedEvent_12');
   check(ctx, removed?.type, CacheEventType.removed, '_cacheRemovedEvent_13');
   check(ctx, removed?.entry.key, key, '_cacheRemovedEvent_14');
-  check(ctx, removed?.entry.value, value1, '_cacheRemovedEvent_15');
-  check(ctx, removed?.entry.expiryTime, expiryTime, '_cacheRemovedEvent_16');
+  check(ctx, removed?.entry.expiryTime, expiryTime, '_cacheRemovedEvent_15');
   check(
-      ctx, removed?.entry.creationTime, clock1.now(), '_cacheRemovedEvent_17');
-  check(ctx, removed?.entry.accessTime, clock1.now(), '_cacheRemovedEvent_18');
-  check(ctx, removed?.entry.updateTime, clock1.now(), '_cacheRemovedEvent_19');
-  check(ctx, removed?.entry.hitCount, 0, '_cacheRemovedEvent_20');
+      ctx, removed?.entry.creationTime, clock1.now(), '_cacheRemovedEvent_16');
+  check(ctx, removed?.entry.accessTime, clock1.now(), '_cacheRemovedEvent_17');
+  check(ctx, removed?.entry.updateTime, clock1.now(), '_cacheRemovedEvent_18');
+  check(ctx, removed?.entry.hitCount, 0, '_cacheRemovedEvent_19');
 
   return store;
 }
@@ -1148,13 +1146,12 @@ Future<T> _cacheExpiredEvent<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, expired?.source, cache, '_cacheExpiredEvent_13');
   check(ctx, expired?.type, CacheEventType.expired, '_cacheExpiredEvent_14');
   check(ctx, expired?.entry.key, key, '_cacheExpiredEvent_15');
-  check(ctx, expired?.entry.value, value1, '_cacheExpiredEvent_16');
-  check(ctx, expired?.entry.expiryTime, expiryTime, '_cacheExpiredEvent_17');
+  check(ctx, expired?.entry.expiryTime, expiryTime, '_cacheExpiredEvent_16');
   check(
-      ctx, expired?.entry.creationTime, clock1.now(), '_cacheExpiredEvent_18');
-  check(ctx, expired?.entry.accessTime, clock1.now(), '_cacheExpiredEvent_19');
-  check(ctx, expired?.entry.updateTime, clock1.now(), '_cacheExpiredEvent_20');
-  check(ctx, expired?.entry.hitCount, 0, '_cacheExpiredEvent_21');
+      ctx, expired?.entry.creationTime, clock1.now(), '_cacheExpiredEvent_17');
+  check(ctx, expired?.entry.accessTime, clock1.now(), '_cacheExpiredEvent_18');
+  check(ctx, expired?.entry.updateTime, clock1.now(), '_cacheExpiredEvent_19');
+  check(ctx, expired?.entry.hitCount, 0, '_cacheExpiredEvent_20');
 
   return store;
 }
@@ -1207,13 +1204,12 @@ Future<T> _cacheEvictedEvent<T extends Store<CacheInfo, CacheEntry>>(
   check(ctx, evicted?.source, cache, '_cacheEvictedEvent_12');
   check(ctx, evicted?.type, CacheEventType.evicted, '_cacheEvictedEvent_13');
   check(ctx, evicted?.entry.key, key1, '_cacheEvictedEvent_14');
-  check(ctx, evicted?.entry.value, value1, '_cacheEvictedEvent_15');
-  check(ctx, evicted?.entry.expiryTime, expiryTime, '_cacheEvictedEvent_16');
+  check(ctx, evicted?.entry.expiryTime, expiryTime, '_cacheEvictedEvent_15');
   check(
-      ctx, evicted?.entry.creationTime, clock1.now(), '_cacheEvictedEvent_17');
-  check(ctx, evicted?.entry.accessTime, clock1.now(), '_cacheEvictedEvent_18');
-  check(ctx, evicted?.entry.updateTime, clock1.now(), '_cacheEvictedEvent_19');
-  check(ctx, evicted?.entry.hitCount, 0, '_cacheEvictedEvent_20');
+      ctx, evicted?.entry.creationTime, clock1.now(), '_cacheEvictedEvent_16');
+  check(ctx, evicted?.entry.accessTime, clock1.now(), '_cacheEvictedEvent_17');
+  check(ctx, evicted?.entry.updateTime, clock1.now(), '_cacheEvictedEvent_18');
+  check(ctx, evicted?.entry.hitCount, 0, '_cacheEvictedEvent_19');
 
   return store;
 }

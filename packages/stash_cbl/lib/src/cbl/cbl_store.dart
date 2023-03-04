@@ -194,7 +194,7 @@ class CblVaultStore extends CblStore<VaultInfo, VaultEntry>
   @override
   VaultEntry _loadEntry(String id, DictionaryInterface properties,
           dynamic Function(Map<String, dynamic>)? fromEncodable) =>
-      VaultEntry.loadEntry(
+      VaultEntry.loaded(
         id,
         properties.date('creationTime')!,
         _loadValue(properties, fromEncodable),
@@ -210,7 +210,7 @@ class CblCacheStore extends CblStore<CacheInfo, CacheEntry>
   @override
   CacheEntry _loadEntry(String id, DictionaryInterface properties,
           dynamic Function(Map<String, dynamic>)? fromEncodable) =>
-      CacheEntry.loadEntry(
+      CacheEntry.loaded(
         id,
         properties.date('creationTime')!,
         properties.date('expiryTime')!,

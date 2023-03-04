@@ -108,7 +108,7 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   CacheEntry? _toCacheEntry(
       CacheData? data, dynamic Function(Uint8List) valueDecoder) {
     return data != null
-        ? CacheEntry.loadEntry(data.key, data.creationTime, data.expiryTime,
+        ? CacheEntry.loaded(data.key, data.creationTime, data.expiryTime,
             valueDecoder(data.value),
             accessTime: data.accessTime,
             updateTime: data.updateTime,
@@ -151,11 +151,11 @@ class CacheDao extends DatabaseAccessor<CacheDatabase>
   ///
   /// Returns the named cache key [CacheInfo]
   @override
-  Future<CacheInfo> getInfo(String name, String key) {
+  Future<CacheInfo?> getInfo(String name, String key) {
     var query = _infoQuery()
       ..where(cacheTable.name.equals(name) & cacheTable.key.equals(key));
 
-    return query.map(_infoMapper).getSingle();
+    return query.map(_infoMapper).getSingleOrNull();
   }
 
   /// Returns the list of all cache headers on a named cache, filtered by the provided keys

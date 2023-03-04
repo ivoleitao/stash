@@ -133,6 +133,15 @@ class GenericCache<T> implements Cache<T> {
     return storage.size(name);
   }
 
+  /// Gets a cache info from storage
+  ///
+  /// * [key]: the cache key to retrieve from the underlining storage
+  ///
+  /// Returns the cache info
+  Future<CacheInfo?> _getStorageInfo(String key) {
+    return storage.getInfo(name, key);
+  }
+
   /// Gets a cache entry from storage
   ///
   /// * [key]: the cache key to retrieve from the underlining storage
@@ -150,8 +159,7 @@ class GenericCache<T> implements Cache<T> {
   /// * [event]: An optional event
   Future<void> _putStorageEntry(String key, CacheEntry entry, DateTime now,
       {CacheEvent<T>? event}) {
-    if (entry.state == EntryState.added ||
-        entry.state == EntryState.updatedValue) {
+    if (entry.state == EntryState.added || entry.state == EntryState.updated) {
       var prePut = () => Future<void>.value();
       if (entry.state == EntryState.added && maxEntries > 0) {
         // There's a number of max entries configured
@@ -262,27 +270,28 @@ class GenericCache<T> implements Cache<T> {
     return _putStorageEntry(entry.key, entry, now).then((_) => entry.value);
   }
 
-  /// Updates the entry value and the cache info: the
-  /// [CacheEntry.updateTime] with the update time, increments [CacheEntry.hitcount]
-  /// and the [CacheEntry.expiryTime] according with [ExpiryPolicy]
-  /// in place for this cache entry
+  /// Replaces the entry value and updates cache info:
   ///
-  /// * [entry]: the [CacheEntry] holding the value
+  /// * Updates [CacheEntry.updateTime] with the current time
+  /// * Increments [CacheEntry.hitcount]
+  /// * Updates [CacheEntry.expiryTime] according with [ExpiryPolicy] in place for this cache entry
+  ///
+  /// * [info]: the [CacheInfo]
   /// * [value]: the new value
   /// * [now]: the current date/time
-  Future<T> _updateEntry(CacheEntry entry, T value, DateTime now) {
+  Future<void> _replaceEntry(CacheInfo info, T value, DateTime now) {
     final duration = expiryPolicy.getExpiryForUpdate();
     // We just need to update the expiry time on the entry
     // according with the expiry policy in place or if provided the expiry duration
     final expiryTime = duration != null ? now.add(duration) : null;
-    final hitCount = entry.hitCount + 1;
+    final hitCount = info.hitCount + 1;
+
     final newEntry =
-        entry.updateValue(value, now, hitCount, expiryTime: expiryTime);
+        CacheEntry.updated(info, value, now, hitCount, expiryTime: expiryTime);
 
     // Finally store the entry in the underlining storage
-    return _putStorageEntry(entry.key, newEntry, now,
-            event: CacheEntryUpdatedEvent<T>(this, entry, newEntry))
-        .then((_) => entry.value);
+    return _putStorageEntry(info.key, newEntry, now,
+        event: CacheEntryUpdatedEvent<T>(this, info, newEntry));
   }
 
   /// Provides a new builder
@@ -337,7 +346,8 @@ class GenericCache<T> implements Cache<T> {
       if (entry == null || expired) {
         // If expired we need to remove the value from the storage
         final pre = expired
-            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
+            ? _removeStorageEntry(
+                key, CacheEntryExpiredEvent<T>(this, entry.info))
             : Future<void>.value();
 
         // Invoke the cache loader
@@ -380,13 +390,13 @@ class GenericCache<T> implements Cache<T> {
     // #endregion
 
     // Try to get the entry from the cache
-    return _getStorageEntry(key).then((entry) {
-      final expired = entry != null && entry.isExpired(now);
+    return _getStorageInfo(key).then((info) {
+      final expired = info != null && info.isExpired(now);
       // If the entry does not exist or is expired
-      if (entry == null || expired) {
+      if (info == null || expired) {
         // If expired we remove it
         final prePut = expired
-            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
+            ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, info))
             : Future<void>.value();
 
         // And finally we add it to the cache
@@ -396,7 +406,7 @@ class GenericCache<T> implements Cache<T> {
             .then(posPut);
       } else {
         // Already present let's update the cache instead
-        return _updateEntry(entry, value, now).then((_) => posPut(true));
+        return _replaceEntry(info, value, now).then((_) => posPut(true));
       }
     });
   }
@@ -413,19 +423,19 @@ class GenericCache<T> implements Cache<T> {
     final now = clock.now();
     // #region Statistics
     Stopwatch? watch;
-    Future<CacheEntry?> Function(CacheEntry? entry) posGet =
-        (CacheEntry? entry) => Future.value(entry);
+    Future<CacheInfo?> Function(CacheInfo? info) posGet =
+        (CacheInfo? info) => Future.value(info);
     Future<bool> Function(bool ok) posPut = (bool ok) => Future<bool>.value(ok);
     if (statsEnabled) {
       watch = clock.stopwatch()..start();
-      posGet = (CacheEntry? entry) {
-        if (entry == null || entry.isExpired(now)) {
+      posGet = (CacheInfo? info) {
+        if (info == null || info.isExpired(now)) {
           stats.increaseMisses();
         } else {
           stats.increaseGets();
         }
 
-        return Future.value(entry);
+        return Future.value(info);
       };
       posPut = (bool ok) {
         if (ok) {
@@ -442,16 +452,16 @@ class GenericCache<T> implements Cache<T> {
     // #endregion
 
     // Try to get the entry from the cache
-    return _getStorageEntry(key).then(posGet).then((entry) {
-      final expired = entry != null && entry.isExpired(now);
+    return _getStorageInfo(key).then(posGet).then((info) {
+      final expired = info != null && info.isExpired(now);
 
       // If the entry exists on cache but is already expired we remove it first
       final pre = expired
-          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
+          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, info))
           : Future<void>.value();
 
       // If the entry is expired or non existent
-      if (entry == null || expired) {
+      if (info == null || expired) {
         return pre
             .then((_) =>
                 _newEntry(_entryBuilder(key, value, now, delegate: delegate)))
@@ -477,21 +487,21 @@ class GenericCache<T> implements Cache<T> {
   Future<void> _removeEntryByKey(String key, DateTime now,
       {bool evicted = false}) {
     // Try to get the entry from the cache
-    return _getStorageEntry(key).then((entry) {
-      if (entry != null) {
+    return _getStorageInfo(key).then((info) {
+      if (info != null) {
         // The entry exists on cache
         // Let's check if it is expired
-        if (entry.isExpired(now)) {
+        if (info.isExpired(now)) {
           // If expired let's remove from cache and send an expired event
           return _removeStorageEntry(
-              key, CacheEntryExpiredEvent<T>(this, entry));
+              key, CacheEntryExpiredEvent<T>(this, info));
         } else {
           // If not expired let's remove and send and removed event
           return _removeStorageEntry(
               key,
               evicted
-                  ? CacheEntryEvictedEvent<T>(this, entry)
-                  : CacheEntryRemovedEvent<T>(this, entry));
+                  ? CacheEntryEvictedEvent<T>(this, info)
+                  : CacheEntryRemovedEvent<T>(this, info));
         }
       }
 
@@ -567,7 +577,8 @@ class GenericCache<T> implements Cache<T> {
 
       // If the entry exists on cache but is already expired we remove it first
       final pre = expired
-          ? _removeStorageEntry(key, CacheEntryExpiredEvent<T>(this, entry))
+          ? _removeStorageEntry(
+              key, CacheEntryExpiredEvent<T>(this, entry.info))
           : Future.value();
 
       // If the entry is expired or non existent
@@ -577,8 +588,8 @@ class GenericCache<T> implements Cache<T> {
                 .then((bool ok) => posPut(ok, null)));
       } else {
         return pre
-            .then((_) => _updateEntry(entry, value, now))
-            .then((value) => posPut(true, value));
+            .then((_) => _replaceEntry(entry.info, value, now))
+            .then((_) => posPut(true, entry.value));
       }
     });
   }
@@ -628,13 +639,13 @@ class GenericCache<T> implements Cache<T> {
           // If expired let's remove from cache, send an expired event and return
           // null
           return _removeStorageEntry(
-                  key, CacheEntryExpiredEvent<T>(this, entry))
+                  key, CacheEntryExpiredEvent<T>(this, entry.info))
               .then((_) => posRemove(entry));
         } else {
           // If not expired let's remove from cache, send a removed event and
           // return the value
           return _removeStorageEntry(
-                  key, CacheEntryRemovedEvent<T>(this, entry))
+                  key, CacheEntryRemovedEvent<T>(this, entry.info))
               .then((_) => posRemove(entry));
         }
       }

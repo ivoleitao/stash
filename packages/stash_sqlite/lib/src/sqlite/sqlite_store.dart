@@ -58,7 +58,7 @@ class SqliteStore<I extends Info, E extends Entry<I>>
   }
 
   @override
-  Future<I> getInfo(String name, String key) {
+  Future<I?> getInfo(String name, String key) {
     return _adapter.dao.getInfo(name, key);
   }
 
