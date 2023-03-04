@@ -37,6 +37,23 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
   @override
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
+  /// Reads a [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  @protected
+  I _readInfo(Map<String, dynamic> value);
+
+  /// Retrieves a [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  I? _getInfoFromValue(Map<String, dynamic>? value) {
+    return value != null ? _readInfo(value) : null;
+  }
+
   /// Reads a [Entry] from a json map
   ///
   /// * [value]: The json map
@@ -56,17 +73,6 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
   E? _getEntryFromValue(Map<String, dynamic>? value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return value != null ? _readEntry(value, fromEncodable) : null;
-  }
-
-  /// Retrieves a [Info] from a json map
-  ///
-  /// * [value]: The json map
-  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
-  ///
-  ///  Returns the corresponding [Info]
-  I? _getInfoFromValue(Map<String, dynamic>? value,
-      dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return _getEntryFromValue(value, fromEncodable)?.info;
   }
 
   /// Gets an [Entry] by key
@@ -92,8 +98,7 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
   @override
   Future<Iterable<I>> infos(String name) => _adapter
       .partitionValues(name)
-      .then((values) =>
-          values.map((value) => _getInfoFromValue(value, decoder(name))))
+      .then((values) => values.map((value) => _getInfoFromValue(value)))
       .then((values) => values.whereType<I>());
 
   @override
@@ -107,16 +112,25 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
   Future<bool> containsKey(String name, String key) =>
       _adapter.exists(name, key);
 
+  /// Gets an [Info] by key
+  ///
+  /// * [name]: The store name
+  /// * [key]: The key
+  ///
+  ///  Returns the corresponding [Info]
+  Future<I?> _getInfoFromStore(String name, String key) => _adapter
+      .partitionValue(name, key)
+      .then((value) => _getInfoFromValue(value));
+
   @override
   Future<I?> getInfo(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.info);
+    return _getInfoFromStore(name, key);
   }
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _adapter.partitionValues(name, keys: keys).then((records) => records
-        .map((record) => _getEntryFromValue(record, decoder(name))?.info)
-        .toList());
+    return _adapter.partitionValues(name, keys: keys).then((records) =>
+        records.map((record) => _getInfoFromValue(record)).toList());
   }
 
   /// Checks if the [value] is one of the base datatypes supported json mpas
@@ -200,6 +214,18 @@ class SharedPreferencesVaultStore
   SharedPreferencesVaultStore(super.adapter);
 
   @override
+  VaultInfo _readInfo(Map<String, dynamic> value) {
+    return VaultInfo(
+        value['key'] as String, DateTime.parse(value['creationTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String));
+  }
+
+  @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loaded(
@@ -234,6 +260,21 @@ class SharedPreferencesCacheStore
   ///
   /// * [_adapter]: The sembast store adapter
   SharedPreferencesCacheStore(super.adapter);
+
+  @override
+  CacheInfo _readInfo(Map<String, dynamic> value) {
+    return CacheInfo(
+        value['key'] as String,
+        DateTime.parse(value['creationTime'] as String),
+        DateTime.parse(value['expiryTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String),
+        hitCount: value['hitCount'] as int?);
+  }
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
