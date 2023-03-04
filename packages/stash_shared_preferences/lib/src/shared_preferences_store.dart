@@ -258,7 +258,7 @@ class SharedPreferencesCacheStore
     implements CacheStore {
   /// Builds a [SharedPreferencesCacheStore].
   ///
-  /// * [_adapter]: The sembast store adapter
+  /// * [_adapter]: The shared_preferences store adapter
   SharedPreferencesCacheStore(super.adapter);
 
   @override
