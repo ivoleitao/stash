@@ -33,6 +33,14 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   @override
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
+  /// Reads a [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  @protected
+  I _readInfo(Map<String, dynamic> value);
+
   /// Reads a [Entry] from a json map
   ///
   /// * [value]: The json map
@@ -71,6 +79,17 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
     return Future<E?>.value();
   }
 
+  /// Gets a [Info] from the provided [BoxBase]
+  ///
+  /// * [name]: The partition name
+  /// * [slot]: The box
+  /// * [key]: The key
+  ///
+  /// Returns a [Entry]
+  Future<I?> _boxInfo(String name, T slot, String key) =>
+      _adapter.boxValue(slot, key).then((value) =>
+          value != null ? _readInfo(value.cast<String, dynamic>()) : null);
+
   /// Returns the box [Info] for the specified [key].
   ///
   /// * [name]: The partition name
@@ -78,7 +97,13 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   ///
   /// Returns a [Info]
   Future<I?> _getInfo(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.info);
+    final box = _adapter.box(name);
+
+    if (box != null) {
+      return _boxInfo(name, box, key);
+    }
+
+    return Future<I?>.value();
   }
 
   /// Returns a [Iterable] over all the [Info]s for the keys requested
@@ -231,6 +256,18 @@ class HiveVaultStore<T extends BoxBase<Map>>
   HiveVaultStore(super.adapter);
 
   @override
+  VaultInfo _readInfo(Map<String, dynamic> value) {
+    return VaultInfo(
+        value['key'] as String, DateTime.parse(value['creationTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String));
+  }
+
+  @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loaded(
@@ -265,6 +302,21 @@ class HiveCacheStore<T extends BoxBase<Map>>
   ///
   /// * [adapter]: The hive store adapter
   HiveCacheStore(super.adapter);
+
+  @override
+  CacheInfo _readInfo(Map<String, dynamic> value) {
+    return CacheInfo(
+        value['key'] as String,
+        DateTime.parse(value['creationTime'] as String),
+        DateTime.parse(value['expiryTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String),
+        hitCount: value['hitCount'] as int?);
+  }
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
