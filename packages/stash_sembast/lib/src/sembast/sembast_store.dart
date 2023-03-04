@@ -30,6 +30,23 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   @override
   Future<Iterable<String>> keys(String name) => _adapter.keys(name);
 
+  /// Reads a [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  @protected
+  I _readInfo(Map<String, dynamic> value);
+
+  /// Retrieves a [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  I? _getInfoFromValue(Map<String, dynamic>? value) {
+    return value != null ? _readInfo(value) : null;
+  }
+
   /// Reads a [Entry] from a json map
   ///
   /// * [value]: The json map
@@ -51,17 +68,6 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
     return value != null ? _readEntry(value, fromEncodable) : null;
   }
 
-  /// Retrieves a [Info] from a json map
-  ///
-  /// * [value]: The json map
-  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
-  ///
-  ///  Returns the corresponding [Info]
-  I? _getInfoFromValue(Map<String, dynamic> value,
-      dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return _getEntryFromValue(value, fromEncodable)?.info;
-  }
-
   /// Gets an [Entry] by key
   ///
   /// * [name]: The store name
@@ -69,7 +75,7 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   ///
   ///  Returns the corresponding [Entry]
   Future<E?> _getEntryFromStore(String name, String key) => _adapter
-      .getByKey(name, key)
+      .partitionValue(name, key)
       .then((value) => _getEntryFromValue(value, decoder(name)));
 
   /// Returns the [Entry] for the named value specified [key].
@@ -87,39 +93,47 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   /// * [name]: The store name
   ///
   ///  Returns the list of [RecordSnapshot]'s by cache name
-  Future<List<RecordSnapshot<String, Map<String, dynamic>>>> _getRecords(
+  Future<List<RecordSnapshot<String, Map<String, dynamic>>>> _partitionRecords(
       String name) {
     return _adapter.find(name);
   }
 
   @override
   Future<Iterable<I>> infos(String name) =>
-      _getRecords(name).then((records) => records
-          .map((record) => _getInfoFromValue(record.value, decoder(name)))
+      _partitionRecords(name).then((records) => records
+          .map((record) => _getInfoFromValue(record.value))
           .map((info) => info!)
           .toList());
 
   @override
-  Future<Iterable<E>> values(String name) =>
-      _getRecords(name).then((records) => records
-          .map((record) => _getEntryFromValue(record.value, decoder(name)))
-          .map((entry) => entry!)
-          .toList());
+  Future<Iterable<E>> values(String name) => _partitionRecords(name)
+      .then((records) => records
+          .map((record) => _getEntryFromValue(record.value, decoder(name))))
+      .then((values) => values.whereType<E>());
 
   @override
   Future<bool> containsKey(String name, String key) =>
       _adapter.exists(name, key);
 
+  /// Gets an [Info] by key
+  ///
+  /// * [name]: The store name
+  /// * [key]: The key
+  ///
+  ///  Returns the corresponding [Info]
+  Future<I?> _getInfoFromStore(String name, String key) => _adapter
+      .partitionValue(name, key)
+      .then((value) => _getInfoFromValue(value));
+
   @override
   Future<I?> getInfo(String name, String key) {
-    return _getEntry(name, key).then((entry) => entry?.info);
+    return _getInfoFromStore(name, key);
   }
 
   @override
   Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _adapter.getByKeys(name, keys).then((records) => records
-        .map((record) => _getEntryFromValue(record, decoder(name))?.info)
-        .toList());
+    return _adapter.getByKeys(name, keys).then((records) =>
+        records.map((record) => _getInfoFromValue(record)).toList());
   }
 
   /// Checks if the [value] is one of the base datatypes supported by Sembast
@@ -144,7 +158,7 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
     return value.toJson();
   }
 
-  /// Returns the json representation of a [Entry]
+  /// Returns the json representation of an [Entry]
   ///
   /// * [entry]: The entry
   ///
@@ -204,6 +218,18 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry>
   SembastVaultStore(super.adapter);
 
   @override
+  VaultInfo _readInfo(Map<String, dynamic> value) {
+    return VaultInfo(
+        value['key'] as String, DateTime.parse(value['creationTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String));
+  }
+
+  @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loaded(
@@ -226,7 +252,7 @@ class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry>
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': _toJsonValue(entry.value),
+      'value': _toJsonValue(entry.value)
     };
   }
 }
@@ -237,6 +263,21 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry>
   ///
   /// * [_adapter]: The sembast store adapter
   SembastCacheStore(super.adapter);
+
+  @override
+  CacheInfo _readInfo(Map<String, dynamic> value) {
+    return CacheInfo(
+        value['key'] as String,
+        DateTime.parse(value['creationTime'] as String),
+        DateTime.parse(value['expiryTime'] as String),
+        accessTime: value['accessTime'] == null
+            ? null
+            : DateTime.parse(value['accessTime'] as String),
+        updateTime: value['updateTime'] == null
+            ? null
+            : DateTime.parse(value['updateTime'] as String),
+        hitCount: value['hitCount'] as int?);
+  }
 
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
@@ -265,7 +306,7 @@ class SembastCacheStore extends SembastStore<CacheInfo, CacheEntry>
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': _toJsonValue(entry.value),
+      'value': _toJsonValue(entry.value)
     };
   }
 }

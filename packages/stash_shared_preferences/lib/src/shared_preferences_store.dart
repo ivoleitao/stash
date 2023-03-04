@@ -133,7 +133,7 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
         records.map((record) => _getInfoFromValue(record)).toList());
   }
 
-  /// Checks if the [value] is one of the base datatypes supported json mpas
+  /// Checks if the [value] is one of the base datatypes supported by json maps
   /// either returning that value if it is or invoking toJson to transform it
   /// in a supported value
   ///

@@ -90,7 +90,7 @@ abstract class SembastAdapter {
   /// * [key]: The key
   ///
   /// Returns the key json map
-  Future<Map<String, dynamic>?> getByKey(String name, String key) {
+  Future<Map<String, dynamic>?> partitionValue(String name, String key) {
     final partition = _partition(name);
 
     if (partition != null) {
