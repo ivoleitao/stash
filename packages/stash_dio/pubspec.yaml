@@ -14,7 +14,7 @@ dependencies:
   equatable: ^2.0.5
   http_parser: ^4.0.2
   crypto: ^3.0.2
-  dio: ^5.0.0
+  dio: ^5.0.1
   stash: ^4.5.2
 dev_dependencies:
   # Flutter shared dependencies
