@@ -1364,9 +1364,9 @@ void testCache<T extends Store<CacheInfo, CacheEntry>>(
     CacheTestContextBuilder<T> newCacheTestContext,
     {Map<TypeTest, Function>? types,
     Set<CacheTest> cacheTests = _cacheTests}) {
-  for (var entry in (types ?? _typeTests).entries) {
-    test('Cache: ${entry.key.name}', () async {
-      await testCacheWith<T>(newCacheTestContext(entry.value()),
+  for (var typeTest in (types ?? _typeTests).entries) {
+    test('Cache: ${typeTest.key.name}', () async {
+      await testCacheWith<T>(newCacheTestContext(typeTest.value()),
           cacheTests: cacheTests);
     });
   }

@@ -704,9 +704,9 @@ void testVault<T extends Store<VaultInfo, VaultEntry>>(
     VaultTestContextBuilder<T> newVaultTestContext,
     {Map<TypeTest, Function>? types,
     Set<VaultTest> vaultTests = _vaultTests}) {
-  for (var entry in (types ?? _typeTests).entries) {
-    test('Vault: ${entry.key.name}', () async {
-      await testVaultWith<T>(newVaultTestContext(entry.value()),
+  for (var typeTest in (types ?? _typeTests).entries) {
+    test('Vault: ${typeTest.key.name}', () async {
+      await testVaultWith<T>(newVaultTestContext(typeTest.value()),
           vaultTests: vaultTests);
     });
   }

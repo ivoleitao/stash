@@ -24,6 +24,6 @@ class CacheStoreContext extends CacheTestContext<HiveCacheStore> {
 void main() async {
   testStore((generator) => VaultStoreContext(generator));
   testStore((generator) => CacheStoreContext(generator));
-  testCache((generator) => CacheStoreContext(generator));
   testVault((generator) => VaultStoreContext(generator));
+  testCache((generator) => CacheStoreContext(generator));
 }
