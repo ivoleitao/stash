@@ -11,6 +11,9 @@ ide:
 command:
   version:
     branch: develop     
+  bootstrap:
+    hooks:
+      post: melos generate 
 
 scripts:
   get:
@@ -151,4 +154,4 @@ scripts:
       Uploads the code coverage to codecov.
 
   postbootstrap: |
-      melos run generate 
+    melos run generate 
