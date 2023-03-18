@@ -9,8 +9,6 @@ ide:
     false
 
 command:
-  bootstrap:
-    usePubspecOverrides: true
   version:
     branch: develop     
 
