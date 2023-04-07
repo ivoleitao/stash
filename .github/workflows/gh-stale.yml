@@ -7,7 +7,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v7
+      - uses: actions/stale@v8
         with:
           stale-issue-message: 'Issue had no activity in the last 30 days. Remove stale label or comment or this will be closed in 5 days.'
           stale-pr-message: 'PR had no activity in the last 45 days. Remove stale label or comment or this will be closed in 10 days.'
