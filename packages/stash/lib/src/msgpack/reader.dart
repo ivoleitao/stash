@@ -4,6 +4,15 @@ import 'package:stash/src/api/codec/bytes_reader.dart';
 import 'package:stash/src/msgpack/extension.dart';
 import 'package:stash/src/msgpack/types.dart' as types;
 
+/// The reader mode
+enum MsgPackReaderMode {
+  /// Normal mode
+  standard,
+
+  /// Enforces Json compatible datatypes
+  json
+}
+
 /// Error thrown by MessagePack serialization if an object cannot be deserialized.
 ///
 /// The [unsupportedType] field holds that object that failed to be deserialized.
@@ -41,7 +50,10 @@ class MsgPackUnsupportedTypeError extends Error {
 /// dart package or similar. Note that what is deserialized is the [Map] representation of the object,
 /// therefore this method should be provided in some form.
 class MsgPackReader extends BytesReader {
-  // Implementation of the default decoder returns the Map<String, dynamic> without trying to convert it to a proper object
+  /// The reader mode
+  final MsgPackReaderMode mode;
+
+  /// Implementation of the default decoder returns the Map<String, dynamic> without trying to convert it to a proper object
   static dynamic _defaultFromEncodable(Map<String, dynamic> encodable) =>
       encodable;
 
@@ -57,16 +69,17 @@ class MsgPackReader extends BytesReader {
   /// * [fromEncodable]: A custom function the converts the deserialized `Map<String, dynamic>` representation of the object into the object
   /// * [extensions]: A optional list of extensions to use
   MsgPackReader(Uint8List list,
-      {dynamic Function(Map<String, dynamic>)? fromEncodable,
+      {this.mode = MsgPackReaderMode.standard,
+      dynamic Function(Map<String, dynamic>)? fromEncodable,
       List<MsgPackExtension>? extensions})
       : _fromEncodable = fromEncodable ?? _defaultFromEncodable,
         _extensions = [const DateTimeExtension(), ...?extensions],
         super(list);
 
-  /// Reads the [String] key of the encodable [Map] representation of the object
+  /// Reads a [String]
   ///
-  /// Returns the key
-  String _readEncodableKey() {
+  /// Returns the string
+  String _readString() {
     final u = readUInt8();
 
     if ((u & 0xE0) == 0xA0) {
@@ -85,30 +98,13 @@ class MsgPackReader extends BytesReader {
   /// * [length]: The length of the encodable representation
   ///
   /// Returns the Map<String, dynamic> representation of the encoded object
-  Map<String, dynamic> _readEncodable(int length) {
+  Map<String, dynamic> readJsonMap(int length) {
     final res = <String, dynamic>{};
     while (length > 0) {
-      res[_readEncodableKey()] = read();
+      res[_readString()] = read();
       length--;
     }
     return res;
-  }
-
-  /// Reads the encodable representation of the object
-  ///
-  /// Returns the Map<String, dynamic> representation of the encoded object
-  Map<String, dynamic> readEncodable() {
-    final u = readUInt8();
-
-    if ((u & 0xF0) == 0x80) {
-      return _readEncodable(u & 0xF);
-    } else if (u == types.map16) {
-      return _readEncodable(readUInt16());
-    } else if (u == types.map32) {
-      return _readEncodable(readUInt32());
-    }
-
-    throw MsgPackUnsupportedTypeError(u);
   }
 
   /// Reads a extension object from the byte buffer
@@ -121,8 +117,8 @@ class MsgPackReader extends BytesReader {
     final bytes = readBuffer(length);
 
     if (type == 0) {
-      var reader = MsgPackReader(bytes);
-      return _fromEncodable(reader.readEncodable());
+      var reader = MsgPackReader(bytes, mode: MsgPackReaderMode.json);
+      return _fromEncodable(reader.read());
     }
 
     for (var ext in _extensions) {
@@ -133,6 +129,18 @@ class MsgPackReader extends BytesReader {
     }
 
     return null;
+  }
+
+  /// Reads a [Map] from the backing buffer
+  ///
+  /// * [length]: The number of bytes
+  dynamic _readMap(int length) {
+    switch (mode) {
+      case MsgPackReaderMode.json:
+        return readJsonMap(length);
+      default:
+        return readStandardMap(length);
+    }
   }
 
   @override
@@ -148,7 +156,7 @@ class MsgPackReader extends BytesReader {
     } else if ((u & 0xF0) == 0x90) {
       return readArray(u & 0xF);
     } else if ((u & 0xF0) == 0x80) {
-      return readMap(u & 0xF);
+      return _readMap(u & 0xF);
     }
     switch (u) {
       case types.nil:
@@ -210,9 +218,9 @@ class MsgPackReader extends BytesReader {
       case types.array32:
         return readArray(readUInt32());
       case types.map16:
-        return readMap(readUInt16());
+        return _readMap(readUInt16());
       case types.map32:
-        return readMap(readUInt32());
+        return _readMap(readUInt32());
       default:
         throw MsgPackUnsupportedTypeError(u);
     }

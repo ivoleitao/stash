@@ -1,4 +1,6 @@
 //import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
 
@@ -133,26 +135,6 @@ abstract class SharedPreferencesStore<I extends Info, E extends Entry<I>>
         records.map((record) => _getInfoFromValue(record)).toList());
   }
 
-  /// Checks if the [value] is one of the base datatypes supported by json maps
-  /// either returning that value if it is or invoking toJson to transform it
-  /// in a supported value
-  ///
-  /// * [value]: the value to convert
-  @protected
-  dynamic _toJsonValue(dynamic value) {
-    if (value == null ||
-        value is bool ||
-        value is int ||
-        value is double ||
-        value is String ||
-        value is List ||
-        value is Map) {
-      return value;
-    }
-
-    return value.toJson();
-  }
-
   /// Returns the json representation of an [Entry]
   ///
   /// * [entry]: The entry
@@ -210,8 +192,9 @@ class SharedPreferencesVaultStore
     implements VaultStore {
   /// Builds a [SharedPreferencesVaultStore].
   ///
-  /// * [_adapter]: The shared preferences store adapter
-  SharedPreferencesVaultStore(super.adapter);
+  /// * [adapter]: The shared preferences store adapter
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  SharedPreferencesVaultStore(super.adapter, {super.codec});
 
   @override
   VaultInfo _readInfo(Map<String, dynamic> value) {
@@ -228,11 +211,11 @@ class SharedPreferencesVaultStore
   @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final data = (value['value'] as List).cast<int>();
     return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
-        decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        valueDecoder(Uint8List.fromList(data), fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -248,7 +231,7 @@ class SharedPreferencesVaultStore
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': _toJsonValue(entry.value)
+      'value': valueEncoder(entry.value)
     };
   }
 }
@@ -258,8 +241,9 @@ class SharedPreferencesCacheStore
     implements CacheStore {
   /// Builds a [SharedPreferencesCacheStore].
   ///
-  /// * [_adapter]: The shared_preferences store adapter
-  SharedPreferencesCacheStore(super.adapter);
+  /// * [adapter]: The shared_preferences store adapter
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  SharedPreferencesCacheStore(super.adapter, {super.codec});
 
   @override
   CacheInfo _readInfo(Map<String, dynamic> value) {
@@ -279,12 +263,12 @@ class SharedPreferencesCacheStore
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final data = (value['value'] as List).cast<int>();
     return CacheEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),
-        decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        valueDecoder(Uint8List.fromList(data), fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -303,7 +287,7 @@ class SharedPreferencesCacheStore
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': _toJsonValue(entry.value)
+      'value': valueEncoder(entry.value)
     };
   }
 }

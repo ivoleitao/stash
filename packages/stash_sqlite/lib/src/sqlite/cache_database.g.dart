@@ -314,6 +314,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
   final Value<DateTime> updateTime;
   final Value<int> hitCount;
   final Value<Uint8List> value;
+  final Value<int> rowid;
   const CacheTableCompanion({
     this.name = const Value.absent(),
     this.key = const Value.absent(),
@@ -323,6 +324,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     this.updateTime = const Value.absent(),
     this.hitCount = const Value.absent(),
     this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   CacheTableCompanion.insert({
     required String name,
@@ -333,6 +335,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     required DateTime updateTime,
     required int hitCount,
     required Uint8List value,
+    this.rowid = const Value.absent(),
   })  : name = Value(name),
         key = Value(key),
         creationTime = Value(creationTime),
@@ -350,6 +353,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     Expression<String>? updateTime,
     Expression<int>? hitCount,
     Expression<Uint8List>? value,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (name != null) 'name': name,
@@ -360,6 +364,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
       if (updateTime != null) 'update_time': updateTime,
       if (hitCount != null) 'hit_count': hitCount,
       if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -371,7 +376,8 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
       Value<DateTime>? accessTime,
       Value<DateTime>? updateTime,
       Value<int>? hitCount,
-      Value<Uint8List>? value}) {
+      Value<Uint8List>? value,
+      Value<int>? rowid}) {
     return CacheTableCompanion(
       name: name ?? this.name,
       key: key ?? this.key,
@@ -381,6 +387,7 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
       updateTime: updateTime ?? this.updateTime,
       hitCount: hitCount ?? this.hitCount,
       value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -416,6 +423,9 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     if (value.present) {
       map['value'] = Variable<Uint8List>(value.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -429,7 +439,8 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
           ..write('accessTime: $accessTime, ')
           ..write('updateTime: $updateTime, ')
           ..write('hitCount: $hitCount, ')
-          ..write('value: $value')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }

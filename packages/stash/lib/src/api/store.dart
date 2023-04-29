@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '../msgpack/codec.dart';
@@ -118,6 +120,34 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
     return _fromEncodables[name];
   }
 
+  /// Encodes a value into a list of bytes
+  ///
+  /// * [value]: The value to encode
+  ///
+  /// Returns the value encoded as a list of bytes
+  @protected
+  Uint8List valueEncoder(dynamic value) {
+    final writer = codec.encoder();
+
+    writer.write(value);
+
+    return writer.takeBytes();
+  }
+
+  /// Returns a value decoded from the provided list of bytes
+  ///
+  /// * [bytes]: The list of bytes
+  /// * [fromEncodable]: An function that converts between the Map representation and the object
+  ///
+  /// Returns the decoded value from the list of bytes
+  @protected
+  dynamic valueDecoder(
+      Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
+    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
+
+    return reader.read();
+  }
+
   /// Decodes a value
   ///
   /// * [value]: The value to decode
@@ -126,6 +156,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   /// * [defaultFn]: A optional function that obtains the value to use in
   /// case there is no `fromEncodable` function for the partition
   @protected
+  @Deprecated('Use valueEncoder and valueDecoder')
   dynamic decodeValue(
       dynamic value, dynamic Function(Map<String, dynamic>)? fromEncodable,
       {dynamic Function(dynamic)? mapFn, dynamic Function()? defaultFn}) {

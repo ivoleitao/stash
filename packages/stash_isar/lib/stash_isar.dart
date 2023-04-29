@@ -26,8 +26,7 @@ Future<IsarVaultStore> newIsarLocalVaultStore(
     bool? relaxedDurability,
     CompactCondition? compactOnLaunch,
     bool? inspector}) {
-  return IsarVaultAdapter.build(
-          path: path ?? Directory.systemTemp.path,
+  return IsarVaultAdapter.build(path ?? Directory.systemTemp.path,
           maxSizeMib: maxSizeMib,
           relaxedDurability: relaxedDurability,
           compactOnLaunch: compactOnLaunch,
@@ -50,8 +49,7 @@ Future<IsarCacheStore> newIsarLocalCacheStore(
     bool? relaxedDurability,
     CompactCondition? compactOnLaunch,
     bool? inspector}) {
-  return IsarCacheAdapter.build(
-          path: path ?? Directory.systemTemp.path,
+  return IsarCacheAdapter.build(path ?? Directory.systemTemp.path,
           maxSizeMib: maxSizeMib,
           relaxedDurability: relaxedDurability,
           compactOnLaunch: compactOnLaunch,

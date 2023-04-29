@@ -13,7 +13,7 @@ dependencies:
   # Flutter shared dependencies
   meta: ^1.8.0
   # Other dependencies
-  isar: ^3.0.5
+  isar: ^3.1.0+1
   stash: ^4.5.2
 dev_dependencies:
   # Flutter shared dependencies

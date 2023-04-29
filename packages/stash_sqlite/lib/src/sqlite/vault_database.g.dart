@@ -250,6 +250,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
   final Value<DateTime> accessTime;
   final Value<DateTime> updateTime;
   final Value<Uint8List> value;
+  final Value<int> rowid;
   const VaultTableCompanion({
     this.name = const Value.absent(),
     this.key = const Value.absent(),
@@ -257,6 +258,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
     this.accessTime = const Value.absent(),
     this.updateTime = const Value.absent(),
     this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   VaultTableCompanion.insert({
     required String name,
@@ -265,6 +267,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
     required DateTime accessTime,
     required DateTime updateTime,
     required Uint8List value,
+    this.rowid = const Value.absent(),
   })  : name = Value(name),
         key = Value(key),
         creationTime = Value(creationTime),
@@ -278,6 +281,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
     Expression<String>? accessTime,
     Expression<String>? updateTime,
     Expression<Uint8List>? value,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (name != null) 'name': name,
@@ -286,6 +290,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
       if (accessTime != null) 'access_time': accessTime,
       if (updateTime != null) 'update_time': updateTime,
       if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -295,7 +300,8 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
       Value<DateTime>? creationTime,
       Value<DateTime>? accessTime,
       Value<DateTime>? updateTime,
-      Value<Uint8List>? value}) {
+      Value<Uint8List>? value,
+      Value<int>? rowid}) {
     return VaultTableCompanion(
       name: name ?? this.name,
       key: key ?? this.key,
@@ -303,6 +309,7 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
       accessTime: accessTime ?? this.accessTime,
       updateTime: updateTime ?? this.updateTime,
       value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -331,6 +338,9 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
     if (value.present) {
       map['value'] = Variable<Uint8List>(value.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -342,7 +352,8 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
           ..write('creationTime: $creationTime, ')
           ..write('accessTime: $accessTime, ')
           ..write('updateTime: $updateTime, ')
-          ..write('value: $value')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
