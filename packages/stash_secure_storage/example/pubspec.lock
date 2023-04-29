@@ -269,14 +269,14 @@ packages:
       path: "../../stash"
       relative: true
     source: path
-    version: "4.5.2"
+    version: "4.5.3"
   stash_secure_storage:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "4.6.1"
+    version: "4.6.2"
   stream_channel:
     dependency: transitive
     description:
