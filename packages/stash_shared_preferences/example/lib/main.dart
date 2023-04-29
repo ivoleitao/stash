@@ -18,7 +18,7 @@ class Counter {
       value: json['value'] as int,
       updateTime: DateTime.parse(json['timestamp'] as String));
 
-  /// Creates a json map from a [Task]
+  /// Creates a json map
   Map<String, dynamic> toJson() => <String, dynamic>{
         'value': value,
         'timestamp': updateTime.toIso8601String()

@@ -369,49 +369,12 @@ Map<TypeTest, ValueGenerator Function()> defaultStoreTypeTests = {
       TypeTest.classOfClassOfMapStringString.generator,
 };
 
-/// Json store type tests
-@Deprecated('Not needed anymore')
-Map<TypeTest, ValueGenerator Function()> jsonStoreTypeTests = {
-  TypeTest.bool: TypeTest.bool.generator,
-  TypeTest.int: TypeTest.int.generator,
-  TypeTest.double: TypeTest.double.generator,
-  TypeTest.string: TypeTest.string.generator,
-  TypeTest.listOfBool: TypeTest.listOfBool.generator,
-  TypeTest.listOfInt: TypeTest.listOfInt.generator,
-  TypeTest.listOfDouble: TypeTest.listOfDouble.generator,
-  TypeTest.listOfString: TypeTest.listOfString.generator,
-  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
-  TypeTest.classOfBool: TypeTest.classOfBool.generator,
-  TypeTest.classOfInt: TypeTest.classOfInt.generator,
-  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
-  TypeTest.classOfString: TypeTest.classOfString.generator,
-  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
-  TypeTest.classOfListInt: TypeTest.classOfListInt.generator,
-  TypeTest.classOfListDouble: TypeTest.classOfListDouble.generator,
-  TypeTest.classOfListString: TypeTest.classOfListString.generator,
-  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
-};
-
 /// Default stash type tests
 Map<TypeTest, ValueGenerator Function()> defaultStashTypeTests = {
   TypeTest.bool: TypeTest.bool.generator,
   TypeTest.listOfInt: TypeTest.listOfInt.generator,
   TypeTest.mapOfDoubleDouble: TypeTest.mapOfDoubleDouble.generator,
   TypeTest.classOfString: TypeTest.classOfString.generator,
-  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
-  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
-  TypeTest.classOfClassOfString: TypeTest.classOfClassOfString.generator,
-  TypeTest.classOfClassOfListBool: TypeTest.classOfClassOfListBool.generator,
-  TypeTest.classOfClassOfMapStringString:
-      TypeTest.classOfClassOfMapStringString.generator,
-};
-
-/// Json stash type tests
-Map<TypeTest, ValueGenerator Function()> jsonStashTypeTests = {
-  TypeTest.bool: TypeTest.bool.generator,
-  TypeTest.listOfInt: TypeTest.listOfInt.generator,
-  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
-  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
   TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
   TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
   TypeTest.classOfClassOfString: TypeTest.classOfClassOfString.generator,
