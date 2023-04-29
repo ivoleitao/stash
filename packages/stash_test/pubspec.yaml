@@ -1,5 +1,5 @@
 name: stash_test
-version: 4.5.2
+version: 4.5.3
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
@@ -17,6 +17,6 @@ dependencies:
   # Other dependencies
   equatable: ^2.0.5
   time: ^2.1.3
-  stash: ^4.5.2
+  stash: ^4.5.3
 dev_dependencies:
   lints: ^2.0.1

@@ -1,5 +1,5 @@
 name: stash_dio
-version: 4.6.2
+version: 4.6.3
 description: >-
   Dio extension for the stash API. Provides an interceptor that uses
   stash as a caching layer for Dio
@@ -15,12 +15,12 @@ dependencies:
   http_parser: ^4.0.2
   crypto: ^3.0.2
   dio: ^5.1.1
-  stash: ^4.5.2
+  stash: ^4.5.3
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.21.4
   # Other dependencies
   lints: ^2.0.1
   mocktail: ^0.3.0
-  stash_memory: ^4.5.2
-  stash_file: ^4.5.2
+  stash_memory: ^4.5.3
+  stash_file: ^4.5.3
