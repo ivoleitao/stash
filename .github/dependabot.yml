@@ -4,8 +4,78 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'      
       
   - package-ecosystem: "pub"
-    directory: "/packages"
+    directory: "/packages/stash"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_cbl"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_dio"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_file"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_hive"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_isar"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_memory"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_objectbox"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_secure_storage"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_sembast"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_sembast_web"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_shared_preferences"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_sqlite"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/stash_test"
     schedule:
       interval: "weekly"

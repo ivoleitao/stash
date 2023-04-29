@@ -40,9 +40,7 @@ class SqliteStore<I extends Info, E extends Entry<I>>
   dynamic Function(Uint8List) _valueDecoder(
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     dynamic valueDecoder(Uint8List bytes) {
-      var reader = codec.decoder(bytes, fromEncodable: fromEncodable);
-
-      return reader.read();
+      return decodeBinaryValue(bytes, fromEncodable);
     }
 
     return valueDecoder;
@@ -83,11 +81,7 @@ class SqliteStore<I extends Info, E extends Entry<I>>
   ///
   /// Returns the value encoded as a list of bytes
   Uint8List _valueEncoder(dynamic value) {
-    var writer = codec.encoder();
-
-    writer.write(value);
-
-    return writer.takeBytes();
+    return encodeValue(value);
   }
 
   @override

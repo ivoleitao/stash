@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:isar/isar.dart';
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
@@ -332,8 +330,8 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
   @override
   VaultEntry _readEntry(
       VaultModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return VaultEntry.loaded(model.key, model.creationTime,
-        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
+    return VaultEntry.loaded(
+        model.key, model.creationTime, decodeValue(model.value, fromEncodable),
         accessTime: model.accessTime, updateTime: model.updateTime);
   }
 
@@ -342,7 +340,7 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
     return model ?? VaultModel()
       ..key = entry.key
       ..creationTime = entry.creationTime
-      ..value = valueEncoder(entry.value)
+      ..value = encodeValue(entry.value)
       ..accessTime = entry.accessTime
       ..updateTime = entry.updateTime;
   }
@@ -381,7 +379,7 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
   CacheEntry _readEntry(
       CacheModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loaded(model.key, model.creationTime, model.expiryTime,
-        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
+        decodeValue(model.value, fromEncodable),
         accessTime: model.accessTime,
         updateTime: model.updateTime,
         hitCount: model.hitCount);
@@ -396,6 +394,6 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
       ..accessTime = entry.accessTime
       ..updateTime = entry.updateTime
       ..hitCount = entry.hitCount
-      ..value = valueEncoder(entry.value);
+      ..value = encodeValue(entry.value);
   }
 }

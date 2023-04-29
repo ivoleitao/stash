@@ -1,6 +1,4 @@
 //import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:typed_data';
-
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
 
@@ -211,11 +209,11 @@ class SharedPreferencesVaultStore
   @override
   VaultEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    final data = (value['value'] as List).cast<int>();
     return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
-        valueDecoder(Uint8List.fromList(data), fromEncodable),
+        decodeValue(value['value'], fromEncodable,
+            processor: ValueProcessor.cast),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -231,7 +229,7 @@ class SharedPreferencesVaultStore
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': valueEncoder(entry.value)
+      'value': encodeValue(entry.value)
     };
   }
 }
@@ -263,12 +261,12 @@ class SharedPreferencesCacheStore
   @override
   CacheEntry _readEntry(Map<String, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    final data = (value['value'] as List).cast<int>();
     return CacheEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),
-        valueDecoder(Uint8List.fromList(data), fromEncodable),
+        decodeValue(value['value'], fromEncodable,
+            processor: ValueProcessor.cast),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -287,7 +285,7 @@ class SharedPreferencesCacheStore
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': valueEncoder(entry.value)
+      'value': encodeValue(entry.value)
     };
   }
 }

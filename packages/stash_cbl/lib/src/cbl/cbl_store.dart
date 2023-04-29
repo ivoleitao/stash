@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:cbl/cbl.dart';
 import 'package:stash/stash_api.dart';
 
@@ -169,11 +167,8 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   dynamic _loadValue(DictionaryInterface properties,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    final valueBytes = Uint8List.fromList(
-      properties.array('value')!.toPlainList().cast<int>(),
-    );
-    final reader = codec.decoder(valueBytes, fromEncodable: fromEncodable);
-    return reader.read();
+    return decodeValue(properties.array('value')!.toPlainList(), fromEncodable,
+        processor: ValueProcessor.cast);
   }
 
   /// Writes the entry
@@ -201,9 +196,7 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   /// * [properties]: The properties
   //  * [value]: The value
   void _writeValue(MutableDictionaryInterface properties, dynamic value) {
-    final writer = codec.encoder();
-    writer.write(value);
-    properties.setValue(writer.takeBytes(), key: 'value');
+    properties.setValue(encodeValue(value), key: 'value');
   }
 }
 

@@ -7,6 +7,18 @@ import 'codec/store_codec.dart';
 import 'entry.dart';
 import 'info.dart';
 
+/// Value processor
+enum ValueProcessor {
+  /// No processing
+  none,
+
+  /// Cast to a binary list
+  cast,
+
+  /// Custom
+  custom
+}
+
 /// Store definition
 abstract class Store<I extends Info, E extends Entry<I>> {
   /// Creates a partition
@@ -126,7 +138,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   ///
   /// Returns the value encoded as a list of bytes
   @protected
-  Uint8List valueEncoder(dynamic value) {
+  Uint8List encodeValue(dynamic value) {
     final writer = codec.encoder();
 
     writer.write(value);
@@ -134,43 +146,44 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
     return writer.takeBytes();
   }
 
-  /// Returns a value decoded from the provided list of bytes
+  /// Returns a value decoded from the provided binary value
   ///
   /// * [bytes]: The list of bytes
   /// * [fromEncodable]: An function that converts between the Map representation and the object
   ///
-  /// Returns the decoded value from the list of bytes
+  /// Returns the decoded value from the provided binary value
   @protected
-  dynamic valueDecoder(
+  dynamic decodeBinaryValue(
       Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
+    final reader =
+        codec.decoder(Uint8List.fromList(bytes), fromEncodable: fromEncodable);
 
     return reader.read();
   }
 
-  /// Decodes a value
+  /// Returns a value decoded from the provided value
   ///
-  /// * [value]: The value to decode
-  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
-  /// * [mapFn]: A optional function that maps the value
-  /// * [defaultFn]: A optional function that obtains the value to use in
-  /// case there is no `fromEncodable` function for the partition
+  /// * [bytes]: The list of bytes
+  /// * [fromEncodable]: An function that converts between the Map representation and the object
+  /// * [processor]: The value transformation to apply if any
+  /// * [process]: A transformer function
+  ///
+  /// Returns the decoded value from the provided value
   @protected
-  @Deprecated('Use valueEncoder and valueDecoder')
   dynamic decodeValue(
       dynamic value, dynamic Function(Map<String, dynamic>)? fromEncodable,
-      {dynamic Function(dynamic)? mapFn, dynamic Function()? defaultFn}) {
-    if (value == null) {
-      return null;
+      {ValueProcessor processor = ValueProcessor.none,
+      List<int> Function(dynamic)? process}) {
+    List<int> bytes;
+    if (processor == ValueProcessor.custom && process != null) {
+      bytes = process(value);
+    } else if (processor == ValueProcessor.cast) {
+      bytes = (value as List).cast<int>();
+    } else {
+      bytes = value as List<int>;
     }
 
-    if (fromEncodable != null) {
-      return fromEncodable(mapFn != null ? mapFn(value) : value);
-    } else if (defaultFn != null) {
-      return defaultFn();
-    }
-
-    return value;
+    return decodeBinaryValue(Uint8List.fromList(bytes), fromEncodable);
   }
 
   /// Creates a partition

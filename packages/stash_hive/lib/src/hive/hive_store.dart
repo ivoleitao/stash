@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
@@ -290,7 +288,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
     return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
-        valueDecoder(Uint8List.fromList(value['value']), fromEncodable),
+        decodeValue(value['value'], fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -306,7 +304,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': valueEncoder(entry.value),
+      'value': encodeValue(entry.value),
     };
   }
 }
@@ -342,7 +340,7 @@ class HiveCacheStore<T extends BoxBase<Map>>
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),
-        valueDecoder(Uint8List.fromList(value['value']), fromEncodable),
+        decodeValue(value['value'], fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -361,7 +359,7 @@ class HiveCacheStore<T extends BoxBase<Map>>
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': valueEncoder(entry.value),
+      'value': encodeValue(entry.value),
     };
   }
 }
