@@ -3,79 +3,79 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'      
+      interval: 'daily'      
       
   - package-ecosystem: "pub"
     directory: "/packages/stash"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_cbl"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_dio"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_file"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_hive"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_isar"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_memory"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_objectbox"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_secure_storage"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_sembast"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_sembast_web"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_shared_preferences"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_sqlite"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "pub"
     directory: "/packages/stash_test"
     schedule:
-      interval: "weekly"
+      interval: "daily"
