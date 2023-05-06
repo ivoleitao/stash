@@ -38,10 +38,10 @@ const int uint8 = 0xcc;
 const int uin16 = 0xcd;
 
 /// uint 32
-const int uin32 = 0xce;
+const int uint32 = 0xce;
 
 /// uint64
-const int uin64 = 0xcf;
+const int uint64 = 0xcf;
 
 /// int 8
 const int int8 = 0xd0;

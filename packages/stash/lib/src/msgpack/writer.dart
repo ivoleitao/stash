@@ -135,10 +135,10 @@ class MsgPackWriter extends BytesWriter {
       writeUint8(types.uin16);
       writeUint16(n);
     } else if (n <= 0xFFFFFFFF) {
-      writeUint8(types.uin32);
+      writeUint8(types.uint32);
       writeUint32(n);
     } else {
-      writeUint8(types.uin64);
+      writeUint8(types.uint64);
       writeUint64(n);
     }
   }

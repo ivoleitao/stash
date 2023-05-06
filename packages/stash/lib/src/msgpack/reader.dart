@@ -185,9 +185,9 @@ class MsgPackReader extends BytesReader {
         return readUInt8();
       case types.uin16:
         return readUInt16();
-      case types.uin32:
+      case types.uint32:
         return readUInt32();
-      case types.uin64:
+      case types.uint64:
         return readUInt64();
       case types.int8:
         return readInt8();
