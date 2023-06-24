@@ -14,7 +14,7 @@ dependencies:
   # Other dependencies
   hive: ^2.2.3
   universal_platform: ^1.0.0+1
-  stash: ^4.5.3
+  stash: ^5.0.0
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.1

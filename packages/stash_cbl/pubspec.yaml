@@ -15,7 +15,7 @@ dependencies:
   path: ^1.8.3
   # Other dependencies
   cbl: ^2.1.9
-  stash: ^4.5.3
+  stash: ^5.0.0
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.1
