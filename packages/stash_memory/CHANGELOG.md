@@ -1,3 +1,8 @@
+## 5.0.0
+
+- **BREAKING CHANGE**: Changed minimum sdk version
+- chore: Updated dependencies
+
 ## 4.5.3
 
  - Update a dependency to the latest release.

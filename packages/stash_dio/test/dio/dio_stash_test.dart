@@ -163,8 +163,8 @@ void main() async {
 
     withInterceptor(dio, (builder) => builder..cache('/posts/1', cache));
     _withAnswer(dioAdapterMock, Post._a(), statusCode: 404);
-    expect(
-        _getResponse(dio, '/posts/1'), throwsA(const TypeMatcher<DioError>()));
+    expect(_getResponse(dio, '/posts/1'),
+        throwsA(const TypeMatcher<DioException>()));
   });
 
   test('With a file cache', () async {

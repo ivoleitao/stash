@@ -203,12 +203,10 @@ class CacheInterceptorBuilder {
         final options = response.requestOptions;
         Duration? maxAge;
         DateTime? staleDate;
-        if (maxAge == null) {
-          _tryParseHead(response, (ma, st) {
-            maxAge = ma;
-            staleDate = st != null ? DateTime.now().add(st) : null;
-          });
-        }
+        _tryParseHead(response, (ma, st) {
+          maxAge = ma;
+          staleDate = st != null ? DateTime.now().add(st) : null;
+        });
 
         List<int>? data;
         if (options.responseType == ResponseType.bytes) {
@@ -239,11 +237,11 @@ class CacheInterceptorBuilder {
   /// Intercepts the call triggered upon error and returns if available the
   /// cached response
   ///
-  /// * [e]: The [DioError]
+  /// * [e]: The [DioException]
   /// * [handler]: The [ErrorInterceptorHandler]
   ///
   /// Returns the error
-  void _onError(DioError e, ErrorInterceptorHandler handler) async {
+  void _onError(DioException e, ErrorInterceptorHandler handler) async {
     final cache = _getCache(e.requestOptions.uri);
     if (cache != null) {
       final value = (await cache.get(_getKey(e.requestOptions))) as CacheValue?;

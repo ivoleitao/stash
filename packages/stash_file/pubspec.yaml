@@ -1,5 +1,5 @@
 name: stash_file
-version: 4.5.3
+version: 5.0.0
 description: >-
   File storage extension for the stash API. Provides support to store vaults 
   and caches in the local file system in binary format using the msgpack json format
@@ -8,20 +8,20 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   # Flutter shared dependencies
-  meta: ^1.8.0
+  meta: ^1.9.1
   path: ^1.8.3
   # Other dependencies
-  file: ^6.1.4
+  file: ^7.0.0
   stream_transform: ^2.1.0
   stash: ^4.5.3
 dev_dependencies:
   # Flutter shared dependencies
-  test: ^1.21.4
+  test: ^1.24.1
   # Other dependencies
-  lints: ^2.0.1
+  lints: ^2.1.1
   stash_test: ^4.5.3
-  build_runner: ^2.3.3
+  build_runner: ^2.4.5
