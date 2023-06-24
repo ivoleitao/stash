@@ -1,7 +1,6 @@
-## 5.0.0
+## 5.0.1
 
-- **BREAKING CHANGE**: Changed minimum sdk version
-- chore: Updated dependencies
+ - **CHORE**: Update a dependency to the latest release.
 
 ## 4.6.3
 
@@ -9,7 +8,7 @@
 
 ## 4.6.2
 
- - Update a dependency to the latest release.
+ - **CHORE**: Update a dependency to the latest release.
 
 ## 4.6.1
 
