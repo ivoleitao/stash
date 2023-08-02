@@ -21,6 +21,6 @@ dev_dependencies:
   test: ^1.24.1
   # Other dependencies
   lints: ^2.1.1
-  mocktail: ^0.3.0
+  mocktail: ">=0.3.0 <2.0.0"
   stash_memory: ^5.0.0
   stash_file: ^5.0.0
