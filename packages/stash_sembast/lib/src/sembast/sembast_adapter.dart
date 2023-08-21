@@ -235,18 +235,18 @@ class SembastLocalAdapter extends SembastAdapter {
   /// * [version]: The expected version
   /// * [onVersionChanged]:  If [version] not null and if the existing version is different, onVersionChanged is called
   /// * [mode]: The database mode
-  /// * [codec]: The codec which can be used to load/save a record, allowing for user encryption
+  /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
   static Future<SembastAdapter> build(String path,
       {int? version,
       OnVersionChangedFunction? onVersionChanged,
       DatabaseMode? mode,
-      SembastCodec? codec}) {
+      SembastCodec? sembastCodec}) {
     return databaseFactoryIo
         .openDatabase(path,
             version: version,
             onVersionChanged: onVersionChanged,
             mode: mode,
-            codec: codec)
+            codec: sembastCodec)
         .then((db) => SembastLocalAdapter._(db, path));
   }
 
@@ -272,18 +272,18 @@ class SembastMemoryAdapter extends SembastAdapter {
   /// * [version]: The expected version
   /// * [onVersionChanged]:  If [version] not null and if the existing version is different, onVersionChanged is called
   /// * [mode]: The database mode
-  /// * [codec]: The codec which can be used to load/save a record, allowing for user encryption
+  /// * [sembastCodec]: The codec which can be used to load/save a record, allowing for user encryption
   static Future<SembastAdapter> build(String name,
       {int? version,
       OnVersionChangedFunction? onVersionChanged,
       DatabaseMode? mode,
-      SembastCodec? codec}) {
+      SembastCodec? sembastCodec}) {
     return newDatabaseFactoryMemory()
         .openDatabase(name,
             version: version,
             onVersionChanged: onVersionChanged,
             mode: mode,
-            codec: codec)
+            codec: sembastCodec)
         .then((db) => SembastMemoryAdapter._(db, name));
   }
 

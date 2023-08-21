@@ -43,16 +43,16 @@ abstract class HiveAdapter<T extends BoxBase<Map>> {
 
   /// Returns the box value by key
   ///
-  /// * [box]: The Hive box
+  /// * [partition]: The Hive box
   /// * [key]: The store key
   ///
   /// Returns the [Map] stored in the box
-  Future<Map?> boxValue(T box, String key);
+  Future<Map?> partitionValue(T partition, String key);
 
   /// Returns the partition box identified by [name]
   ///
   /// * [name]: The partition name
-  T? box(String name) {
+  T? partition(String name) {
     return _partitions[name];
   }
 
@@ -119,8 +119,8 @@ class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
   }
 
   @override
-  Future<Map?> boxValue(Box<Map> box, String key) {
-    return Future.value(box.get(key));
+  Future<Map?> partitionValue(Box<Map> partition, String key) {
+    return Future.value(partition.get(key));
   }
 }
 
@@ -154,7 +154,7 @@ class HiveLazyAdapter extends HiveAdapter<LazyBox<Map>> {
   }
 
   @override
-  Future<Map?> boxValue(LazyBox<Map> box, String key) {
-    return box.get(key);
+  Future<Map?> partitionValue(LazyBox<Map> partition, String key) {
+    return partition.get(key);
   }
 }

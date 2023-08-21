@@ -1,6 +1,7 @@
 # See https://www.dartlang.org/guides/libraries/private-files
 
 # Flutter/Dart/Pub related
+.dart_tool/
 packages/*/.dart_tool/
 packages/*/.packages
 packages/*/.pub/

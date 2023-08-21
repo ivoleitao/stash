@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:isar/isar.dart';
 import 'package:meta/meta.dart';
 import 'package:stash/stash_api.dart';
@@ -40,72 +38,64 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   }
 
   @protected
-  QueryBuilder<M, String, QQueryOperations> keyProperty(
+  QueryBuilder<M, String, QQueryOperations> _keyProperty(
       IsarCollection<M> collection);
 
   Future<Iterable<String>> _getKeys(String name) {
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return keyProperty(partition).findAll();
+      return _keyProperty(partition).findAll();
     }
 
-    return Future.value(<String>[]);
+    return Future.value(const <String>[]);
   }
 
   @override
   Future<Iterable<String>> keys(String name) => _getKeys(name);
 
-  @protected
-  QueryBuilder<M, M, QAfterWhereClause> keyQuery(
-      IsarCollection<M> collection, String key);
-
-  /// Encodes a value into a list of bytes
+  /// Reads a [Info] from a model
   ///
-  /// * [value]: The value to encode
+  /// * [model]: The model
   ///
-  /// Returns the value encoded as a list of bytes
-  @protected
-  Uint8List valueEncoder(dynamic value) {
-    final writer = codec.encoder();
-
-    writer.write(value);
-
-    return writer.takeBytes();
-  }
-
-  /// Returns a value decoded from the provided list of bytes
-  ///
-  /// * [bytes]: The list of bytes
-  /// * [fromEncodable]: An function that converts between the Map representation and the object
-  ///
-  /// Returns the decoded value from the list of bytes
-  @protected
-  dynamic valueDecoder(
-      Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    final reader = codec.decoder(bytes, fromEncodable: fromEncodable);
-
-    return reader.read();
-  }
-
+  ///  Returns the corresponding [Info]
   @protected
   I _readInfo(M model);
 
-  I? toInfoOptional(M? model) => model != null ? _readInfo(model) : null;
+  /// Reads a nullable [Info] from a model
+  ///
+  /// * [model]: The model
+  ///
+  ///  Returns the corresponding [Info]
+  I? _readNullableInfo(M? model) => model != null ? _readInfo(model) : null;
 
+  /// Reads a [Entry] from a model
+  ///
+  /// * [model]: The model
+  ///
+  ///  Returns the corresponding [Entry]
   @protected
   E _readEntry(M model, dynamic Function(Map<String, dynamic>)? fromEncodable);
 
-  E? toEntryOptional(
+  /// Reads a nullable [Entry] from a model
+  ///
+  /// * [model]: The model
+  ///
+  ///  Returns the corresponding [Entry]
+  E? _readNullableEntry(
           M? model, dynamic Function(Map<String, dynamic>)? fromEncodable) =>
       model != null ? _readEntry(model, fromEncodable) : null;
 
   @protected
-  M fromEntry(E entry, {M? model});
+  M writeEntry(E entry, {M? model});
 
   @protected
-  M? fromEntryOptional(E? entry, {M? model}) =>
-      entry != null ? fromEntry(entry, model: model) : null;
+  M? writeNullabeEntry(E? entry, {M? model}) =>
+      entry != null ? writeEntry(entry, model: model) : null;
+
+  @protected
+  QueryBuilder<M, M, QAfterWhereClause> _keyQuery(
+      IsarCollection<M> collection, String key);
 
   /// Returns the partition [Entry] for the specified [key].
   ///
@@ -114,22 +104,22 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   ///
   /// Returns a [Entry]
   Future<M?> _partitionModel(IsarCollection<M> partition, String key) =>
-      keyQuery(partition, key).findFirst();
+      _keyQuery(partition, key).findFirst();
 
   /// Returns the partition [Info] for the specified [key].
   ///
-  /// * [name]: The partition
+  /// * [partition]: The partition
   /// * [key]: The key
   ///
   /// Returns a [Entry]
   Future<I?> _partitionInfo(IsarCollection<M> partition, String key) {
     return _partitionModel(partition, key)
-        .then((model) => toInfoOptional(model));
+        .then((model) => _readNullableInfo(model));
   }
 
   /// Returns the [Info] for the specified [key].
   ///
-  /// * [slot]: The partition name
+  /// * [name]: The partition name
   /// * [key]: The key
   ///
   /// Returns a [Info]
@@ -143,6 +133,11 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     return Future<I?>.value();
   }
 
+  @override
+  Future<I?> getInfo(String name, String key) {
+    return _getInfo(name, key);
+  }
+
   /// Returns a [Iterable] over all the [Info]s for the keys requested
   ///
   /// * [name]: The partition name
@@ -153,6 +148,11 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     return Stream.fromIterable(keys)
         .asyncMap((key) => _getInfo(name, key))
         .toList();
+  }
+
+  @override
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
+    return _getInfos(name, keys);
   }
 
   @override
@@ -169,7 +169,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   Future<E?> _partitionEntry(IsarCollection<M> partition, String key,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return _partitionModel(partition, key)
-        .then((model) => toEntryOptional(model, fromEncodable));
+        .then((model) => _readNullableEntry(model, fromEncodable));
   }
 
   /// Returns the [Entry] for the specified [key].
@@ -190,7 +190,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
 
   /// Returns a [Iterable] over all the [Entry]s
   ///
-  /// * [name]: The box name
+  /// * [name]: The partition name
   ///
   /// Return a list of [Entry]s
   Future<Iterable<E>> _getValues(String name) {
@@ -208,20 +208,10 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
     final partition = _adapter.partition(name);
 
     if (partition != null) {
-      return keyProperty(partition).findFirst().then((model) => model != null);
+      return _keyProperty(partition).findFirst().then((model) => model != null);
     }
 
     return Future.value(false);
-  }
-
-  @override
-  Future<I?> getInfo(String name, String key) {
-    return _getInfo(name, key);
-  }
-
-  @override
-  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _getInfos(name, keys);
   }
 
   @override
@@ -234,7 +224,7 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
           final entry = _readEntry(model, decoder(name))..updateInfo(info);
 
           return partition.isar
-              .writeTxn(() => partition.put(fromEntry(entry, model: model)));
+              .writeTxn(() => partition.put(writeEntry(entry, model: model)));
         }
 
         return Future.value();
@@ -257,10 +247,10 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
       return _partitionModel(partition, key).then((model) {
         if (model != null) {
           return partition.isar.writeTxn(() =>
-              partition.put(fromEntry(entry, model: model)).then((_) => null));
+              partition.put(writeEntry(entry, model: model)).then((_) => null));
         } else {
           return partition.isar.writeTxn(
-              () => partition.put(fromEntry(entry)).then((_) => null));
+              () => partition.put(writeEntry(entry)).then((_) => null));
         }
       });
     }
@@ -320,13 +310,13 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
   IsarVaultStore(super.adapter, {super.codec});
 
   @override
-  QueryBuilder<VaultModel, String, QQueryOperations> keyProperty(
+  QueryBuilder<VaultModel, String, QQueryOperations> _keyProperty(
       IsarCollection<VaultModel> collection) {
     return collection.where().keyProperty();
   }
 
   @override
-  QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> keyQuery(
+  QueryBuilder<VaultModel, VaultModel, QAfterWhereClause> _keyQuery(
       IsarCollection<VaultModel> collection, String key) {
     return collection.where().keyEqualTo(key);
   }
@@ -340,17 +330,17 @@ class IsarVaultStore extends IsarStore<VaultModel, VaultInfo, VaultEntry>
   @override
   VaultEntry _readEntry(
       VaultModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
-    return VaultEntry.loaded(model.key, model.creationTime,
-        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
+    return VaultEntry.loaded(
+        model.key, model.creationTime, decodeValue(model.value, fromEncodable),
         accessTime: model.accessTime, updateTime: model.updateTime);
   }
 
   @override
-  VaultModel fromEntry(VaultEntry entry, {VaultModel? model}) {
+  VaultModel writeEntry(VaultEntry entry, {VaultModel? model}) {
     return model ?? VaultModel()
       ..key = entry.key
       ..creationTime = entry.creationTime
-      ..value = valueEncoder(entry.value)
+      ..value = encodeValue(entry.value)
       ..accessTime = entry.accessTime
       ..updateTime = entry.updateTime;
   }
@@ -366,13 +356,13 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
   IsarCacheStore(super.adapter, {super.codec});
 
   @override
-  QueryBuilder<CacheModel, String, QQueryOperations> keyProperty(
+  QueryBuilder<CacheModel, String, QQueryOperations> _keyProperty(
       IsarCollection<CacheModel> collection) {
     return collection.where().keyProperty();
   }
 
   @override
-  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> keyQuery(
+  QueryBuilder<CacheModel, CacheModel, QAfterWhereClause> _keyQuery(
       IsarCollection<CacheModel> collection, String key) {
     return collection.where().keyEqualTo(key);
   }
@@ -389,14 +379,14 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
   CacheEntry _readEntry(
       CacheModel model, dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loaded(model.key, model.creationTime, model.expiryTime,
-        valueDecoder(Uint8List.fromList(model.value), fromEncodable),
+        decodeValue(model.value, fromEncodable),
         accessTime: model.accessTime,
         updateTime: model.updateTime,
         hitCount: model.hitCount);
   }
 
   @override
-  CacheModel fromEntry(CacheEntry entry, {CacheModel? model}) {
+  CacheModel writeEntry(CacheEntry entry, {CacheModel? model}) {
     return model ?? CacheModel()
       ..key = entry.key
       ..creationTime = entry.creationTime
@@ -404,6 +394,6 @@ class IsarCacheStore extends IsarStore<CacheModel, CacheInfo, CacheEntry>
       ..accessTime = entry.accessTime
       ..updateTime = entry.updateTime
       ..hitCount = entry.hitCount
-      ..value = valueEncoder(entry.value);
+      ..value = encodeValue(entry.value);
   }
 }

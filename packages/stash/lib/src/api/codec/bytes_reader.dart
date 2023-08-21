@@ -137,7 +137,7 @@ abstract class BytesReader {
   /// Reads a [Map] from the backing buffer
   ///
   /// * [length]: The number of bytes
-  Map readMap(int length) {
+  Map readStandardMap(int length) {
     final res = {};
     while (length > 0) {
       res[read()] = read();
@@ -146,5 +146,6 @@ abstract class BytesReader {
     return res;
   }
 
+  /// Reads the buffer contents
   dynamic read();
 }

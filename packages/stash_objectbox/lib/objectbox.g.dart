@@ -4,7 +4,7 @@
 // With a Dart package, run `dart run build_runner build`.
 // See also https://docs.objectbox.io/getting-started#generate-objectbox-code
 
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, depend_on_referenced_packages
 // coverage:ignore-file
 
 import 'dart:typed_data';
@@ -109,7 +109,13 @@ final _entities = <ModelEntity>[
       backlinks: <ModelBacklink>[])
 ];
 
-/// Open an ObjectBox store with the model declared in this file.
+/// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
+/// apps by default a [directory] using `defaultStoreDirectory()` from the
+/// ObjectBox Flutter library.
+///
+/// Note: for desktop apps it is recommended to specify a unique [directory].
+///
+/// See [Store.new] for an explanation of all parameters.
 Store openStore(
         {String? directory,
         int? maxDBSizeInKB,
@@ -125,7 +131,8 @@ Store openStore(
         queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
         macosApplicationGroup: macosApplicationGroup);
 
-/// ObjectBox model definition, pass it to [Store] - Store(getObjectBoxModel())
+/// Returns the ObjectBox model definition for this project for use with
+/// [Store.new].
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
@@ -213,23 +220,32 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final keyParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 22, '');
+          final valueParam = const fb.Uint8ListReader(lazy: false)
+              .vTableGet(buffer, rootOffset, 24, Uint8List(0)) as Uint8List;
+          final expiryTimeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 12, '');
+          final creationTimeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 14, '');
+          final accessTimeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 16);
+          final updateTimeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 18);
+          final hitCountParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 20);
           final object = CacheEntity(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              key: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 22, ''),
-              value: const fb.Uint8ListReader(lazy: false)
-                  .vTableGet(buffer, rootOffset, 24, Uint8List(0)) as Uint8List,
-              expiryTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 12, ''),
-              creationTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 14, ''),
-              accessTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 16),
-              updateTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 18),
-              hitCount: const fb.Int64Reader()
-                  .vTableGetNullable(buffer, rootOffset, 20));
+              id: idParam,
+              key: keyParam,
+              value: valueParam,
+              expiryTime: expiryTimeParam,
+              creationTime: creationTimeParam,
+              accessTime: accessTimeParam,
+              updateTime: updateTimeParam,
+              hitCount: hitCountParam);
 
           return object;
         }),
@@ -264,19 +280,26 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final keyParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final valueParam = const fb.Uint8ListReader(lazy: false)
+              .vTableGet(buffer, rootOffset, 8, Uint8List(0)) as Uint8List;
+          final creationTimeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 10, '');
+          final accessTimeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
+          final updateTimeParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 14);
           final object = VaultEntity(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              key: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              value: const fb.Uint8ListReader(lazy: false)
-                  .vTableGet(buffer, rootOffset, 8, Uint8List(0)) as Uint8List,
-              creationTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 10, ''),
-              accessTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 12),
-              updateTime: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 14));
+              id: idParam,
+              key: keyParam,
+              value: valueParam,
+              creationTime: creationTimeParam,
+              accessTime: accessTimeParam,
+              updateTime: updateTimeParam);
 
           return object;
         })

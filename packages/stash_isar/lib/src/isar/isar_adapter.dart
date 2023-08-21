@@ -11,7 +11,7 @@ abstract class IsarAdapter<M extends EntryModel> {
   final CollectionSchema<M> schema;
 
   /// The path to the partition
-  final String? path;
+  final String path;
 
   /// The relaxed durability setting
   final bool? relaxedDurability;
@@ -36,9 +36,8 @@ abstract class IsarAdapter<M extends EntryModel> {
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [compactOnLaunch]: The condition for the db to be compacted on launch
   /// * [inspector]: If the inspector is enabled
-  IsarAdapter(this.schema,
-      {this.path,
-      this.maxSizeMib = Isar.defaultMaxSizeMiB,
+  IsarAdapter(this.schema, this.path,
+      {this.maxSizeMib = Isar.defaultMaxSizeMiB,
       this.relaxedDurability,
       this.compactOnLaunch,
       this.inspector = true});
@@ -68,12 +67,12 @@ abstract class IsarAdapter<M extends EntryModel> {
   /// Returns the partition identified by [name]
   ///
   /// * [name]: The partition name
-  Isar? isar(String name) {
+  Isar? _isar(String name) {
     return _partitions[name];
   }
 
   IsarCollection<M>? partition(String name) {
-    return isar(name)?.collection<M>();
+    return _isar(name)?.collection<M>();
   }
 
   /// Deletes a partition
@@ -116,13 +115,12 @@ class IsarVaultAdapter extends IsarAdapter<VaultModel> {
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [compactOnLaunch]: The condition for the db to be compacted on launch
   /// * [inspector]: If the inspector is enabled
-  IsarVaultAdapter._(
-      {super.path,
-      super.maxSizeMib,
+  IsarVaultAdapter._(String path,
+      {super.maxSizeMib,
       super.relaxedDurability,
       super.compactOnLaunch,
       super.inspector})
-      : super(VaultModelSchema);
+      : super(VaultModelSchema, path);
 
   /// Builds [IsarVaultAdapter].
   ///
@@ -131,14 +129,12 @@ class IsarVaultAdapter extends IsarAdapter<VaultModel> {
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [compactOnLaunch]: The condition for the db to be compacted on launch
   /// * [inspector]: If the inspector is enabled
-  static Future<IsarVaultAdapter> build(
-      {String? path,
-      int? maxSizeMib,
+  static Future<IsarVaultAdapter> build(String path,
+      {int? maxSizeMib,
       bool? relaxedDurability,
       CompactCondition? compactOnLaunch,
       bool? inspector}) {
-    return Future.value(IsarVaultAdapter._(
-        path: path,
+    return Future.value(IsarVaultAdapter._(path,
         maxSizeMib: maxSizeMib,
         relaxedDurability: relaxedDurability,
         compactOnLaunch: compactOnLaunch,
@@ -156,13 +152,12 @@ class IsarCacheAdapter extends IsarAdapter<CacheModel> {
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [compactOnLaunch]: The condition for the db to be compacted on launch
   /// * [inspector]: If the inspector is enabled
-  IsarCacheAdapter._(
-      {super.path,
-      super.maxSizeMib,
+  IsarCacheAdapter._(String path,
+      {super.maxSizeMib,
       super.relaxedDurability,
       super.compactOnLaunch,
       super.inspector})
-      : super(CacheModelSchema);
+      : super(CacheModelSchema, path);
 
   /// Builds [IsarCacheAdapter].
   ///
@@ -171,14 +166,12 @@ class IsarCacheAdapter extends IsarAdapter<CacheModel> {
   /// * [relaxedDurability]: Relaxed durability setting
   /// * [compactOnLaunch]: The condition for the db to be compacted on launch
   /// * [inspector]: If the inspector is enabled
-  static Future<IsarCacheAdapter> build(
-      {String? path,
-      int? maxSizeMib,
+  static Future<IsarCacheAdapter> build(String path,
+      {int? maxSizeMib,
       bool? relaxedDurability,
       CompactCondition? compactOnLaunch,
       bool? inspector}) {
-    return Future.value(IsarCacheAdapter._(
-        path: path,
+    return Future.value(IsarCacheAdapter._(path,
         maxSizeMib: maxSizeMib,
         relaxedDurability: relaxedDurability,
         compactOnLaunch: compactOnLaunch,

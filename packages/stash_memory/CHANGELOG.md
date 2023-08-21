@@ -1,3 +1,16 @@
+## 5.0.1
+
+ - **CHORE**: Update a dependency to the latest release.
+
+## 5.0.0
+
+- **BREAKING CHANGE**: Changed minimum sdk version
+- chore: Updated dependencies
+
+## 4.5.3
+
+ - Update a dependency to the latest release.
+
 ## 4.5.2
 
  - Update a dependency to the latest release.

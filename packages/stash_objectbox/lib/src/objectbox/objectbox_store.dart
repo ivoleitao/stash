@@ -171,13 +171,10 @@ class ObjectboxVaultStore
 
   @override
   VaultEntity _toEntity(VaultEntry entry) {
-    final writer = codec.encoder();
-    writer.write(entry.value);
-
     return VaultEntity(
         id: entry.key.hashCode,
         key: entry.key,
-        value: writer.takeBytes(),
+        value: encodeValue(entry.value),
         creationTime: entry.creationTime.toIso8601String(),
         accessTime: entry.accessTime.toIso8601String(),
         updateTime: entry.updateTime.toIso8601String());
@@ -202,11 +199,8 @@ class ObjectboxVaultStore
   VaultEntry? _readEntry(VaultEntity? entity,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
-      final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);
-      final value = reader.read();
-
-      return VaultEntry.loaded(
-          entity.key, DateTime.parse(entity.creationTime), value,
+      return VaultEntry.loaded(entity.key, DateTime.parse(entity.creationTime),
+          decodeValue(entity.value, fromEncodable),
           accessTime: entity.accessTime != null
               ? DateTime.parse(entity.accessTime!)
               : null,
@@ -233,13 +227,10 @@ class ObjectboxCacheStore
 
   @override
   CacheEntity _toEntity(CacheEntry entry) {
-    final writer = codec.encoder();
-    writer.write(entry.value);
-
     return CacheEntity(
         id: entry.key.hashCode,
         key: entry.key,
-        value: writer.takeBytes(),
+        value: encodeValue(entry.value),
         expiryTime: entry.expiryTime.toIso8601String(),
         creationTime: entry.creationTime.toIso8601String(),
         accessTime: entry.accessTime.toIso8601String(),
@@ -268,11 +259,11 @@ class ObjectboxCacheStore
   CacheEntry? _readEntry(CacheEntity? entity,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     if (entity != null) {
-      final reader = codec.decoder(entity.value, fromEncodable: fromEncodable);
-      final value = reader.read();
-
-      return CacheEntry.loaded(entity.key, DateTime.parse(entity.creationTime),
-          DateTime.parse(entity.expiryTime), value,
+      return CacheEntry.loaded(
+          entity.key,
+          DateTime.parse(entity.creationTime),
+          DateTime.parse(entity.expiryTime),
+          decodeValue(entity.value, fromEncodable),
           accessTime: entity.accessTime != null
               ? DateTime.parse(entity.accessTime!)
               : null,

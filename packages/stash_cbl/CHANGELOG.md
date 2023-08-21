@@ -1,3 +1,16 @@
+## 5.0.1
+
+ - **CHORE**: Update a dependency to the latest release.
+
+## 5.0.0
+
+- **BREAKING CHANGE**: Changed minimum sdk version
+- chore: Updated dependencies
+
+## 4.6.3
+
+ - **FIX**: Reading nested JSON throws TypeError issue [#45](https://github.com/ivoleitao/stash/issues/45). ([e93ff90e](https://github.com/ivoleitao/stash/commit/e93ff90ed0f849779b58c3baa4d34973608ce7ab))
+
 ## 4.6.2
 
  - **FIX**: https://github.com/ivoleitao/stash/issues/43 for getInfo calls cbl backed storage no longer deserializes the whole entry.

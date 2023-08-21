@@ -27,12 +27,8 @@ void main() async {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testStore((generator) => VaultStoreContext(generator),
-      types: jsonStoreTypeTests);
-  testStore((generator) => CacheStoreContext(generator),
-      types: jsonStoreTypeTests);
-  testVault((generator) => VaultStoreContext(generator),
-      types: jsonStoreTypeTests);
-  testCache((generator) => CacheStoreContext(generator),
-      types: jsonStoreTypeTests);
+  testStore((generator) => VaultStoreContext(generator));
+  testStore((generator) => CacheStoreContext(generator));
+  testVault((generator) => VaultStoreContext(generator));
+  testCache((generator) => CacheStoreContext(generator));
 }

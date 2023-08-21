@@ -133,26 +133,6 @@ abstract class SecureStorageStore<I extends Info, E extends Entry<I>>
         records.map((record) => _getInfoFromValue(record)).toList());
   }
 
-  /// Checks if the [value] is one of the base datatypes supported json mpas
-  /// either returning that value if it is or invoking toJson to transform it
-  /// in a supported value
-  ///
-  /// * [value]: the value to convert
-  @protected
-  dynamic _toJsonValue(dynamic value) {
-    if (value == null ||
-        value is bool ||
-        value is int ||
-        value is double ||
-        value is String ||
-        value is List ||
-        value is Map) {
-      return value;
-    }
-
-    return value.toJson();
-  }
-
   /// Returns the json representation of an [Entry]
   ///
   /// * [entry]: The entry
@@ -209,8 +189,10 @@ class SecureStorageVaultStore extends SecureStorageStore<VaultInfo, VaultEntry>
     implements VaultStore {
   /// Builds a [SecureStorageVaultStore].
   ///
-  /// * [_adapter]: The secure storage store adapter
-  SecureStorageVaultStore(super.adapter);
+  /// * [adapter]: The secure storage store adapter
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  SecureStorageVaultStore(super.adapter, {super.codec});
+
   @override
   VaultInfo _readInfo(Map<String, dynamic> value) {
     return VaultInfo(
@@ -230,7 +212,7 @@ class SecureStorageVaultStore extends SecureStorageStore<VaultInfo, VaultEntry>
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+            processor: ValueProcessor.cast),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -246,7 +228,7 @@ class SecureStorageVaultStore extends SecureStorageStore<VaultInfo, VaultEntry>
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': _toJsonValue(entry.value)
+      'value': encodeValue(entry.value)
     };
   }
 }
@@ -255,8 +237,10 @@ class SecureStorageCacheStore extends SecureStorageStore<CacheInfo, CacheEntry>
     implements CacheStore {
   /// Builds a [SecureStorageCacheStore].
   ///
-  /// * [_adapter]: The secure storage store adapter
-  SecureStorageCacheStore(super.adapter);
+  /// * [adapter]: The secure storage store adapter
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  SecureStorageCacheStore(super.adapter, {super.codec});
+
   @override
   CacheInfo _readInfo(Map<String, dynamic> value) {
     return CacheInfo(
@@ -280,7 +264,7 @@ class SecureStorageCacheStore extends SecureStorageStore<CacheInfo, CacheEntry>
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),
         decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+            processor: ValueProcessor.cast),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -299,7 +283,7 @@ class SecureStorageCacheStore extends SecureStorageStore<CacheInfo, CacheEntry>
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': _toJsonValue(entry.value)
+      'value': encodeValue(entry.value)
     };
   }
 }

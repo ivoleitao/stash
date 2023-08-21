@@ -13,7 +13,8 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   /// Builds a [HiveStore].
   ///
   /// * [_adapter]: The hive store adapter
-  HiveStore(this._adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveStore(this._adapter, {super.codec});
 
   @override
   Future<void> create(String name,
@@ -23,11 +24,29 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
           .then((_) => _adapter.create(name));
 
   @override
-  Future<int> size(String name) =>
-      Future.value(_adapter.box(name)?.length ?? 0);
+  Future<int> size(String name) {
+    final partition = _adapter.partition(name);
 
+    if (partition != null) {
+      return Future.value(partition.length);
+    }
+
+    return Future.value(0);
+  }
+
+  /// Reads the keys of a partition
+  ///
+  /// * [name]: The partition name
+  ///
+  ///  Returns the keys
   Future<Iterable<String>> _getKeys(String name) {
-    return Future.value((_adapter.box(name)?.keys ?? const []).cast<String>());
+    final partition = _adapter.partition(name);
+
+    if (partition != null) {
+      return Future.value(partition.keys.cast<String>());
+    }
+
+    return Future.value(const <String>[]);
   }
 
   @override
@@ -39,7 +58,15 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   ///
   ///  Returns the corresponding [Info]
   @protected
-  I _readInfo(Map<String, dynamic> value);
+  I _readInfo(Map<dynamic, dynamic> value);
+
+  /// Reads a nullable [Info] from a json map
+  ///
+  /// * [value]: The json map
+  ///
+  ///  Returns the corresponding [Info]
+  I? _readNullableInfo(Map<dynamic, dynamic>? value) =>
+      value != null ? _readInfo(value) : null;
 
   /// Reads a [Entry] from a json map
   ///
@@ -48,47 +75,28 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   ///
   ///  Returns the corresponding [Entry]
   @protected
-  E _readEntry(Map<String, dynamic> value,
+  E _readEntry(Map<dynamic, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable);
 
-  /// Gets a [Entry] from the provided [LazyBox]
+  /// Reads a nullable [Entry] from a json map
   ///
-  /// * [name]: The partition name
-  /// * [slot]: The box
-  /// * [key]: The key
+  /// * [value]: The json map
+  /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
   ///
-  /// Returns a [Entry]
-  Future<E?> _boxEntry(String name, T slot, String key) =>
-      _adapter.boxValue(slot, key).then((value) => value != null
-          ? _readEntry(value.cast<String, dynamic>(), decoder(name))
-          : null);
-
-  /// Returns the box [Entry] for the specified [key].
-  ///
-  /// * [name]: The partition name
-  /// * [key]: The key
-  ///
-  /// Returns a [Entry]
-  Future<E?> _getEntry(String name, String key) {
-    final box = _adapter.box(name);
-
-    if (box != null) {
-      return _boxEntry(name, box, key);
-    }
-
-    return Future<E?>.value();
-  }
+  ///  Returns the corresponding [Entry]
+  E? _readNullableEntry(Map<dynamic, dynamic>? value,
+          dynamic Function(Map<String, dynamic>)? fromEncodable) =>
+      value != null ? _readEntry(value, fromEncodable) : null;
 
   /// Gets a [Info] from the provided [BoxBase]
   ///
-  /// * [name]: The partition name
-  /// * [slot]: The box
+  /// * [partition]: The partition
   /// * [key]: The key
   ///
   /// Returns a [Entry]
-  Future<I?> _boxInfo(String name, T slot, String key) =>
-      _adapter.boxValue(slot, key).then((value) =>
-          value != null ? _readInfo(value.cast<String, dynamic>()) : null);
+  Future<I?> _partitionInfo(T partition, String key) => _adapter
+      .partitionValue(partition, key)
+      .then((value) => _readNullableInfo(value));
 
   /// Returns the box [Info] for the specified [key].
   ///
@@ -97,13 +105,18 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   ///
   /// Returns a [Info]
   Future<I?> _getInfo(String name, String key) {
-    final box = _adapter.box(name);
+    final box = _adapter.partition(name);
 
     if (box != null) {
-      return _boxInfo(name, box, key);
+      return _partitionInfo(box, key);
     }
 
     return Future<I?>.value();
+  }
+
+  @override
+  Future<I?> getInfo(String name, String key) {
+    return _getInfo(name, key);
   }
 
   /// Returns a [Iterable] over all the [Info]s for the keys requested
@@ -119,9 +132,41 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   }
 
   @override
+  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
+    return _getInfos(name, keys);
+  }
+
+  @override
   Future<Iterable<I>> infos(String name) => _getKeys(name)
       .then((keys) => _getInfos(name, keys))
       .then((infos) => infos.map((info) => info!));
+
+  /// Gets a [Entry] from the provided [LazyBox]
+  ///
+  /// * [name]: The partition name
+  /// * [partition]: The box
+  /// * [key]: The key
+  ///
+  /// Returns a [Entry]
+  Future<E?> _partitionEntry(String name, T partition, String key) => _adapter
+      .partitionValue(partition, key)
+      .then((value) => _readNullableEntry(value, decoder(name)));
+
+  /// Returns the box [Entry] for the specified [key].
+  ///
+  /// * [name]: The partition name
+  /// * [key]: The key
+  ///
+  /// Returns a [Entry]
+  Future<E?> _getEntry(String name, String key) {
+    final box = _adapter.partition(name);
+
+    if (box != null) {
+      return _partitionEntry(name, box, key);
+    }
+
+    return Future<E?>.value();
+  }
 
   /// Returns a [Iterable] over all the box [Entry]s
   ///
@@ -140,38 +185,7 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<bool> containsKey(String name, String key) =>
-      Future.value(_adapter.box(name)?.containsKey(key) ?? false);
-
-  @override
-  Future<I?> getInfo(String name, String key) {
-    return _getInfo(name, key);
-  }
-
-  @override
-  Future<Iterable<I?>> getInfos(String name, Iterable<String> keys) {
-    return _getInfos(name, keys);
-  }
-
-  /// Checks if the [value] is one of the base datatypes supported by Hive either returning that value if it is or
-  /// invoking toJson to transform it in a supported value
-  ///
-  /// * [value]: the value to convert
-  @protected
-  dynamic _toJsonValue(dynamic value) {
-    if (value == null ||
-        value is bool ||
-        value is int ||
-        value is double ||
-        value is String ||
-        value is DateTime ||
-        value is BigInt ||
-        value is List ||
-        value is Map) {
-      return value;
-    }
-
-    return value.toJson();
-  }
+      Future.value(_adapter.partition(name)?.containsKey(key) ?? false);
 
   /// Returns the json representation of a [Entry]
   ///
@@ -182,10 +196,10 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> setInfo(String name, String key, I info) {
-    final box = _adapter.box(name);
+    final box = _adapter.partition(name);
 
     if (box != null) {
-      return _boxEntry(name, box, key).then((entry) {
+      return _partitionEntry(name, box, key).then((entry) {
         if (entry != null) {
           entry.updateInfo(info);
           return box.put(key, _writeEntry(entry));
@@ -205,7 +219,7 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> putEntry(String name, String key, E entry) {
-    final box = _adapter.box(name);
+    final box = _adapter.partition(name);
 
     if (box != null) {
       return box.put(key, _writeEntry(entry));
@@ -216,10 +230,10 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> remove(String name, String key) {
-    final box = _adapter.box(name);
+    final partition = _adapter.partition(name);
 
-    if (box != null) {
-      return box.delete(key);
+    if (partition != null) {
+      return partition.delete(key);
     }
 
     return Future.value();
@@ -227,10 +241,10 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
 
   @override
   Future<void> clear(String name) {
-    final box = _adapter.box(name);
+    final partition = _adapter.partition(name);
 
-    if (box != null) {
-      return box.clear().then((value) => null);
+    if (partition != null) {
+      return partition.clear().then((value) => null);
     }
 
     return Future.value();
@@ -253,10 +267,11 @@ class HiveVaultStore<T extends BoxBase<Map>>
   /// Builds a [HiveVaultStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveVaultStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveVaultStore(super.adapter, {super.codec});
 
   @override
-  VaultInfo _readInfo(Map<String, dynamic> value) {
+  VaultInfo _readInfo(Map<dynamic, dynamic> value) {
     return VaultInfo(
         value['key'] as String, DateTime.parse(value['creationTime'] as String),
         accessTime: value['accessTime'] == null
@@ -268,13 +283,12 @@ class HiveVaultStore<T extends BoxBase<Map>>
   }
 
   @override
-  VaultEntry _readEntry(Map<String, dynamic> value,
+  VaultEntry _readEntry(Map<dynamic, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return VaultEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
-        decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        decodeValue(value['value'], fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -290,7 +304,7 @@ class HiveVaultStore<T extends BoxBase<Map>>
       'creationTime': entry.creationTime.toIso8601String(),
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
-      'value': _toJsonValue(entry.value),
+      'value': encodeValue(entry.value),
     };
   }
 }
@@ -301,10 +315,11 @@ class HiveCacheStore<T extends BoxBase<Map>>
   /// Builds a [HiveCacheStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveCacheStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveCacheStore(super.adapter, {super.codec});
 
   @override
-  CacheInfo _readInfo(Map<String, dynamic> value) {
+  CacheInfo _readInfo(Map<dynamic, dynamic> value) {
     return CacheInfo(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
@@ -319,14 +334,13 @@ class HiveCacheStore<T extends BoxBase<Map>>
   }
 
   @override
-  CacheEntry _readEntry(Map<String, dynamic> value,
+  CacheEntry _readEntry(Map<dynamic, dynamic> value,
       dynamic Function(Map<String, dynamic>)? fromEncodable) {
     return CacheEntry.loaded(
         value['key'] as String,
         DateTime.parse(value['creationTime'] as String),
         DateTime.parse(value['expiryTime'] as String),
-        decodeValue(value['value'], fromEncodable,
-            mapFn: (source) => (source as Map).cast<String, dynamic>()),
+        decodeValue(value['value'], fromEncodable),
         accessTime: value['accessTime'] == null
             ? null
             : DateTime.parse(value['accessTime'] as String),
@@ -345,7 +359,7 @@ class HiveCacheStore<T extends BoxBase<Map>>
       'accessTime': entry.accessTime.toIso8601String(),
       'updateTime': entry.updateTime.toIso8601String(),
       'hitCount': entry.hitCount,
-      'value': _toJsonValue(entry.value),
+      'value': encodeValue(entry.value),
     };
   }
 }
@@ -355,7 +369,8 @@ class HiveDefaultVaultStore extends HiveVaultStore<Box<Map>> {
   /// Builds a [HiveDefaultVaultStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveDefaultVaultStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveDefaultVaultStore(super.adapter, {super.codec});
 }
 
 /// The default Hive cache store
@@ -363,7 +378,8 @@ class HiveDefaultCacheStore extends HiveCacheStore<Box<Map>> {
   /// Builds a [HiveDefaultVaultStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveDefaultCacheStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveDefaultCacheStore(super.adapter, {super.codec});
 }
 
 /// The lazy Hive vault store
@@ -371,7 +387,8 @@ class HiveLazyVaultStore extends HiveVaultStore<LazyBox<Map>> {
   /// Builds a [HiveLazyVaultStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveLazyVaultStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveLazyVaultStore(super.adapter, {super.codec});
 }
 
 /// The lazy Hive cache store
@@ -379,5 +396,6 @@ class HiveLazyCacheStore extends HiveCacheStore<LazyBox<Map>> {
   /// Builds a [HiveLazyCacheStore].
   ///
   /// * [adapter]: The hive store adapter
-  HiveLazyCacheStore(super.adapter);
+  /// * [codec]: The [StoreCodec] used to convert to/from a Map<String, dynamic>` representation to binary representation
+  HiveLazyCacheStore(super.adapter, {super.codec});
 }

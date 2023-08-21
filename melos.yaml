@@ -9,10 +9,11 @@ ide:
     false
 
 command:
-  bootstrap:
-    usePubspecOverrides: true
   version:
     branch: develop     
+  bootstrap:
+    hooks:
+      post: melos generate 
 
 scripts:
   get:
@@ -91,7 +92,7 @@ scripts:
   
   test:vm:
     run: |
-      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" --ignore="stash_cbl" \
+      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" \
         "dart test -p vm"
     description: |
       Run `dart test -p vm` in the selected packages.
@@ -117,7 +118,7 @@ scripts:
 
   coverage:vm:
     run: |
-      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" --ignore="stash_cbl" \
+      melos exec -c 1 --no-flutter --ignore="stash_sembast_web" \
         "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
     description: |
       Run `dart test -p vm` in the selected packages and collects coverage.
@@ -153,4 +154,4 @@ scripts:
       Uploads the code coverage to codecov.
 
   postbootstrap: |
-      melos run generate 
+    melos run generate 

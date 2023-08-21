@@ -81,12 +81,38 @@ enum TypeTest {
   classOfMapStringBool,
   classOfMapStringInt,
   classOfMapStringDouble,
-  classOfMapStringString
+  classOfMapStringString,
+
+  classOfClassOfBool,
+  classOfClassOfInt,
+  classOfClassOfDouble,
+  classOfClassOfString,
+  classOfClassOfListBool,
+  classOfClassOfListInt,
+  classOfClassOfListDouble,
+  classOfClassOfListString,
+  classOfClassOfMapBoolBool,
+  classOfClassOfMapBoolInt,
+  classOfClassOfMapBoolDouble,
+  classOfClassOfMapBoolString,
+  classOfClassOfMapIntBool,
+  classOfClassOfMapIntInt,
+  classOfClassOfMapIntDouble,
+  classOfClassOfMapIntString,
+  classOfClassOfMapDoubleBool,
+  classOfClassOfMapDoubleInt,
+  classOfClassOfMapDoubleDouble,
+  classOfClassOfMapDoubleString,
+  classOfClassOfMapStringBool,
+  classOfClassOfMapStringInt,
+  classOfClassOfMapStringDouble,
+  classOfClassOfMapStringString
 }
 
 extension TypeTestValue on TypeTest {
   ValueGenerator Function() get generator {
     switch (this) {
+      // Scalar
       case TypeTest.bool:
         return () => BoolGenerator();
       case TypeTest.int:
@@ -95,6 +121,7 @@ extension TypeTestValue on TypeTest {
         return () => DoubleGenerator();
       case TypeTest.string:
         return () => StringGenerator();
+      // List
       case TypeTest.listOfBool:
         return () => IteratorGenerator(BoolGenerator());
       case TypeTest.listOfInt:
@@ -103,6 +130,7 @@ extension TypeTestValue on TypeTest {
         return () => IteratorGenerator(DoubleGenerator());
       case TypeTest.listOfString:
         return () => IteratorGenerator(StringGenerator());
+      // Map
       case TypeTest.mapOfBoolBool:
         return () => MapGenerator(BoolGenerator(), BoolGenerator());
       case TypeTest.mapOfBoolInt:
@@ -135,70 +163,148 @@ extension TypeTestValue on TypeTest {
         return () => MapGenerator(StringGenerator(), DoubleGenerator());
       case TypeTest.mapOfStringString:
         return () => MapGenerator(StringGenerator(), StringGenerator());
+      // Class of scalar
       case TypeTest.classOfBool:
-        return () => SampleClassGenerator(BoolGenerator());
+        return () => ValueClassGenerator(BoolGenerator());
       case TypeTest.classOfInt:
-        return () => SampleClassGenerator(IntGenerator());
+        return () => ValueClassGenerator(IntGenerator());
       case TypeTest.classOfDouble:
-        return () => SampleClassGenerator(DoubleGenerator());
+        return () => ValueClassGenerator(DoubleGenerator());
       case TypeTest.classOfString:
-        return () => SampleClassGenerator(StringGenerator());
+        return () => ValueClassGenerator(StringGenerator());
+      // Class of list
       case TypeTest.classOfListBool:
-        return () => SampleClassGenerator(IteratorGenerator(BoolGenerator()));
+        return () => ValueClassGenerator(IteratorGenerator(BoolGenerator()));
       case TypeTest.classOfListInt:
-        return () => SampleClassGenerator(IteratorGenerator(IntGenerator()));
+        return () => ValueClassGenerator(IteratorGenerator(IntGenerator()));
       case TypeTest.classOfListDouble:
-        return () => SampleClassGenerator(IteratorGenerator(DoubleGenerator()));
+        return () => ValueClassGenerator(IteratorGenerator(DoubleGenerator()));
       case TypeTest.classOfListString:
-        return () => SampleClassGenerator(IteratorGenerator(StringGenerator()));
+        return () => ValueClassGenerator(IteratorGenerator(StringGenerator()));
+      // Class of map
       case TypeTest.classOfMapBoolBool:
-        return () => SampleClassGenerator(
-            MapGenerator(BoolGenerator(), BoolGenerator()));
+        return () =>
+            ValueClassGenerator(MapGenerator(BoolGenerator(), BoolGenerator()));
       case TypeTest.classOfMapBoolInt:
         return () =>
-            SampleClassGenerator(MapGenerator(BoolGenerator(), IntGenerator()));
+            ValueClassGenerator(MapGenerator(BoolGenerator(), IntGenerator()));
       case TypeTest.classOfMapBoolDouble:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(BoolGenerator(), DoubleGenerator()));
       case TypeTest.classOfMapBoolString:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(BoolGenerator(), StringGenerator()));
       case TypeTest.classOfMapIntBool:
         return () =>
-            SampleClassGenerator(MapGenerator(IntGenerator(), BoolGenerator()));
+            ValueClassGenerator(MapGenerator(IntGenerator(), BoolGenerator()));
       case TypeTest.classOfMapIntInt:
         return () =>
-            SampleClassGenerator(MapGenerator(IntGenerator(), IntGenerator()));
+            ValueClassGenerator(MapGenerator(IntGenerator(), IntGenerator()));
       case TypeTest.classOfMapIntDouble:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(IntGenerator(), DoubleGenerator()));
       case TypeTest.classOfMapIntString:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(IntGenerator(), StringGenerator()));
       case TypeTest.classOfMapDoubleBool:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(DoubleGenerator(), BoolGenerator()));
       case TypeTest.classOfMapDoubleInt:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(DoubleGenerator(), IntGenerator()));
       case TypeTest.classOfMapDoubleDouble:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(DoubleGenerator(), DoubleGenerator()));
       case TypeTest.classOfMapDoubleString:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(DoubleGenerator(), StringGenerator()));
       case TypeTest.classOfMapStringBool:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(StringGenerator(), BoolGenerator()));
       case TypeTest.classOfMapStringInt:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(StringGenerator(), IntGenerator()));
       case TypeTest.classOfMapStringDouble:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(StringGenerator(), DoubleGenerator()));
       case TypeTest.classOfMapStringString:
-        return () => SampleClassGenerator(
+        return () => ValueClassGenerator(
             MapGenerator(StringGenerator(), StringGenerator()));
+      // Class of class of scalar
+      case TypeTest.classOfClassOfBool:
+        return () =>
+            ContainerClassGenerator(ValueClassGenerator(BoolGenerator()));
+      case TypeTest.classOfClassOfInt:
+        return () =>
+            ContainerClassGenerator(ValueClassGenerator(IntGenerator()));
+      case TypeTest.classOfClassOfDouble:
+        return () =>
+            ContainerClassGenerator(ValueClassGenerator(DoubleGenerator()));
+      case TypeTest.classOfClassOfString:
+        return () =>
+            ContainerClassGenerator(ValueClassGenerator(StringGenerator()));
+      // Class of class of list
+      case TypeTest.classOfClassOfListBool:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(IteratorGenerator(BoolGenerator())));
+      case TypeTest.classOfClassOfListInt:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(IteratorGenerator(IntGenerator())));
+      case TypeTest.classOfClassOfListDouble:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(IteratorGenerator(DoubleGenerator())));
+      case TypeTest.classOfClassOfListString:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(IteratorGenerator(StringGenerator())));
+      // Class of class of map
+      case TypeTest.classOfClassOfMapBoolBool:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(BoolGenerator(), BoolGenerator())));
+      case TypeTest.classOfClassOfMapBoolInt:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(MapGenerator(BoolGenerator(), IntGenerator())));
+      case TypeTest.classOfClassOfMapBoolDouble:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(BoolGenerator(), DoubleGenerator())));
+      case TypeTest.classOfClassOfMapBoolString:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(BoolGenerator(), StringGenerator())));
+      case TypeTest.classOfClassOfMapIntBool:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(MapGenerator(IntGenerator(), BoolGenerator())));
+      case TypeTest.classOfClassOfMapIntInt:
+        return () => ContainerClassGenerator(
+            ValueClassGenerator(MapGenerator(IntGenerator(), IntGenerator())));
+      case TypeTest.classOfClassOfMapIntDouble:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(IntGenerator(), DoubleGenerator())));
+      case TypeTest.classOfClassOfMapIntString:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(IntGenerator(), StringGenerator())));
+      case TypeTest.classOfClassOfMapDoubleBool:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(DoubleGenerator(), BoolGenerator())));
+      case TypeTest.classOfClassOfMapDoubleInt:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(DoubleGenerator(), IntGenerator())));
+      case TypeTest.classOfClassOfMapDoubleDouble:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(DoubleGenerator(), DoubleGenerator())));
+      case TypeTest.classOfClassOfMapDoubleString:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(DoubleGenerator(), StringGenerator())));
+      case TypeTest.classOfClassOfMapStringBool:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(StringGenerator(), BoolGenerator())));
+      case TypeTest.classOfClassOfMapStringInt:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(StringGenerator(), IntGenerator())));
+      case TypeTest.classOfClassOfMapStringDouble:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(StringGenerator(), DoubleGenerator())));
+      case TypeTest.classOfClassOfMapStringString:
+        return () => ContainerClassGenerator(ValueClassGenerator(
+            MapGenerator(StringGenerator(), StringGenerator())));
     }
   }
 }
@@ -210,52 +316,57 @@ Map<TypeTest, ValueGenerator Function()> allTypeTests = {
 
 /// Default store type tests
 Map<TypeTest, ValueGenerator Function()> defaultStoreTypeTests = {
+  // Scalar
   TypeTest.bool: TypeTest.bool.generator,
   TypeTest.int: TypeTest.int.generator,
   TypeTest.double: TypeTest.double.generator,
   TypeTest.string: TypeTest.string.generator,
+  // List
   TypeTest.listOfBool: TypeTest.listOfBool.generator,
   TypeTest.listOfInt: TypeTest.listOfInt.generator,
   TypeTest.listOfDouble: TypeTest.listOfDouble.generator,
   TypeTest.listOfString: TypeTest.listOfString.generator,
-  TypeTest.mapOfBoolBool: TypeTest.mapOfBoolBool.generator,
-  TypeTest.mapOfIntInt: TypeTest.mapOfIntInt.generator,
-  TypeTest.mapOfDoubleDouble: TypeTest.mapOfDoubleDouble.generator,
+  // Map
+  TypeTest.mapOfStringBool: TypeTest.mapOfStringBool.generator,
+  TypeTest.mapOfStringInt: TypeTest.mapOfStringInt.generator,
+  TypeTest.mapOfStringDouble: TypeTest.mapOfStringDouble.generator,
   TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
+  // Class of scalar
   TypeTest.classOfBool: TypeTest.classOfBool.generator,
   TypeTest.classOfInt: TypeTest.classOfInt.generator,
   TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
   TypeTest.classOfString: TypeTest.classOfString.generator,
+  // Class of list
   TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
   TypeTest.classOfListInt: TypeTest.classOfListInt.generator,
   TypeTest.classOfListDouble: TypeTest.classOfListDouble.generator,
   TypeTest.classOfListString: TypeTest.classOfListString.generator,
-  TypeTest.classOfMapBoolBool: TypeTest.classOfMapBoolBool.generator,
-  TypeTest.classOfMapIntInt: TypeTest.classOfMapIntInt.generator,
-  TypeTest.classOfMapDoubleDouble: TypeTest.classOfMapDoubleDouble.generator,
+  // Class of map
+  TypeTest.classOfMapStringBool: TypeTest.classOfMapStringBool.generator,
+  TypeTest.classOfMapStringInt: TypeTest.classOfMapStringInt.generator,
+  TypeTest.classOfMapStringDouble: TypeTest.classOfMapStringDouble.generator,
   TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
-};
-
-/// Json store type tests
-Map<TypeTest, ValueGenerator Function()> jsonStoreTypeTests = {
-  TypeTest.bool: TypeTest.bool.generator,
-  TypeTest.int: TypeTest.int.generator,
-  TypeTest.double: TypeTest.double.generator,
-  TypeTest.string: TypeTest.string.generator,
-  TypeTest.listOfBool: TypeTest.listOfBool.generator,
-  TypeTest.listOfInt: TypeTest.listOfInt.generator,
-  TypeTest.listOfDouble: TypeTest.listOfDouble.generator,
-  TypeTest.listOfString: TypeTest.listOfString.generator,
-  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
-  TypeTest.classOfBool: TypeTest.classOfBool.generator,
-  TypeTest.classOfInt: TypeTest.classOfInt.generator,
-  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
-  TypeTest.classOfString: TypeTest.classOfString.generator,
-  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
-  TypeTest.classOfListInt: TypeTest.classOfListInt.generator,
-  TypeTest.classOfListDouble: TypeTest.classOfListDouble.generator,
-  TypeTest.classOfListString: TypeTest.classOfListString.generator,
-  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
+  // Class of class of scalar
+  TypeTest.classOfClassOfBool: TypeTest.classOfClassOfBool.generator,
+  TypeTest.classOfClassOfInt: TypeTest.classOfClassOfInt.generator,
+  TypeTest.classOfClassOfDouble: TypeTest.classOfClassOfDouble.generator,
+  TypeTest.classOfClassOfString: TypeTest.classOfClassOfString.generator,
+  // Class of class of list
+  TypeTest.classOfClassOfListBool: TypeTest.classOfClassOfListBool.generator,
+  TypeTest.classOfClassOfListInt: TypeTest.classOfClassOfListInt.generator,
+  TypeTest.classOfClassOfListDouble:
+      TypeTest.classOfClassOfListDouble.generator,
+  TypeTest.classOfClassOfListString:
+      TypeTest.classOfClassOfListString.generator,
+  // Class of class of map
+  TypeTest.classOfClassOfMapStringBool:
+      TypeTest.classOfClassOfMapStringBool.generator,
+  TypeTest.classOfClassOfMapStringInt:
+      TypeTest.classOfClassOfMapStringInt.generator,
+  TypeTest.classOfClassOfMapStringDouble:
+      TypeTest.classOfClassOfMapStringDouble.generator,
+  TypeTest.classOfClassOfMapStringString:
+      TypeTest.classOfClassOfMapStringString.generator,
 };
 
 /// Default stash type tests
@@ -266,16 +377,10 @@ Map<TypeTest, ValueGenerator Function()> defaultStashTypeTests = {
   TypeTest.classOfString: TypeTest.classOfString.generator,
   TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
   TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
-};
-
-/// Json stash type tests
-Map<TypeTest, ValueGenerator Function()> jsonStashTypeTests = {
-  TypeTest.bool: TypeTest.bool.generator,
-  TypeTest.listOfInt: TypeTest.listOfInt.generator,
-  TypeTest.mapOfStringString: TypeTest.mapOfStringString.generator,
-  TypeTest.classOfDouble: TypeTest.classOfDouble.generator,
-  TypeTest.classOfListBool: TypeTest.classOfListBool.generator,
-  TypeTest.classOfMapStringString: TypeTest.classOfMapStringString.generator,
+  TypeTest.classOfClassOfString: TypeTest.classOfClassOfString.generator,
+  TypeTest.classOfClassOfListBool: TypeTest.classOfClassOfListBool.generator,
+  TypeTest.classOfClassOfMapStringString:
+      TypeTest.classOfClassOfMapStringString.generator,
 };
 
 /// Assert that [actual] matches [matcher] in a specific test [ctx].
@@ -478,45 +583,86 @@ class MapGenerator extends ValueGenerator {
   }
 }
 
-/// A sample class used to test class serialization / deserialization scenarios
-class SampleClass with EquatableMixin {
+/// A value class used to test class serialization / deserialization scenarios
+class ValueClass with EquatableMixin {
   /// The stored value
   final dynamic value;
 
-  /// Builds a [SampleClass]
+  /// Builds a [ValueClass]
   ///
   /// * [value]: An optional value
-  SampleClass({this.value});
+  ValueClass({this.value});
 
   @override
   List<Object> get props => [value];
 
-  /// Creates a [SampleClass] from json map
-  factory SampleClass.fromJson(Map<String, dynamic> json) =>
-      SampleClass(value: json['value']);
+  /// Creates a [ValueClass] from json map
+  factory ValueClass.fromJson(Map<String, dynamic> json) =>
+      ValueClass(value: json['value']);
 
-  /// Creates a json map from a [SampleClass]
+  /// Creates a json map from a [ValueClass]
   Map<String, dynamic> toJson() => <String, dynamic>{'value': value};
 }
 
-/// A [SampleClass] implementation of a [ValueGenerator] which produces a [SampleClass] from a provided seed
-class SampleClassGenerator extends ValueGenerator {
-  /// The generator used for the [SampleClass] value
+/// A [ValueClass] implementation of a [ValueGenerator] which produces a [ValueClass] from a provided seed
+class ValueClassGenerator extends ValueGenerator {
+  /// The generator used for the [ValueClass] value
   final ValueGenerator _ithGenerator;
 
-  /// Builds a [SampleClassGenerator] with a provided [SampleClass.value] element generator, [_ithGenerator]
+  /// Builds a [ValueClassGenerator] with a provided [ValueClass.value] element generator, [_ithGenerator]
   ///
-  /// * [_ithGenerator]: The [SampleClass.value] generator
-  SampleClassGenerator(this._ithGenerator);
+  /// * [_ithGenerator]: The [ValueClass.value] generator
+  ValueClassGenerator(this._ithGenerator);
 
   @override
   dynamic nextValue(int seed) {
-    return SampleClass(value: _ithGenerator.nextValue(seed));
+    return ValueClass(value: _ithGenerator.nextValue(seed));
   }
 
   @override
   Function(Map<String, dynamic> json) get fromEncodable =>
-      (Map<String, dynamic> json) => SampleClass.fromJson(json);
+      (Map<String, dynamic> json) => ValueClass.fromJson(json);
+}
+
+/// A container class used to test class serialization / deserialization scenarios
+class ContainerClass with EquatableMixin {
+  /// The stored value
+  final ValueClass? value;
+
+  /// Builds a [ContainerClass]
+  ///
+  /// * [value]: A [ValueClass]
+  ContainerClass({this.value});
+
+  @override
+  List<Object?> get props => [value];
+
+  /// Creates a [ContainerClass] from json map
+  factory ContainerClass.fromJson(Map<String, dynamic> json) => ContainerClass(
+      value: ValueClass.fromJson(json['value'] as Map<String, dynamic>));
+
+  /// Creates a json map from a [ContainerClass]
+  Map<String, dynamic> toJson() => <String, dynamic>{'value': value?.toJson()};
+}
+
+/// A [ValueClass] implementation of a [ValueGenerator] which produces a [ValueClass] from a provided seed
+class ContainerClassGenerator extends ValueGenerator {
+  /// The generator used for the [ContainerClass] value
+  final ValueGenerator _ithGenerator;
+
+  /// Builds a [ContainerClassGenerator] with a provided [ContainerClass.value] element generator, [_ithGenerator]
+  ///
+  /// * [_ithGenerator]: The [ContainerClass.value] generator
+  ContainerClassGenerator(this._ithGenerator);
+
+  @override
+  dynamic nextValue(int seed) {
+    return ContainerClass(value: _ithGenerator.nextValue(seed));
+  }
+
+  @override
+  Function(Map<String, dynamic> json) get fromEncodable =>
+      (Map<String, dynamic> json) => ContainerClass.fromJson(json);
 }
 
 abstract class EntryGenerator<I extends Info, E extends Entry<I>> {

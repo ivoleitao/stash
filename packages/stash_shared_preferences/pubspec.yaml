@@ -1,5 +1,5 @@
 name: stash_shared_preferences
-version: 4.6.1
+version: 5.0.1
 description: >-
   Shared preferences extension for the stash API. Provides support to store vaults 
   and caches in shared preferences
@@ -8,21 +8,21 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
-  flutter: ">=3.7.0"
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.13.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.8.0
-  stash: ^4.5.2
-  shared_preferences: ^2.0.18
+  meta: ^1.9.1
+  stash: ^5.0.1
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-  stash_test: ^4.5.2
+  flutter_lints: ^2.0.2
+  stash_test: ^5.0.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
