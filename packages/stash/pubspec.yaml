@@ -20,6 +20,6 @@ dependencies:
   uuid: ^3.0.7
 dev_dependencies:
   # Flutter shared dependencies
-  test: ^1.24.1
+  test: ^1.24.3
   # Other dependencies
   lints: ^2.1.1
