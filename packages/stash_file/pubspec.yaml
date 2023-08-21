@@ -1,5 +1,5 @@
 name: stash_file
-version: 5.0.0
+version: 5.0.1
 description: >-
   File storage extension for the stash API. Provides support to store vaults 
   and caches in the local file system in binary format using the msgpack json format

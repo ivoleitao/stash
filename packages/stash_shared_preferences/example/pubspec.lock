@@ -293,14 +293,14 @@ packages:
       path: "../../stash"
       relative: true
     source: path
-    version: "5.0.0"
+    version: "5.0.1"
   stash_shared_preferences:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "5.0.0"
+    version: "5.0.1"
   stream_channel:
     dependency: transitive
     description:

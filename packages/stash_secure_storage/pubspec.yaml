@@ -1,5 +1,5 @@
 name: stash_secure_storage
-version: 5.0.0
+version: 5.0.1
 description: >-
   Secure storage extension for the stash API. Provides support to store vaults 
   and caches in secure storage
