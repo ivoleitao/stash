@@ -15,7 +15,7 @@ dependencies:
   meta: ^1.9.1
   # Other dependencies
   sembast: ^3.4.9
-  stash: ^5.0.0
+  stash: ^5.0.1
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.3
