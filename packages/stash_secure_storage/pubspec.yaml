@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.9.1
-  stash: ^5.0.0
+  stash: ^5.0.1
   flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
