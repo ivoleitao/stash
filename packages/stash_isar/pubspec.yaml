@@ -1,5 +1,5 @@
 name: stash_isar
-version: 5.0.0
+version: 5.0.1
 description: >-
   Isar storage extension for the stash caching API. Provides support to store vaults 
   and caches in the Isar database
