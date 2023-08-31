@@ -17,7 +17,7 @@ dependencies:
   async: ^2.11.0
   # Other dependencies
   equatable: ^2.0.5
-  uuid: ^3.0.7
+  uuid: ">=3.0.7 <5.0.0"
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.3
