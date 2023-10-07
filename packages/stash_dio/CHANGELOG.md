@@ -1,3 +1,7 @@
+## 5.0.4
+
+ - **CHORE**: Missing dependency update on the last release.
+
 ## 5.0.3
 
  - **CHORE**: Update a dependency to the latest release.
