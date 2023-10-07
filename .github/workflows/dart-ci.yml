@@ -27,7 +27,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest']
         channel: ['stable']        
-        flutter_version: ['3.13.0']
+        flutter_version: ['3.13.6']
 
     runs-on: ${{ matrix.os }}
 

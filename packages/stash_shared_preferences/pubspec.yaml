@@ -16,12 +16,12 @@ dependencies:
     sdk: flutter
   meta: ^1.9.1
   stash: ^5.0.1
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
   stash_test: ^5.0.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

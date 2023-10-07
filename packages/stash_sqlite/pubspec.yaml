@@ -11,7 +11,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  drift: ^2.11.0
+  drift: ^2.12.1
   stash: ^5.0.1
 dev_dependencies:
   # Flutter shared dependencies
@@ -20,4 +20,4 @@ dev_dependencies:
   lints: ^2.1.1
   build_runner: ^2.4.6
   stash_test: ^5.0.1
-  drift_dev: ^2.11.0
+  drift_dev: ^2.12.1

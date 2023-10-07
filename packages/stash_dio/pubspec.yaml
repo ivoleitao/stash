@@ -14,13 +14,13 @@ dependencies:
   equatable: ^2.0.5
   http_parser: ^4.0.2
   crypto: ^3.0.3
-  dio: ^5.3.2
+  dio: ^5.3.3
   stash: ^5.0.1
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.3
   # Other dependencies
   lints: ^2.1.1
-  mocktail: ^1.0.0
+  mocktail: ^1.0.1
   stash_memory: ^5.0.1
   stash_file: ^5.0.1
