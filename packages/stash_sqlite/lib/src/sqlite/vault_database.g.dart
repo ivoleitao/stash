@@ -49,9 +49,10 @@ class $VaultTableTable extends VaultTable
   List<GeneratedColumn> get $columns =>
       [name, key, creationTime, accessTime, updateTime, value];
   @override
-  String get aliasedName => _alias ?? 'Vault';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'Vault';
+  String get actualTableName => $name;
+  static const String $name = 'Vault';
   @override
   VerificationContext validateIntegrity(Insertable<VaultData> instance,
       {bool isInserting = false}) {

@@ -70,9 +70,10 @@ class $CacheTableTable extends CacheTable
         value
       ];
   @override
-  String get aliasedName => _alias ?? 'Cache';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'Cache';
+  String get actualTableName => $name;
+  static const String $name = 'Cache';
   @override
   VerificationContext validateIntegrity(Insertable<CacheData> instance,
       {bool isInserting = false}) {

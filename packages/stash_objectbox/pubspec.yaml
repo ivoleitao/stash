@@ -1,5 +1,5 @@
 name: stash_objectbox
-version: 5.0.1
+version: 5.0.2
 description: >-
   Objectbox storage extension for the stash API. Provides support to store vaults 
   and caches in a Objectbox database
@@ -16,7 +16,7 @@ dependencies:
   path: ^1.8.3
   # Other dependencies
   stash: ^5.0.1
-  objectbox: ^2.2.0
+  objectbox: ^2.3.1
   flat_buffers: ^2.0.5
 dev_dependencies:
   # Flutter shared dependencies
@@ -25,4 +25,4 @@ dev_dependencies:
   lints: ^2.1.1
   build_runner: ^2.4.6
   stash_test: ^5.0.1
-  objectbox_generator: ^2.2.0
+  objectbox_generator: ^2.3.1
