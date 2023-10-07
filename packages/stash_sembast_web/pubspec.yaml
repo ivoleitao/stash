@@ -20,4 +20,4 @@ dev_dependencies:
   # Other dependencies
   lints: ^2.1.1
   stash: ^5.0.2
-  stash_test: ^5.0.1
+  stash_test: ^5.0.2

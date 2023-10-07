@@ -17,4 +17,4 @@ dev_dependencies:
   test: ^1.24.3
   # Other dependencies
   lints: ^2.1.1
-  stash_test: ^5.0.1
+  stash_test: ^5.0.2
