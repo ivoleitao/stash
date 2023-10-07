@@ -1,5 +1,5 @@
 name: stash_shared_preferences
-version: 5.0.1
+version: 5.0.2
 description: >-
   Shared preferences extension for the stash API. Provides support to store vaults 
   and caches in shared preferences

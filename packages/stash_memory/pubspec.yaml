@@ -1,5 +1,5 @@
 name: stash_memory
-version: 5.0.1
+version: 5.0.2
 description: >-
   Memory storage extension for the stash API. Provides support to store vaults 
   and caches in-memory

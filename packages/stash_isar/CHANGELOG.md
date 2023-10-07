@@ -1,3 +1,7 @@
+## 5.0.2
+
+ - **CHORE**: Update a dependency to the latest release.
+
 ## 5.0.1
 
  - **FIX**: wrong version number. ([a9230c50](https://github.com/ivoleitao/stash/commit/a9230c50a42923261fcf2737c4abe625a0cf67e6))
