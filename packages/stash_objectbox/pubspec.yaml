@@ -22,7 +22,7 @@ dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.3
   # Other dependencies
-  lints: ^2.1.1
+  lints: ">=2.1.1 <4.0.0"
   build_runner: ^2.4.6
   stash_test: ^5.0.2
   objectbox_generator: ^2.3.1
