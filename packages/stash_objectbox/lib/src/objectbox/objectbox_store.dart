@@ -222,8 +222,7 @@ class ObjectboxVaultStore
 class ObjectboxCacheStore
     extends ObjectboxStore<CacheEntity, CacheInfo, CacheEntry>
     implements CacheStore {
-  ObjectboxCacheStore(ObjectboxAdapter adapter, {StoreCodec? codec})
-      : super(adapter, codec: codec);
+  ObjectboxCacheStore(super.adapter, {super.codec});
 
   @override
   CacheEntity _toEntity(CacheEntry entry) {

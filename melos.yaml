@@ -16,142 +16,111 @@ command:
       post: melos generate 
 
 scripts:
-  get:
-    run: |
-      melos exec -c 1 -- \
-        "dart pub get"
-    description: |
-      Run `dart pub get` in all packages.
-
-  upgrade:
-    run: |
-      melos exec -c 1 -- \
-        "dart pub upgrade"
-    description: |
-      Run `dart pub upgrade` in all packages.
-
-  outdated:
-    run: |
-      melos exec -c 1 -- \
-        "dart pub outdated"
-    description: |
-      Run `dart pub outdated` in all packages.
+  install:
+    description: Installs library dependencies
+    run: melos run install:objectbox
 
   install:objectbox:
-    run: |
-      bash -c 'bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)'
-
-  install:
-    run: melos run install:objectbox
-    description: |
-      Installs library dependencies
+    run: bash -c 'bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)'
 
   generate:
+    description: Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
     run: |
       melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" --scope="stash_isar" -- \
         "dart run build_runner build --delete-conflicting-outputs"
-    description: |
-      Run `dart run build_runner --delete-conflicting-outputs` in supporting packages.
+
+  analyze:
+    description: Analyze dart and flutter packages in this project
+    run: melos run analyze:dart && melos run analyze:flutter
   
+  analyze:dart:
+    description: Analyze a dart package in this project
+    exec: dart analyze . --fatal-infos
+    packageFilters:
+      flutter: false
+
+  analyze:flutter:
+    description: Analyze a flutter package in this project
+    exec: flutter analyze . --fatal-infos
+    packageFilters:
+      flutter: true
+
+  check-format:
+    description: Check the format of a package in this project.
+    exec: dart format --set-exit-if-changed .
+
+  format:
+    description: Format a package in this project.
+    exec: dart format .
+ 
   clean:
+    description: Run `dart run build_runner clean` in the selected packages.
     run: |
       melos exec -c 1 --scope="stash_sqlite" --scope="stash_objectbox" --scope="stash_isar" -- \
         "dart run build_runner clean"
-    description: |
-      Run `dart run build_runner clean` in the selected packages.
-
-  analyze:
-    run: |
-      melos exec -c 1 --no-flutter -- \
-        "dart analyze . --fatal-infos"
-      melos exec -c 1 --flutter -- \
-        "flutter analyze . --fatal-infos"
-    description: |
-      Run `dart analyze` in all packages.
-
-  format:
-    run: |
-      melos exec -c 1 -- \
-        "dart format --set-exit-if-changed ."
-    description: |
-      Run `dart format` in all packages.
-  
+ 
   doc:
+    description: Generate documentation for all packages.
     run: |
       melos exec -- \
         rm -Rf "doc"
       melos exec -c 1 -- \
         "dart pub global run dartdoc ."
-    description: |
-      Generate documentation for all packages.
 
   test:
+    description: Run `dart test` in vm, chrome and flutter in the selected packages
     run: melos run test:vm && melos run test:chrome && melos run test:flutter
-    description: |
-      Run `dart test` in vm, chrome and flutter in the selected packages
   
   test:vm:
+    description: Run `dart test -p vm` in the selected packages.
     run: |
       melos exec -c 1 --no-flutter --ignore="stash_sembast_web" \
         "dart test -p vm"
-    description: |
-      Run `dart test -p vm` in the selected packages.
 
   test:chrome:
+    description: Run `dart test -p chome` in the selected packages. 
     run: |
       melos exec -c 1 --no-flutter --scope="stash" --scope="stash_memory" --scope="stash_hive" --scope="stash_sembast_web" --scope="stash_dio" \
         "dart test -p chrome"
-    description: |
-      Run `dart test -p chome` in the selected packages. 
 
   test:flutter:
+    description: Run `flutter test` in the selected packages.
     run: |
       melos exec -c 1 --flutter \
         "flutter test"
-    description: |
-      Run `flutter test` in the selected packages.
 
   coverage:
+    description: Run `dart test` in vm and chrome and collects coverage.
     run: melos run coverage:vm && melos run coverage:chrome && melos run coverage:flutter
-    description: |
-      Run `dart test` in vm and chrome and collects coverage.
 
   coverage:vm:
+    description: Run `dart test -p vm` in the selected packages and collects coverage.
     run: |
       melos exec -c 1 --no-flutter --ignore="stash_sembast_web" \
         "dart test -p vm --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
-    description: |
-      Run `dart test -p vm` in the selected packages and collects coverage.
 
   coverage:chrome:
+    description: Run `dart test -p chrome` in the selected packages and collects coverage.
     run: |
       melos exec -c 1 --no-flutter --scope="stash_sembast_web" \
         "dart test -p chrome --concurrency=1 --coverage=coverage && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
-    description: |
-      Run `dart test -p chrome` in the selected packages and collects coverage.
 
   coverage:flutter:
+    description: Run `flutter test` in the selected packages and collects coverage.
     run: |
       melos exec -c 1 --flutter --scope="stash_shared_preferences" --scope="stash_secure_storage" \
         "flutter test --concurrency=1 --coverage --coverage-path=coverage/lcov.info && dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib"
-    description: |
-      Run `flutter test` in the selected packages and collects coverage.
 
   verify:
+    description: Verify package
     run: |
       melos exec -c 1 --no-flutter --no-private \
         "dart pub publish --dry-run"
       melos exec -c 1 --flutter --no-private \
         "flutter pub publish --dry-run"
-    description: |
-      Verify package
 
   codecov:
+    description: Uploads the code coverage to codecov.
     run: |
       melos exec -c 1 -- \
         "bash -c 'bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -F MELOS_PACKAGE_NAME'"
-    description: |
-      Uploads the code coverage to codecov.
-
-  postbootstrap: |
-    melos run generate 

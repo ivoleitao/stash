@@ -58,8 +58,7 @@ class VaultEntryBuilder<T> extends EntryBuilder<T, VaultInfo, VaultEntry> {
   /// * [creationTime]: The entry creation time
   /// * [accessTime]: The access time
   /// * [updateTime]: The update time
-  VaultEntryBuilder(String key, T value, DateTime creationTime)
-      : super(key, value, creationTime);
+  VaultEntryBuilder(super.key, super.value, super.creationTime);
 
   @override
   VaultEntry build() {

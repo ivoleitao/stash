@@ -1,3 +1,10 @@
+## 5.0.3
+
+ - **CHORE**: Updated dependencies to the latest release.
+ - **CHORE**: Updated melos script
+ - **CHORE**: Moved to super in the constructor calls missing
+ - **CHORE**: Updated min dart SDK to 3.2.0
+
 ## 5.0.2
 
  - **CHORE**: Update a dependency to the latest release.

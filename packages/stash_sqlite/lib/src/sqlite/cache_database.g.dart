@@ -403,19 +403,23 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
     }
     if (creationTime.present) {
       final converter = $CacheTableTable.$convertercreationTime;
+
       map['creation_time'] =
           Variable<String>(converter.toSql(creationTime.value));
     }
     if (expiryTime.present) {
       final converter = $CacheTableTable.$converterexpiryTime;
+
       map['expiry_time'] = Variable<String>(converter.toSql(expiryTime.value));
     }
     if (accessTime.present) {
       final converter = $CacheTableTable.$converteraccessTime;
+
       map['access_time'] = Variable<String>(converter.toSql(accessTime.value));
     }
     if (updateTime.present) {
       final converter = $CacheTableTable.$converterupdateTime;
+
       map['update_time'] = Variable<String>(converter.toSql(updateTime.value));
     }
     if (hitCount.present) {

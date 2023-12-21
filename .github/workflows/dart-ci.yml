@@ -27,7 +27,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest']
         channel: ['stable']        
-        flutter_version: ['3.13.6']
+        flutter_version: ['3.16.5']
 
     runs-on: ${{ matrix.os }}
 
@@ -59,7 +59,7 @@ jobs:
           
       - name: Linter
         run: |
-          melos format
+          melos check-format
           melos analyze
 
       - name: Test

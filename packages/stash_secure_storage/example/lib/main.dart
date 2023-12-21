@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
 }
 
 class SharedPreferencesDemo extends StatefulWidget {
-  const SharedPreferencesDemo({Key? key}) : super(key: key);
+  const SharedPreferencesDemo({super.key});
 
   @override
   SharedPreferencesDemoState createState() => SharedPreferencesDemoState();

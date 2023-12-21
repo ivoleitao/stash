@@ -325,15 +325,18 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
     }
     if (creationTime.present) {
       final converter = $VaultTableTable.$convertercreationTime;
+
       map['creation_time'] =
           Variable<String>(converter.toSql(creationTime.value));
     }
     if (accessTime.present) {
       final converter = $VaultTableTable.$converteraccessTime;
+
       map['access_time'] = Variable<String>(converter.toSql(accessTime.value));
     }
     if (updateTime.present) {
       final converter = $VaultTableTable.$converterupdateTime;
+
       map['update_time'] = Variable<String>(converter.toSql(updateTime.value));
     }
     if (value.present) {

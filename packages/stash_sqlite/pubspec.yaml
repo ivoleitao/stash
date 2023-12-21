@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 5.0.2
+version: 5.0.3
 description: >-
    storage extension for the stash API. Provides support to store vaults and 
    caches in a sqlite database in binary format using the msgpack json format
@@ -8,14 +8,14 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   drift: ^2.12.1
   stash: ^5.0.2
 dev_dependencies:
   # Flutter shared dependencies
-  test: ^1.24.3
+  test: ^1.24.9
   # Other dependencies
   lints: ">=2.1.1 <4.0.0"
   build_runner: ^2.4.6
