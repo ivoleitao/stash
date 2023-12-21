@@ -5,6 +5,9 @@ import 'package:stash/src/api/vault/vault_stats.dart';
 
 import '../stash.dart';
 
+/// Vault loader function
+typedef VaultLoader<T> = Future<T> Function(String key);
+
 /// Vault entry delegate
 typedef VaultEntryDelegate<T> = VaultEntryBuilder<T> Function(
     VaultEntryBuilder<T> delegate);
@@ -20,6 +23,13 @@ abstract class Vault<T> extends Stash<T> {
 
   // Gets the vault stats
   VaultStats get stats;
+
+  /// Returns the vault value for the specified [key].
+  ///
+  /// * [key]: the key
+  /// * [delegate]: provides the caller a way of changing the [VaultEntry] before persistence
+  @override
+  Future<T?> get(String key, {VaultEntryDelegate<T>? delegate});
 
   /// Add / Replace the vault [value] for the specified [key].
   ///

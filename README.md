@@ -93,7 +93,7 @@ import 'package:stash/stash_memory.dart';
 
 ## Usage
 
-Start by creating an instance of the storage backend and to decide if the stash needs caching or plain key-value semantics. For the former we need a cache while for the latter we need a vault. For example, to use an in-memory vault you we need to call the `newMemoryVaultStore` function wchich is exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
+Start by creating an instance of the storage backend and to decide if the stash needs caching or plain key-value semantics. For the former we need a cache while for the latter we need a vault. For example, to use an in-memory vault you we need to call the `newMemoryVaultStore` function which is exported by the [stash_memory](https://github.com/ivoleitao/stash/tree/develop/packages/stash_memory) package. This function allows the user to bootstrap a in-memory store for vaults. Note that there is a similar one for caches dubbed `newMemoryCacheStore`
 
 ```dart
   // Create a in-memory store
@@ -297,6 +297,8 @@ void main() async {
 }
 ```
 
+It's possible to automate the fetching of value whenever a vault or cache entry is not present or when the entry expired. You just need to provide a `vaultLoader` or a `cacheLoader` and when some entry is absent or expired stash can retrieve a new value for the specified key. The loader is configured when creating a vault or a cache e.g. `store.cache(cacheLoader: (key) => ...)`. Note that this function must return a `Future`.
+
 ## Vault
 
 ### Operations
@@ -431,8 +433,6 @@ It's possible to define how the expiration of cache entries works based on creat
 | `AccessedExpiryPolicy` | Whenever the cache is created or accessed the configured duration is appended to the current time. |
 | `ModifiedExpiryPolicy` | Whenever the cache is created or updated the configured duration is appended to the current time. |
 | `TouchedExpiryPolicy` | Whenever the cache is created, accessed or updated the configured duration is appended to the current time. |
-
-When the cache expires it's possible to automate the fetching of a new value from the system of records, through the `cacheLoader` mechanism. The user can provide a `CacheLoader` function that should retrieve a new value for the specified key e.g. `store.cache(cacheLoader: (key) => ...)`. Note that this function must return a `Future`.
 
 ### Eviction Policies
 

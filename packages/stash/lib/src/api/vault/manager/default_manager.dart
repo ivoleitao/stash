@@ -19,6 +19,7 @@ class DefaultVaultManager extends VaultManager {
   Future<Vault<T>> newGenericVault<T>(Store<VaultInfo, VaultEntry> store,
       {String? name,
       dynamic Function(Map<String, dynamic>)? fromEncodable,
+      VaultLoader<T>? vaultLoader,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
@@ -27,6 +28,7 @@ class DefaultVaultManager extends VaultManager {
         manager: this,
         name: name,
         clock: clock,
+        vaultLoader: vaultLoader,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);

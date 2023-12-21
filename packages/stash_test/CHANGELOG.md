@@ -3,6 +3,7 @@
  - **CHORE**: Updated min dart SDK to 3.2.0
  - **CHORE**: Updated dependencies to the latest release.
  - **CHORE**: Updated melos script
+ - **FEAT**: Added support for vaultLoader tests
 
 ## 5.0.2
 

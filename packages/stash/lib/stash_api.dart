@@ -95,6 +95,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
   /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+  /// * [vaultLoader]: The [VaultLoader] is used to fetch a new value upon absence
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -104,12 +105,14 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
       {VaultManager? manager,
       String? name,
       dynamic Function(Map<String, dynamic>)? fromEncodable,
+      VaultLoader<T>? vaultLoader,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
     return (manager ?? VaultManager.instance).newGenericVault<T>(store,
         name: name,
         fromEncodable: fromEncodable,
+        vaultLoader: vaultLoader,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -120,6 +123,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
   /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
   /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+  /// * [vaultLoader]: The [VaultLoader] that should be used to fetch a new value upon absence
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -129,6 +133,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
       {VaultManager? manager,
       String? name,
       dynamic Function(Map<String, dynamic>)? fromEncodable,
+      VaultLoader<T>? vaultLoader,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats}) {
@@ -136,6 +141,7 @@ extension VaultExtension on Store<VaultInfo, VaultEntry> {
         manager: manager,
         name: name,
         fromEncodable: fromEncodable,
+        vaultLoader: vaultLoader,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
         stats: stats);
@@ -155,7 +161,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
   /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [cacheLoader]: The [CacheLoader] is used to fetch a new value upon absence or expiration
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
@@ -193,7 +199,7 @@ extension CacheExtension on Store<CacheInfo, CacheEntry> {
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
   /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon expiration
+  /// * [cacheLoader]: The [CacheLoader] that should be used to fetch a new value upon absence or expiration
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance
