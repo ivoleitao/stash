@@ -15,7 +15,7 @@ dependencies:
   meta: ^1.10.0
   path: ^1.8.3
   # Other dependencies
-  stash: ^5.0.2
+  stash: ^5.0.3
   objectbox: ^2.4.0
   flat_buffers: ^2.0.5
 dev_dependencies:
