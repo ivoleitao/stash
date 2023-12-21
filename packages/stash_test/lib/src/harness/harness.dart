@@ -399,6 +399,8 @@ void check<I extends Info, E extends Entry<I>, T extends Store<I, E>>(
 /// * [store]: The store implementation
 /// * [name]: The name of the vault
 /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+/// * [vaultLoader]: The [VaultLoader], that should be used to fetch a new value upon absence
+/// * [clock]: The source of time to be used
 /// * [eventListenerMode]: The event listener mode of this vault
 /// * [statsEnabled]: If statistics should be collected, defaults to false
 /// * [stats]: The statistics instance
@@ -406,6 +408,7 @@ Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
     T store,
     {String? name,
     dynamic Function(Map<String, dynamic>)? fromEncodable,
+    VaultLoader<V>? vaultLoader,
     Clock? clock,
     EventListenerMode? eventListenerMode,
     bool? statsEnabled,
@@ -413,6 +416,7 @@ Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
   return DefaultVaultManager().newGenericVault(store,
       name: name,
       fromEncodable: fromEncodable,
+      vaultLoader: vaultLoader,
       clock: clock,
       eventListenerMode: eventListenerMode,
       statsEnabled: statsEnabled,
@@ -428,7 +432,7 @@ Future<Vault<V>> newGenericVault<V, T extends Store<VaultInfo, VaultEntry>>(
 /// * [sampler]: The sampler to use upon eviction of a cache element
 /// * [evictionPolicy]: The eviction policy to use
 /// * [maxEntries]: The max number of entries this cache can hold if provided.
-/// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
+/// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon absence or expiration
 /// * [clock]: The source of time to be used
 /// * [eventListenerMode]: The event listener mode of this cache
 /// * [statsEnabled]: If statistics should be collected, defaults to false
@@ -714,6 +718,7 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   /// * [store]: The [Store]
   /// * [name]: The name of the vault
   /// * [fromEncodable]: The function that converts between the Map representation of the object and the object itself.
+  /// * [vaultLoader]: The [VaultLoader], that should be used to fetch a new value upon absence
   /// * [clock]: The source of time to be used on this
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false
@@ -721,6 +726,7 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
   Future<Vault<V>> newVault<V>(T store,
       {String? name,
       dynamic Function(Map<String, dynamic>)? fromEncodable,
+      VaultLoader<V>? vaultLoader,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
@@ -728,6 +734,7 @@ abstract class VaultTestContext<T extends Store<VaultInfo, VaultEntry>>
     return newGenericVault<V, T>(store,
         name: name,
         fromEncodable: fromEncodable ?? generator.fromEncodable,
+        vaultLoader: vaultLoader,
         clock: clock,
         eventListenerMode: eventListenerMode,
         statsEnabled: statsEnabled,
@@ -766,7 +773,7 @@ abstract class CacheTestContext<T extends Store<CacheInfo, CacheEntry>>
   /// * [sampler]: The sampler to use upon eviction of a cache element
   /// * [evictionPolicy]: The eviction policy to use
   /// * [maxEntries]: The max number of entries this cache can hold if provided.
-  /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
+  /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon absence or expiration
   /// * [clock]: The source of time to be used on this
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false

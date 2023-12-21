@@ -49,8 +49,8 @@ class GenericCache<T> implements Cache<T> {
   /// The maximum number of entries supported by this cache
   final int maxEntries;
 
-  /// The [CacheLoader] for this cache. When set is used
-  /// when the cache is expired to fetch a new value
+  /// The [CacheLoader] for this cache. When set it's used whenever
+  /// a get by key returns null (absent or expired)
   final CacheLoader<T?> cacheLoader;
 
   /// The source of time to be used on this cache
@@ -77,7 +77,7 @@ class GenericCache<T> implements Cache<T> {
   /// * [sampler]: The sampler to use upon eviction of a cache element, defaults to [FullSampler] if not provided
   /// * [evictionPolicy]: The eviction policy to use, defaults to [LfuEvictionPolicy] if not provided
   /// * [maxEntries]: The max number of entries this cache can hold if provided. To trigger the eviction policy this value should be provided
-  /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon expiration
+  /// * [cacheLoader]: The [CacheLoader], that should be used to fetch a new value upon absence or expiration
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [eventListenerMode]: The event listener mode of this cache
   /// * [statsEnabled]: If statistics should be collected, defaults to false

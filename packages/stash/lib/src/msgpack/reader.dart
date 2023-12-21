@@ -68,13 +68,12 @@ class MsgPackReader extends BytesReader {
   /// * [list]: The [Uint8List] byte buffer to read the object from
   /// * [fromEncodable]: A custom function the converts the deserialized `Map<String, dynamic>` representation of the object into the object
   /// * [extensions]: A optional list of extensions to use
-  MsgPackReader(Uint8List list,
+  MsgPackReader(super.list,
       {this.mode = MsgPackReaderMode.standard,
       dynamic Function(Map<String, dynamic>)? fromEncodable,
       List<MsgPackExtension>? extensions})
       : _fromEncodable = fromEncodable ?? _defaultFromEncodable,
-        _extensions = [const DateTimeExtension(), ...?extensions],
-        super(list);
+        _extensions = [const DateTimeExtension(), ...?extensions];
 
   /// Reads a [String]
   ///

@@ -1,3 +1,9 @@
+## 5.0.5
+
+ - **CHORE**: Updated min dart SDK to 3.2.0
+ - **CHORE**: Updated dependencies to the latest release.
+ - **CHORE**: Updated melos script
+
 ## 5.0.4
 
  - **CHORE**: Missing dependency update on the last release.

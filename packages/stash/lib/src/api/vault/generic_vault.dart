@@ -29,6 +29,10 @@ class GenericVault<T> implements Vault<T> {
   /// The [Store] for this vault
   final Store<VaultInfo, VaultEntry> storage;
 
+  /// The [VaultLoader] for this vault. When set it's used whenever
+  /// a get by key returns null
+  final VaultLoader<T?> vaultLoader;
+
   /// The source of time to be used on this vault
   final Clock clock;
 
@@ -50,6 +54,7 @@ class GenericVault<T> implements Vault<T> {
   /// * [storage]: The [Store]
   /// * [manager]: An optional [VaultManager]
   /// * [name]: The name of the vault
+  /// * [vaultLoader]: The [VaultLoader], that should be used to fetch a new value upon absence
   /// * [clock]: The source of time to be used on this, defaults to the system clock if not provided
   /// * [statsEnabled]: If statistics should be collected, defaults to false
   /// * [stats]: The statistics instance, defaults to [DefaultVaultStats]
@@ -58,11 +63,13 @@ class GenericVault<T> implements Vault<T> {
   GenericVault(this.storage,
       {this.manager,
       String? name,
+      VaultLoader<T>? vaultLoader,
       Clock? clock,
       EventListenerMode? eventListenerMode,
       bool? statsEnabled,
       VaultStats? stats})
       : name = name ?? Uuid().v1(),
+        vaultLoader = vaultLoader ?? ((key) => Future<T?>.value()),
         clock = clock ?? Clock(),
         eventPublishingMode = eventListenerMode ?? EventListenerMode.disabled,
         streamController = StreamController.broadcast(
@@ -206,7 +213,7 @@ class GenericVault<T> implements Vault<T> {
   }
 
   @override
-  Future<T?> get(String key) {
+  Future<T?> get(String key, {VaultEntryDelegate<T>? delegate}) {
     // Current time
     final now = clock.now();
     // #region Statistics
@@ -230,7 +237,15 @@ class GenericVault<T> implements Vault<T> {
     return _getStorageEntry(key).then((entry) {
       // Does this entry exists ?
       if (entry == null) {
-        return Future<T?>.value();
+        return vaultLoader(key).then((value) {
+          // If the value obtained is `null` just return it
+          if (value == null) {
+            return Future<T?>.value();
+          }
+
+          return _newEntry(_entryBuilder(key, value, now, delegate: delegate))
+              .then((_) => value);
+        });
       } else {
         return _getEntryValue(entry, now);
       }

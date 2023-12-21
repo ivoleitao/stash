@@ -27,6 +27,7 @@ enum VaultTest {
   clear,
   remove,
   removeAll,
+  loader,
   createdEvent,
   updatedEvent,
   removedEvent,
@@ -51,6 +52,7 @@ const _vaultTests = {
   VaultTest.clear,
   VaultTest.remove,
   VaultTest.removeAll,
+  VaultTest.loader,
   VaultTest.createdEvent,
   VaultTest.updatedEvent,
   VaultTest.removedEvent,
@@ -467,6 +469,25 @@ Future<T> _vaultRemoveAll<T extends Store<VaultInfo, VaultEntry>>(
 }
 
 /// Builds a [Vault] backed by the provided [Store] builder
+/// configured with a [VaultLoader]
+///
+/// * [ctx]: The test context
+///
+/// Returns the created store
+Future<T> _vaultLoader<T extends Store<VaultInfo, VaultEntry>>(
+    VaultTestContext<T> ctx) async {
+  final store = await ctx.newStore();
+
+  final value1 = ctx.generator.nextValue(1);
+  final vault =
+      await ctx.newVault(store, vaultLoader: (key) => Future.value(value1));
+  final value = await vault.get('key_1');
+  check(ctx, value, equals(value1), '_vaultLoader_1');
+
+  return store;
+}
+
+/// Builds a [Vault] backed by the provided [Store] builder
 /// configured with a [VaultEntryCreatedEvent]
 ///
 /// * [ctx]: The test context
@@ -671,6 +692,7 @@ List<Future<T> Function(VaultTestContext<T>)>
     if (tests.contains(VaultTest.clear)) _vaultClear,
     if (tests.contains(VaultTest.remove)) _vaultRemove,
     if (tests.contains(VaultTest.removeAll)) _vaultRemoveAll,
+    if (tests.contains(VaultTest.loader)) _vaultLoader,
     if (tests.contains(VaultTest.createdEvent)) _vaultCreatedEvent,
     if (tests.contains(VaultTest.updatedEvent)) _vaultUpdatedEvent,
     if (tests.contains(VaultTest.removedEvent)) _vaultRemovedEvent,

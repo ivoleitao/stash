@@ -689,16 +689,20 @@ Future<T> _cacheLoader<T extends Store<CacheInfo, CacheEntry>>(
   var now = Clock().fromNow(minutes: 10);
   final store = await ctx.newStore();
 
+  final value1 = ctx.generator.nextValue(1);
   final value2 = ctx.generator.nextValue(2);
   final cache = await ctx.newCache(store,
       expiryPolicy: const AccessedExpiryPolicy(Duration(seconds: 0)),
       cacheLoader: (key) => Future.value(value2),
       clock: Clock(() => now));
 
-  await cache.put('key_1', ctx.generator.nextValue(1));
+  await cache.put('key_1', value1);
+  var value = await cache.get('key_1');
+  check(ctx, value, equals(value1), '_cacheLoader_1');
+
   now = Clock().fromNow(minutes: 20);
-  final value = await cache.get('key_1');
-  check(ctx, value, equals(value2), '_cacheLoader_1');
+  value = await cache.get('key_1');
+  check(ctx, value, equals(value2), '_cacheLoader_2');
 
   return store;
 }
