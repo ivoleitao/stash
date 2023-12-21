@@ -13,11 +13,11 @@ environment:
 dependencies:
   sembast: ^3.5.0+1
   sembast_web: ^2.2.0
-  stash_sembast: ^5.0.2
+  stash_sembast: ^5.0.3
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.9
   # Other dependencies
   lints: ^3.0.0
   stash: ^5.0.3
-  stash_test: ^5.0.2
+  stash_test: ^5.0.3
