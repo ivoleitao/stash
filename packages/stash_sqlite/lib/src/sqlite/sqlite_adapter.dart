@@ -93,7 +93,7 @@ class SqliteFileAdapter<I extends Info, E extends Entry<I>>
       SqliteBuilder<I, E> builder, File file,
       {bool? logStatements, DatabaseSetup? setup}) {
     return Future.value(SqliteFileAdapter._(
-        builder(NativeDatabase(file,
+        builder(NativeDatabase.createInBackground(file,
             logStatements: logStatements ?? false, setup: setup)),
         file));
   }
