@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -52,12 +53,16 @@ class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
   /// * [builder]: Database builder
   /// * [logStatements]: Generated sql statements will be printed before executing
   /// * [setup]: Function that can be used to perform a setup just after the database is opened
+  /// * [cachePreparedStatements]: controls whether drift will cache prepared statement objects
   static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
       SqliteBuilder<I, E> builder,
       {bool? logStatements,
-      DatabaseSetup? setup}) {
+      DatabaseSetup? setup,
+      bool? cachePreparedStatements}) {
     return Future.value(SqliteMemoryAdapter._(builder(NativeDatabase.memory(
-        logStatements: logStatements ?? false, setup: setup))));
+        logStatements: logStatements ?? false,
+        setup: setup,
+        cachePreparedStatements: cachePreparedStatements ?? false))));
   }
 
   @override
@@ -71,32 +76,18 @@ class SqliteMemoryAdapter<I extends Info, E extends Entry<I>>
   }
 }
 
-/// The [SqliteFileAdapter] provides a bridge between the store and the
-/// Sqlite backend
-class SqliteFileAdapter<I extends Info, E extends Entry<I>>
+/// The [SqliteFileBaseAdapter] provides a base abstraction for bridge between
+/// the store and the Sqlite file backend
+abstract class SqliteFileBaseAdapter<I extends Info, E extends Entry<I>>
     extends SqliteAdapter<I, E> {
+  /// The database file
   final File file;
 
-  /// [SqliteFileAdapter] constructor.
+  /// [SqliteBaseFileAdapter] constructor.
   ///
   /// * [db]: The database
   /// * [file]: The [File] that store the Sqlite database
-  SqliteFileAdapter._(super.db, this.file);
-
-  /// Builds [SqliteFileAdapter].
-  ///
-  /// * [builder]: Database builder
-  /// * [file]: The [File] that store the Sqlite database
-  /// * [logStatements]: Generated sql statements will be printed before executing
-  /// * [setup]: Function that can be used to perform a setup just after the database is opened
-  static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
-      SqliteBuilder<I, E> builder, File file,
-      {bool? logStatements, DatabaseSetup? setup}) {
-    return Future.value(SqliteFileAdapter._(
-        builder(NativeDatabase(file,
-            logStatements: logStatements ?? false, setup: setup)),
-        file));
-  }
+  SqliteFileBaseAdapter(super.db, this.file);
 
   @override
   Future<void> delete(String name) {
@@ -106,5 +97,69 @@ class SqliteFileAdapter<I extends Info, E extends Entry<I>>
   @override
   Future<void> deleteAll() {
     return file.delete();
+  }
+}
+
+/// The [SqliteFileAdapter] provides a bridge between the store and the
+/// Sqlite file backend
+class SqliteFileAdapter<I extends Info, E extends Entry<I>>
+    extends SqliteFileBaseAdapter<I, E> {
+  /// [SqliteFileAdapter] constructor.
+  ///
+  /// * [db]: The database
+  /// * [file]: The [File] that store the Sqlite database
+  SqliteFileAdapter._(super.db, super.file);
+
+  /// Builds [SqliteFileAdapter].
+  ///
+  /// * [builder]: Database builder
+  /// * [file]: The [File] that store the Sqlite database
+  /// * [logStatements]: Generated sql statements will be printed before executing
+  /// * [setup]: Function that can be used to perform a setup just after the database is opened
+  /// * [cachePreparedStatements]: controls whether drift will cache prepared statement objects
+  static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
+      SqliteBuilder<I, E> builder, File file,
+      {bool? logStatements,
+      DatabaseSetup? setup,
+      bool? cachePreparedStatements}) {
+    return Future.value(SqliteFileAdapter._(
+        builder(NativeDatabase(file,
+            logStatements: logStatements ?? false,
+            setup: setup,
+            cachePreparedStatements: cachePreparedStatements ?? false)),
+        file));
+  }
+}
+
+/// The [SqliteBackgroundFileAdapter] provides a bridge between the store and the
+/// background Sqlite file backend
+class SqliteBackgroundFileAdapter<I extends Info, E extends Entry<I>>
+    extends SqliteFileBaseAdapter<I, E> {
+  /// [SqliteBackgroundFileAdapter] constructor.
+  ///
+  /// * [db]: The database
+  /// * [file]: The [File] that store the Sqlite database
+  SqliteBackgroundFileAdapter._(super.db, super.file);
+
+  /// Builds [SqliteBackgroundFileAdapter].
+  ///
+  /// * [builder]: Database builder
+  /// * [file]: The [File] that store the Sqlite database
+  /// * [logStatements]: Generated sql statements will be printed before executing
+  /// * [setup]: Function that can be used to perform a setup just after the database is opened
+  /// * [cachePreparedStatements]: controls whether drift will cache prepared statement objects
+  /// * [isolateSetup]: function that can perform setup work on the isolate before opening the database.
+  static Future<SqliteAdapter<I, E>> build<I extends Info, E extends Entry<I>>(
+      SqliteBuilder<I, E> builder, File file,
+      {bool? logStatements,
+      DatabaseSetup? setup,
+      bool? cachePreparedStatements,
+      FutureOr<void> Function()? isolateSetup}) {
+    return Future.value(SqliteBackgroundFileAdapter._(
+        builder(NativeDatabase.createInBackground(file,
+            logStatements: logStatements ?? false,
+            setup: setup,
+            cachePreparedStatements: cachePreparedStatements ?? false)),
+        file));
   }
 }

@@ -1,3 +1,7 @@
+## 5.1.0
+
+ - **FEAT**(sqlite): use NativeDatabase.createInBackground factory. ([2921a92a](https://github.com/ivoleitao/stash/commit/2921a92ac41869e5e4b69c9b2ac16ec6c9d7b637))
+
 ## 5.0.3
 
  - **CHORE**: Updated min dart SDK to 3.2.0

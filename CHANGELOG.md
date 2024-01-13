@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`stash_sqlite` - `v5.1.0`](#stash_sqlite---v510)
+
+---
+
+#### `stash_sqlite` - `v5.1.0`
+
+ - **FEAT**(sqlite): use NativeDatabase.createInBackground factory. ([2921a92a](https://github.com/ivoleitao/stash/commit/2921a92ac41869e5e4b69c9b2ac16ec6c9d7b637))
+
+
 ## 2023-08-21
 
 ### Changes
