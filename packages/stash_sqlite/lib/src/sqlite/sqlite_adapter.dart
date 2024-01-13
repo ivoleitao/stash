@@ -83,7 +83,7 @@ abstract class SqliteFileBaseAdapter<I extends Info, E extends Entry<I>>
   /// The database file
   final File file;
 
-  /// [SqliteBaseFileAdapter] constructor.
+  /// [SqliteFileBaseAdapter] constructor.
   ///
   /// * [db]: The database
   /// * [file]: The [File] that store the Sqlite database

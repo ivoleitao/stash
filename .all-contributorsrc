@@ -39,6 +39,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "RomainFranceschini",
+      "name": "Romain Franceschini",
+      "avatar_url": "https://avatars.githubusercontent.com/u/470056?v=4",
+      "profile": "https://github.com/RomainFranceschini",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
