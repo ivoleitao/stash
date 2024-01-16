@@ -66,6 +66,9 @@ abstract class Stash<T> {
   ///
   /// Returns the value if exists or `null` if no mapping existed for this [key]
   Future<T?> getAndRemove(String key);
+
+  /// Closes the stash
+  Future<void> close();
 }
 
 /// Extension over [Stash] to add some helper methods

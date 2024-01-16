@@ -90,6 +90,8 @@ void main() async {
       'task1', Task(id: 1, title: 'Run vault store example', completed: true));
   // Retrieves the value from the vault
   print(await vault.get('task1'));
+  // Closes the vault
+  vault.close();
 }
 ```
 
@@ -149,6 +151,8 @@ void main() async {
       'task1', Task(id: 1, title: 'Run cache store example', completed: true));
   // Retrieves the value from the cache
   print(await cache.get('task1'));
+  // Closes the cache
+  cache.close();
 }
 ```
 

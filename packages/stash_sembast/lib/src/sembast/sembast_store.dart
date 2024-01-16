@@ -185,6 +185,11 @@ abstract class SembastStore<I extends Info, E extends Entry<I>>
   Future<void> deleteAll() {
     return _adapter.deleteAll();
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 class SembastVaultStore extends SembastStore<VaultInfo, VaultEntry>

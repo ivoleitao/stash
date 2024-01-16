@@ -6,4 +6,7 @@ import 'package:stash_sqlite/src/sqlite/dao/dao_adapter.dart';
 abstract class SqliteDatabase<I extends Info, E extends Entry<I>> {
   /// Gets the specific version of the dao, either VaultDao or CacheDao
   DaoAdapter<I, E> get dao;
+
+  /// Closes the database
+  Future<void> close();
 }

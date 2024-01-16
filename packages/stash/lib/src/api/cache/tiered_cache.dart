@@ -269,4 +269,9 @@ class TieredCache<T> implements Cache<T> {
   Stream<E> on<E extends CacheEvent<T>>() {
     return StreamGroup.merge([_primary.on<E>(), _secondary.on<E>()]);
   }
+
+  @override
+  Future<void> close() {
+    return _secondary.close().then((_) => _primary.close());
+  }
 }
