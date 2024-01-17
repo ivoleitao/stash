@@ -1,3 +1,7 @@
+## 5.1.0
+
+ - **CHORE**: Updated dependencies
+
 ## 5.0.5
 
  - **CHORE**: Updated min dart SDK to 3.2.0

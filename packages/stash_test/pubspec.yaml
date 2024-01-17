@@ -1,5 +1,5 @@
 name: stash_test
-version: 5.0.3
+version: 5.1.0
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package
@@ -13,7 +13,7 @@ environment:
 dependencies:
   # Flutter shared dependencies
   clock: ^1.1.1
-  test: ^1.24.9
+  test: ^1.25.1
   # Other dependencies
   equatable: ^2.0.5
   time: ^2.1.3

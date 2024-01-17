@@ -193,20 +193,20 @@ class CacheData extends DataClass implements Insertable<CacheData> {
     map['name'] = Variable<String>(name);
     map['key'] = Variable<String>(key);
     {
-      final converter = $CacheTableTable.$convertercreationTime;
-      map['creation_time'] = Variable<String>(converter.toSql(creationTime));
+      map['creation_time'] = Variable<String>(
+          $CacheTableTable.$convertercreationTime.toSql(creationTime));
     }
     {
-      final converter = $CacheTableTable.$converterexpiryTime;
-      map['expiry_time'] = Variable<String>(converter.toSql(expiryTime));
+      map['expiry_time'] = Variable<String>(
+          $CacheTableTable.$converterexpiryTime.toSql(expiryTime));
     }
     {
-      final converter = $CacheTableTable.$converteraccessTime;
-      map['access_time'] = Variable<String>(converter.toSql(accessTime));
+      map['access_time'] = Variable<String>(
+          $CacheTableTable.$converteraccessTime.toSql(accessTime));
     }
     {
-      final converter = $CacheTableTable.$converterupdateTime;
-      map['update_time'] = Variable<String>(converter.toSql(updateTime));
+      map['update_time'] = Variable<String>(
+          $CacheTableTable.$converterupdateTime.toSql(updateTime));
     }
     map['hit_count'] = Variable<int>(hitCount);
     map['value'] = Variable<Uint8List>(value);
@@ -402,25 +402,20 @@ class CacheTableCompanion extends UpdateCompanion<CacheData> {
       map['key'] = Variable<String>(key.value);
     }
     if (creationTime.present) {
-      final converter = $CacheTableTable.$convertercreationTime;
-
-      map['creation_time'] =
-          Variable<String>(converter.toSql(creationTime.value));
+      map['creation_time'] = Variable<String>(
+          $CacheTableTable.$convertercreationTime.toSql(creationTime.value));
     }
     if (expiryTime.present) {
-      final converter = $CacheTableTable.$converterexpiryTime;
-
-      map['expiry_time'] = Variable<String>(converter.toSql(expiryTime.value));
+      map['expiry_time'] = Variable<String>(
+          $CacheTableTable.$converterexpiryTime.toSql(expiryTime.value));
     }
     if (accessTime.present) {
-      final converter = $CacheTableTable.$converteraccessTime;
-
-      map['access_time'] = Variable<String>(converter.toSql(accessTime.value));
+      map['access_time'] = Variable<String>(
+          $CacheTableTable.$converteraccessTime.toSql(accessTime.value));
     }
     if (updateTime.present) {
-      final converter = $CacheTableTable.$converterupdateTime;
-
-      map['update_time'] = Variable<String>(converter.toSql(updateTime.value));
+      map['update_time'] = Variable<String>(
+          $CacheTableTable.$converterupdateTime.toSql(updateTime.value));
     }
     if (hitCount.present) {
       map['hit_count'] = Variable<int>(hitCount.value);
