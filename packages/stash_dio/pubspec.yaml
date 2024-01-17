@@ -22,5 +22,5 @@ dev_dependencies:
   # Other dependencies
   lints: ^3.0.0
   mocktail: ^1.0.2
-  stash_memory: ^5.0.3
-  stash_file: ^5.0.3
+  stash_memory: ^5.1.0
+  stash_file: ^5.1.0
