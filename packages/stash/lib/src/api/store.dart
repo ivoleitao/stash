@@ -105,6 +105,9 @@ abstract class Store<I extends Info, E extends Entry<I>> {
 
   /// Deletes all partitions
   Future<void> deleteAll();
+
+  /// Closes a store
+  Future<void> close();
 }
 
 /// A definition of a stores that persists data

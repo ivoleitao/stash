@@ -1,3 +1,8 @@
+## 5.1.0
+
+ - **CHORE**: Updated dependencies
+ - **FEAT**: Added support to close stores and stashes
+
 ## 5.0.3
 
  - **CHORE**: Updated dependencies to the latest release.

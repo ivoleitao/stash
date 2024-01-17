@@ -150,16 +150,16 @@ class VaultData extends DataClass implements Insertable<VaultData> {
     map['name'] = Variable<String>(name);
     map['key'] = Variable<String>(key);
     {
-      final converter = $VaultTableTable.$convertercreationTime;
-      map['creation_time'] = Variable<String>(converter.toSql(creationTime));
+      map['creation_time'] = Variable<String>(
+          $VaultTableTable.$convertercreationTime.toSql(creationTime));
     }
     {
-      final converter = $VaultTableTable.$converteraccessTime;
-      map['access_time'] = Variable<String>(converter.toSql(accessTime));
+      map['access_time'] = Variable<String>(
+          $VaultTableTable.$converteraccessTime.toSql(accessTime));
     }
     {
-      final converter = $VaultTableTable.$converterupdateTime;
-      map['update_time'] = Variable<String>(converter.toSql(updateTime));
+      map['update_time'] = Variable<String>(
+          $VaultTableTable.$converterupdateTime.toSql(updateTime));
     }
     map['value'] = Variable<Uint8List>(value);
     return map;
@@ -324,20 +324,16 @@ class VaultTableCompanion extends UpdateCompanion<VaultData> {
       map['key'] = Variable<String>(key.value);
     }
     if (creationTime.present) {
-      final converter = $VaultTableTable.$convertercreationTime;
-
-      map['creation_time'] =
-          Variable<String>(converter.toSql(creationTime.value));
+      map['creation_time'] = Variable<String>(
+          $VaultTableTable.$convertercreationTime.toSql(creationTime.value));
     }
     if (accessTime.present) {
-      final converter = $VaultTableTable.$converteraccessTime;
-
-      map['access_time'] = Variable<String>(converter.toSql(accessTime.value));
+      map['access_time'] = Variable<String>(
+          $VaultTableTable.$converteraccessTime.toSql(accessTime.value));
     }
     if (updateTime.present) {
-      final converter = $VaultTableTable.$converterupdateTime;
-
-      map['update_time'] = Variable<String>(converter.toSql(updateTime.value));
+      map['update_time'] = Variable<String>(
+          $VaultTableTable.$converterupdateTime.toSql(updateTime.value));
     }
     if (value.present) {
       map['value'] = Variable<Uint8List>(value.value);

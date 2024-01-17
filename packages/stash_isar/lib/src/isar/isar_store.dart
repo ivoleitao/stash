@@ -298,6 +298,11 @@ abstract class IsarStore<M extends EntryModel, I extends Info,
   Future<void> deleteAll() {
     return _adapter.deleteAll();
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 /// The Isar vault store

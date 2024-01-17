@@ -217,6 +217,11 @@ abstract class SembastAdapter {
           .then((_) => _partitions.remove(name));
     }));
   }
+
+  /// Closes all partitions
+  Future<void> close() {
+    return _db.close();
+  }
 }
 
 class SembastLocalAdapter extends SembastAdapter {

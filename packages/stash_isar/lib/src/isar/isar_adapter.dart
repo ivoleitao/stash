@@ -103,6 +103,12 @@ abstract class IsarAdapter<M extends EntryModel> {
       return _deletePartition(name);
     }));
   }
+
+  /// Closes all partitions
+  Future<void> close({bool deleteFromDisk = false}) {
+    return Future.wait(_partitions.values
+        .map((partition) => partition.close(deleteFromDisk: deleteFromDisk)));
+  }
 }
 
 /// The [IsarVaultAdapter] provides a bridge between the store and the

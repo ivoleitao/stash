@@ -1,3 +1,8 @@
+## 5.2.0
+
+ - **CHORE**: Updated dependencies
+ - **FEAT**: Added support to close stores and stashes
+
 ## 5.1.0
 
  - **FEAT**(sqlite): use NativeDatabase.createInBackground factory. ([2921a92a](https://github.com/ivoleitao/stash/commit/2921a92ac41869e5e4b69c9b2ac16ec6c9d7b637))

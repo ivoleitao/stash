@@ -37,6 +37,11 @@ abstract class SqliteAdapter<I extends Info, E extends Entry<I>> {
 
   /// Deletes all partitions
   Future<void> deleteAll();
+
+  // Closes the database
+  Future<void> close() {
+    return _db.close();
+  }
 }
 
 /// The [SqliteMemoryAdapter] provides a bridge between the store and the

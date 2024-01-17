@@ -110,4 +110,9 @@ class CblAdapter {
   }
 
   Future<void> deleteAll() => Future.wait(_databases.keys.map(delete));
+
+  // Closes the databases
+  Future<void> close() {
+    return Future.wait(_databases.values.map((db) => db.close()));
+  }
 }

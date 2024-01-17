@@ -124,6 +124,11 @@ abstract class MemoryStore<I extends Info, E extends Entry<I>>
 
     return Future.value();
   }
+
+  @override
+  Future<void> close() {
+    return Future.value();
+  }
 }
 
 class MemoryVaultStore extends MemoryStore<VaultInfo, VaultEntry>

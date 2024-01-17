@@ -128,4 +128,13 @@ class ObjectboxAdapter {
       return _deletePartition(name);
     }));
   }
+
+  /// Closes all partitions
+  Future<void> close() {
+    for (Store partition in _partitions.values) {
+      partition.close();
+    }
+
+    return Future.value();
+  }
 }

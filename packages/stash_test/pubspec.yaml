@@ -1,5 +1,5 @@
 name: stash_test
-version: 5.0.3
+version: 5.1.0
 description: >-
   Provides the testing support needed in order to implement extensions to the base stash
   package

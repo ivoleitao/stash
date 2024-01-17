@@ -467,4 +467,9 @@ class GenericVault<T> implements Vault<T> {
       return Future<T?>.value();
     });
   }
+
+  @override
+  Future<void> close() {
+    return storage.close();
+  }
 }

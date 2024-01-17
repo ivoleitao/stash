@@ -108,6 +108,11 @@ class SqliteStore<I extends Info, E extends Entry<I>>
   Future<void> deleteAll() {
     return _adapter.dao.clearAll();
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 /// Sqlite based implemention of a Vault [Store]

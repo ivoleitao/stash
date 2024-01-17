@@ -183,6 +183,11 @@ abstract class SecureStorageStore<I extends Info, E extends Entry<I>>
   Future<void> deleteAll() {
     return _adapter.deleteAll();
   }
+
+  @override
+  Future<void> close() {
+    return Future.value();
+  }
 }
 
 class SecureStorageVaultStore extends SecureStorageStore<VaultInfo, VaultEntry>

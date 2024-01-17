@@ -1,5 +1,5 @@
 name: stash_sqlite
-version: 5.1.0
+version: 5.2.0
 description: >-
    storage extension for the stash API. Provides support to store vaults and 
    caches in a sqlite database in binary format using the msgpack json format
@@ -18,6 +18,6 @@ dev_dependencies:
   test: ^1.24.9
   # Other dependencies
   lints: ^3.0.0
-  build_runner: ^2.4.7
+  build_runner: ^2.4.8
   stash_test: ^5.0.3
   drift_dev: ^2.14.1

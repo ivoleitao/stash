@@ -259,6 +259,11 @@ abstract class HiveStore<T extends BoxBase<Map>, I extends Info,
   Future<void> deleteAll() {
     return _adapter.deleteAll();
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 /// The Hive vault store

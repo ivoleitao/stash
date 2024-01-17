@@ -198,6 +198,11 @@ abstract class CblStore<I extends Info, E extends Entry<I>>
   void _writeValue(MutableDictionaryInterface properties, dynamic value) {
     properties.setValue(encodeValue(value), key: 'value');
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 class CblVaultStore extends CblStore<VaultInfo, VaultEntry>

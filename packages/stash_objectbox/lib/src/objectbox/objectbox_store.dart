@@ -162,6 +162,11 @@ abstract class ObjectboxStore<O extends ObjectboxEntity, I extends Info,
   Future<void> deleteAll() {
     return _adapter.deleteAll();
   }
+
+  @override
+  Future<void> close() {
+    return _adapter.close();
+  }
 }
 
 class ObjectboxVaultStore

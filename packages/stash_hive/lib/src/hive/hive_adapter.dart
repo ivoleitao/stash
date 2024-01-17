@@ -86,6 +86,12 @@ abstract class HiveAdapter<T extends BoxBase<Map>> {
       return _deletePartition(name);
     }));
   }
+
+  /// Closes all partitions
+  Future<void> close() {
+    return Future.wait(
+        _partitions.values.map((partition) => partition.close()));
+  }
 }
 
 class HiveDefaultAdapter extends HiveAdapter<Box<Map>> {
