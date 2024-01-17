@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.10.0
-  stash: ^5.0.3
+  stash: ^5.1.0
   shared_preferences: ^2.2.2
 
 dev_dependencies:
