@@ -15,7 +15,7 @@ dependencies:
   stash: ^5.0.3
 dev_dependencies:
   # Flutter shared dependencies
-  test: ^1.25.1
+  test: ^1.24.9
   # Other dependencies
   lints: ^3.0.0
   build_runner: ^2.4.8
