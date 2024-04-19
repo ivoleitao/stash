@@ -372,6 +372,7 @@ Map<TypeTest, ValueGenerator Function()> defaultStoreTypeTests = {
 /// Default stash type tests
 Map<TypeTest, ValueGenerator Function()> defaultStashTypeTests = {
   TypeTest.bool: TypeTest.bool.generator,
+  TypeTest.string: TypeTest.string.generator,
   TypeTest.listOfInt: TypeTest.listOfInt.generator,
   TypeTest.mapOfDoubleDouble: TypeTest.mapOfDoubleDouble.generator,
   TypeTest.classOfString: TypeTest.classOfString.generator,
