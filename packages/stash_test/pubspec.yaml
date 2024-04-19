@@ -17,6 +17,6 @@ dependencies:
   # Other dependencies
   equatable: ^2.0.5
   time: ^2.1.4
-  stash: ^5.1.1
+  stash: ^5.2.0
 dev_dependencies:
   lints: ^3.0.0
