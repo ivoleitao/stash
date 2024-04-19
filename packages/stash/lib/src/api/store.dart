@@ -154,7 +154,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   /// * [bytes]: The list of bytes
   /// * [fromEncodable]: An function that converts between the Map representation and the object
   ///
-  /// Returns the decoded value from the provided binary value
+  /// Returns decoded value from the provided binary value
   @protected
   dynamic decodeBinaryValue(
       Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
