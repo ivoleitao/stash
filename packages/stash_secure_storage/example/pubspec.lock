@@ -357,14 +357,14 @@ packages:
       path: "../../stash"
       relative: true
     source: path
-    version: "5.1.0"
+    version: "5.1.1"
   stash_secure_storage:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "5.1.0"
+    version: "5.1.1"
   stream_channel:
     dependency: transitive
     description:
