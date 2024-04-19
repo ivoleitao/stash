@@ -1,5 +1,5 @@
 name: stash
-version: 5.1.0
+version: 5.1.1
 description: >-
   Stash is a key-value store abstraction with plain and cache driven semantics 
   and support for a pluggable backend architecture.
