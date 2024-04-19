@@ -1,5 +1,5 @@
 name: stash_cbl
-version: 5.1.2
+version: 5.2.0
 description: >-
   Couchbase Lite storage extension for the stash API. Provides support to store
   vaults and caches in a Couchbase Lite database.
@@ -8,11 +8,11 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   # Flutter shared dependencies
-  path: ^1.8.3
+  path: ^1.9.0
   # Other dependencies
   cbl: ^2.2.2
   stash: ^5.1.1

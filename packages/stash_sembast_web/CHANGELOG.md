@@ -1,3 +1,8 @@
+## 5.2.0
+
+- **BREAKING CHANGE**: Changed minimum dart sdk version
+- chore: Updated dependencies
+
 ## 5.1.2
 
  - **FIX**: Deployment dependency error on stash_test
@@ -27,7 +32,7 @@
 
 ## 5.0.0
 
-- **BREAKING CHANGE**: Changed minimum sdk version
+- **BREAKING CHANGE**: Changed minimum dart sdk version
 - chore: Updated dependencies
 
 ## 4.5.3

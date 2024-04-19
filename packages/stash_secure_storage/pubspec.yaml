@@ -1,5 +1,5 @@
 name: stash_secure_storage
-version: 5.1.2
+version: 5.2.0
 description: >-
   Secure storage extension for the stash API. Provides support to store vaults 
   and caches in secure storage
@@ -8,20 +8,20 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
-  flutter: '>=3.16.0'
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.10.0
+  meta: ^1.11.0
   stash: ^5.1.1
   flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^3.0.2
   stash_test: ^5.1.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

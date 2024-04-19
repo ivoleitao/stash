@@ -1,5 +1,5 @@
 name: stash
-version: 5.1.1
+version: 5.2.0
 description: >-
   Stash is a key-value store abstraction with plain and cache driven semantics 
   and support for a pluggable backend architecture.
@@ -8,16 +8,16 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   # Flutter shared dependencies
-  meta: ^1.10.0
+  meta: ^1.11.0
   clock: ^1.1.1
   async: ^2.11.0
   # Other dependencies
   equatable: ^2.0.5
-  uuid: ^4.2.2
+  uuid: ^4.4.0
 dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.9
