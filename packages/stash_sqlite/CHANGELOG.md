@@ -1,3 +1,7 @@
+## 5.2.2
+
+ - **FIX**: Deployment dependency error on stash_test
+
 ## 5.2.1
 
  - **CHORE**: Updated dependencies
