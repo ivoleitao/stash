@@ -19,5 +19,5 @@ dev_dependencies:
   # Other dependencies
   lints: ^3.0.0
   build_runner: ^2.4.9
-  stash_test: ^5.1.1
+  stash_test: ^5.2.0
   drift_dev: ^2.16.0
