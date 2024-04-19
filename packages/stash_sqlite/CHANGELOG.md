@@ -1,3 +1,7 @@
+## 5.2.1
+
+ - **CHORE**: Updated dependencies
+
 ## 5.2.0
 
  - **CHORE**: Updated dependencies

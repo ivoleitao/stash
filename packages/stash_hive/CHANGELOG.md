@@ -1,3 +1,9 @@
+## 5.1.1
+
+ - **CHORE**: Added a contributor
+ - **CHORE**: Updated dependencies
+ - **FIX**: TypeError in Hive vault when switching from version 4.5.2 to 5.1.0 [#70](https://github.com/ivoleitao/stash/issues/70).
+
 ## 5.1.0
 
  - **CHORE**: Updated dependencies

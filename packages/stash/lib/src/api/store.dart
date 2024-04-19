@@ -154,7 +154,7 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
   /// * [bytes]: The list of bytes
   /// * [fromEncodable]: An function that converts between the Map representation and the object
   ///
-  /// Returns the decoded value from the provided binary value
+  /// Returns decoded value from the provided binary value
   @protected
   dynamic decodeBinaryValue(
       Uint8List bytes, dynamic Function(Map<String, dynamic>)? fromEncodable) {
@@ -183,7 +183,13 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
     } else if (processor == ValueProcessor.cast) {
       bytes = (value as List).cast<int>();
     } else {
-      bytes = value as List<int>;
+      if (value is String) {
+        return value;
+      } else if (value is Map && fromEncodable != null) {
+        return fromEncodable(value.cast<String, dynamic>());
+      } else {
+        bytes = value as List<int>;
+      }
     }
 
     return decodeBinaryValue(Uint8List.fromList(bytes), fromEncodable);
