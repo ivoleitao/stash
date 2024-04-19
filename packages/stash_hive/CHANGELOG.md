@@ -1,3 +1,7 @@
+## 5.1.2
+
+ - **FIX**: Deployment dependency error on stash_test
+
 ## 5.1.1
 
  - **CHORE**: Added a contributor
