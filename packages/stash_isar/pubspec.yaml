@@ -1,5 +1,5 @@
 name: stash_isar
-version: 5.1.2
+version: 5.2.0
 description: >-
   Isar storage extension for the stash caching API. Provides support to store vaults 
   and caches in the Isar database
@@ -8,11 +8,11 @@ repository: https://github.com/ivoleitao/stash
 issue_tracker: https://github.com/ivoleitao/stash/issues
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   # Flutter shared dependencies
-  meta: ^1.10.0
+  meta: ^1.11.0
   # Other dependencies
   isar: ^3.1.0+1
   stash: ^5.1.1
@@ -21,6 +21,6 @@ dev_dependencies:
   test: ^1.24.9
   # Other dependencies
   lints: ^3.0.0
-  build_runner: ^2.4.8
+  build_runner: ^2.4.9
   isar_generator: ^3.1.0+1
   stash_test: ^5.1.1

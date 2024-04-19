@@ -10,103 +10,104 @@
 import 'dart:typed_data';
 
 import 'package:flat_buffers/flat_buffers.dart' as fb;
-import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
-import 'package:objectbox/objectbox.dart';
+import 'package:objectbox/internal.dart'
+    as obx_int; // generated code can access "internal" functionality
+import 'package:objectbox/objectbox.dart' as obx;
 
 import 'src/objectbox/cache_entity.dart';
 import 'src/objectbox/vault_entity.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
-final _entities = <ModelEntity>[
-  ModelEntity(
-      id: const IdUid(4, 5011109035722287274),
+final _entities = <obx_int.ModelEntity>[
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(4, 5011109035722287274),
       name: 'CacheEntity',
-      lastPropertyId: const IdUid(11, 7164938786966340973),
+      lastPropertyId: const obx_int.IdUid(11, 7164938786966340973),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 1076473317927216075),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 1076473317927216075),
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(5, 1490297446569401364),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 1490297446569401364),
             name: 'expiryTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 5071584100844141000),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 5071584100844141000),
             name: 'creationTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 5586757287364210649),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 5586757287364210649),
             name: 'accessTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(8, 1244094463178899746),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 1244094463178899746),
             name: 'updateTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 4880652661592067201),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 4880652661592067201),
             name: 'hitCount',
             type: 6,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(10, 647287731825274377),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 647287731825274377),
             name: 'key',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(11, 7164938786966340973),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(11, 7164938786966340973),
             name: 'value',
             type: 23,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(5, 471229950508017654),
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 471229950508017654),
       name: 'VaultEntity',
-      lastPropertyId: const IdUid(6, 856894059769238353),
+      lastPropertyId: const obx_int.IdUid(6, 856894059769238353),
       flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 2731128255168746009),
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 2731128255168746009),
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(2, 4748832657952197732),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 4748832657952197732),
             name: 'key',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 4568051061604154803),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 4568051061604154803),
             name: 'value',
             type: 23,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 3094685031228680348),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 3094685031228680348),
             name: 'creationTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 7015534216969269053),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 7015534216969269053),
             name: 'accessTime',
             type: 9,
             flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 856894059769238353),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 856894059769238353),
             name: 'updateTime',
             type: 9,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[])
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[])
 ];
 
 /// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -116,30 +117,37 @@ final _entities = <ModelEntity>[
 /// Note: for desktop apps it is recommended to specify a unique [directory].
 ///
 /// See [Store.new] for an explanation of all parameters.
-Store openStore(
-        {String? directory,
-        int? maxDBSizeInKB,
-        int? fileMode,
-        int? maxReaders,
-        bool queriesCaseSensitiveDefault = true,
-        String? macosApplicationGroup}) =>
-    Store(getObjectBoxModel(),
-        directory: directory,
-        maxDBSizeInKB: maxDBSizeInKB,
-        fileMode: fileMode,
-        maxReaders: maxReaders,
-        queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-        macosApplicationGroup: macosApplicationGroup);
+///
+/// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
+/// the ObjectBox Flutter library to fix loading the native ObjectBox library
+/// on Android 6 and older.
+obx.Store openStore(
+    {String? directory,
+    int? maxDBSizeInKB,
+    int? maxDataSizeInKB,
+    int? fileMode,
+    int? maxReaders,
+    bool queriesCaseSensitiveDefault = true,
+    String? macosApplicationGroup}) {
+  return obx.Store(getObjectBoxModel(),
+      directory: directory,
+      maxDBSizeInKB: maxDBSizeInKB,
+      maxDataSizeInKB: maxDataSizeInKB,
+      fileMode: fileMode,
+      maxReaders: maxReaders,
+      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+      macosApplicationGroup: macosApplicationGroup);
+}
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [Store.new].
-ModelDefinition getObjectBoxModel() {
-  final model = ModelInfo(
+obx_int.ModelDefinition getObjectBoxModel() {
+  final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(5, 471229950508017654),
-      lastIndexId: const IdUid(0, 0),
-      lastRelationId: const IdUid(0, 0),
-      lastSequenceId: const IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(5, 471229950508017654),
+      lastIndexId: const obx_int.IdUid(0, 0),
+      lastRelationId: const obx_int.IdUid(0, 0),
+      lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [
         4871219055877644958,
         3170801302516940312,
@@ -185,8 +193,8 @@ ModelDefinition getObjectBoxModel() {
       modelVersionParserMinimum: 5,
       version: 1);
 
-  final bindings = <Type, EntityDefinition>{
-    CacheEntity: EntityDefinition<CacheEntity>(
+  final bindings = <Type, obx_int.EntityDefinition>{
+    CacheEntity: obx_int.EntityDefinition<CacheEntity>(
         model: _entities[0],
         toOneRelations: (CacheEntity object) => [],
         toManyRelations: (CacheEntity object) => {},
@@ -217,7 +225,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -249,7 +257,7 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    VaultEntity: EntityDefinition<VaultEntity>(
+    VaultEntity: obx_int.EntityDefinition<VaultEntity>(
         model: _entities[1],
         toOneRelations: (VaultEntity object) => [],
         toManyRelations: (VaultEntity object) => {},
@@ -277,7 +285,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.finish(fbb.endTable());
           return object.id;
         },
-        objectFromFB: (Store store, ByteData fbData) {
+        objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
           final idParam =
@@ -305,67 +313,67 @@ ModelDefinition getObjectBoxModel() {
         })
   };
 
-  return ModelDefinition(model, bindings);
+  return obx_int.ModelDefinition(model, bindings);
 }
 
 /// [CacheEntity] entity fields to define ObjectBox queries.
 class CacheEntity_ {
   /// see [CacheEntity.id]
   static final id =
-      QueryIntegerProperty<CacheEntity>(_entities[0].properties[0]);
+      obx.QueryIntegerProperty<CacheEntity>(_entities[0].properties[0]);
 
   /// see [CacheEntity.expiryTime]
   static final expiryTime =
-      QueryStringProperty<CacheEntity>(_entities[0].properties[1]);
+      obx.QueryStringProperty<CacheEntity>(_entities[0].properties[1]);
 
   /// see [CacheEntity.creationTime]
   static final creationTime =
-      QueryStringProperty<CacheEntity>(_entities[0].properties[2]);
+      obx.QueryStringProperty<CacheEntity>(_entities[0].properties[2]);
 
   /// see [CacheEntity.accessTime]
   static final accessTime =
-      QueryStringProperty<CacheEntity>(_entities[0].properties[3]);
+      obx.QueryStringProperty<CacheEntity>(_entities[0].properties[3]);
 
   /// see [CacheEntity.updateTime]
   static final updateTime =
-      QueryStringProperty<CacheEntity>(_entities[0].properties[4]);
+      obx.QueryStringProperty<CacheEntity>(_entities[0].properties[4]);
 
   /// see [CacheEntity.hitCount]
   static final hitCount =
-      QueryIntegerProperty<CacheEntity>(_entities[0].properties[5]);
+      obx.QueryIntegerProperty<CacheEntity>(_entities[0].properties[5]);
 
   /// see [CacheEntity.key]
   static final key =
-      QueryStringProperty<CacheEntity>(_entities[0].properties[6]);
+      obx.QueryStringProperty<CacheEntity>(_entities[0].properties[6]);
 
   /// see [CacheEntity.value]
   static final value =
-      QueryByteVectorProperty<CacheEntity>(_entities[0].properties[7]);
+      obx.QueryByteVectorProperty<CacheEntity>(_entities[0].properties[7]);
 }
 
 /// [VaultEntity] entity fields to define ObjectBox queries.
 class VaultEntity_ {
   /// see [VaultEntity.id]
   static final id =
-      QueryIntegerProperty<VaultEntity>(_entities[1].properties[0]);
+      obx.QueryIntegerProperty<VaultEntity>(_entities[1].properties[0]);
 
   /// see [VaultEntity.key]
   static final key =
-      QueryStringProperty<VaultEntity>(_entities[1].properties[1]);
+      obx.QueryStringProperty<VaultEntity>(_entities[1].properties[1]);
 
   /// see [VaultEntity.value]
   static final value =
-      QueryByteVectorProperty<VaultEntity>(_entities[1].properties[2]);
+      obx.QueryByteVectorProperty<VaultEntity>(_entities[1].properties[2]);
 
   /// see [VaultEntity.creationTime]
   static final creationTime =
-      QueryStringProperty<VaultEntity>(_entities[1].properties[3]);
+      obx.QueryStringProperty<VaultEntity>(_entities[1].properties[3]);
 
   /// see [VaultEntity.accessTime]
   static final accessTime =
-      QueryStringProperty<VaultEntity>(_entities[1].properties[4]);
+      obx.QueryStringProperty<VaultEntity>(_entities[1].properties[4]);
 
   /// see [VaultEntity.updateTime]
   static final updateTime =
-      QueryStringProperty<VaultEntity>(_entities[1].properties[5]);
+      obx.QueryStringProperty<VaultEntity>(_entities[1].properties[5]);
 }
