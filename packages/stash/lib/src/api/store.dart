@@ -182,10 +182,10 @@ abstract class PersistenceStore<I extends Info, E extends Entry<I>>
       bytes = process(value);
     } else if (processor == ValueProcessor.cast) {
       bytes = (value as List).cast<int>();
-    }  else {
-      if(value is String) {
+    } else {
+      if (value is String) {
         return value;
-      } else if(value is Map && fromEncodable!=null) {
+      } else if (value is Map && fromEncodable != null) {
         return fromEncodable(value.cast<String, dynamic>());
       } else {
         bytes = value as List<int>;
