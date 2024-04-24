@@ -14,7 +14,7 @@ dependencies:
   # Flutter shared dependencies
   path: ^1.9.0
   # Other dependencies
-  cbl: ^2.2.2
+  cbl: ">=2.2.2 <4.0.0"
   stash: ^5.2.0
 dev_dependencies:
   # Flutter shared dependencies
@@ -22,4 +22,4 @@ dev_dependencies:
   # Other dependencies
   lints: ^3.0.0
   stash_test: ^5.2.0
-  cbl_dart: ^2.2.2
+  cbl_dart: ">=2.2.2 <4.0.0"
