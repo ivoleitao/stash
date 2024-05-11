@@ -1,4 +1,6 @@
 @TestOn('!js')
+library;
+
 import 'dart:typed_data';
 
 import 'package:stash/src/msgpack/reader.dart';

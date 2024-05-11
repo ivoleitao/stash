@@ -22,4 +22,4 @@ dev_dependencies:
   # Flutter shared dependencies
   test: ^1.24.9
   # Other dependencies
-  lints: ">=3.0.0 <5.0.0"
+  lints: "^4.0.0"

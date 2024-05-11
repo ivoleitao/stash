@@ -1,4 +1,6 @@
 @TestOn('!js')
+library;
+
 import 'package:stash/src/msgpack/writer.dart';
 import 'package:test/test.dart';
 
