@@ -16,7 +16,7 @@ dependencies:
   path: ^1.9.0
   # Other dependencies
   stash: ^5.2.0
-  objectbox: ^2.5.1
+  objectbox: ">=2.5.1 <5.0.0"
   flat_buffers: ^23.5.26
 dev_dependencies:
   # Flutter shared dependencies
@@ -25,4 +25,4 @@ dev_dependencies:
   lints: "^4.0.0"
   build_runner: ^2.4.9
   stash_test: ^5.2.0
-  objectbox_generator: ^2.5.1
+  objectbox_generator: ">=2.5.1 <5.0.0"
